@@ -25,6 +25,18 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 5. Field-friendly design: comfortable tap targets, no gestures that need precision, undo for destructive actions. Must keep working offline.
 6. Keep the app a single self-contained `index.html`. Check the JavaScript before committing (e.g. extract the `<script>` and run `node --check`).
 7. Commit straight to `main` with a short, clear message describing the change.
+8. Keep commit summaries under 50 characters; put details in the extended description.
+
+## Workflow
+- Most changes are prepared in a Claude chat and uploaded as whole files through the GitHub web interface.
+- Claude Code is used for smaller edits, checks and documentation.
+- Whoever changes `index.html` must raise the `CACHE` version in `sw.js` in the same commit.
+
+## Lessons learned
+- `body` uses the classes `field`, `night`, `locked` and `notlist`, and the attribute `data-skin`. Never reuse these names for other elements: a clash once made the whole page wider than the screen.
+- `main` has the class `wrap`, so its bottom spacing for the tab bar is set on `main.wrap`. After any layout change, check that the last content on every page ends above the tab bar.
+- The Android back button is handled with the History API (`go`, `goBack`, `popstate`). New screens and sheets must use `go()` or `openSheet()` so back keeps working.
+- Regnlås (rain lock) blocks taps but allows scrolling, and is unlocked by a one-second hold that handles touch events directly.
 
 ## Name
 "Varde" is a working name. If the app is renamed, change the display name (`<title>`, `application-name`, `apple-mobile-web-app-title`, `UI.app` in both languages, `manifest.webmanifest`, README) and the `CACHE` prefix in `sw.js`, but never the storage `KEY`.
