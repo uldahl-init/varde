@@ -56,7 +56,8 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .bar span{display:block;height:100%;width:0;background:var(--red);transition:width .25s ease}
 .prog-text{font-size:.9rem;color:inherit;opacity:.8;white-space:nowrap;font-variant-numeric:tabular-nums}
 
-main{padding:4px 0 calc(110px + env(safe-area-inset-bottom,0px))}
+main.wrap{padding:4px 16px calc(110px + env(safe-area-inset-bottom,0px))}
+body.field main.wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom,0px))}
 .cat{margin-top:20px}
 .cat-head{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:6px 2px;cursor:pointer;text-align:left}
 .cat-head h2{flex:1;margin:0;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
