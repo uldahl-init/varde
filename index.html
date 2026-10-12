@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E7EBE8">
+<title>Varde</title>
+<meta name="application-name" content="Varde">
+<meta name="apple-mobile-web-app-title" content="Varde">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F3532'/%3E%3Cpath d='M8 50L26 20l9 14 6-9 15 25z' fill='%23F2F5F3'/%3E%3Cpath d='M22 34l4-14 5 8' fill='none' stroke='%23C8372D' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E7EBE8; --surface:#F6F8F6; --ink:#1D2B2A; --muted:#5E6B69;
+  --line:#D2D9D5; --line-strong:#A9B5B0; --red:#C42127; --lichen:#6F875A;
+  --head:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#142120; --surface:#1C2B2A; --ink:#E3EAE6; --muted:#93A29F;
+    --line:#2C3D3B; --line-strong:#4A5E5B; --red:#E5484D; --lichen:#9DB58A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#142120; --surface:#1C2B2A; --ink:#E3EAE6; --muted:#93A29F;
+  --line:#2C3D3B; --line-strong:#4A5E5B; --red:#E5484D; --lichen:#9DB58A;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+:focus-visible{outline:3px solid var(--lichen);outline-offset:2px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--hd,var(--bg));color:var(--hdt,var(--ink));padding:12px 0 14px}
+.title-row{display:flex;align-items:center;gap:4px}
+.list-switch{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;cursor:pointer;text-align:left}
+.list-switch h1{margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-switch svg{flex:none;width:20px;height:20px;stroke:var(--muted)}
+.menu-btn{flex:none;width:44px;height:44px;border:0;background:none;border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.menu-btn svg{width:24px;height:24px;fill:currentColor}
+.list-switch svg{stroke:currentColor !important;opacity:.7}
+.progress{display:flex;align-items:center;gap:12px;margin-top:6px}
+.bar{flex:1;height:6px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--red);transition:width .25s ease}
+.prog-text{font-size:.9rem;color:inherit;opacity:.8;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+main{padding:4px 0 calc(110px + env(safe-area-inset-bottom,0px))}
+.cat{margin-top:20px}
+.cat-head{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:6px 2px;cursor:pointer;text-align:left}
+.cat-head h2{flex:1;margin:0;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
+.count{font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.cat.complete .count{color:var(--red);font-weight:600}
+.chev{width:18px;height:18px;stroke:var(--muted);transition:transform .2s ease}
+.cat.closed .chev{transform:rotate(-90deg)}
+.cat.closed .items,.cat.closed .cat-tools{display:none}
+.cat-tools{display:flex;gap:8px;margin:2px 0 8px}
+
+.items{list-style:none;margin:4px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.item{display:flex;align-items:center;border-top:1px solid var(--line)}
+.items > li:first-child{border-top:0}
+.check{flex:1;min-width:0;display:flex;align-items:center;gap:14px;min-height:52px;padding:10px 14px;background:none;border:0;text-align:left;cursor:pointer}
+.mark{flex:none;width:26px;height:26px;border:2px solid var(--line-strong);border-radius:6px;display:grid;place-items:center;background:var(--bg)}
+.mark svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.4);transition:opacity .15s ease,transform .22s cubic-bezier(.3,1.6,.5,1)}
+.item.done .mark{border-color:var(--red);background:var(--red)}
+.item.done .mark svg{opacity:1;transform:scale(1)}
+.txt{overflow-wrap:anywhere}
+.item.done .txt{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line-strong)}
+.icon{flex:none;width:44px;height:44px;margin-right:2px;background:none;border:0;color:var(--muted);border-radius:8px;cursor:pointer;display:grid;place-items:center}
+.icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.icon.del{color:var(--red)}
+.note-row{padding:12px 14px;color:var(--muted);font-size:.95rem;border-top:1px solid var(--line)}
+.item.sub .check{padding-left:50px;min-height:44px;font-size:.95rem}
+.item.sub .mark{width:22px;height:22px}
+.item.sub .mark svg{width:15px;height:15px}
+.cat-note{margin:0 2px 6px;color:var(--lichen);font-size:.9rem}
+.notes{margin-top:28px}
+.notes h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem}
+.notes-body{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;line-height:1.55}
+.notes-body.placeholder{color:var(--muted)}
+textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
+.modes{margin-top:16px}
+.modes-label{display:block;font-size:.9rem;color:var(--muted);font-weight:600;margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.link-btn{flex:none;display:flex;align-items:center;gap:2px;margin-right:8px;padding:6px 8px 6px 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--bg);font-size:.9rem;font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer}
+.link-btn.complete{border-color:var(--red);color:var(--red)}
+.link-btn svg,.back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+.back{display:inline-flex;align-items:center;gap:4px;margin-top:14px;background:none;border:0;color:var(--muted);font-weight:600;cursor:pointer;padding:6px 0}
+.tool-sub{color:var(--muted);margin:6px 0 0}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted);font-weight:600}
+.field input{font-size:1.15rem;font-variant-numeric:tabular-nums}
+.calc-result{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.calc-result:empty{display:none}
+.calc-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.calc-pair .big{display:block;font-family:var(--head);font-weight:600;font-size:2.2rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.calc-pair > div:first-child .big{color:var(--red)}
+.calc-pair .lbl{color:var(--muted);font-size:.9rem}
+.calc-boils{margin:12px 0 0;font-weight:600}
+.calc-err{margin:0;color:var(--red);font-weight:600}
+.tool-tip{color:var(--muted);font-size:.9rem;margin-top:14px}
+
+.calc.one{grid-template-columns:1fr}
+.chips.tight{margin-top:4px}
+.calc-basis{margin:10px 0 0;color:var(--muted);font-size:.9rem}
+.calc-warn{margin:10px 0 0;padding:10px 12px;border-left:3px solid var(--red);background:var(--bg);font-size:.95rem}
+.reset-link{background:none;border:0;padding:0;color:var(--lichen);font-weight:600;font-size:.85rem;cursor:pointer;text-align:left}
+.manual{margin-top:26px}
+.manual h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem}
+.manual details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.manual summary{padding:12px 14px;font-weight:600;cursor:pointer}
+.manual details p{margin:0;padding:0 14px 14px;line-height:1.55}
+.food-out{list-style:none;margin:0;padding:0}
+.food-out li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.food-out li:first-child{border-top:0}
+.food-out .q{font-family:var(--head);font-weight:600;font-size:1.35rem;color:var(--red);white-space:nowrap;font-variant-numeric:tabular-nums}
+.kcal-bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:10px;position:relative}
+.kcal-bar span{display:block;height:100%;background:var(--lichen)}
+.kcal-bar span.low{background:var(--red)}
+.kcal-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:16px}
+.kcal-head .q{font-family:var(--head);font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.energy details{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.energy summary{padding:12px 14px;font-weight:600;cursor:pointer}
+.energy .calc{padding:0 14px 14px;margin-top:0}
+.knot{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:10px}
+.knot summary{padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.knot summary b{font-family:var(--head);font-weight:600;font-size:1.3rem}
+.knot summary span{color:var(--muted);font-size:.95rem}
+.knot ol{margin:0;padding:0 16px 4px 36px;line-height:1.55}
+.knot ol li{margin-bottom:6px}
+.knot .check-tip{margin:0;padding:8px 14px 14px;font-size:.95rem}
+.guide p{margin:0 0 10px;padding:0 14px;line-height:1.55}
+.guide ul{margin:0 0 12px;padding:0 16px 0 34px;line-height:1.55}
+.guide li{margin-bottom:6px}
+.key-rule{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--red);font-weight:600;line-height:1.5}
+.lchart{margin:0 14px 12px;font-size:.8rem}
+.lc-head,.lc-row{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:6px}
+.lc-cols{display:grid;grid-template-columns:repeat(5,1fr);text-align:center;color:var(--muted);font-weight:600;line-height:1.2}
+.lc-row{padding:6px 0;border-top:1px solid var(--line)}
+.lc-lab{font-weight:600;line-height:1.2}
+.lc-lab small{display:block;color:var(--muted);font-weight:400}
+.lc-track{position:relative;height:12px;border-radius:6px;background:repeating-linear-gradient(90deg,var(--bg) 0 20%,transparent 20% 40%)}
+.lc-track i{position:absolute;top:2px;bottom:2px;border-radius:4px;background:var(--ink)}
+body.notlist .progress{display:none}
+body.notlist .list-switch svg{display:none}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);display:grid;grid-template-columns:repeat(4,1fr)}
+.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer}
+.tabbar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabbar button[aria-current="page"]{color:var(--red)}
+.toolbar{display:flex;gap:8px;margin:14px -16px 0;padding:0 16px 2px;overflow-x:auto;scrollbar-width:none}
+.toolbar::-webkit-scrollbar{display:none}
+.toolbar .chip{flex:none}
+.toolbar .chip{padding:9px 14px}
+.chip.field-on{background:var(--red);border-color:var(--red);color:#fff}
+.chip:disabled{opacity:.4;cursor:default}
+.modes-toggle{width:100%;display:flex;align-items:center;gap:8px;margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:600;text-align:left;cursor:pointer}
+.modes-toggle .mt-val{flex:1;min-width:0;color:var(--muted);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modes-toggle .chev{flex:none}
+.modes-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.modes-open{margin-top:10px}
+.subhead{padding:14px 14px 4px;font-weight:600;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
+.items > li.subhead:first-child{border-top:0}
+.index{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.index button{display:flex;align-items:center;gap:14px;width:100%;padding:18px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;cursor:pointer}
+.index .ix-t{display:block;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
+.index .ix-d{display:block;color:var(--muted);font-size:.95rem}
+.index .ix-txt{flex:1}
+.index svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2.5;stroke-linecap:round}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;max-width:608px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600}
+.toast[hidden]{display:none}
+.toast span{flex:1}
+.toast button{border:0;border-radius:8px;padding:10px 14px;background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer}
+.rainlock{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,.08);display:flex;align-items:flex-end;justify-content:center;padding:0 16px calc(84px + env(safe-area-inset-bottom,0px));touch-action:none}
+.rainlock[hidden]{display:none}
+.unlock{position:relative;overflow:hidden;width:100%;max-width:420px;padding:20px;border-radius:16px;border:2px solid var(--red);background:var(--surface);color:var(--ink);font-weight:600;font-size:1.05rem;cursor:pointer;user-select:none;-webkit-user-select:none}
+.unlock .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);opacity:.25}
+.unlock.holding .fill{width:100%;transition:width 1s linear}
+.unlock span{position:relative}
+body.field{font-size:20px}
+body.field .check{min-height:64px;padding:14px 16px}
+body.field .mark{width:32px;height:32px}
+body.field .mark svg{width:22px;height:22px}
+body.field .item.sub .check{padding-left:56px}
+body.field .chip{padding:12px 18px}
+body.field .tabbar button{min-height:70px;font-size:.85rem}
+body.field .link-btn{padding:10px 12px 10px 16px}
+body[data-skin="fjell"]{--bg:#E9ECEA;--surface:#FFFFFF;--ink:#1D2B2A;--muted:#5E6B69;--line:#D6DCD9;--line-strong:#A9B5B0;--red:#C8372D;--lichen:#5E7A4A;--hd:#1F3532;--hdt:#F2F5F3;--chip:#2C4743}
+body[data-skin="mose"]{--bg:#EFEBE2;--surface:#FBF9F4;--ink:#2A2E22;--muted:#6B6A5C;--line:#DDD7CA;--line-strong:#B5AE9C;--red:#B9730C;--lichen:#5E7344;--hd:#3D4F2E;--hdt:#F4F1E8;--chip:#4E6340}
+body[data-skin="fjord"]{--bg:#E8EEF2;--surface:#FFFFFF;--ink:#17262F;--muted:#5A6B76;--line:#D3DDE3;--line-strong:#A3B3BD;--red:#E0651B;--lichen:#3F7A8C;--hd:#1D3A4F;--hdt:#EEF4F8;--chip:#2D5068}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]) body[data-skin="fjell"]{--bg:#142120;--surface:#1C2B2A;--ink:#E3EAE6;--muted:#93A29F;--line:#2C3D3B;--line-strong:#4A5E5B;--red:#E5574D;--lichen:#9DB58A;--hd:#0E1817;--hdt:#E3EAE6;--chip:#23332F}
+:root:not([data-theme="light"]) body[data-skin="mose"]{--bg:#1A1C15;--surface:#23261C;--ink:#ECE8DC;--muted:#A39F8C;--line:#343828;--line-strong:#555A43;--red:#D99A33;--lichen:#A9BD8A;--hd:#12140E;--hdt:#ECE8DC;--chip:#2C3122}
+:root:not([data-theme="light"]) body[data-skin="fjord"]{--bg:#111B23;--surface:#18252F;--ink:#E4ECF1;--muted:#8FA2AE;--line:#273744;--line-strong:#42596A;--red:#F07F3A;--lichen:#7FB6C6;--hd:#0B141B;--hdt:#E4ECF1;--chip:#1F3443}
+}
+:root[data-theme="dark"] body[data-skin="fjell"]{--bg:#142120;--surface:#1C2B2A;--ink:#E3EAE6;--muted:#93A29F;--line:#2C3D3B;--line-strong:#4A5E5B;--red:#E5574D;--lichen:#9DB58A;--hd:#0E1817;--hdt:#E3EAE6;--chip:#23332F}
+:root[data-theme="dark"] body[data-skin="mose"]{--bg:#1A1C15;--surface:#23261C;--ink:#ECE8DC;--muted:#A39F8C;--line:#343828;--line-strong:#555A43;--red:#D99A33;--lichen:#A9BD8A;--hd:#12140E;--hdt:#ECE8DC;--chip:#2C3122}
+:root[data-theme="dark"] body[data-skin="fjord"]{--bg:#111B23;--surface:#18252F;--ink:#E4ECF1;--muted:#8FA2AE;--line:#273744;--line-strong:#42596A;--red:#F07F3A;--lichen:#7FB6C6;--hd:#0B141B;--hdt:#E4ECF1;--chip:#1F3443}
+.cat-head .ci{width:22px;height:22px;flex:none;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;align-self:center}
+.skins{display:flex;gap:8px;flex-wrap:wrap}
+.skin-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:600}
+.skin-btn[aria-pressed="true"]{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.sw{display:flex;border-radius:4px;overflow:hidden}
+.sw i{width:12px;height:18px;display:block}
+body[data-skin="eng"]{--bg:#F4EFF2;--surface:#FFFFFF;--ink:#2E2430;--muted:#6E6070;--line:#E6DCE3;--line-strong:#BFAFBC;--red:#C93D78;--lichen:#5F8A45;--hd:#6B4A73;--hdt:#F7F0F6;--chip:#7E5C87}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]) body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
+}
+:root[data-theme="dark"] body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
+:root body.night.night{--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
+body.night .chip.field-on,body.night .btn.primary{color:#000}
+.compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
+.rose{width:min(80vw,320px);height:min(80vw,320px)}
+.rose .dial{transition:transform .08s linear}
+.c-read{margin-top:10px;text-align:center}
+.c-deg{font-family:var(--head);font-weight:600;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.c-dir{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red)}
+.c-mode{color:var(--muted);font-size:.95rem;margin-top:4px;min-height:1.4em}
+.c-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+.c-btns .chip{padding:12px 20px}
+.c-msg{margin-top:14px;text-align:center;color:var(--muted);max-width:420px}
+.add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
+textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:110px;resize:vertical}
+.btn{font-weight:600;border-radius:10px;padding:10px 16px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;white-space:nowrap}
+.btn.small{padding:6px 12px;font-size:.9rem}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.danger{color:var(--red)}
+.add-cat{display:block;width:100%;margin-top:20px;padding:14px;border:2px dashed var(--line-strong);background:none;border-radius:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.empty{margin:48px 8px;text-align:center;color:var(--muted)}
+.done-banner{margin:20px 0 0;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--red);display:flex;gap:12px;align-items:center;font-weight:600}
+.done-banner svg{width:22px;height:22px;fill:none;stroke:var(--red);stroke-width:3;stroke-linecap:round;flex:none}
+
+.olddock{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.dock .wrap{display:flex;gap:8px;padding-top:10px;padding-bottom:10px}
+.dock .btn{flex:1;padding:12px 8px}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(8,18,17,.5);display:flex;align-items:flex-end;justify-content:center}
+.overlay[hidden]{display:none}
+.panel{background:var(--surface);width:100%;max-width:640px;max-height:88%;overflow:auto;border-radius:16px 16px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.panel h3{margin:0 0 12px;font-family:var(--head);font-weight:600;font-size:1.5rem}
+.panel p{margin:0 0 12px;color:var(--muted)}
+.panel .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.choices{display:flex;flex-direction:column;gap:6px;margin:0 0 8px}
+.choice{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer}
+.choice .c-name{flex:1;font-weight:600}
+.choice .c-sub{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.choice.active{border-color:var(--red)}
+.section-label{margin:18px 0 8px;color:var(--muted);font-size:.9rem;font-weight:600}
+.status{font-size:.9rem;color:var(--lichen);min-height:1.3em;margin-top:6px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="title-row">
+      <button class="list-switch" id="listBtn" aria-label="Switch list">
+        <h1 id="listName">Trip</h1>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button class="menu-btn" id="menuBtn" aria-label="Lists and options">
+        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+    </div>
+    <div class="progress">
+      <div class="bar"><span id="barFill"></span></div>
+      <span class="prog-text" id="progText">0 of 0 packed</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<nav class="tabbar" id="tabbar"></nav>
+<div class="toast" id="toast" hidden></div>
+<div class="rainlock" id="rainlock" hidden></div>
+
+<div class="overlay" id="overlay" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+
+<script>
+(function(){
+const KEY = 'outdoor-lists-v1';
+try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
+const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
+const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+const PEN = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>';
+const CROSS = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+/* ---------- interface text ---------- */
+const UI = {
+  en: {
+    app:'Varde', hide:'Hide packed', edit:'Edit list', doneEdit:'Done editing', reset:'Start over',
+    packed:(d,t)=>`${d} of ${t} packed`, noItems:'No items yet', allDone:'Everything is packed. Have a good trip!',
+    empty:'This list is empty. Tap <strong>Edit list</strong> to add categories and items.',
+    rename:'Rename', delCat:'Delete category', catPacked:'All packed in this category.', catEmpty:'No items yet.',
+    addItemPh:'Add an item', add:'Add', addCat:'Add category', cancel:'Cancel', save:'Save', ok:'OK', close:'Close',
+    yourLists:'Your lists', thisList:'This list', duplicate:'Duplicate', del:'Delete', more:'More', newList:'New list',
+    backup:'Back up or restore', language:'Language', switchList:'Switch list', menu:'Lists and options',
+    renameList:'Rename list', copyName:'Name of the copy', copySuffix:' (copy)',
+    keepOne:'Keep at least one list', keepOneMsg:'Create a new list first, then you can delete this one.',
+    delList:'Delete this list?', delListMsg:n=>`"${n}" and all its items will be removed from this phone.`, delListOk:'Delete list',
+    newListMsg:'Start from the template and adjust it to your trip, or start empty.', items:n=>`${n} items`,
+    emptyList:'Empty list', emptySub:'Build your own', nameList:'Name your list', myList:'My list', create:'Create list',
+    bkMsg:'Your lists are stored only on this phone. Copy the backup below and keep it somewhere safe, or paste it on another phone to move or share your lists.',
+    bkCopy:'Copy backup', bkCopied:'Backup copied.', bkManual:'Select the text and copy it manually.', restore:'Restore',
+    bkPaste:'Paste a backup here', bkAdd:'Add lists from backup',
+    bkAdded:n=>`Added ${n} list${n>1?'s':''}. Find ${n>1?'them':'it'} under Your lists.`,
+    bkBad:'That text is not a valid backup. Copy the whole backup and try again.',
+    renameItem:'Rename item', renameCat:'Rename category', delCatQ:'Delete category?',
+    delCatMsg:(n,c)=>`"${n}" and its ${c} items will be removed.`, newCat:'New category', category:'Category',
+    resetQ:'Start over?', resetMsg:n=>`All ticks in "${n}", including the bag lists, will be cleared so the list is ready for the next trip. Your items stay.`,
+    resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
+    catNote:'Note', editCatNote:'Category note', notes:'Notes', editNotes:'Edit notes', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
+    tripType:'Trip type', lightDay:'Light day hike',
+appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
+    cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
+    cDirs:['N','NE','E','SE','S','SW','W','NW'],
+    cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
+      ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
+    tabList:'Packing list', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
+    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock',
+    resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
+    phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
+    phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
+    phone:[
+      ['Rain','<p>Water on the screen can register as touches. Wipe the screen with a dry cloth or sleeve before use, it makes the biggest difference. A hydrophobic or matte screen protector makes water bead and run off, and a waterproof pouch keeps the screen itself dry. If your phone has a glove mode or increased touch sensitivity, turn it <b>off</b> in rain, as it makes the screen more sensitive to water too.</p><p>In this app: switch on <b>Outdoor mode</b> and use <b>Rain lock</b> to read your list without anything reacting.</p>'],
+      ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so <b>Night light</b> helps as well.</p>'],
+      ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
+      ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> freezes the screen until you hold the unlock button, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
+    ],
+    sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
+    sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
+    sunKey:'Always choose glasses marked UV400 or 100 % UV protection. How dark the lens is (filter category) says nothing about UV protection: dark lenses without a UV filter are worse than no glasses, because the pupil opens and lets in more UV.',
+    sun:[
+      ['Snow blindness','<p>Snow blindness is a sunburn of the cornea. Fresh snow reflects up to 80 % of UV radiation, and UV increases with altitude, so it can happen on overcast days too. Symptoms often come hours later: strong pain, a gritty feeling, watering eyes and sensitivity to light.</p>'],
+      ['Filter categories','<ul><li><b>0:</b> clear or faintly tinted. Evening and dark.</li><li><b>1:</b> lightly tinted. Overcast, flat light.</li><li><b>2:</b> medium. Normal daylight, forest and lowland.</li><li><b>3:</b> dark. Strong sun, mountains, sea and snow. The most used for hiking.</li><li><b>4:</b> extra dark. Glaciers, high mountains and extreme sun on snow. Not for driving.</li></ul>'],
+      ['Lens colour','<p>Brown, amber, copper and rose increase contrast, making it easier to read the terrain and the snow surface in flat light. Grey gives the most natural colours in strong sun. Yellow and orange in a low category help in fog and dusk. Mirror coating reduces glare in bright light.</p>'],
+      ['Polarised and photochromic','<p><b>Polarised</b> lenses remove glare from water and wet surfaces, excellent for fishing, paddling and coastal trips. On snow and ice, they can hide icy patches and make the surface harder to read, and GPS and phone screens can be hard to see.</p><p><b>Photochromic</b> lenses adapt to the light, for example category 1–3. Useful when the light changes a lot, as on ski tours. They can change more slowly in the cold.</p>'],
+      ['Choose by trip','<ul><li><b>Light summer hike</b> in forest and lowland: category 2–3, light sunglasses are fine.</li><li><b>Summer mountain hike:</b> category 3, preferably with good side coverage.</li><li><b>Winter hike and skiing:</b> category 3 in sun, category 1–2 in a contrast colour (amber, rose) in flat light. Goggles in wind and drifting snow.</li><li><b>Ski touring / randonee:</b> photochromic 1–3, or two pairs, since the light changes from forest to open mountainside. Goggles for the descent.</li><li><b>Glacier and high altitude:</b> category 4 with side protection (glacier glasses), and always a spare pair.</li><li><b>Water and fishing:</b> polarised category 3.</li></ul>'],
+      ['If it happens','<p><b>Snow blindness:</b> find darkness or cover the eyes, do not rub them, remove contact lenses, and cool compresses ease the pain. It usually passes in 1–3 days. Get medical help for strong pain or if it does not improve.</p><p><b>Lost your glasses?</b> Make emergency glasses: cut narrow slits in cardboard, tape or a piece of fabric, and fasten it in front of the eyes. It lets in far less light. On winter and glacier trips, always bring a spare pair.</p>']
+    ],
+    knotTool:'Knots', knotShort:'Five essential knots', knotSub:'Short reminders for when you need a knot quickly. Practise them at home: a knot you have only read about is hard to tie in wind and cold.',
+    knotWarn:'For gear, tarp and tent. Not for climbing or belaying.',
+    knots:[
+      {n:'Bowline', u:'A fixed loop that does not slip, and is easy to untie after load. Around a tree, a person, or a pack.', s:['Make a small loop in the standing part, with the working end side on top.','Bring the end up through the small loop from below.','Pass it around behind the standing part.','Bring it back down through the small loop.','Hold the end and the big loop together, and pull the standing part tight.'], c:'Remember: the rabbit comes out of the hole, around the tree, and back down the hole. Leave the end at least 10 cm long.'},
+      {n:'Taut-line hitch', u:'An adjustable loop for guy lines on tents and tarps. Slide the knot to tighten or loosen.', s:['Pass the end around the peg or anchor.','Make two turns around the standing part, working back towards the peg, inside the loop.','Make one more turn around the standing part, on the far side of the first two (furthest from the peg), and tuck the end under itself in this turn, so it forms a separate half hitch.','Pull it tight.','Slide the knot up the line to tighten, and down to loosen.'], c:'Often confused with the Magnus hitch (in Norwegian, both are called «teltstikk»). Check: the last turn should sit on its own, separate from the first two, with the end leaving from there. If the end goes back down between the turns, you have tied the Magnus variant. The taut-line hitch is the best choice for guy lines. If it slips in thin or slippery cord, add one more inside turn.'},
+      {n:'Clove hitch', u:'A quick hitch around a pole, branch or tree. Good for starting a lashing or fastening a line.', s:['Lay the rope around the pole.','Cross it over itself and go around the pole once more.','Tuck the end under the last turn, so the two ends leave in opposite directions between the turns.','Pull both ends tight.'], c:'It can work loose when the load shifts: secure it with a half hitch around the standing part.'},
+      {n:'Sheet bend', u:'Joins two ropes, also of different thickness. Good for lengthening a line.', s:['Make a U-shaped bight in the thicker rope.','Bring the end of the thinner rope up through the bight from below.','Pass it around behind both legs of the bight.','Tuck it under itself, but over the bight, not through it.','Pull tight on all four parts.'], c:'Both short ends should be on the same side. For slippery rope, take one more turn around the bight (double sheet bend).'},
+      {n:'Prusik', u:'A friction hitch that grips when loaded and slides when slack. For fastening a tarp to a ridgeline, tensioning, or hanging gear on a line.', s:['Use a closed loop of cord that is clearly thinner than the main rope.','Lay the loop behind the main rope.','Pass one end of the loop around the main rope and through itself, inside the loop.','Repeat 2–3 times, each new wrap inside the previous one.','Straighten the wraps so they lie neatly side by side, and pull tight.'], c:'It grips when loaded and slides when you push it while slack. More wraps give more grip, especially on slippery rope.'}
+    ],
+    foodTool:'Food planner', foodShort:'Meals for the trip', foodSub:'Count the basic meals for the trip. Adjust the oat portion and snacks to your own needs.',
+    oats:'Oats per breakfast (g)', snacks:'Energy snacks per day', homeBreakfast:'Breakfast at home on day 1', homeDinner:'Home for dinner on the last day', reserve:'Reserve day',
+    fOats:'Oats', fBreakfasts:n=>`for ${n} breakfast${n===1?'':'s'}`, fLunch:'Lunches', fDinner:'Dinners (trail meals)', fSnacks:'Energy snacks',
+    fBasis:(d,p,r)=>`${d} day${d===1?'':'s'}, ${p} ${p===1?'person':'people'}${r?', including 1 reserve day':''}`,
+    kcalTitle:'Energy', season:'Season', summer:'Summer', winter:'Winter', fullDay:'One full trip day',
+    kcalTarget:(a,b)=>`Common guideline for hiking with a pack: about ${a}–${b} kcal per day`,
+    kcalLow:'Below the guideline. Top up with energy-dense food: nuts, cheese, chocolate, and butter or oil in the porridge and dinner.',
+    kcalOk:'Within the guideline.',
+    kcalNote:'The need varies with body weight, pace, terrain, pack weight and cold. A day or two below is normal on short trips, but on longer trips the food should cover the need.',
+    kcalValues:'Energy content (edit to match your food)', kOats:'Oats (kcal per 100 g)', kLunch:'Lunch (kcal)', kDinner:'Trail meal (kcal)', kSnack:'Energy snack (kcal)',
+    packTitle:'Packing food',
+    pack:[
+      ['Day rations','Pack each day\'s breakfast, lunch and snacks together in one bag, and mark it with the day number. You take one bag per day, it is easy to see that you have enough, and nothing gets eaten too early.'],
+      ['Oats dry and tight','Measure out each breakfast at home in its own zip or freezer bag, with sugar and extras added. Squeeze out the air and close it well. Put all the bags inside a larger bag or a dry bag, so a hole in one bag does not spread oats through the backpack.'],
+      ['Keep food away from fuel','Fuel and food never go in the same bag. Carry the fuel bottle upright, check the cap and seal before you pack, and keep it below or away from the food, so a leak cannot drip onto it. Fuel spilled on food ruins it, and it is not safe to eat.'],
+      ['One food bag','Keep all food together in one dry bag. It stays dry, is easy to find, and is easy to keep closed at camp, where mice and birds may be interested.'],
+      ['Less packaging','Remove outer cardboard and extra packaging at home to save weight and rubbish, but keep the cooking instructions for trail meals. Bring a bag for rubbish and carry it home.']
+    ],
+    fuelTool:'Fuel planner', fuelShort:'How much fuel for the trip', fuelSub:'Estimate how much fuel to bring. The figures are common rules of thumb: adjust them to your own stove and habits.',
+    fuelType:'Fuel', useType:'Use', fGas:'Gas', fPetrol:'Petrol / multifuel', fSpirit:'Methylated spirit',
+    uBoil:'Boiling water only', uCook:'Cooking', uSnow:'Melting snow',
+    days:'Days', people:'People', shared:'Shared stove', perDay:u=>`Per person per day (${u})`, margin:'Safety margin (%)', bottle:'Bottle size (litres)',
+    resetRate:'Reset to rule of thumb', ownRate:'Your own figure',
+    fuelNames:{gas:'gas', petrol:'petrol', spirit:'methylated spirit'},
+    basis:(r,u,d,f)=>`Based on ${r} ${u} per person per day × ${d} days × ${f} + margin`,
+    peopleFactor:(n,sh)=>n===1?'1 person':(sh?`${n} people sharing (×${String(1+0.5*(n-1)).replace('.',',')})`:`${n} people`),
+    canisters:'Canisters', bottles:(n,b)=>`${n} bottle${n>1?'s':''} of ${b} l`,
+    warnGasCold:'Ordinary gas canisters work poorly below freezing. Use a winter mix with propane, keep the canister warm (e.g. in your sleeping bag), or choose petrol / multifuel.',
+    warnSpiritSnow:'Methylated spirit is slow in the cold and poorly suited for melting a lot of snow. Consider petrol / multifuel for winter trips.',
+    manualTitle:'About the fuel types',
+    manGas:['Gas','The simplest and cleanest: screw on and light. Best for summer and shorter trips. Ordinary canisters work poorly below freezing, so in winter use a winter mix and keep the canister warm. Empty canisters must be carried home.'],
+    manPetrol:['Petrol / multifuel','The most reliable choice in cold weather and high mountains, and fuel is available almost everywhere. Needs priming and some maintenance, and can soot. The first choice for winter trips and melting snow.'],
+    manSpirit:['Methylated spirit','A simple, reliable burner with no moving parts: quiet and cheap. Gives less heat per litre than gas and petrol, so you need more, and it is slow in the cold. The flame is almost invisible in daylight.'],
+    manSafety:['Safety','Never mix fuels, and label your bottles clearly. Never refuel near an open flame. Do not cook inside a closed tent: there is a risk of fire and carbon monoxide poisoning. If you must, use a well-ventilated vestibule. Do not fill fuel bottles completely to the top.'],
+    tools:'Tools', water:'Water mixing', waterShort:'Showering and washing', waterSub:'Mix boiling water with cold water from nature for showering or washing.',
+    findMix:'Find the mix', findTemp:'Find the temperature', target:'Final temperature (°C)', volume:'Final volume (litres)',
+    coldT:'Cold water (°C)', hotT:'Hot water (°C)', pot:'Pot size (litres)', hotL:'Hot water (litres)', coldL:'Cold water (litres)',
+    hotOut:'hot water', coldOut:'cold water', mixTemp:'mixed temperature', totalVol:'total volume',
+    boils:(n,e)=>`${n} boil${n>1?'s':''} of ${e} l with your pot`,
+    rangeErr:'The final temperature must be between the cold and the hot water temperature.',
+    waterTip:'Poured water loses a few degrees, and the container cools in wind, so aim 1–2 °C above what you want. A comfortable shower is about 37–40 °C. Always test the water with your hand before use.', openList:n=>`Open ${n}`,
+    langNote:'Lists you have already made keep their language. New lists from the template use the language chosen here.'
+  },
+  no: {
+    app:'Varde', hide:'Skjul pakket', edit:'Rediger liste', doneEdit:'Ferdig', reset:'Nullstill',
+    packed:(d,t)=>`${d} av ${t} pakket`, noItems:'Ingen ting ennå', allDone:'Alt er pakket. God tur!',
+    empty:'Listen er tom. Trykk <strong>Rediger liste</strong> for å legge til kategorier og ting.',
+    rename:'Gi nytt navn', delCat:'Slett kategori', catPacked:'Alt i denne kategorien er pakket.', catEmpty:'Ingen ting ennå.',
+    addItemPh:'Legg til en ting', add:'Legg til', addCat:'Legg til kategori', cancel:'Avbryt', save:'Lagre', ok:'OK', close:'Lukk',
+    yourLists:'Dine lister', thisList:'Denne listen', duplicate:'Dupliser', del:'Slett', more:'Mer', newList:'Ny liste',
+    backup:'Sikkerhetskopi', language:'Språk', switchList:'Bytt liste', menu:'Lister og valg',
+    renameList:'Gi listen nytt navn', copyName:'Navn på kopien', copySuffix:' (kopi)',
+    keepOne:'Behold minst én liste', keepOneMsg:'Lag en ny liste først, så kan du slette denne.',
+    delList:'Slette denne listen?', delListMsg:n=>`«${n}» og alt innholdet blir fjernet fra denne telefonen.`, delListOk:'Slett liste',
+    newListMsg:'Start fra malen og tilpass den til turen, eller start med en tom liste.', items:n=>`${n} ting`,
+    emptyList:'Tom liste', emptySub:'Lag din egen', nameList:'Gi listen et navn', myList:'Min liste', create:'Lag liste',
+    bkMsg:'Listene dine lagres bare på denne telefonen. Kopier sikkerhetskopien under og ta vare på den, eller lim den inn på en annen telefon for å flytte eller dele listene.',
+    bkCopy:'Kopier sikkerhetskopi', bkCopied:'Sikkerhetskopien er kopiert.', bkManual:'Merk teksten og kopier den manuelt.', restore:'Gjenopprett',
+    bkPaste:'Lim inn en sikkerhetskopi her', bkAdd:'Legg til lister fra kopi',
+    bkAdded:n=>`La til ${n} ${n>1?'lister':'liste'}. Du finner ${n>1?'dem':'den'} under Dine lister.`,
+    bkBad:'Teksten er ikke en gyldig sikkerhetskopi. Kopier hele sikkerhetskopien og prøv igjen.',
+    renameItem:'Gi tingen nytt navn', renameCat:'Gi kategorien nytt navn', delCatQ:'Slette kategorien?',
+    delCatMsg:(n,c)=>`«${n}» og ${c} ting i den blir fjernet.`, newCat:'Ny kategori', category:'Kategori',
+    resetQ:'Nullstille listen?', resetMsg:n=>`Alle avkrysninger i «${n}», også i pakkelistene, fjernes, så listen er klar til neste tur. Tingene blir værende.`,
+    resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
+    catNote:'Notat', editCatNote:'Notat til kategorien', notes:'Notater', editNotes:'Rediger notater', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
+    tripType:'Turtype', lightDay:'Lett dagstur',
+appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
+    cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
+    cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
+    cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
+      ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
+    tabList:'Pakkliste', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
+    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp',
+    resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
+    phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
+    phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
+    phone:[
+      ['Regn','<p>Vann på skjermen kan registreres som berøring. Tørk skjermen med en tørr klut eller ermet før bruk, det utgjør den største forskjellen. En vannavstøtende eller matt skjermbeskytter får vannet til å perle seg og renne av, og et vanntett etui holder selve skjermen tørr. Har mobilen hanskemodus eller økt berøringsfølsomhet, slå det <b>av</b> i regn, for det gjør skjermen mer følsom for vann også.</p><p>I appen: slå på <b>Utemodus</b> og bruk <b>Regnlås</b> for å lese listen uten at noe reagerer.</p>'],
+      ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>Nattlys</b> hjelper også.</p>'],
+      ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
+      ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> fryser skjermen til du holder inne opplåsingsknappen, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
+    ],
+    sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
+    sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
+    sunKey:'Velg alltid briller merket UV400 eller 100 % UV-beskyttelse. Hvor mørkt glasset er (filterkategori), sier ingenting om UV-beskyttelsen: mørke glass uten UV-filter er verre enn ingen briller, fordi pupillen åpner seg og slipper inn mer UV.',
+    sun:[
+      ['Snøblindhet','<p>Snøblindhet er en solforbrenning av hornhinnen. Nysnø reflekterer opptil 80 % av UV-strålingen, og UV øker med høyden, så det kan skje også på overskyede dager. Symptomene kommer gjerne først etter noen timer: sterke smerter, sandfølelse, rennende øyne og lysømfintlighet.</p>'],
+      ['Filterkategorier','<ul><li><b>0:</b> klart eller svakt farget. Kveld og mørke.</li><li><b>1:</b> lett tonet. Overskyet, flatt lys.</li><li><b>2:</b> middels. Vanlig dagslys, skog og lavland.</li><li><b>3:</b> mørkt. Sterk sol, fjell, sjø og snø. Mest brukt på tur.</li><li><b>4:</b> ekstra mørkt. Bre, høyfjell og ekstrem sol på snø. Ikke til bilkjøring.</li></ul>'],
+      ['Farge på glasset','<p>Brun, rav, kobber og rosa øker kontrasten, og gjør det lettere å lese terrenget og snøoverflaten i flatt lys. Grå gir de mest naturlige fargene i sterk sol. Gul og oransje i lav kategori hjelper i tåke og skumring. Speilbelegg reduserer blending i sterkt lys.</p>'],
+      ['Polarisert og selvtonende','<p><b>Polariserte</b> glass fjerner gjenskinn fra vann og våte flater, ypperlig til fiske, padling og kystturer. På snø og is kan de skjule isflekker og gjøre overflaten vanskeligere å lese, og skjermer på GPS og mobil kan bli vanskelige å se.</p><p><b>Selvtonende</b> (fotokromatiske) glass tilpasser seg lyset, for eksempel kategori 1–3. Praktisk når lyset skifter mye, som på topptur. De kan skifte tregere i kulde.</p>'],
+      ['Velg etter tur','<ul><li><b>Lett sommertur</b> i skog og lavland: kategori 2–3, lette solbriller holder.</li><li><b>Fjelltur om sommeren:</b> kategori 3, gjerne med god dekning på sidene.</li><li><b>Vintertur og skitur:</b> kategori 3 i sol, kategori 1–2 i kontrastfarge (rav, rosa) i flatt lys. Goggles i vind og snøfokk.</li><li><b>Topptur / randonee:</b> selvtonende 1–3, eller to par, fordi lyset skifter fra skog til åpen fjellside. Goggles til nedkjøringen.</li><li><b>Bre og høyfjell:</b> kategori 4 med sidebeskyttelse (brebriller), og alltid et reservepar.</li><li><b>Vann og fiske:</b> polarisert kategori 3.</li></ul>'],
+      ['Hvis uhellet er ute','<p><b>Snøblindhet:</b> søk mørke eller dekk til øynene, ikke gni, ta ut kontaktlinser, og kalde kompresser lindrer. Det går vanligvis over på 1–3 døgn. Søk legehjelp ved sterke smerter eller hvis det ikke bedres.</p><p><b>Mistet brillene?</b> Lag nødbriller: skjær smale spalter i papp, tape eller et stykke stoff, og fest det foran øynene. Det slipper inn langt mindre lys. Ha alltid et reservepar på vinter- og breturer.</p>']
+    ],
+    knotTool:'Knuter', knotShort:'Fem viktige knuter', knotSub:'Korte påminnelser for når du trenger en knute raskt. Øv på dem hjemme: en knute du bare har lest om, er vanskelig å slå i vind og kulde.',
+    knotWarn:'For utstyr, tarp og telt. Ikke for klatring eller sikring.',
+    knots:[
+      {n:'Pålestikk (Bowline)', u:'En fast løkke som ikke glir, og som er lett å løse opp etter belastning. Rundt et tre, en person eller en sekk.', s:['Lag en liten løkke i den faste parten, med tamp-siden øverst.','Før tampen opp gjennom den lille løkka nedenfra.','Før den rundt bak den faste parten.','Før den ned igjen gjennom den lille løkka.','Hold tampen og den store løkka sammen, og trekk til i den faste parten.'], c:'Husk: haren kommer opp av hullet, løper rundt treet, og hopper ned i hullet igjen. La tampen være minst 10 cm lang.'},
+      {n:'Teltstikk (Taut Line Hitch)', u:'En justerbar løkke for barduner på telt og tarp. Skyv knuten for å stramme eller slakke.', s:['Før tampen rundt pluggen eller festet.','Ta to tørn rundt den faste parten, innover mot pluggen, på innsiden av løkka.','Ta ett tørn til rundt den faste parten, på motsatt side av de to første (lengst fra pluggen), og stikk tampen under seg selv i dette tørnet, så det blir et eget halvstikk.','Trekk til.','Skyv knuten oppover for å stramme, nedover for å slakke.'], c:'På norsk kalles både denne og Magnus-stikket «teltstikk», og de forveksles ofte. Sjekk: det siste tørnet skal ligge for seg selv, adskilt fra de to første, og tampen går ut derfra. Går tampen tilbake ned mellom tørnene, har du slått Magnus-varianten. Taut Line Hitch er det beste valget til barduner. Glir det i tynn eller glatt snor, ta ett ekstra tørn på innsiden.'},
+      {n:'Dobbelt halvstikk (Clove Hitch)', u:'Et raskt stikk rundt en stang, gren eller et tre. Bra for å starte en surring eller feste en line.', s:['Legg tauet rundt stangen.','Kryss over seg selv og gå rundt stangen en gang til.','Stikk tampen under det siste tørnet, slik at endene går ut i hver sin retning mellom tørnene.','Trekk til i begge ender.'], c:'Den kan løsne når belastningen skifter: sikre med et halvstikk rundt den faste parten.'},
+      {n:'Flaggstikk (Sheet Bend)', u:'Skjøter to tau, også med ulik tykkelse. Bra for å forlenge en line.', s:['Lag en U-formet bukt i det tykkeste tauet.','Før tampen på det tynne tauet opp gjennom bukten nedenfra.','Før den rundt bak begge partene av bukten.','Stikk den under seg selv, men over bukten, ikke gjennom den.','Trekk til i alle fire partene.'], c:'Begge de korte tampene skal være på samme side. På glatt tau, ta ett ekstra tørn rundt bukten (dobbelt flaggstikk).'},
+      {n:'Prusik', u:'En friksjonsknute som låser når den belastes og kan skyves når den er slakk. For å feste tarp til en møneline, stramme, eller henge opp utstyr på en line.', s:['Bruk en lukket slynge av snor som er tydelig tynnere enn hovedtauet.','Legg slyngen bak hovedtauet.','Før den ene enden av slyngen rundt hovedtauet og gjennom seg selv, inne i slyngen.','Gjenta 2–3 ganger, hvert nytt tørn innenfor det forrige.','Rett opp tørnene så de ligger pent side om side, og trekk til.'], c:'Den låser ved belastning og glir når du skyver den mens den er slakk. Flere tørn gir mer grep, spesielt på glatt tau.'}
+    ],
+    foodTool:'Mat', foodShort:'Måltider til turen', foodSub:'Tell opp grunnmåltidene til turen. Juster havreporsjonen og snacks etter eget behov.',
+    oats:'Havregryn per frokost (g)', snacks:'Energisnacks per dag', homeBreakfast:'Frokost hjemme første dag', homeDinner:'Hjemme til middag siste dag', reserve:'Reservedøgn',
+    fOats:'Havregryn', fBreakfasts:n=>`til ${n} frokost${n===1?'':'er'}`, fLunch:'Lunsjer', fDinner:'Middager (turmat)', fSnacks:'Energisnacks',
+    fBasis:(d,p,r)=>`${d} dag${d===1?'':'er'}, ${p} person${p===1?'':'er'}${r?', inkludert 1 reservedøgn':''}`,
+    kcalTitle:'Energi', season:'Årstid', summer:'Sommer', winter:'Vinter', fullDay:'En full turdag',
+    kcalTarget:(a,b)=>`Vanlig rettesnor for tur med sekk: ca. ${a}–${b} kcal per dag`,
+    kcalLow:'Under rettesnoren. Fyll på med energitett mat: nøtter, ost, sjokolade, og smør eller olje i grøten og middagen.',
+    kcalOk:'Innenfor rettesnoren.',
+    kcalNote:'Behovet varierer med kroppsvekt, tempo, terreng, sekkevekt og kulde. En dag eller to under er vanlig på korte turer, men på lengre turer bør maten dekke behovet.',
+    kcalValues:'Energiinnhold (endre etter din egen mat)', kOats:'Havregryn (kcal per 100 g)', kLunch:'Lunsj (kcal)', kDinner:'Turmat (kcal)', kSnack:'Energisnack (kcal)',
+    packTitle:'Pakking av mat',
+    pack:[
+      ['Dagsrasjoner','Pakk frokost, lunsj og snacks for hver dag sammen i én pose, og merk den med dagnummer. Du tar én pose per dag, det er lett å se at maten holder, og ingenting blir spist for tidlig.'],
+      ['Havre tørr og tett','Mål opp hver frokost hjemme i sin egen zip- eller frysepose, med sukker og tilbehør. Klem ut luften og lukk godt. Legg alle posene i en større pose eller en drybag, så et hull i én pose ikke sprer havre i hele sekken.'],
+      ['Hold mat og drivstoff adskilt','Drivstoff og mat skal aldri i samme pose. Bær drivstoffflasken stående, sjekk lokk og pakning før du pakker, og legg den under eller unna maten, så en lekkasje ikke kan renne ned på den. Mat med drivstoffsøl er ødelagt, og den er ikke trygg å spise.'],
+      ['Én matpose','Hold all mat samlet i én drybag. Den holder seg tørr, er lett å finne, og er lett å holde lukket i leiren, der mus og fugler kan være interessert.'],
+      ['Mindre emballasje','Fjern ytre papp og ekstra emballasje hjemme for å spare vekt og søppel, men ta vare på koketiden for turmaten. Ha med en søppelpose og bær alt hjem.']
+    ],
+    fuelTool:'Drivstoff', fuelShort:'Hvor mye drivstoff til turen', fuelSub:'Anslå hvor mye drivstoff du trenger. Tallene er vanlige tommelfingerregler: juster dem etter egen brenner og egne vaner.',
+    fuelType:'Drivstoff', useType:'Bruk', fGas:'Gass', fPetrol:'Bensin / multifuel', fSpirit:'Rødsprit',
+    uBoil:'Kun koke vann', uCook:'Matlaging', uSnow:'Snøsmelting',
+    days:'Døgn', people:'Personer', shared:'Felles kokeapparat', perDay:u=>`Per person per døgn (${u})`, margin:'Sikkerhetsmargin (%)', bottle:'Flaskestørrelse (liter)',
+    resetRate:'Tilbake til tommelfingerregel', ownRate:'Ditt eget tall',
+    fuelNames:{gas:'gass', petrol:'bensin', spirit:'rødsprit'},
+    basis:(r,u,d,f)=>`Grunnlag: ${r} ${u} per person per døgn × ${d} døgn × ${f} + margin`,
+    peopleFactor:(n,sh)=>n===1?'1 person':(sh?`${n} personer med felles kokeapparat (×${String(1+0.5*(n-1)).replace('.',',')})`:`${n} personer`),
+    canisters:'Gassbokser', bottles:(n,b)=>`${n} flaske${n>1?'r':''} à ${b} l`,
+    warnGasCold:'Vanlige gassbokser fungerer dårlig under frysepunktet. Bruk vintergass med propan, hold boksen varm (f.eks. i soveposen), eller velg bensin / multifuel.',
+    warnSpiritSnow:'Rødsprit er treg i kulde og lite egnet til å smelte mye snø. Vurder bensin / multifuel på vinterturer.',
+    manualTitle:'Om drivstofftypene',
+    manGas:['Gass','Enklest og renest: skru på og tenn. Best om sommeren og på kortere turer. Vanlige bokser fungerer dårlig under frysepunktet, så om vinteren bør du bruke vintergass og holde boksen varm. Tomme bokser må bæres hjem.'],
+    manPetrol:['Bensin / multifuel','Det mest driftssikre valget i kulde og høyfjell, og drivstoffet finnes nesten overalt. Krever forvarming og litt vedlikehold, og kan sote. Førstevalget på vinterturer og til snøsmelting.'],
+    manSpirit:['Rødsprit','En enkel og driftssikker brenner uten bevegelige deler: stille og billig. Gir mindre varme per liter enn gass og bensin, så du trenger mer, og den er treg i kulde. Flammen er nesten usynlig i dagslys.'],
+    manSafety:['Sikkerhet','Bland aldri drivstoff, og merk flaskene tydelig. Fyll aldri drivstoff nær åpen flamme. Ikke kok inne i lukket telt: det gir fare for brann og kullosforgiftning. Må du, bruk et godt ventilert fortelt. Fyll ikke drivstoffflasker helt opp.'],
+    tools:'Verktøy', water:'Vannblanding', waterShort:'Dusj og vask', waterSub:'Bland kokende vann med kaldt vann fra naturen til dusj eller vask.',
+    findMix:'Finn blandingen', findTemp:'Finn temperaturen', target:'Ønsket temperatur (°C)', volume:'Ferdig mengde (liter)',
+    coldT:'Kaldt vann (°C)', hotT:'Varmt vann (°C)', pot:'Kjelestørrelse (liter)', hotL:'Varmt vann (liter)', coldL:'Kaldt vann (liter)',
+    hotOut:'varmt vann', coldOut:'kaldt vann', mixTemp:'blandet temperatur', totalVol:'total mengde',
+    boils:(n,e)=>`${n} kok à ${e} l i kjelen`,
+    rangeErr:'Ønsket temperatur må ligge mellom temperaturen på det kalde og det varme vannet.',
+    waterTip:'Vann som helles over mister noen grader, og beholderen kjøles av vind, så sikt 1–2 °C over det du ønsker. En behagelig dusj er ca. 37–40 °C. Kjenn alltid på vannet med hånden før bruk.', openList:n=>`Åpne ${n}`,
+    langNote:'Lister du allerede har laget beholder språket sitt. Nye lister fra malen bruker språket du velger her.'
+  }
+};
+
+const MODES = {
+  vinter:{no:'Vinter', en:'Winter'}, pulk:{no:'Pulktur', en:'Pulk trip'}, skred:{no:'Skredterreng', en:'Avalanche terrain'},
+  topptur:{no:'Topptur / Randonee', en:'Ski touring'}, bil:{no:'Biltur', en:'Car camping'},
+  fiske:{no:'Fiske', en:'Fishing'}, hytte:{no:'Hyttetur (DNT)', en:'Cabin trip (DNT)'}
+};
+
+/* ---------- template ---------- */
+function friluftsliv(L){
+  const en = L === 'en';
+  const P = list => list.map(x => en ? x[1] : x[0]);
+  const C = (key, no, eng, items, extra) => Object.assign({key, name: en ? eng : no, items: P(items)}, extra || {});
+  const note = (no, eng) => en ? eng : no;
+  return { name: en ? 'Outdoor checklist' : 'Friluftsliv', cats:[
+    C('start','Før tur','Before you go',[['@prep Forberedelser','@prep Preparations']]),
+    C('sleep','Overnatting','Sleeping',[['Telt','Tent'],['Teltlykt','Tent lamp'],['Sovepose','Sleeping bag'],['Pute (kompakt)','Pillow (compact)'],['Lakenpose (ekstra)','Sleeping bag liner (extra)'],['Liggeunderlag','Sleeping pad']]),
+    C('general','Generelt turutstyr','General gear',[
+      ['@firstaid Førstehjelpssett','@firstaid First aid kit'],['@repair Reparasjonssett','@repair Repair and spares kit'],['@personal Personlig pleie','@personal Personal care'],
+      ['Kart og kompass i vanntett kartmappe','Map and compass in a waterproof map case'],
+      ['GPS / satellittkommunikator (nødsignal uten mobildekning)','GPS / satellite messenger (SOS without phone coverage)'],
+      ['Powerbank (1 eller flere, etter turlengde og elektronikk)','Power bank (1 or more, depending on trip length and electronics)'],
+      ['USB-C-kabel (lang)','USB-C cable (long)'],['Micro-USB-kabel (til eldre utstyr)','Micro-USB cable (for older gear)'],
+      ['Hodelykt / lommelykt','Headlamp / torch'],['Solbriller / snøbriller','Sunglasses / snow goggles'],
+      ['Vindsekk','Bivy sack / emergency shelter'],['Jervenduk','Jerven bag (bivy, poncho, tarp)'],
+      ['DNT-nøkkel (for medlemmer, nødly i ubetjente hytter)','DNT key (for members, emergency shelter in self-service cabins)'],
+      ['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']]),
+    C('cook','Matlaging','Cooking',[
+      ['Brenner / primus (vinter: 2 stk, eller reservedeler, for vann fra snø)','Stove (winter: 2, or spare parts, for melting snow)'],
+      ['Brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)','Fuel (enough for the trip, winter approx. 0.3 l per day when melting snow)'],
+      ['Brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)','Stove board (light, fireproof base that tolerates fuel and holds the stove in place, essential on snow)'],
+      ['Fyrstikker (2x)','Matches (2x)'],['Kaffekjele','Coffee kettle'],['Kokekar (1x/2x)','Cooking pot (1x/2x)'],['Stekepanne','Frying pan'],['Stekespade','Spatula'],
+      ['Bestikk','Cutlery'],['Kopp','Mug'],['Frokostskål','Bowl'],['Tallerken','Plate'],['Oppvaskskrubb','Scrubber'],
+      ['Termos (liten på dagstur, større ved leir)','Thermos (small for day hikes, larger for camping)'],['Termokopp','Insulated mug'],['Vannflaske','Water bottle'],
+      ['Nalgene-flaske (1–2x)','Nalgene bottle (1–2x)'],['Vannbeholder (4 l)','Water container (4 l)'],
+      ['Vannfilter / rensetabletter (ved usikker vannkvalitet)','Water filter / purification tablets (if water quality is uncertain)']]),
+    C('clothes','Tøy','Clothing',[
+      ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
+      ['Ullsokker (tur)','Wool socks (hiking)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
+      ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],
+      ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Hals / skjerf','Neck gaiter / scarf'],
+      ['Hansker (lette, hele året)','Gloves (light, all year)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters']]),
+    C('food','Mat','Food',[
+      ['Middag','Dinner'],['> Turmat (frysetørket eller hjemmelaget)','> Trail meals (freeze-dried or homemade)'],
+      ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker','> Sugar'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],
+      ['> Vinterlunsj: enkel mat som ikke må varmes (f.eks. lefser)','> Winter lunch: simple food that needs no heating (e.g. lefse)'],
+      ['Tilbehør','Extras'],['> Kaffe','> Coffee'],['> Rett i koppen','> Instant meals'],['> Salt','> Salt'],['> Chili','> Chili'],['> Krydder','> Spices'],
+      ['Nødproviant','Emergency food'],['> Energisnacks (rask energi)','> Energy snacks (quick energy)'],['> Mørk kokesjokolade','> Dark cooking chocolate'],['> Proteinbarer','> Protein bars']]),
+
+    C('m_vinter','Vinter','Winter',[['Ski og staver','Skis and poles'],['Skistøvler','Ski boots'],['Smøring / feller','Wax / skins'],['Ekstra stav og skitupp','Spare pole and ski tip'],['Snøspade','Snow shovel'],['Fotposer','Down booties'],['Ekstra liggeunderlag','Extra sleeping pad'],['Stegjern','Crampons'],['Isøks','Ice axe'],['Skisokker','Ski socks'],['Vindvotter','Wind mittens'],['Goggles / alpinbriller (dårlig vær, også reserve for solbrillene)','Goggles (bad weather, also a spare for your sunglasses)']], {mode:'vinter'}),
+    C('m_pulk','Pulktur','Pulk trip',[['Pulk','Pulk (sled)'],['Seletøy og skjæker','Harness and poles']], {mode:'pulk', note: note('Tips: lær deg enkel pakking av telt i pulk.','Tip: learn to pack the tent in the pulk quickly.')}),
+    C('m_skred','Skredterreng','Avalanche terrain',[['Skredsøker','Avalanche transceiver'],['Søkestang','Probe'],['Skredspade','Avalanche shovel'],['Skredsekk (hvis du bruker det)','Avalanche airbag (if you use one)']], {mode:'skred'}),
+    C('m_topptur','Topptur / randonee','Ski touring',[['Toppturski / randoneeski med feller','Touring skis with skins'],['Skarejern','Ski crampons'],['Hjelm','Helmet']], {mode:'topptur'}),
+    C('m_bil','Biltur','Car camping',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Vannbeholder / dusj (10 l)','Water container / shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
+    C('m_fiske','Fiskeutstyr','Fishing gear',[['Stang','Rod'],['Snelle','Reel'],['Kroker','Hooks'],['Kniv','Knife'],['Svivler / sene','Swivels / line'],['Pose','Bag']], {mode:'fiske'}),
+    C('m_hytte','Hyttetur (DNT)','Cabin trip (DNT)',[['Lakenpose','Sleeping bag liner'],['Medlemskort','Membership card'],['Betaling (kort / Vipps)','Payment (card / Vipps)'],['Tørre ullsokker til innebruk','Dry wool socks for indoors']], {mode:'hytte'}),
+
+    C('prep','Forberedelser','Preparations',[
+      ['Før hver tur','Before every trip'],['> Sjekk værmeldingen','> Check the weather forecast'],['> Fortell noen hvor du går og når du er tilbake','> Tell someone your route and when you will be back'],['> Last ned offline kart','> Download offline maps'],
+      ['Lading av utstyr','Charging'],['> Mobil','> Phone'],['> GPS','> GPS'],['> Teltlykt (USB, må lades i vanlig USB-port)','> Tent lamp (USB, charge in a regular USB port)'],['> Hodelykt / håndlykt','> Headlamp / torch'],['> Powerbank(er)','> Power bank(s)'],['> Ekstra batterier (til lykter som ikke kan lades)','> Spare batteries (for lamps that cannot be charged)'],
+      ['Komfort (valgfritt)','Comfort (optional)'],['> Bluetooth-høyttaler','> Bluetooth speaker'],['> Headsett','> Headset'],['> Laptop / nettbrett','> Laptop / tablet'],['> Last ned musikk og film for offline bruk','> Download music and films for offline use'],['> Mobilholder','> Phone holder'],
+      ['Sjekk','Checks'],['> Test brenneren','> Test the stove'],['> Sjekk teltet','> Check the tent'],['> Sjekk skredvarselet (varsom.no) (skredterreng)','> Check the avalanche forecast (varsom.no) (avalanche terrain)'],['> Test skredsøkere i gruppen (skredterreng)','> Test transceivers in the group (avalanche terrain)']], {bag:true}),
+    C('firstaid','Førstehjelpssett','First aid kit',[
+      ['Sår og plaster','Wounds and plasters'],['> * Sårvask-servietter (klorheksidin)','> * Wound cleansing wipes (chlorhexidine)'],['> Engangshansker (2 par)','> Disposable gloves (2 pairs)'],['> * Sportstape','> * Sports tape'],['> Elastisk heftebandasje','> Elastic adhesive bandage'],['> * Gnagsårplaster (min. 4x)','> * Blister plasters (min. 4x)'],['> * Plaster (vanlig)','> * Plasters (regular)'],['> Mikroporøs tape','> Microporous tape'],['> Tekstilplaster (rull)','> Fabric plaster (roll)'],['> Vanntett plaster','> Waterproof plasters'],['> * Sårstrips (lukking av kutt)','> * Wound closure strips (for cuts)'],
+      ['Kompresser og bandasjer','Dressings and bandages'],['> Gaskompresser / tupfere','> Gauze swabs'],['> Sterile kompresser (dypere kutt)','> Sterile dressings (deeper cuts)'],['> Enkeltmannspakke (større blødninger)','> Field dressing (larger bleeding)'],['> Elastisk bomullsbandasje (overtråkk, skinner)','> Elastic cotton bandage (sprains, splints)'],['> Kompresjonsbandasje','> Compression bandage'],
+      ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol)','> * Painkillers (paracetamol)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],['> Melatonin','> Melatonin'],
+      ['Utstyr','Tools'],['> Pinsett (flått, fliser)','> Tweezers (ticks, splinters)'],['> Sikkerhetsnåler','> Safety pins'],['> Neglesaks','> Nail clippers'],['> Saks (bandasjer og tape)','> Scissors (bandages and tape)'],
+      ['Varme og nød','Warmth and emergency'],['> * Redningsfolie','> * Emergency foil blanket'],
+      ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag']],
+      {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
+    C('repair','Reparasjonssett','Repair and spares kit',[
+      ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
+      ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Nylonsnor 2x','> Nylon cord 2x'],['> Diverse','> Miscellaneous'],
+      ['Ild','Fire'],['> Fyrstikker','> Matches'],['> Tennstål','> Fire steel'],['> Tennbriketter (4x)','> Fire starters (4x)'],
+      ['Diverse','Miscellaneous'],['> Nål og tråd','> Needle and thread'],['> USB-C-kabel','> USB-C cable'],['> Stropper (2x)','> Straps (2x)'],['> Tau (kompakt)','> Rope (compact)'],['> Små karabinkroker (4x)','> Small carabiners (4x)'],['> Diverse plastposer','> Assorted plastic bags']],
+      {bag:true, note: note('Liten drybag, ca. 3 liter','Small dry bag, about 3 litres')}),
+    C('personal','Personlig pleie','Personal care',[
+      ['Tannbørste og tannkrem','Toothbrush and toothpaste'],['Dopapir (min. 2x)','Toilet paper (min. 2x)'],['Håndkle (kompakt)','Towel (compact)'],['Vaskeklut','Washcloth'],['Våtservietter (ca. 4x)','Wet wipes (approx. 4x)'],['Hånddesinfeksjon','Hand sanitiser'],['Reisesåpe','Travel soap'],['Papirlommetørkle','Tissues'],['Solkrem','Sunscreen'],['Leppepomade med UV','Lip balm with UV'],['Myggmiddel','Insect repellent'],['Biopose (20 l)','Biodegradable bag (20 l)'],['Sovemaske','Sleep mask'],['Ørepropper','Earplugs']], {bag:true})
+  ]};
+}
+function buildTemplates(L){ return { friluftsliv: friluftsliv(L) }; }
+
+const uid = () => Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function detectLang(){
+  const l = (navigator.language || 'en').toLowerCase();
+  return /^(nb|nn|no)\b/.test(l) ? 'no' : 'en';
+}
+function parseItem(x, ids){
+  let sub = false, link = null, light = false;
+  if (x.startsWith('> ')){ sub = true; x = x.slice(2); }
+  if (x.startsWith('* ')){ light = true; x = x.slice(2); }
+  const m = x.match(/^@(\w+) (.*)$/);
+  if (m){ link = ids[m[1]] || null; x = m[2]; }
+  return {id:uid(), text:x, done:false, sub, link, light};
+}
+function fromTemplate(key, name){
+  const tp = buildTemplates(state.lang)[key];
+  const ids = {};
+  tp.cats.forEach(c => ids[c.key] = uid());
+  return { id:uid(), name: name || tp.name, notes:'', modes:{}, cats: tp.cats.map(c => ({
+    id: ids[c.key], icon:c.key, name:c.name, note:c.note || '', mode:c.mode || null, bag:!!c.bag, lightOnly:false, open:true,
+    items: c.items.map(x => parseItem(x, ids))
+  }))};
+}
+function cloneList(src, keepDone){
+  const map = {};
+  const cats = (Array.isArray(src.cats) ? src.cats : []).filter(c => c && Array.isArray(c.items)).map(c => {
+    const id = uid(); map[c.id] = id;
+    return { id, icon: typeof c.icon === 'string' ? c.icon : null, name:String(c.name || t().category), note: typeof c.note === 'string' ? c.note : '',
+      mode: (typeof c.mode === 'string' && MODES[c.mode]) ? c.mode : null, bag: !!c.bag, lightOnly: !!c.lightOnly, open:true,
+      items: c.items.filter(i => i && i.text).map(i => ({ id:uid(), text:String(i.text), done: keepDone ? !!i.done : false, sub:!!i.sub, link: i.link || null, light:!!i.light })) };
+  });
+  cats.forEach(c => c.items.forEach(i => { if (i.link) i.link = map[i.link] || null; }));
+  const modes = {};
+  if (src.modes && typeof src.modes === 'object') Object.keys(src.modes).forEach(k => { if (MODES[k]) modes[k] = !!src.modes[k]; });
+  return { id:uid(), name:String(src.name || t().myList), notes: typeof src.notes === 'string' ? src.notes : '', modes, cats };
+}
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.lists) && s.lists.length) return s; } catch(e){}
+  return null;
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+let state = load();
+if (!state){
+  state = { lists:[], active:null, hidePacked:false, lang:detectLang() };
+  const l = fromTemplate('friluftsliv'); state.lists.push(l); state.active = l.id;
+}
+if (!state.lang) state.lang = detectLang();
+let editing = false;
+let view = null;
+let tab = 'list';
+let modesOpen = false;
+let rainLocked = false;
+let lastTick = null;
+const t = () => UI[state.lang] || UI.en;
+const modeName = k => (MODES[k] && (MODES[k][state.lang] || MODES[k].en)) || k;
+
+const $ = id => document.getElementById(id);
+const main = $('main'), overlay = $('overlay'), panel = $('panel');
+
+function cur(){
+  let l = state.lists.find(x => x.id === state.active);
+  if (!l){ l = state.lists[0]; state.active = l.id; }
+  return l;
+}
+function visibleCats(l){ return l.cats.filter(c => !c.bag && (!c.mode || (l.modes && l.modes[c.mode]))); }
+function hasLight(c){ return c.items.some(i => i.light); }
+function shownItems(c){
+  if (!c.lightOnly || !hasLight(c)) return c.items;
+  const keep = new Set();
+  let parent = null;
+  c.items.forEach(i => {
+    if (!i.sub) parent = i;
+    if (i.light){ keep.add(i); if (i.sub && parent) keep.add(parent); }
+  });
+  return c.items.filter(i => keep.has(i));
+}
+function headingIds(c){
+  const h = new Set();
+  c.items.forEach((i, n) => { if (!i.sub && c.items[n + 1] && c.items[n + 1].sub) h.add(i.id); });
+  return h;
+}
+function countCats(cats){
+  let tot = 0, d = 0;
+  cats.forEach(c => { const h = headingIds(c); shownItems(c).forEach(i => { if (h.has(i.id)) return; tot++; if (i.done) d++; }); });
+  return {t:tot, d};
+}
+function stats(l){ return countCats(visibleCats(l)); }
+function findCat(id){ return cur().cats.find(c => c.id === id); }
+
+const CAT_ICONS = {
+  start:'<path d="M9 4h6v3H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="M9 13l2 2 4-4"/>',
+  prep:'<path d="M9 4h6v3H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="M9 13l2 2 4-4"/>',
+  sleep:'<path d="M3 20L12 4l9 16z"/><path d="M12 4v16M9 20l3-5 3 5"/>',
+  general:'<path d="M8 7V5a4 4 0 0 1 8 0v2"/><rect x="5" y="7" width="14" height="14" rx="3"/><path d="M9 13h6"/>',
+  cook:'<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/>',
+  clothes:'<path d="M8 3l4 2 4-2 5 4-3 3-2-1v12H8V9l-2 1-3-3z"/>',
+  food:'<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 7c0-2 2-2 2-4M13 7c0-2 2-2 2-4"/>',
+  m_vinter:'<path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/><path d="M10 5l2 2 2-2M10 19l2-2 2 2"/>',
+  m_pulk:'<path d="M3 15h15a3 3 0 0 0 3-3"/><path d="M5 15l2-5h9l2 5"/><path d="M3 19h18"/>',
+  m_skred:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+  m_topptur:'<path d="M3 20l6-10 4 6 3-4 5 8z"/><path d="M9 10l1.5-3 1.5 3"/>',
+  m_bil:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><path d="M7 19v2M17 19v2"/>',
+  m_fiske:'<path d="M3 12c4-6 11-6 15 0-4 6-11 6-15 0z"/><path d="M18 12l3-3v6z"/><circle cx="8" cy="11" r=".5"/>',
+  m_hytte:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  firstaid:'<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M9 6V4h6v2M12 10v6M9 13h6"/>',
+  repair:'<path d="M14 6a4 4 0 0 0 5 5l-9 9a2 2 0 0 1-3-3l9-9a4 4 0 0 1-2-2z"/>',
+  personal:'<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/>'
+};
+const ICONS = {
+  list:'<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
+  plan:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h2M16 15v3"/></svg>',
+  guide:'<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/></svg>',
+  compass:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>'
+};
+function renderTabs(){
+  const T = t();
+  $('tabbar').innerHTML = [['list', T.tabList], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
+    `<button data-tab="${k}" ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
+}
+const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']} };
+function bodyClasses(){
+  document.body.setAttribute('data-skin', SKINS[state.skin] ? state.skin : 'fjell');
+  document.body.classList.toggle('notlist', tab !== 'list');
+  document.body.classList.toggle('field', !!state.field);
+  document.body.classList.toggle('night', !!(state.field && state.night));
+  const night = state.field && state.night;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', night ? '#000000' : getComputedStyle(document.body).getPropertyValue('--hd').trim() || '#1F3532');
+}
+function render(){
+  const T = t();
+  document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
+  bodyClasses();
+  renderTabs();
+  $('menuBtn').setAttribute('aria-label', T.menu);
+  $('listBtn').setAttribute('aria-label', T.switchList);
+  $('rainlock').hidden = !rainLocked;
+  if (rainLocked) renderLock();
+  if (tab !== 'compass') stopCompass();
+  if (tab === 'compass') return renderCompass();
+  if (tab !== 'list'){
+    if (view === 'tool:water') return renderWater();
+    if (view === 'tool:fuel') return renderFuel();
+    if (view === 'tool:food') return renderFood();
+    if (view === 'tool:knots') return renderKnots();
+    if (view === 'tool:sun') return renderSun();
+    if (view === 'tool:phone') return renderPhone();
+    view = null;
+    return renderIndex();
+  }
+  const l = cur();
+  const bag = view ? l.cats.find(c => c.id === view) : null;
+  if (view && !bag) view = null;
+  if (state.field) editing = false;
+  const cats = bag ? [bag] : visibleCats(l);
+  const {t:tot, d} = countCats(cats);
+  $('listName').textContent = l.name;
+  document.title = l.name + ' · ' + T.app;
+  $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
+  $('progText').textContent = tot ? T.packed(d, tot) : T.noItems;
+
+  let html = '';
+  if (bag){
+    html += `<button class="back" data-act="back">${CHEV_L}${esc(l.name)}</button>`;
+  }
+  // toolbar
+  html += '<div class="toolbar">';
+  if (bag && hasLight(bag)){
+    html += `<button class="chip" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
+  }
+  html += `<button class="chip${state.field ? ' field-on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${T.field}</button>`;
+  if (state.field){
+    html += `<button class="chip" data-act="rainLock">${T.lockScreen}</button>`;
+    html += `<button class="chip" data-act="nightToggle" aria-pressed="${!!state.night}">${T.nightLight}</button>`;
+    html += `<button class="chip" data-act="undoTick" ${lastTick ? '' : 'disabled'}>${T.undoLast}</button>`;
+  }
+  html += `<button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button>`;
+  if (!state.field){
+    html += `<button class="chip" data-act="editToggle" aria-pressed="${editing}">${editing ? T.doneEdit : T.edit}</button>`;
+    html += `<button class="chip" data-act="resetList">${T.reset}</button>`;
+  }
+  html += '</div>';
+  if (!bag){
+    const keys = [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))];
+    if (keys.length){
+      const on = keys.filter(k => l.modes && l.modes[k]).map(modeName);
+      html += `<button class="modes-toggle" data-act="modesToggle" aria-expanded="${modesOpen}"><span>${T.tripType}:</span><span class="mt-val">${on.length ? esc(on.join(', ')) : '–'}</span>${CHEV}</button>`;
+      if (modesOpen){
+        html += `<div class="modes-open"><div class="chips">` +
+          keys.map(k => `<button class="chip" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
+          '</div></div>';
+      }
+    }
+  }
+  if (tot && d === tot && !editing){
+    html += `<div class="done-banner">${T_MARK}<span>${T.allDone}</span></div>`;
+  }
+  if (!cats.length && !editing){
+    html += `<p class="empty">${T.empty}</p>`;
+  }
+  cats.forEach(c => {
+    const list = editing ? c.items : shownItems(c);
+    const heads = headingIds(c);
+    const counted = list.filter(i => !heads.has(i.id));
+    const ct = counted.length, cd = counted.filter(i => i.done).length;
+    const complete = ct > 0 && cd === ct;
+    const open = bag ? true : c.open;
+    html += `<section class="cat${open ? '' : ' closed'}${complete ? ' complete' : ''}" data-cat="${c.id}">
+      <button class="cat-head" data-act="toggleCat" aria-expanded="${open}">
+        ${c.icon && CAT_ICONS[c.icon] ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}</h2><span class="count">${cd}/${ct}</span>${bag ? '' : CHEV}
+      </button>`;
+    if (c.note) html += `<p class="cat-note">${esc(c.note)}</p>`;
+    if (editing){
+      html += `<div class="cat-tools"><button class="btn small" data-act="renameCat">${T.rename}</button><button class="btn small" data-act="noteCat">${T.catNote}</button><button class="btn small danger" data-act="deleteCat">${T.delCat}</button></div>`;
+    }
+    html += '<ul class="items">';
+    let shown = 0, pending = null;
+    list.forEach(i => {
+      if (!editing && heads.has(i.id)){ pending = i; return; }
+      if (state.hidePacked && i.done && !editing) return;
+      if (pending && i.sub){ html += `<li class="subhead">${esc(pending.text)}</li>`; }
+      pending = null;
+      shown++;
+      const target = i.link ? l.cats.find(x => x.id === i.link) : null;
+      html += `<li class="item${i.done ? ' done' : ''}${i.sub && (editing || !heads.size) ? ' sub' : ''}" data-item="${i.id}">
+        <button class="check" data-act="toggleItem" role="checkbox" aria-checked="${i.done}">
+          <span class="mark">${T_MARK}</span><span class="txt">${esc(i.text)}</span>
+        </button>`;
+      if (target && !editing){
+        const s = countCats([target]);
+        html += `<button class="link-btn${s.t && s.d === s.t ? ' complete' : ''}" data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${s.d}/${s.t}${CHEV_R}</button>`;
+      }
+      if (editing){
+        html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
+                 <button class="icon" data-act="renameItem" aria-label="${esc(T.renameX(i.text))}">${PEN}</button>
+                 <button class="icon del" data-act="deleteItem" aria-label="${esc(T.deleteX(i.text))}">${CROSS}</button>`;
+      }
+      html += '</li>';
+    });
+    if (!shown && !editing){
+      html += `<li class="note-row">${ct ? T.catPacked : T.catEmpty}</li>`;
+    }
+    if (editing){
+      html += `<li class="add-row"><input type="text" placeholder="${esc(T.addItemPh)}" aria-label="${esc(T.newItem(c.name))}" data-add="${c.id}"><button class="btn" data-act="addItem">${T.add}</button></li>`;
+    }
+    html += '</ul></section>';
+  });
+  if (editing && !bag){
+    html += `<button class="add-cat" data-act="addCat">${T.addCat}</button>`;
+  }
+  if (!bag && ((l.notes && l.notes.trim()) || editing)){
+    const has = l.notes && l.notes.trim();
+    html += `<section class="notes"><h2>${T.notes}</h2><div class="notes-body${has ? '' : ' placeholder'}">${has ? esc(l.notes) : T.notesEmpty}</div>`;
+    if (editing) html += `<div class="cat-tools" style="margin-top:8px"><button class="btn small" data-act="editNotes">${T.editNotes}</button></div>`;
+    html += '</section>';
+  }
+  main.innerHTML = html;
+}
+function renderIndex(){
+  const T = t();
+  const isPlan = tab === 'plan';
+  $('listName').textContent = isPlan ? T.tabPlan : T.tabGuide;
+  document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
+  const items = isPlan
+    ? [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]]
+    : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['phone', T.phoneTool, T.phoneShort]];
+  main.innerHTML = `<p class="tool-sub">${isPlan ? T.planSub : T.guideSub}</p><div class="index">` +
+    items.map(([k, n, dsc]) => `<button data-open="${k}"><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
+}
+function renderPhone(){
+  const T = t();
+  $('listName').textContent = T.phoneTool;
+  document.title = T.phoneTool + ' · ' + T.app;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+    <p class="tool-sub">${T.phoneSub}</p>
+    <section class="manual guide">${T.phone.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+}
+/* ---------- compass ---------- */
+let cOn = false, cHeld = false, cGot = false, cVec = null, cHeading = null, cUpright = false, cRaf = null, cTimer = null;
+function renderCompass(){
+  const T = t();
+  $('listName').textContent = T.tabCompass;
+  document.title = T.tabCompass + ' · ' + T.app;
+  let ticks = '';
+  for (let a = 0; a < 360; a += 10){
+    const big = a % 30 === 0, r1 = big ? 128 : 134;
+    ticks += `<line x1="160" y1="${160 - r1}" x2="160" y2="${160 - 142}" stroke="var(--muted)" stroke-width="${big ? 2.5 : 1.2}" transform="rotate(${a} 160 160)"/>`;
+  }
+  const dirs = T.cDirs;
+  const labels = [0,2,4,6].map(i => `<text x="160" y="52" text-anchor="middle" font-family="var(--head)" font-weight="600" font-size="${i === 0 ? 30 : 24}" fill="${i === 0 ? 'var(--red)' : 'var(--ink)'}" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('')
+    + [1,3,5,7].map(i => `<text x="160" y="58" text-anchor="middle" font-size="14" font-weight="600" fill="var(--muted)" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('');
+  main.innerHTML = `<div class="compass">
+      <svg class="rose" viewBox="0 0 320 320" aria-hidden="true">
+        <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
+        <g class="dial" id="dial">${ticks}${labels}</g>
+        <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
+        <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
+      </svg>
+      <div class="c-read"><div class="c-deg" id="cDeg">–</div><div class="c-dir" id="cDir">&nbsp;</div><div class="c-mode" id="cMode"></div></div>
+      <div class="c-btns">${cOn
+        ? `<button class="chip" data-act="cHold" aria-pressed="${cHeld}">${cHeld ? T.cRelease : T.cHold}</button>`
+        : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
+      <p class="c-msg" id="cMsg"></p>
+    </div>
+    <section class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+  paintCompass();
+}
+function headingFrom(alpha, beta, gamma){
+  const r = Math.PI / 180, cA = Math.cos(alpha * r), sA = Math.sin(alpha * r), cB = Math.cos(beta * r), sB = Math.sin(beta * r), cG = Math.cos(gamma * r), sG = Math.sin(gamma * r);
+  const upright = Math.abs(beta) > 45;
+  let e, n;
+  if (upright){ e = -(cA * sG + sA * sB * cG); n = -(sA * sG - cA * sB * cG); }
+  else { e = -sA * cB; n = cA * cB; }
+  return {e, n, upright};
+}
+function onOrient(ev){
+  let alpha = ev.alpha;
+  if (typeof ev.webkitCompassHeading === 'number') alpha = 360 - ev.webkitCompassHeading;
+  else if (!ev.absolute && ev.type !== 'deviceorientationabsolute') return;
+  if (alpha === null || ev.beta === null || ev.gamma === null) return;
+  cGot = true;
+  if (cHeld) return;
+  const h = headingFrom(alpha, ev.beta, ev.gamma);
+  const len = Math.hypot(h.e, h.n) || 1, e = h.e / len, n = h.n / len;
+  cVec = cVec ? {e: cVec.e * 0.75 + e * 0.25, n: cVec.n * 0.75 + n * 0.25} : {e, n};
+  cHeading = (Math.atan2(cVec.e, cVec.n) * 180 / Math.PI + 360) % 360;
+  cUpright = h.upright;
+  if (!cRaf) cRaf = requestAnimationFrame(() => { cRaf = null; paintCompass(); });
+}
+function paintCompass(){
+  const T = t(), dial = $('dial');
+  if (!dial || cHeading === null) return;
+  dial.setAttribute('transform', `rotate(${-cHeading} 160 160)`);
+  $('cDeg').textContent = Math.round(cHeading) % 360 + '°';
+  $('cDir').textContent = T.cDirs[Math.round(cHeading / 45) % 8];
+  $('cMode').textContent = cUpright ? T.cUp : T.cFlat;
+}
+async function startCompass(){
+  const T = t();
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+      const p = await DeviceOrientationEvent.requestPermission();
+      if (p !== 'granted'){ $('cMsg').textContent = T.cDenied; return; }
+    }
+  } catch(e){}
+  cOn = true; cGot = false;
+  window.addEventListener('deviceorientationabsolute', onOrient);
+  window.addEventListener('deviceorientation', onOrient);
+  renderCompass();
+  clearTimeout(cTimer);
+  cTimer = setTimeout(() => { if (!cGot && $('cMsg')) $('cMsg').textContent = t().cNoSensor; }, 3000);
+}
+function stopCompass(){
+  if (!cOn) return;
+  cOn = false; cHeld = false;
+  window.removeEventListener('deviceorientationabsolute', onOrient);
+  window.removeEventListener('deviceorientation', onOrient);
+  clearTimeout(cTimer);
+}
+const num = v => parseFloat(String(v).replace(',', '.').trim());
+const fmt = n => (Math.round(n * 10) / 10).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:1});
+function renderWater(){
+  const T = t();
+  state.calc = Object.assign({mode:'mix', target:38, volume:10, cold:10, hot:100, pot:1.5, hotL:2, coldL:8}, state.calc || {});
+  const c = state.calc;
+    $('listName').textContent = T.water;
+  document.title = T.water + ' · ' + T.app;
+  const field = (k, label) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
+  let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+    <p class="tool-sub">${T.waterSub}</p>
+    <div class="modes"><div class="chips">
+      <button class="chip" data-calcmode="mix" aria-pressed="${c.mode === 'mix'}">${T.findMix}</button>
+      <button class="chip" data-calcmode="temp" aria-pressed="${c.mode === 'temp'}">${T.findTemp}</button>
+    </div></div><div class="calc">`;
+  if (c.mode === 'mix') html += field('target', T.target) + field('volume', T.volume) + field('cold', T.coldT) + field('hot', T.hotT) + field('pot', T.pot);
+  else html += field('hotL', T.hotL) + field('hot', T.hotT) + field('coldL', T.coldL) + field('cold', T.coldT);
+  html += `</div><div class="calc-result" id="calcOut" aria-live="polite"></div><p class="tool-tip">${T.waterTip}</p>`;
+  main.innerHTML = html;
+  updateWater();
+}
+function updateWater(){
+  const T = t(), c = state.calc, out = $('calcOut');
+  if (!out) return;
+  const val = k => { const el = main.querySelector(`[data-calc="${k}"]`); return el ? num(el.value) : c[k]; };
+  if (c.mode === 'mix'){
+    const tt = val('target'), V = val('volume'), tc = val('cold'), th = val('hot'), pot = val('pot');
+    if ([tt, V, tc, th].some(isNaN) || V <= 0){ out.innerHTML = ''; return; }
+    if (!(tt > tc && tt < th)){ out.innerHTML = `<p class="calc-err">${T.rangeErr}</p>`; return; }
+    const h = V * (tt - tc) / (th - tc), cl = V - h;
+    let boils = '';
+    if (!isNaN(pot) && pot > 0){ const n = Math.max(1, Math.ceil(h / pot - 1e-9)); boils = `<p class="calc-boils">${T.boils(n, fmt(h / n))}</p>`; }
+    out.innerHTML = `<div class="calc-pair"><div><span class="big">${fmt(h)} l</span><span class="lbl">${T.hotOut}</span></div><div><span class="big">${fmt(cl)} l</span><span class="lbl">${T.coldOut}</span></div></div>${boils}`;
+  } else {
+    const hl = val('hotL'), th = val('hot'), cl = val('coldL'), tc = val('cold');
+    if ([hl, th, cl, tc].some(isNaN) || hl < 0 || cl < 0 || hl + cl <= 0){ out.innerHTML = ''; return; }
+    const tf = (hl * th + cl * tc) / (hl + cl);
+    out.innerHTML = `<div class="calc-pair"><div><span class="big">${fmt(tf)} °C</span><span class="lbl">${T.mixTemp}</span></div><div><span class="big">${fmt(hl + cl)} l</span><span class="lbl">${T.totalVol}</span></div></div>`;
+  }
+}
+main.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.calc;
+  if (!k) return;
+  const v = num(e.target.value);
+  if (!isNaN(v)){ state.calc[k] = v; save(); }
+  updateWater();
+});
+const FUELS = {
+  gas:    { unit:'g',  rates:{ boil:25, cook:40,  snow:75 } },
+  petrol: { unit:'ml', rates:{ boil:50, cook:75,  snow:150 } },
+  spirit: { unit:'ml', rates:{ boil:75, cook:110, snow:200 } }
+};
+function fuelState(){
+  state.fuelCalc = Object.assign({ fuel:'petrol', use:'boil', days:3, people:1, shared:true, margin:20, bottle:{petrol:1, spirit:0.5}, custom:{} }, state.fuelCalc || {});
+  return state.fuelCalc;
+}
+function rateFor(f){ const k = f.fuel + '_' + f.use; return (f.custom && typeof f.custom[k] === 'number') ? f.custom[k] : FUELS[f.fuel].rates[f.use]; }
+function renderFuel(){
+  const T = t(), f = fuelState(), fu = FUELS[f.fuel];
+    $('listName').textContent = T.fuelTool;
+  document.title = T.fuelTool + ' · ' + T.app;
+  const chip = (attr, val, cur, label) => `<button class="chip" ${attr}="${val}" aria-pressed="${cur === val}">${label}</button>`;
+  const field = (k, label, v) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt(v).replace(/\s/g,''))}"></label>`;
+  const k = f.fuel + '_' + f.use, custom = f.custom && typeof f.custom[k] === 'number';
+  let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+    <p class="tool-sub">${T.fuelSub}</p>
+    <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
+      ${chip('data-fueltype','gas',f.fuel,T.fGas)}${chip('data-fueltype','petrol',f.fuel,T.fPetrol)}${chip('data-fueltype','spirit',f.fuel,T.fSpirit)}
+    </div></div>
+    <div class="modes"><span class="modes-label">${T.useType}</span><div class="chips">
+      ${chip('data-fueluse','boil',f.use,T.uBoil)}${chip('data-fueluse','cook',f.use,T.uCook)}${chip('data-fueluse','snow',f.use,T.uSnow)}
+    </div></div>
+    <div class="calc">
+      ${field('days', T.days, f.days)}${field('people', T.people, f.people)}
+      <div class="field"><span>${T.perDay(fu.unit)}</span><input type="text" inputmode="decimal" data-fuel="rate" value="${esc(fmt(rateFor(f)).replace(/\s/g,''))}">
+        ${custom ? `<button class="reset-link" data-act="resetRate">${T.resetRate}</button>` : ''}</div>
+      ${field('margin', T.margin, f.margin)}
+      ${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}
+    </div>
+    <div class="chips tight" style="margin-top:12px">${`<button class="chip" data-act="fuelShared" aria-pressed="${!!f.shared}">${T.shared}</button>`}</div>
+    <div class="calc-result" id="fuelOut" aria-live="polite"></div>
+    <section class="manual"><h2>${T.manualTitle}</h2>
+      ${[T.manGas, T.manPetrol, T.manSpirit, T.manSafety].map(m => `<details><summary>${m[0]}</summary><p>${m[1]}</p></details>`).join('')}
+    </section>`;
+  main.innerHTML = html;
+  updateFuel();
+}
+function bestCans(g){
+  const sizes = [450, 230, 100];
+  let best = null;
+  for (let a = 0; a <= 12; a++) for (let b = 0; b <= 6; b++) for (let c = 0; c <= 4; c++){
+    const cap = a*450 + b*230 + c*100;
+    if (cap < g) continue;
+    const n = a + b + c;
+    if (!best || cap < best.cap || (cap === best.cap && n < best.n)) best = {cap, n, a, b, c};
+  }
+  if (!best) return '';
+  return [[best.a,450],[best.b,230],[best.c,100]].filter(x => x[0]).map(x => `${x[0]} × ${x[1]} g`).join(' + ');
+}
+function updateFuel(){
+  const T = t(), f = fuelState(), out = $('fuelOut');
+  if (!out) return;
+  const fu = FUELS[f.fuel];
+  const days = f.days, n = Math.round(f.people), rate = rateFor(f), margin = f.margin;
+  if ([days, n, rate, margin].some(v => isNaN(v)) || days <= 0 || n < 1 || rate <= 0 || margin < 0){ out.innerHTML = ''; return; }
+  const factor = f.shared ? 1 + 0.5 * (n - 1) : n;
+  const total = rate * days * factor * (1 + margin / 100);
+  const name = T.fuelNames[f.fuel];
+  let big, pack = '';
+  if (fu.unit === 'g'){
+    big = `${fmt(Math.ceil(total))} g ${name}`;
+    pack = `<p class="calc-boils">${T.canisters}: ${bestCans(total)}</p>`;
+  } else {
+    const l = total / 1000;
+    big = `${(Math.ceil(l * 100) / 100).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:2})} l ${name}`;
+    const b = f.bottle[f.fuel];
+    if (b > 0){ const cnt = Math.max(1, Math.ceil(l / b - 1e-9)); pack = `<p class="calc-boils">${T.bottles(cnt, fmt(b))}</p>`; }
+  }
+  let warn = '';
+  if (f.fuel === 'gas' && f.use === 'snow') warn = `<p class="calc-warn">${T.warnGasCold}</p>`;
+  if (f.fuel === 'spirit' && f.use === 'snow') warn = `<p class="calc-warn">${T.warnSpiritSnow}</p>`;
+  out.innerHTML = `<span class="big" style="display:block;font-family:var(--head);font-weight:600;font-size:2.2rem;line-height:1.1;color:var(--red)">${big}</span>${pack}
+    <p class="calc-basis">${T.basis(fmt(rate), fu.unit, fmt(days), T.peopleFactor(n, !!f.shared))} (${fmt(margin)} %)</p>${warn}`;
+}
+main.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.fuel;
+  if (!k) return;
+  const v = num(e.target.value), f = fuelState();
+  if (!isNaN(v)){
+    if (k === 'rate'){ f.custom[f.fuel + '_' + f.use] = v; }
+    else if (k === 'bottle'){ f.bottle[f.fuel] = v; }
+    else f[k] = v;
+    save();
+  }
+  updateFuel();
+});
+function renderSun(){
+  const T = t();
+    $('listName').textContent = T.sunTool;
+  document.title = T.sunTool + ' · ' + T.app;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+    <p class="tool-sub">${T.sunSub}</p>
+    <p class="key-rule">${T.sunKey}</p>
+    <section class="manual guide">${T.sun.map((x, i) => `<details><summary>${x[0]}</summary>${i === 1 ? lensChart(T) : ''}${x[1]}</details>`).join('')}</section>`;
+}
+function lensChart(T){
+  const rows = [[0,'80–100 %',0,14,.25],[1,'43–80 %',0,38,.4],[2,'18–43 %',8,58,.55],[3,'8–18 %',30,88,.75],[4,'3–8 %',70,100,.95]];
+  return `<div class="lchart"><div class="lc-head"><span></span><div class="lc-cols">${T.sunCond.map(c => `<span>${c}</span>`).join('')}</div></div>
+    ${rows.map(r => `<div class="lc-row"><span class="lc-lab">${T.sunCat} ${r[0]}<small>VLT ${r[1]}</small></span><div class="lc-track"><i style="left:${r[2]}%;width:${r[3]-r[2]}%;opacity:${r[4]}"></i></div></div>`).join('')}
+  </div><p>${T.sunVlt}</p>`;
+}
+function renderKnots(){
+  const T = t();
+    $('listName').textContent = T.knotTool;
+  document.title = T.knotTool + ' · ' + T.app;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+    <p class="tool-sub">${T.knotSub}</p>
+    <p class="calc-warn">${T.knotWarn}</p>
+    ${T.knots.map(k => `<details class="knot"><summary><b>${k.n}</b><span>${k.u}</span></summary>
+      <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('')}`;
+}
+function foodState(){
+  state.foodCalc = Object.assign({ days:3, people:1, oats:165, snacks:1, homeBreakfast:true, homeDinner:true, reserve:true, season:'summer', kOats:370, kLunch:450, kDinner:600, kSnack:250 }, state.foodCalc || {});
+  return state.foodCalc;
+}
+function renderFood(){
+  const T = t(), f = foodState();
+    $('listName').textContent = T.foodTool;
+  document.title = T.foodTool + ' · ' + T.app;
+  const field = (k, label) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
+  const tog = (k, label) => `<button class="chip" data-foodtoggle="${k}" aria-pressed="${!!f[k]}">${label}</button>`;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+    <p class="tool-sub">${T.foodSub}</p>
+    <div class="calc">${field('days', T.days)}${field('people', T.people)}${field('oats', T.oats)}${field('snacks', T.snacks)}</div>
+    <div class="chips" style="margin-top:12px">${tog('homeBreakfast', T.homeBreakfast)}${tog('homeDinner', T.homeDinner)}${tog('reserve', T.reserve)}</div>
+    <div class="calc-result" id="foodOut" aria-live="polite"></div>
+    <section class="manual energy"><h2>${T.kcalTitle}</h2>
+      <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
+      <div id="kcalOut" aria-live="polite"></div>
+      <details><summary>${T.kcalValues}</summary><div class="calc">${field('kOats', T.kOats)}${field('kLunch', T.kLunch)}${field('kDinner', T.kDinner)}${field('kSnack', T.kSnack)}</div></details>
+    </section>
+    <section class="manual"><h2>${T.packTitle}</h2>
+      ${T.pack.map(m => `<details><summary>${m[0]}</summary><p>${m[1]}</p></details>`).join('')}
+    </section>`;
+  updateFood();
+}
+function updateFood(){
+  const T = t(), f = foodState(), out = $('foodOut');
+  if (!out) return;
+  const d = Math.round(f.days), p = Math.round(f.people), oats = f.oats, sn = f.snacks;
+  if ([d, p, oats, sn].some(v => isNaN(v)) || d < 1 || p < 1 || oats < 0 || sn < 0){ out.innerHTML = ''; return; }
+  const r = f.reserve ? 1 : 0;
+  const br = Math.max(0, d - (f.homeBreakfast ? 1 : 0)) + r;
+  const lu = d + r;
+  const di = Math.max(0, d - (f.homeDinner ? 1 : 0)) + r;
+  const snTot = Math.ceil(sn * (d + r) * p);
+  const row = (label, q) => `<li><span>${label}</span><span class="q">${q}</span></li>`;
+  out.innerHTML = `<ul class="food-out">
+      ${row(`${T.fOats} <span style="color:var(--muted)">${T.fBreakfasts(br * p)}</span>`, `${fmt(br * p * oats)} g`)}
+      ${row(T.fLunch, lu * p)}
+      ${row(T.fDinner, di * p)}
+      ${snTot ? row(T.fSnacks, snTot) : ''}
+    </ul><p class="calc-basis">${T.fBasis(d, p, !!f.reserve)}</p>`;
+  const kOut = $('kcalOut');
+  if (kOut){
+    const vals = [f.kOats, f.kLunch, f.kDinner, f.kSnack];
+    if (vals.some(v => isNaN(v) || v < 0)){ kOut.innerHTML = ''; return; }
+    const day = oats * f.kOats / 100 + f.kLunch + f.kDinner + sn * f.kSnack;
+    const [lo, hi] = f.season === 'winter' ? [3500, 5000] : [3000, 4000];
+    const pct = Math.min(100, day / hi * 100);
+    const low = day < lo;
+    const n0 = v => Math.round(v).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB');
+    kOut.innerHTML = `<div class="kcal-head"><span>${T.fullDay}</span><span class="q">${n0(day)} kcal</span></div>
+      <div class="kcal-bar"><span class="${low ? 'low' : ''}" style="width:${pct}%"></span></div>
+      <p class="calc-basis">${T.kcalTarget(n0(lo), n0(hi))}</p>
+      <p class="${low ? 'calc-warn' : 'calc-basis'}">${low ? T.kcalLow : T.kcalOk}</p>
+      <p class="calc-basis">${T.kcalNote}</p>`;
+  }
+}
+main.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.food;
+  if (!k) return;
+  const v = num(e.target.value);
+  if (!isNaN(v)){ foodState()[k] = v; save(); }
+  updateFood();
+});
+function top(){ try { window.scrollTo(0,0); } catch(e){} }
+
+/* ---------- sheets ---------- */
+let sheetResolve = null;
+function openSheet(html){
+  panel.innerHTML = html;
+  overlay.hidden = false;
+  const f = panel.querySelector('input,textarea,button');
+  if (f) setTimeout(() => f.focus(), 30);
+}
+function closeSheet(val){
+  overlay.hidden = true;
+  panel.innerHTML = '';
+  if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
+}
+overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(null); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeSheet(null); });
+
+function askArea(title, value){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(title)}</h3>
+      <textarea class="plain" id="askArea">${esc(value || '')}</textarea>
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet($('askArea').value);
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  });
+}
+function askText(title, value, ok, allowEmpty){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(title)}</h3>
+      <input type="text" id="askInput" value="${esc(value || '')}">
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${esc(ok || T.save)}</button></div>`);
+    const inp = $('askInput');
+    const done = () => { const v = inp.value.trim(); closeSheet(allowEmpty ? v : (v || null)); };
+    panel.querySelector('[data-s=ok]').onclick = done;
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(); });
+    setTimeout(() => inp.select(), 40);
+  });
+}
+function confirmBox(title, msg, ok){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(title)}</h3><p>${esc(msg)}</p>
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${esc(ok)}</button></div>`);
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet(true);
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(false);
+  });
+}
+
+function listsSheet(){
+  const T = t();
+  let html = `<h3>${T.yourLists}</h3><div class="choices">`;
+  state.lists.forEach(l => {
+    const {t:tot, d} = stats(l);
+    html += `<button class="choice${l.id === state.active ? ' active' : ''}" data-switch="${l.id}"><span class="c-name">${esc(l.name)}</span><span class="c-sub">${d}/${tot}</span></button>`;
+  });
+  html += `</div>
+    <div class="section-label">${T.thisList}</div>
+    <div class="row" style="justify-content:flex-start;margin-top:0">
+      <button class="btn" data-m="rename">${T.rename}</button>
+      <button class="btn" data-m="duplicate">${T.duplicate}</button>
+      <button class="btn danger" data-m="delete">${T.del}</button>
+    </div>
+    <div class="section-label">${T.more}</div>
+    <div class="row" style="justify-content:flex-start;margin-top:0">
+      <button class="btn primary" data-m="new">${T.newList}</button>
+      <button class="btn" data-m="backup">${T.backup}</button>
+    </div>
+    <div class="section-label">${T.appearance}</div>
+    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
+    <div class="section-label">${T.language}</div>
+    <div class="row" style="justify-content:flex-start;margin-top:0">
+      <button class="btn" data-lang="no" aria-pressed="${state.lang==='no'}">Norsk</button>
+      <button class="btn" data-lang="en" aria-pressed="${state.lang==='en'}">English</button>
+    </div>
+    <p style="margin-top:10px;font-size:.9rem">${T.langNote}</p>`;
+  openSheet(html);
+  panel.querySelectorAll('[data-switch]').forEach(b => b.onclick = () => {
+    state.active = b.dataset.switch; view = null; tab = 'list'; save(); closeSheet(); render(); top();
+  });
+  panel.querySelectorAll('[data-m]').forEach(b => b.onclick = () => menuAction(b.dataset.m));
+  panel.querySelectorAll('[data-skin]').forEach(b => b.onclick = () => { state.skin = b.dataset.skin; save(); render(); listsSheet(); });
+  panel.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
+    state.lang = b.dataset.lang; save(); render(); listsSheet();
+  });
+}
+
+async function menuAction(m){
+  const T = t(), l = cur();
+  if (m === 'rename'){
+    closeSheet();
+    const v = await askText(T.renameList, l.name, T.rename);
+    if (v){ l.name = v; save(); render(); }
+  } else if (m === 'duplicate'){
+    closeSheet();
+    const v = await askText(T.copyName, l.name + T.copySuffix, T.duplicate);
+    if (v){
+      const copy = cloneList(l, false); copy.name = v;
+      state.lists.push(copy); state.active = copy.id; view = null; save(); render();
+    }
+  } else if (m === 'delete'){
+    closeSheet();
+    if (state.lists.length === 1){ await confirmBox(T.keepOne, T.keepOneMsg, T.ok); return; }
+    if (await confirmBox(T.delList, T.delListMsg(l.name), T.delListOk)){
+      withUndo(T.listDeleted, () => { state.lists = state.lists.filter(x => x.id !== l.id); state.active = state.lists[0].id; view = null; });
+    }
+  } else if (m === 'new'){
+    newListSheet();
+  } else if (m === 'backup'){
+    backupSheet();
+  } else if (m === 'water'){
+    closeSheet(); view = 'tool:water'; render(); top();
+  } else if (m === 'fuel'){
+    closeSheet(); view = 'tool:fuel'; render(); top();
+  } else if (m === 'food'){
+    closeSheet(); view = 'tool:food'; render(); top();
+  } else if (m === 'knots'){
+    closeSheet(); view = 'tool:knots'; render(); top();
+  } else if (m === 'sun'){
+    closeSheet(); view = 'tool:sun'; render(); top();
+  }
+}
+
+function newListSheet(){
+  const T = t(), TPL = buildTemplates(state.lang);
+  let html = `<h3>${T.newList}</h3><p>${T.newListMsg}</p><div class="choices">`;
+  Object.entries(TPL).forEach(([k, tp]) => {
+    const n = tp.cats.filter(c => !c.mode && !c.bag).reduce((a, c) => a + c.items.length, 0);
+    html += `<button class="choice" data-tpl="${k}"><span class="c-name">${esc(tp.name)}</span><span class="c-sub">${T.items(n)}</span></button>`;
+  });
+  html += `<button class="choice" data-tpl="blank"><span class="c-name">${T.emptyList}</span><span class="c-sub">${T.emptySub}</span></button></div>
+    <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button></div>`;
+  openSheet(html);
+  panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  panel.querySelectorAll('[data-tpl]').forEach(b => b.onclick = async () => {
+    const k = b.dataset.tpl;
+    closeSheet();
+    const name = await askText(T.nameList, k === 'blank' ? T.myList : TPL[k].name, T.create);
+    if (!name) return;
+    const l = k === 'blank' ? {id:uid(), name, notes:'', modes:{}, cats:[]} : fromTemplate(k, name);
+    state.lists.push(l); state.active = l.id; view = null;
+    if (k === 'blank') editing = true;
+    save(); render(); top();
+  });
+}
+
+function backupSheet(){
+  const T = t();
+  const data = JSON.stringify({app:'trip-checklist', version:2, lists:state.lists});
+  openSheet(`<h3>${T.backup}</h3>
+    <p>${T.bkMsg}</p>
+    <textarea id="bkOut" readonly>${esc(data)}</textarea>
+    <div class="row" style="justify-content:flex-start"><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
+    <div class="status" id="bkStatus"></div>
+    <div class="section-label">${T.restore}</div>
+    <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
+    <div class="row"><button class="btn" data-s="cancel">${T.close}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>`);
+  const status = $('bkStatus');
+  panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  $('bkCopy').onclick = async () => {
+    const ta = $('bkOut');
+    try { await navigator.clipboard.writeText(ta.value); status.textContent = T.bkCopied; }
+    catch(e){ ta.select(); try { document.execCommand('copy'); status.textContent = T.bkCopied; } catch(_){ status.textContent = T.bkManual; } }
+  };
+  $('bkRestore').onclick = () => {
+    try {
+      const obj = JSON.parse($('bkIn').value);
+      if (!obj || !Array.isArray(obj.lists)) throw 0;
+      let added = 0;
+      obj.lists.forEach(l => {
+        if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
+        state.lists.push(cloneList(l, true)); added++;
+      });
+      if (!added) throw 0;
+      save(); render();
+      status.textContent = T.bkAdded(added);
+      $('bkIn').value = '';
+    } catch(e){ status.textContent = T.bkBad; }
+  };
+}
+
+/* ---------- main interactions ---------- */
+main.addEventListener('click', async e => {
+  const fs_ = e.target.closest('[data-foodseason]');
+  if (fs_){ foodState().season = fs_.dataset.foodseason; save(); render(); return; }
+  const fdt = e.target.closest('[data-foodtoggle]');
+  if (fdt){ const f = foodState(); f[fdt.dataset.foodtoggle] = !f[fdt.dataset.foodtoggle]; save(); render(); return; }
+  const ft = e.target.closest('[data-fueltype]');
+  if (ft){ fuelState().fuel = ft.dataset.fueltype; save(); render(); return; }
+  const fuse = e.target.closest('[data-fueluse]');
+  if (fuse){ fuelState().use = fuse.dataset.fueluse; save(); render(); return; }
+  const cm = e.target.closest('[data-calcmode]');
+  if (cm){ state.calc.mode = cm.dataset.calcmode; save(); render(); return; }
+  const chip = e.target.closest('[data-mode]');
+  if (chip){
+    const l = cur(); l.modes = l.modes || {};
+    l.modes[chip.dataset.mode] = !l.modes[chip.dataset.mode];
+    save(); render(); return;
+  }
+  const op = e.target.closest('[data-open]');
+  if (op){ view = 'tool:' + op.dataset.open; render(); top(); return; }
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const T = t(), act = b.dataset.act;
+  if (act === 'back'){ view = null; render(); top(); return; }
+  if (act === 'cStart'){ startCompass(); return; }
+  if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
+  if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
+  if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
+  if (act === 'rainLock'){ rainLocked = true; render(); return; }
+  if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ it.done = lastTick.prev; save(); } lastTick = null; render(); } return; }
+  if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
+  if (act === 'editToggle'){ editing = !editing; render(); return; }
+  if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
+  if (act === 'resetList'){
+    const l = cur();
+    if (await confirmBox(T.resetQ, T.resetMsg(l.name), T.resetOk)){
+      withUndo(T.resetDone, () => l.cats.forEach(c => c.items.forEach(i => i.done = false))); top();
+    }
+    return;
+  }
+  if (act === 'fuelShared'){ const f = fuelState(); f.shared = !f.shared; save(); render(); return; }
+  if (act === 'resetRate'){ const f = fuelState(); delete f.custom[f.fuel + '_' + f.use]; save(); render(); return; }
+  if (act === 'openBag'){ view = b.dataset.bag; render(); top(); return; }
+  if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ bg.lightOnly = !bg.lightOnly; save(); render(); } return; }
+  const catEl = b.closest('[data-cat]');
+  const cat = catEl ? findCat(catEl.dataset.cat) : null;
+  const itemEl = b.closest('[data-item]');
+  const item = cat && itemEl ? cat.items.find(i => i.id === itemEl.dataset.item) : null;
+
+  if (act === 'toggleCat'){ if (!view){ cat.open = !cat.open; save(); render(); } }
+  else if (act === 'toggleItem'){
+    if (state.field && !tapOk()) return;
+    lastTick = {cat:cat.id, item:item.id, prev:item.done};
+    item.done = !item.done; save(); render();
+  }
+  else if (act === 'indentItem'){ item.sub = !item.sub; save(); render(); }
+  else if (act === 'noteCat'){
+    const v = await askText(T.editCatNote, cat.note || '', T.save, true);
+    if (v !== null && v !== undefined){ cat.note = v; save(); render(); }
+  }
+  else if (act === 'editNotes'){
+    const v = await askArea(T.notes, cur().notes || '');
+    if (v !== null && v !== undefined){ cur().notes = v; save(); render(); }
+  }
+  else if (act === 'renameItem'){
+    const v = await askText(T.renameItem, item.text, T.save);
+    if (v){ item.text = v; save(); render(); }
+  }
+  else if (act === 'deleteItem'){ withUndo(T.itemDeleted, () => { cat.items = cat.items.filter(i => i.id !== item.id); }); }
+  else if (act === 'addItem'){ addItem(cat.id); }
+  else if (act === 'renameCat'){
+    const v = await askText(T.renameCat, cat.name, T.save);
+    if (v){ cat.name = v; save(); render(); }
+  }
+  else if (act === 'deleteCat'){
+    if (await confirmBox(T.delCatQ, T.delCatMsg(cat.name, cat.items.length), T.delCat)){
+      withUndo(T.catDeleted, () => { cur().cats = cur().cats.filter(c => c.id !== cat.id); if (view === cat.id) view = null; });
+    }
+  }
+  else if (act === 'addCat'){
+    const v = await askText(T.newCat, '', T.addCat);
+    if (v){
+      const nc = {id:uid(), name:v, note:'', mode:null, bag:false, open:true, items:[]};
+      cur().cats.push(nc); save(); render();
+      const inp = main.querySelector(`[data-add="${nc.id}"]`); if (inp) inp.focus();
+    }
+  }
+});
+main.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.dataset && e.target.dataset.add) addItem(e.target.dataset.add);
+});
+function addItem(catId){
+  const inp = main.querySelector(`[data-add="${catId}"]`);
+  const v = inp && inp.value.trim();
+  if (!v) return;
+  findCat(catId).items.push({id:uid(), text:v, done:false, sub:false, link:null, light:false});
+  save(); render();
+  const again = main.querySelector(`[data-add="${catId}"]`);
+  if (again) again.focus();
+}
+
+$('listBtn').onclick = listsSheet;
+$('menuBtn').onclick = listsSheet;
+$('tabbar').addEventListener('click', e => {
+  const b = e.target.closest('[data-tab]');
+  if (!b) return;
+  if (state.field && !tapOk()) return;
+  tab = b.dataset.tab; view = null; render(); top();
+});
+
+/* ---------- undo ---------- */
+let toastTimer = null;
+function withUndo(msg, fn){
+  const snap = JSON.stringify(state);
+  fn(); save(); render();
+  const el = $('toast');
+  el.innerHTML = `<span>${esc(msg)}</span><button>${t().undo}</button>`;
+  el.hidden = false;
+  el.querySelector('button').onclick = () => { state = JSON.parse(snap); save(); el.hidden = true; render(); };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
+}
+
+/* ---------- outdoor mode: strict taps, rain lock, wake lock ---------- */
+const ptrs = new Map();
+let multi = false, lastTap = {ok:true, t:0};
+document.addEventListener('pointerdown', e => {
+  ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY, t:Date.now()});
+  if (ptrs.size > 1) multi = true;
+}, true);
+document.addEventListener('pointerup', e => {
+  const p = ptrs.get(e.pointerId);
+  if (p){
+    const dist = Math.hypot(e.clientX - p.x, e.clientY - p.y), dt = Date.now() - p.t;
+    lastTap = {ok: !multi && dist < 12 && dt < 700, t: Date.now()};
+  }
+  ptrs.delete(e.pointerId);
+  if (!ptrs.size) setTimeout(() => { if (!ptrs.size) multi = false; }, 0);
+}, true);
+document.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); lastTap = {ok:false, t:Date.now()}; }, true);
+function tapOk(){ return Date.now() - lastTap.t > 800 || lastTap.ok; }
+
+function renderLock(){
+  $('rainlock').innerHTML = `<button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${t().holdUnlock}</span></button>`;
+  const btn = $('unlockBtn');
+  let timer = null;
+  const start = e => { e.preventDefault(); btn.classList.add('holding'); timer = setTimeout(() => { rainLocked = false; render(); }, 1000); };
+  const stop = () => { btn.classList.remove('holding'); clearTimeout(timer); };
+  btn.addEventListener('pointerdown', start);
+  ['pointerup','pointerleave','pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+}
+let wakeLock = null;
+async function updateWake(){
+  try {
+    if (state.field && document.visibilityState === 'visible'){
+      if (!wakeLock && navigator.wakeLock){ wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); }
+    } else if (wakeLock){ await wakeLock.release(); wakeLock = null; }
+  } catch(e){}
+}
+document.addEventListener('visibilitychange', updateWake);
+
+render();
+updateWake();
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){ window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
+})();
+</script>
+</body>
+</html>
