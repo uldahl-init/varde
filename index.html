@@ -101,8 +101,8 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .back{display:inline-flex;align-items:center;gap:4px;margin-top:14px;background:none;border:0;color:var(--muted);font-weight:600;cursor:pointer;padding:6px 0}
 .tool-sub{color:var(--muted);margin:6px 0 0}
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-.field{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted);font-weight:600}
-.field input{font-size:1.15rem;font-variant-numeric:tabular-nums}
+.cfield{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted);font-weight:600}
+.cfield input{font-size:1.15rem;font-variant-numeric:tabular-nums}
 .calc-result{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
 .calc-result:empty{display:none}
 .calc-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -183,7 +183,10 @@ body.notlist .list-switch svg{display:none}
 .toast[hidden]{display:none}
 .toast span{flex:1}
 .toast button{border:0;border-radius:8px;padding:10px 14px;background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer}
-.rainlock{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,.08);display:flex;align-items:flex-end;justify-content:center;padding:0 16px calc(84px + env(safe-area-inset-bottom,0px));touch-action:none}
+.rainlock{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:2px solid var(--red);pointer-events:auto}
+.lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
+body.locked main,body.locked main *,body.locked header.top button,body.locked .toolbar{pointer-events:none}
+body.locked .tabbar{visibility:hidden}
 .rainlock[hidden]{display:none}
 .unlock{position:relative;overflow:hidden;width:100%;max-width:420px;padding:20px;border-radius:16px;border:2px solid var(--red);background:var(--surface);color:var(--ink);font-weight:600;font-size:1.05rem;cursor:pointer;user-select:none;-webkit-user-select:none}
 .unlock .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);opacity:.25}
@@ -341,7 +344,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing list', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
-    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock',
+    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: you can scroll and read, but nothing reacts to taps.',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
@@ -445,7 +448,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
-    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp',
+    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: du kan rulle og lese, men ingenting reagerer på trykk.',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
@@ -739,6 +742,7 @@ function render(){
   $('menuBtn').setAttribute('aria-label', T.menu);
   $('listBtn').setAttribute('aria-label', T.switchList);
   $('rainlock').hidden = !rainLocked;
+  document.body.classList.toggle('locked', rainLocked);
   if (rainLocked) renderLock();
   if (tab !== 'compass') stopCompass();
   if (tab === 'compass') return renderCompass();
@@ -970,7 +974,7 @@ function renderWater(){
   const c = state.calc;
     $('listName').textContent = T.water;
   document.title = T.water + ' · ' + T.app;
-  const field = (k, label) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
+  const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
   let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.waterSub}</p>
     <div class="modes"><div class="chips">
@@ -1024,7 +1028,7 @@ function renderFuel(){
     $('listName').textContent = T.fuelTool;
   document.title = T.fuelTool + ' · ' + T.app;
   const chip = (attr, val, cur, label) => `<button class="chip" ${attr}="${val}" aria-pressed="${cur === val}">${label}</button>`;
-  const field = (k, label, v) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt(v).replace(/\s/g,''))}"></label>`;
+  const field = (k, label, v) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt(v).replace(/\s/g,''))}"></label>`;
   const k = f.fuel + '_' + f.use, custom = f.custom && typeof f.custom[k] === 'number';
   let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.fuelSub}</p>
@@ -1036,7 +1040,7 @@ function renderFuel(){
     </div></div>
     <div class="calc">
       ${field('days', T.days, f.days)}${field('people', T.people, f.people)}
-      <div class="field"><span>${T.perDay(fu.unit)}</span><input type="text" inputmode="decimal" data-fuel="rate" value="${esc(fmt(rateFor(f)).replace(/\s/g,''))}">
+      <div class="cfield"><span>${T.perDay(fu.unit)}</span><input type="text" inputmode="decimal" data-fuel="rate" value="${esc(fmt(rateFor(f)).replace(/\s/g,''))}">
         ${custom ? `<button class="reset-link" data-act="resetRate">${T.resetRate}</button>` : ''}</div>
       ${field('margin', T.margin, f.margin)}
       ${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}
@@ -1131,7 +1135,7 @@ function renderFood(){
   const T = t(), f = foodState();
     $('listName').textContent = T.foodTool;
   document.title = T.foodTool + ' · ' + T.app;
-  const field = (k, label) => `<label class="field"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
+  const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
   const tog = (k, label) => `<button class="chip" data-foodtoggle="${k}" aria-pressed="${!!f[k]}">${label}</button>`;
   main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.foodSub}</p>
@@ -1549,7 +1553,7 @@ document.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); last
 function tapOk(){ return Date.now() - lastTap.t > 800 || lastTap.ok; }
 
 function renderLock(){
-  $('rainlock').innerHTML = `<button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${t().holdUnlock}</span></button>`;
+  $('rainlock').innerHTML = `<p class="lock-note">${t().lockNote}</p><button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${t().holdUnlock}</span></button>`;
   const btn = $('unlockBtn');
   let timer = null;
   let holding = false;
