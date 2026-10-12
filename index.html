@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <title>Varde</title>
 <meta name="application-name" content="Varde">
@@ -231,6 +231,11 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .c-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .c-btns .chip{padding:12px 20px}
 .c-msg{margin-top:14px;text-align:center;color:var(--muted);max-width:420px}
+.sheet-top{position:sticky;top:-20px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-20px -16px 12px;padding:14px 12px 10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.sheet-top h3{margin:0}
+.sheet-x{flex:none;width:48px;height:48px;border:0;border-radius:12px;background:var(--bg);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer}
+html,body{touch-action:manipulation}
+.unlock{touch-action:none;-webkit-touch-callout:none}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -251,7 +256,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 
 .overlay{position:fixed;inset:0;z-index:20;background:rgba(8,18,17,.5);display:flex;align-items:flex-end;justify-content:center}
 .overlay[hidden]{display:none}
-.panel{background:var(--surface);width:100%;max-width:640px;max-height:88%;overflow:auto;border-radius:16px 16px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.panel{background:var(--surface);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:16px 16px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
 .panel h3{margin:0 0 12px;font-family:var(--head);font-weight:600;font-size:1.5rem}
 .panel p{margin:0 0 12px;color:var(--muted)}
 .panel .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
@@ -1187,16 +1192,25 @@ function top(){ try { window.scrollTo(0,0); } catch(e){} }
 
 /* ---------- sheets ---------- */
 let sheetResolve = null;
+let sheetPushed = false, ignorePop = false;
 function openSheet(html){
-  panel.innerHTML = html;
+  const m = html.match(/^\s*<h3>([\s\S]*?)<\/h3>/);
+  const title = m ? m[1] : '';
+  const rest = m ? html.slice(m[0].length) : html;
+  panel.innerHTML = `<div class="sheet-top"><h3>${title}</h3><button class="sheet-x" data-sheet-close aria-label="${t().close}">✕</button></div>` + rest;
+  panel.querySelector('[data-sheet-close]').onclick = () => closeSheet(null);
   overlay.hidden = false;
-  const f = panel.querySelector('input,textarea,button');
+  if (!sheetPushed){ sheetPushed = true; history.pushState(Object.assign({}, history.state || {}, {sheet:true}), ''); }
+  const f = panel.querySelector('input,textarea');
   if (f) setTimeout(() => f.focus(), 30);
 }
 function closeSheet(val){
   overlay.hidden = true;
   panel.innerHTML = '';
   if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
+  setTimeout(() => {
+    if (overlay.hidden && sheetPushed){ sheetPushed = false; ignorePop = true; history.back(); }
+  }, 0);
 }
 overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(null); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeSheet(null); });
@@ -1389,16 +1403,16 @@ main.addEventListener('click', async e => {
     save(); render(); return;
   }
   const op = e.target.closest('[data-open]');
-  if (op){ view = 'tool:' + op.dataset.open; render(); top(); return; }
+  if (op){ go(tab, 'tool:' + op.dataset.open); return; }
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const T = t(), act = b.dataset.act;
-  if (act === 'back'){ view = null; render(); top(); return; }
+  if (act === 'back'){ goBack(); return; }
   if (act === 'cStart'){ startCompass(); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
-  if (act === 'rainLock'){ rainLocked = true; render(); return; }
+  if (act === 'rainLock'){ rainLocked = true; history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); render(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ it.done = lastTick.prev; save(); } lastTick = null; render(); } return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'editToggle'){ editing = !editing; render(); return; }
@@ -1412,7 +1426,7 @@ main.addEventListener('click', async e => {
   }
   if (act === 'fuelShared'){ const f = fuelState(); f.shared = !f.shared; save(); render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.custom[f.fuel + '_' + f.use]; save(); render(); return; }
-  if (act === 'openBag'){ view = b.dataset.bag; render(); top(); return; }
+  if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
   if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ bg.lightOnly = !bg.lightOnly; save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
   const cat = catEl ? findCat(catEl.dataset.cat) : null;
@@ -1477,7 +1491,29 @@ $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
   if (state.field && !tapOk()) return;
-  tab = b.dataset.tab; view = null; render(); top();
+  if (b.dataset.tab === tab && !view) return;
+  go(b.dataset.tab, null);
+});
+
+/* ---------- navigation history (Android back button) ---------- */
+function go(newTab, newView){
+  tab = newTab; view = newView;
+  const depth = ((history.state && history.state.depth) || 0) + 1;
+  history.pushState({tab, view, depth}, '');
+  render(); top();
+}
+function goBack(){
+  if (history.state && history.state.depth > 0) history.back();
+  else { view = null; render(); top(); }
+}
+history.replaceState({tab:'list', view:null, depth:0}, '');
+window.addEventListener('popstate', e => {
+  if (ignorePop){ ignorePop = false; return; }
+  if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
+  if (rainLocked){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
+  const st = e.state || {tab:'list', view:null};
+  tab = st.tab || 'list'; view = st.view || null;
+  render(); top();
 });
 
 /* ---------- undo ---------- */
@@ -1516,10 +1552,25 @@ function renderLock(){
   $('rainlock').innerHTML = `<button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${t().holdUnlock}</span></button>`;
   const btn = $('unlockBtn');
   let timer = null;
-  const start = e => { e.preventDefault(); btn.classList.add('holding'); timer = setTimeout(() => { rainLocked = false; render(); }, 1000); };
-  const stop = () => { btn.classList.remove('holding'); clearTimeout(timer); };
-  btn.addEventListener('pointerdown', start);
-  ['pointerup','pointerleave','pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+  let holding = false;
+  const unlock = () => {
+    rainLocked = false;
+    if (history.state && history.state.lock){ ignorePop = true; history.back(); }
+    render();
+  };
+  const start = e => {
+    if (e.cancelable) e.preventDefault();
+    if (holding) return;
+    holding = true; btn.classList.add('holding');
+    timer = setTimeout(() => { holding = false; unlock(); }, 1000);
+  };
+  const stop = () => { holding = false; btn.classList.remove('holding'); clearTimeout(timer); };
+  btn.addEventListener('touchstart', start, {passive:false});
+  btn.addEventListener('touchend', stop);
+  btn.addEventListener('touchcancel', stop);
+  btn.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse' || e.pointerType === 'pen') start(e); });
+  btn.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') stop(); });
+  btn.addEventListener('pointercancel', e => { if (e.pointerType !== 'touch') stop(); });
   btn.addEventListener('contextmenu', e => e.preventDefault());
 }
 let wakeLock = null;
