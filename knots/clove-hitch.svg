@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-127.8 11.1 550.4 402.3" role="img" aria-label="Clove hitch">
+<!-- "Webeleinenstek3.svg", Wikimedia Commons (author not stated), CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/).
+     Source: https://commons.wikimedia.org/wiki/File:Webeleinenstek3.svg
+     Changed for Varde: cropped, metadata removed, colours set by the app. This adapted file is shared under CC BY-SA 3.0. -->
+<path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 250.62925,356.04295 C 291.6341,356.04295 338.49678,299.17015 338.49678,219.54823 C 338.49678,139.92631 291.6341,83.05351 250.62925,83.05351"
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036398;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 250.62925,356.04295 C 291.6341,356.04295 338.49678,299.17015 338.49678,219.54823 C 338.49678,139.92631 291.6341,83.05351 250.62925,83.05351"
+   /><path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 28.031598,356.04295 C -12.973233,356.04295 -59.835912,299.17015 -59.835912,219.54823 C -59.835912,139.92631 -10.725296,82.491526 30.279535,82.491526"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036398;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 28.031598,356.04295 C -12.973233,356.04295 -59.835912,299.17015 -59.835912,219.54823 C -59.835912,139.92631 -11.849264,83.05351 29.155567,83.05351"
+  
+   /><ellipse
+   style="fill:var(--knot-pole,#dededd);stroke:var(--knot-line,#1f1a17);stroke-width:0.53262788;stroke-linecap:round;stroke-linejoin:round"
+  
+  
+  
+  
+  
+   ry="29"
+   rx="14"
+   cy="212"
+   cx="93"
+  
+   transform="matrix(3.8918743,0,0,3.79152,-429.26786,-584.25401)" /><path
+   style="fill:var(--knot-pole,#dededd);stroke:var(--knot-line,#1f1a17);stroke-width:2.04602051;stroke-linecap:round;stroke-linejoin:round"
+  
+   d="M 363.50335,329.50231 C 390.04399,329.50231 416.58463,280.21255 416.58463,219.54823 C 416.58463,158.88391 390.04399,109.59415 363.50335,109.59415 L -68.729766,109.59415 C -38.397636,109.59415 -11.857026,158.88391 -11.857026,219.54823 C -11.857026,280.21255 -38.397636,329.50231 -68.729766,329.50231 L 363.50335,329.50231 z "
+   /><path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 168.61956,407.37083 L 168.61956,329.50231 C 168.61956,272.62951 171.48005,83.05351 253.48974,83.05351"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036423;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 170.61178,407.37084 L 169.74353,328.94033 C 169.74353,272.06753 171.48005,83.05351 253.48974,83.05351"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 109.17296,17.114037 L 110.04121,109.59415 C 110.04121,166.46695 107.23129,355.48097 25.221677,355.48097"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036398;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 109.17296,17.114037 L 110.04121,109.59415 C 110.04121,166.46695 104.98335,356.04295 22.97374,356.04295"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 139.33039,219.54823 C 110.04121,151.30087 80.752061,83.05351 28.031598,83.05351"
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036398;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 139.33039,219.54823 C 110.04121,151.30087 80.752061,83.05351 28.031598,83.05351"
+   /><path
+   style="fill:none;stroke:var(--knot-line,#1f1a17);stroke-width:49.04337403;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 252.87719,356.04295 C 200.15668,356.04295 168.61956,287.79559 139.33039,219.54823"
+  
+   /><path
+   style="fill:none;stroke:var(--knot-fill,#838281);stroke-width:34.33036398;stroke-miterlimit:4;stroke-dasharray:none"
+  
+   d="M 254.00116,355.48097 C 201.28065,355.48097 168.61956,287.79559 139.33039,219.54823"
+  
+   />
+</svg>

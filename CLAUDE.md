@@ -17,6 +17,16 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - Utemodus (outdoor mode): larger targets, editing locked, screen kept on, strict tap filter, Regnlås (rain lock), Nattlys (red night light), Angre (undo).
 - Data is stored in `localStorage` under `KEY`.
 
+## Data model (from varde-v7)
+- `state.v = 2`. Older stored data is converted once by `migrate()`; lists that match the built-in template become the standard list (ticks, trip types and views kept), anything else is kept as an own list. Never remove the migration.
+- **Standard list:** built from `friluftsliv(lang)` on the fly by `stdList()`, always in the app language. Its ticks, trip types, light view and folded sections live in `state.std` (`done`, `modes`, `light`, `open`). Item ids are `std:<section key>:<Norwegian text in lower case>`, so ticks survive a language switch; changing the Norwegian text of a template item resets that item's tick.
+- **Own lists:** `state.lists`. `state.main` is `'std'` or the id of the own list shown on the front page (Bruk som hovedliste). `list.tripType` makes it appear under Turtype (Legg til i turtype); switching it on stores `'L:<list id>'` in the main list's `modes`, and its sections are added to the main list.
+- Always change ticks, folding and light view through `setDone`, `setOpen` and `setLight`, which handle both kinds of list.
+- **Sharing:** `#share=<code>` links carry a packed list (`packList`/`unpackList`), deflate-compressed when the browser supports it (`z` prefix) or plain (`j`). Nothing is stored on a server.
+- **Introduction:** shown once (`state.introDone`), and from Guider → Slik bruker du Varde.
+- **Sun times:** calculated offline (`sunPos`, `sunDay`) from `state.pos` (GPS) and the date.
+- **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
+
 ## Standing rules
 1. Every change to `index.html` must also raise the `CACHE` version in `sw.js` (e.g. `varde-v1` → `varde-v2`), so installed apps fetch the update.
 2. Never change the storage `KEY` (`outdoor-lists-v1`) in `index.html`, not even if the app is renamed. People have their own lists on their phones; changing it would wipe them. Template changes only affect newly created lists.
@@ -36,6 +46,8 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - `body` uses the classes `field`, `night`, `locked` and `notlist`, and the attribute `data-skin`. Never reuse these names for other elements: a clash once made the whole page wider than the screen.
 - `main` has the class `wrap`, so its bottom spacing for the tab bar is set on `main.wrap`. After any layout change, check that the last content on every page ends above the tab bar.
 - The Android back button is handled with the History API (`go`, `goBack`, `popstate`). New screens and sheets must use `go()` or `openSheet()` so back keeps working.
+- The body element carries `data-skin`, so click handlers must never match `closest('[data-skin]')` without a class (use `.skin-btn[data-skin]`); a generic match caught every click in the app once.
+- Sheets that close and are followed by navigation must not leave a history entry behind: `go()` reuses a closed sheet's entry.
 - Regnlås (rain lock) blocks taps but allows scrolling, and is unlocked by a one-second hold that handles touch events directly.
 
 ## Name

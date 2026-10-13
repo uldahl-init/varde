@@ -240,6 +240,66 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .sheet-x{flex:none;width:48px;height:48px;border:0;border-radius:12px;background:var(--bg);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer}
 html,body{touch-action:manipulation}
 .unlock{touch-action:none;-webkit-touch-callout:none}
+.field-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;padding:14px 18px;border:2px solid var(--red);border-radius:16px;background:var(--surface);color:var(--ink);cursor:pointer;text-align:left}
+.field-btn svg{flex:none;width:30px;height:30px;stroke:var(--red);fill:none;stroke-width:2;stroke-linejoin:round}
+.field-btn span{font-family:var(--head);font-weight:600;font-size:1.45rem;line-height:1.1}
+.field-btn small{display:block;color:var(--muted);font-size:.85rem;font-weight:600}
+.field-btn.on{background:var(--red);color:#fff}
+.field-btn.on svg{stroke:#fff}
+.field-btn.on small{color:rgba(255,255,255,.85)}
+.field-tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.sub-tools{display:flex;justify-content:flex-end;margin-top:10px}
+.chip.small{padding:6px 12px;font-size:.85rem}
+.chip.own{border-style:dashed;border-color:var(--red);color:var(--red)}
+.chip.own[aria-pressed="true"]{background:var(--red);border-style:solid;color:#fff}
+.mode-hint{margin:0 0 8px;color:var(--muted);font-size:.9rem}
+.cat-head h2 .from{font-family:var(--body);font-size:.8rem;font-weight:600;color:var(--red);margin-left:6px}
+.edit-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px dashed var(--line-strong);font-weight:600}
+.lcard{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.lcard.sel{border-color:var(--red)}
+.lc-top{width:100%;display:flex;align-items:center;gap:8px;padding:14px 16px;min-height:56px;border:0;background:none;text-align:left;cursor:pointer}
+.lc-name{flex:1;min-width:0;font-weight:600;font-size:1.05rem}
+.lc-count{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.lcard.sel .chev{transform:rotate(180deg)}
+.badge{font-size:.75rem;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--ink);color:var(--bg);white-space:nowrap}
+.badge.own{background:none;border:1px dashed var(--red);color:var(--red)}
+.lc-body{padding:0 16px 16px;border-top:1px solid var(--line)}
+.role{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.role b{display:block}
+.role span{display:block;color:var(--muted);font-size:.9rem}
+.switch{flex:none;width:52px;height:32px;margin-top:2px;border-radius:999px;border:0;background:var(--line-strong);position:relative;cursor:pointer}
+.switch i{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .15s}
+.switch[aria-pressed="true"]{background:var(--red)}
+.switch[aria-pressed="true"] i{left:24px}
+.switch:disabled{cursor:default}
+.role-hint{margin:12px 0 0;color:var(--muted);font-size:.9rem}
+.lc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.empty-own{color:var(--muted);margin:4px 2px 0}
+.intro{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.intro[hidden]{display:none}
+.intro-card{width:100%;max-width:440px;text-align:center}
+.intro-ic svg{width:96px;height:96px;fill:none;stroke:var(--red);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.intro-card h2{font-family:var(--head);font-weight:600;font-size:2rem;margin:14px 0 8px}
+.intro-card p{color:var(--muted);line-height:1.55;margin:0 auto;max-width:380px}
+.intro-lang{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.intro-lang .btn{min-width:120px;padding:14px 18px}
+.intro-dots{display:flex;gap:8px;justify-content:center;margin-top:22px}
+.intro-dots i{width:8px;height:8px;border-radius:50%;background:var(--line-strong)}
+.intro-dots i.on{background:var(--red)}
+.intro-nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+.intro-nav .btn{min-height:52px;padding:12px 22px}
+.sun-big{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red);margin:12px 0 6px}
+.food-out .q.sm{font-size:1.1rem;color:var(--ink)}
+.sun-top{max-width:220px}
+.links{display:flex;flex-direction:column;gap:8px}
+.links .btn{display:block;text-align:left;white-space:normal;text-decoration:none;color:var(--ink)}
+.knot-img{--knot-line:var(--ink);--knot-fill:var(--line-strong);--knot-pole:var(--bg);display:flex;justify-content:center;margin:0 0 10px}
+.knot-img svg{height:220px;width:auto;display:block}
+.knot-img.photo img{display:block;width:100%;max-width:420px;height:auto;border-radius:12px;background:#fff}
+body.night .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-rotate(-50deg) saturate(4)}
+.credits{margin-top:18px;font-size:.8rem;color:var(--muted);line-height:1.5}
+.credits a{color:inherit}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -253,9 +313,6 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 .done-banner{margin:20px 0 0;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--red);display:flex;gap:12px;align-items:center;font-weight:600}
 .done-banner svg{width:22px;height:22px;fill:none;stroke:var(--red);stroke-width:3;stroke-linecap:round;flex:none}
 
-.olddock{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-.dock .wrap{display:flex;gap:8px;padding-top:10px;padding-bottom:10px}
-.dock .btn{flex:1;padding:12px 8px}
 .btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 .overlay{position:fixed;inset:0;z-index:20;background:rgba(8,18,17,.5);display:flex;align-items:flex-end;justify-content:center}
@@ -299,6 +356,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <nav class="tabbar" id="tabbar"></nav>
 <div class="toast" id="toast" hidden></div>
 <div class="rainlock" id="rainlock" hidden></div>
+<div class="intro" id="intro" hidden></div>
 
 <div class="overlay" id="overlay" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
 
@@ -308,6 +366,16 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
+const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
+const KNOT_CREDITS = [
+  {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
+  {k:2, author:null, file:'Webeleinenstek3.svg', url:'https://commons.wikimedia.org/wiki/File:Webeleinenstek3.svg', lic:'CC BY-SA 3.0', licUrl:'https://creativecommons.org/licenses/by-sa/3.0/', chg:'adaptedPlain'},
+  {k:4, author:'Agneta (de.wikipedia)', file:'Prusik.jpg', url:'https://commons.wikimedia.org/wiki/File:Prusik.jpg', lic:'CC BY-SA 3.0', licUrl:'https://creativecommons.org/licenses/by-sa/3.0/', photo:true, chg:'adaptedPrusik'},
+  {k:3, author:'Markus Bärlocher', file:'Schotstek rechts.jpg', url:'https://commons.wikimedia.org/wiki/File:Schotstek_rechts.jpg', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Schotstek_rechts.jpg', photo:true, chg:'adaptedBg'},
+  {k:1, author:'Dontpanic', file:'Topsegelschotstek.png', url:'https://commons.wikimedia.org/wiki/File:Topsegelschotstek.png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Topsegelschotstek.png', photo:true, chg:'adaptedPhoto'}
+];
+const knotSvgCache = {};
+const ICON_FIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg>';
 const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
 const PEN = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>';
@@ -316,6 +384,30 @@ const CROSS = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 /* ---------- interface text ---------- */
 const UI = {
   en: {
+    shareText:n=>`Packing list "${n}" from Varde`, shareFallback:'Copy the link and send it to the people you want to share the list with.', copyLink:'Copy link', linkCopied:'Link copied.',
+    shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Your own lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', imported:'List added',
+    introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
+    intro:[
+      ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
+      ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
+      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on and editing is locked. Rain lock lets you read without water on the screen ticking anything.'],
+      ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
+      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Plan, Guides and Compass are at the bottom.']
+    ],
+    howTool:'How to use Varde', howShort:'A short introduction to the app',
+    sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
+    posNote:'The sun times are calculated on the phone from your position and the date. GPS works without mobile coverage.',
+    sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
+    untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
+    sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
+    linksTitle:'Weather and warnings', linksNote:'Needs a connection.', yrLink:'yr.no: weather forecast', varsomLink:'varsom.no: avalanche, flood and landslide warnings',
+    editing:'Editing list', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
+    tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
+    mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
+    useMain:'Use as main list', useMainHint:'Shown on the front page instead of the current main list. One list at a time.', isMainHint:'This is the list on the front page now.',
+    useTrip:'Add as trip type', useTripHint:'Its items are added to the main list when you switch the trip type on under Trip type.',
+    makeCopy:'Make my own copy', share:'Share', listsSub:'Choose which list is on the front page, and manage your own lists.', stdList:'Standard list', ownLists:'Your own lists',
+    noOwn:"You haven't made any lists yet. Make one from the standard list or start empty.", showIntro:'Show the introduction again', fromStd:'Start from the standard list',
     app:'Varde', hide:'Hide packed', edit:'Edit list', doneEdit:'Done editing', reset:'Start over',
     packed:(d,t)=>`${d} of ${t} packed`, noItems:'No items yet', allDone:'Everything is packed. Have a good trip!',
     empty:'This list is empty. Tap <strong>Edit list</strong> to add categories and items.',
@@ -326,7 +418,7 @@ const UI = {
     renameList:'Rename list', copyName:'Name of the copy', copySuffix:' (copy)',
     keepOne:'Keep at least one list', keepOneMsg:'Create a new list first, then you can delete this one.',
     delList:'Delete this list?', delListMsg:n=>`"${n}" and all its items will be removed from this phone.`, delListOk:'Delete list',
-    newListMsg:'Start from the template and adjust it to your trip, or start empty.', items:n=>`${n} items`,
+    newListMsg:'Start from the standard list and change it, or start with an empty list.', items:n=>`${n} items`,
     emptyList:'Empty list', emptySub:'Build your own', nameList:'Name your list', myList:'My list', create:'Create list',
     bkMsg:'Your lists are stored only on this phone. Copy the backup below and keep it somewhere safe, or paste it on another phone to move or share your lists.',
     bkCopy:'Copy backup', bkCopied:'Backup copied.', bkManual:'Select the text and copy it manually.', restore:'Restore',
@@ -344,7 +436,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing list', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
+    tabList:'Packing', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
     field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: you can scroll and read, but nothing reacts to taps.',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -354,7 +446,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so <b>Night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> freezes the screen until you hold the unlock button, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> blocks taps but lets you scroll and read, until you hold the unlock button, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -368,7 +460,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['If it happens','<p><b>Snow blindness:</b> find darkness or cover the eyes, do not rub them, remove contact lenses, and cool compresses ease the pain. It usually passes in 1–3 days. Get medical help for strong pain or if it does not improve.</p><p><b>Lost your glasses?</b> Make emergency glasses: cut narrow slits in cardboard, tape or a piece of fabric, and fasten it in front of the eyes. It lets in far less light. On winter and glacier trips, always bring a spare pair.</p>']
     ],
     knotTool:'Knots', knotShort:'Five essential knots', knotSub:'Short reminders for when you need a knot quickly. Practise them at home: a knot you have only read about is hard to tie in wind and cold.',
-    knotWarn:'For gear, tarp and tent. Not for climbing or belaying.',
+    knotWarn:'For gear, tarp and tent. Not for climbing or belaying.', credits:'Image credits', noAuthor:'author not stated', illFrom:'illustration from', photoFrom:'photo from', adaptedPlain:'adapted (cropped, colours)', adaptedPrusik:'adapted (cropped, background lightened, enlarged)', adaptedBg:'adapted (cropped, background made white)', illBy:'illustration by', photoBy:'photo by', adapted:'adapted (cropped, labels removed, colours)', adaptedPhoto:'adapted (cropped, shadow softened)',
     knots:[
       {n:'Bowline', u:'A fixed loop that does not slip, and is easy to untie after load. Around a tree, a person, or a pack.', s:['Make a small loop in the standing part, with the working end side on top.','Bring the end up through the small loop from below.','Pass it around behind the standing part.','Bring it back down through the small loop.','Hold the end and the big loop together, and pull the standing part tight.'], c:'Remember: the rabbit comes out of the hole, around the tree, and back down the hole. Leave the end at least 10 cm long.'},
       {n:'Taut-line hitch', u:'An adjustable loop for guy lines on tents and tarps. Slide the knot to tighten or loosen.', s:['Pass the end around the peg or anchor.','Make two turns around the standing part, working back towards the peg, inside the loop.','Make one more turn around the standing part, on the far side of the first two (furthest from the peg), and tuck the end under itself in this turn, so it forms a separate half hitch.','Pull it tight.','Slide the knot up the line to tighten, and down to loosen.'], c:'Often confused with the Magnus hitch (in Norwegian, both are called «teltstikk»). Check: the last turn should sit on its own, separate from the first two, with the end leaving from there. If the end goes back down between the turns, you have tied the Magnus variant. The taut-line hitch is the best choice for guy lines. If it slips in thin or slippery cord, add one more inside turn.'},
@@ -417,9 +509,33 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     boils:(n,e)=>`${n} boil${n>1?'s':''} of ${e} l with your pot`,
     rangeErr:'The final temperature must be between the cold and the hot water temperature.',
     waterTip:'Poured water loses a few degrees, and the container cools in wind, so aim 1–2 °C above what you want. A comfortable shower is about 37–40 °C. Always test the water with your hand before use.', openList:n=>`Open ${n}`,
-    langNote:'Lists you have already made keep their language. New lists from the template use the language chosen here.'
+    langNote:'The standard list follows the language chosen here. Your own lists keep the language they were made in.'
   },
   no: {
+    shareText:n=>`Pakkliste «${n}» fra Varde`, shareFallback:'Kopier lenken og send den til dem du vil dele listen med.', copyLink:'Kopier lenke', linkCopied:'Lenken er kopiert.',
+    shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Dine egne lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', imported:'Listen er lagt til',
+    introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
+    intro:[
+      ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
+      ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
+      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på og redigering låses. Regnlås lar deg lese uten at vann på skjermen krysser av noe.'],
+      ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
+      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Planlegg, Guider og Kompass finner du nederst.']
+    ],
+    howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
+    sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
+    posNote:'Soltidene regnes ut på mobilen fra posisjonen og datoen. GPS virker uten mobildekning.',
+    sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
+    untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
+    sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
+    linksTitle:'Vær og varsler', linksNote:'Krever nett.', yrLink:'yr.no: værmelding', varsomLink:'varsom.no: snøskred-, flom- og jordskredvarsel',
+    editing:'Redigerer liste', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
+    tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
+    mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
+    useMain:'Bruk som hovedliste', useMainHint:'Vises på forsiden i stedet for nåværende hovedliste. Én liste om gangen.', isMainHint:'Dette er listen som vises på forsiden nå.',
+    useTrip:'Legg til i turtype', useTripHint:'Tingene i listen legges til i hovedlisten når du slår på turtypen under Turtype.',
+    makeCopy:'Lag egen kopi', share:'Del', listsSub:'Velg hvilken liste som vises på forsiden, og administrer dine egne lister.', stdList:'Standardliste', ownLists:'Dine egne lister',
+    noOwn:'Du har ikke laget noen lister ennå. Lag en fra standardlisten eller start med en tom liste.', showIntro:'Vis introduksjonen igjen', fromStd:'Start fra standardlisten',
     app:'Varde', hide:'Skjul pakket', edit:'Rediger liste', doneEdit:'Ferdig', reset:'Nullstill',
     packed:(d,t)=>`${d} av ${t} pakket`, noItems:'Ingen ting ennå', allDone:'Alt er pakket. God tur!',
     empty:'Listen er tom. Trykk <strong>Rediger liste</strong> for å legge til kategorier og ting.',
@@ -430,7 +546,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     renameList:'Gi listen nytt navn', copyName:'Navn på kopien', copySuffix:' (kopi)',
     keepOne:'Behold minst én liste', keepOneMsg:'Lag en ny liste først, så kan du slette denne.',
     delList:'Slette denne listen?', delListMsg:n=>`«${n}» og alt innholdet blir fjernet fra denne telefonen.`, delListOk:'Slett liste',
-    newListMsg:'Start fra malen og tilpass den til turen, eller start med en tom liste.', items:n=>`${n} ting`,
+    newListMsg:'Start fra standardlisten og endre den, eller start med en tom liste.', items:n=>`${n} ting`,
     emptyList:'Tom liste', emptySub:'Lag din egen', nameList:'Gi listen et navn', myList:'Min liste', create:'Lag liste',
     bkMsg:'Listene dine lagres bare på denne telefonen. Kopier sikkerhetskopien under og ta vare på den, eller lim den inn på en annen telefon for å flytte eller dele listene.',
     bkCopy:'Kopier sikkerhetskopi', bkCopied:'Sikkerhetskopien er kopiert.', bkManual:'Merk teksten og kopier den manuelt.', restore:'Gjenopprett',
@@ -458,7 +574,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>Nattlys</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> fryser skjermen til du holder inne opplåsingsknappen, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> blokkerer trykk, men lar deg rulle og lese, til du holder inne opplåsingsknappen, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -472,7 +588,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Hvis uhellet er ute','<p><b>Snøblindhet:</b> søk mørke eller dekk til øynene, ikke gni, ta ut kontaktlinser, og kalde kompresser lindrer. Det går vanligvis over på 1–3 døgn. Søk legehjelp ved sterke smerter eller hvis det ikke bedres.</p><p><b>Mistet brillene?</b> Lag nødbriller: skjær smale spalter i papp, tape eller et stykke stoff, og fest det foran øynene. Det slipper inn langt mindre lys. Ha alltid et reservepar på vinter- og breturer.</p>']
     ],
     knotTool:'Knuter', knotShort:'Fem viktige knuter', knotSub:'Korte påminnelser for når du trenger en knute raskt. Øv på dem hjemme: en knute du bare har lest om, er vanskelig å slå i vind og kulde.',
-    knotWarn:'For utstyr, tarp og telt. Ikke for klatring eller sikring.',
+    knotWarn:'For utstyr, tarp og telt. Ikke for klatring eller sikring.', credits:'Bildekreditter', noAuthor:'forfatter ikke oppgitt', illFrom:'illustrasjon fra', photoFrom:'foto fra', adaptedPlain:'tilpasset (utsnitt, farger)', adaptedPrusik:'tilpasset (utsnitt, bakgrunn lysnet, forstørret)', adaptedBg:'tilpasset (utsnitt, hvit bakgrunn)', illBy:'illustrasjon av', photoBy:'foto av', adapted:'tilpasset (utsnitt, merking fjernet, farger)', adaptedPhoto:'tilpasset (utsnitt, skygge dempet)',
     knots:[
       {n:'Pålestikk (Bowline)', u:'En fast løkke som ikke glir, og som er lett å løse opp etter belastning. Rundt et tre, en person eller en sekk.', s:['Lag en liten løkke i den faste parten, med tamp-siden øverst.','Før tampen opp gjennom den lille løkka nedenfra.','Før den rundt bak den faste parten.','Før den ned igjen gjennom den lille løkka.','Hold tampen og den store løkka sammen, og trekk til i den faste parten.'], c:'Husk: haren kommer opp av hullet, løper rundt treet, og hopper ned i hullet igjen. La tampen være minst 10 cm lang.'},
       {n:'Teltstikk (Taut Line Hitch)', u:'En justerbar løkke for barduner på telt og tarp. Skyv knuten for å stramme eller slakke.', s:['Før tampen rundt pluggen eller festet.','Ta to tørn rundt den faste parten, innover mot pluggen, på innsiden av løkka.','Ta ett tørn til rundt den faste parten, på motsatt side av de to første (lengst fra pluggen), og stikk tampen under seg selv i dette tørnet, så det blir et eget halvstikk.','Trekk til.','Skyv knuten oppover for å stramme, nedover for å slakke.'], c:'På norsk kalles både denne og Magnus-stikket «teltstikk», og de forveksles ofte. Sjekk: det siste tørnet skal ligge for seg selv, adskilt fra de to første, og tampen går ut derfra. Går tampen tilbake ned mellom tørnene, har du slått Magnus-varianten. Taut Line Hitch er det beste valget til barduner. Glir det i tynn eller glatt snor, ta ett ekstra tørn på innsiden.'},
@@ -521,20 +637,20 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     boils:(n,e)=>`${n} kok à ${e} l i kjelen`,
     rangeErr:'Ønsket temperatur må ligge mellom temperaturen på det kalde og det varme vannet.',
     waterTip:'Vann som helles over mister noen grader, og beholderen kjøles av vind, så sikt 1–2 °C over det du ønsker. En behagelig dusj er ca. 37–40 °C. Kjenn alltid på vannet med hånden før bruk.', openList:n=>`Åpne ${n}`,
-    langNote:'Lister du allerede har laget beholder språket sitt. Nye lister fra malen bruker språket du velger her.'
+    langNote:'Standardlisten følger språket du velger her. Dine egne lister beholder språket de ble laget på.'
   }
 };
 
 const MODES = {
   vinter:{no:'Vinter', en:'Winter'}, pulk:{no:'Pulktur', en:'Pulk trip'}, skred:{no:'Skredterreng', en:'Avalanche terrain'},
-  topptur:{no:'Topptur / Randonee', en:'Ski touring'}, bil:{no:'Biltur', en:'Car camping'},
+  topptur:{no:'Topptur / Randonee', en:'Ski touring'}, bil:{no:'Camping og biltur', en:'Camping and road trip'},
   fiske:{no:'Fiske', en:'Fishing'}, hytte:{no:'Hyttetur (DNT)', en:'Cabin trip (DNT)'}
 };
 
 /* ---------- template ---------- */
 function friluftsliv(L){
   const en = L === 'en';
-  const P = list => list.map(x => en ? x[1] : x[0]);
+  const P = list => list.map(x => ({t: en ? x[1] : x[0], no: x[0]}));
   const C = (key, no, eng, items, extra) => Object.assign({key, name: en ? eng : no, items: P(items)}, extra || {});
   const note = (no, eng) => en ? eng : no;
   return { name: en ? 'Outdoor checklist' : 'Friluftsliv', cats:[
@@ -549,12 +665,12 @@ function friluftsliv(L){
       ['Hodelykt / lommelykt','Headlamp / torch'],['Solbriller / snøbriller','Sunglasses / snow goggles'],
       ['Vindsekk','Bivy sack / emergency shelter'],['Jervenduk','Jerven bag (bivy, poncho, tarp)'],
       ['DNT-nøkkel (for medlemmer, nødly i ubetjente hytter)','DNT key (for members, emergency shelter in self-service cabins)'],
-      ['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']]),
+      ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']]),
     C('cook','Matlaging','Cooking',[
       ['Brenner / primus (vinter: 2 stk, eller reservedeler, for vann fra snø)','Stove (winter: 2, or spare parts, for melting snow)'],
       ['Brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)','Fuel (enough for the trip, winter approx. 0.3 l per day when melting snow)'],
       ['Brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)','Stove board (light, fireproof base that tolerates fuel and holds the stove in place, essential on snow)'],
-      ['Fyrstikker (2x)','Matches (2x)'],['Kaffekjele','Coffee kettle'],['Kokekar (1x/2x)','Cooking pot (1x/2x)'],['Stekepanne','Frying pan'],['Stekespade','Spatula'],
+      ['Fyrstikker (2x, vanntett pakket)','Matches (2x, waterproof packed)'],['Lighter (valgfritt; fyrstikker er sikrere i dårlig vær og til multifuel)','Lighter (optional; matches are safer in bad weather and for multifuel stoves)'],['Kaffekjele','Coffee kettle'],['Kokekar (1x/2x)','Cooking pot (1x/2x)'],['Stekepanne','Frying pan'],['Stekespade','Spatula'],
       ['Bestikk','Cutlery'],['Kopp','Mug'],['Frokostskål','Bowl'],['Tallerken','Plate'],['Oppvaskskrubb','Scrubber'],
       ['Termos (liten på dagstur, større ved leir)','Thermos (small for day hikes, larger for camping)'],['Termokopp','Insulated mug'],['Vannflaske','Water bottle'],
       ['Nalgene-flaske (1–2x)','Nalgene bottle (1–2x)'],['Vannbeholder (4 l)','Water container (4 l)'],
@@ -562,27 +678,27 @@ function friluftsliv(L){
     C('clothes','Tøy','Clothing',[
       ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
       ['Ullsokker (tur)','Wool socks (hiking)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
-      ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],
+      ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],['Tynn vindjakke og lett vindbukse (valgfritt, erstatter ikke skalltøyet)','Thin wind jacket and light wind trousers (optional, not a replacement for the shell)'],
       ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Hals / skjerf','Neck gaiter / scarf'],
-      ['Hansker (lette, hele året)','Gloves (light, all year)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters']]),
+      ['Hansker (lette, hele året)','Gloves (light, all year)'],['Ullvotter (varme også når de er våte)','Wool mittens (warm even when wet)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters'],['Lette leirsko (valgfritt)','Light camp shoes (optional)']]),
     C('food','Mat','Food',[
       ['Middag','Dinner'],['> Turmat (frysetørket eller hjemmelaget)','> Trail meals (freeze-dried or homemade)'],
-      ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker','> Sugar'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],
+      ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker (i liten plastboks)','> Sugar (in a small plastic box)'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],['> Kjeks / crackers','> Crackers'],['> Turmiks (nøtter og frø, energitett)','> Trail mix (nuts and seeds, energy dense)'],
       ['> Vinterlunsj: enkel mat som ikke må varmes (f.eks. lefser)','> Winter lunch: simple food that needs no heating (e.g. lefse)'],
-      ['Tilbehør','Extras'],['> Kaffe','> Coffee'],['> Rett i koppen','> Instant meals'],['> Salt','> Salt'],['> Chili','> Chili'],['> Krydder','> Spices'],
+      ['Tilbehør','Extras'],['> Kaffe (i liten plastboks)','> Coffee (in a small plastic box)'],['> Rett i koppen','> Instant meals'],['> Salt','> Salt'],['> Chili og krydder','> Chili and spices'],
       ['Nødproviant','Emergency food'],['> Energisnacks (rask energi)','> Energy snacks (quick energy)'],['> Mørk kokesjokolade','> Dark cooking chocolate'],['> Proteinbarer','> Protein bars']]),
 
     C('m_vinter','Vinter','Winter',[['Ski og staver','Skis and poles'],['Skistøvler','Ski boots'],['Smøring / feller','Wax / skins'],['Ekstra stav og skitupp','Spare pole and ski tip'],['Snøspade','Snow shovel'],['Fotposer','Down booties'],['Ekstra liggeunderlag','Extra sleeping pad'],['Stegjern','Crampons'],['Isøks','Ice axe'],['Skisokker','Ski socks'],['Vindvotter','Wind mittens'],['Goggles / alpinbriller (dårlig vær, også reserve for solbrillene)','Goggles (bad weather, also a spare for your sunglasses)']], {mode:'vinter'}),
     C('m_pulk','Pulktur','Pulk trip',[['Pulk','Pulk (sled)'],['Seletøy og skjæker','Harness and poles']], {mode:'pulk', note: note('Tips: lær deg enkel pakking av telt i pulk.','Tip: learn to pack the tent in the pulk quickly.')}),
     C('m_skred','Skredterreng','Avalanche terrain',[['Skredsøker','Avalanche transceiver'],['Søkestang','Probe'],['Skredspade','Avalanche shovel'],['Skredsekk (hvis du bruker det)','Avalanche airbag (if you use one)']], {mode:'skred'}),
     C('m_topptur','Topptur / randonee','Ski touring',[['Toppturski / randoneeski med feller','Touring skis with skins'],['Skarejern','Ski crampons'],['Hjelm','Helmet']], {mode:'topptur'}),
-    C('m_bil','Biltur','Car camping',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Vannbeholder / dusj (10 l)','Water container / shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
-    C('m_fiske','Fiskeutstyr','Fishing gear',[['Stang','Rod'],['Snelle','Reel'],['Kroker','Hooks'],['Kniv','Knife'],['Svivler / sene','Swivels / line'],['Pose','Bag']], {mode:'fiske'}),
+    C('m_bil','Camping og biltur','Camping and road trip',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Turdusj (pocket shower, 10 l)','Pocket shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
+    C('m_fiske','Fiskeutstyr','Fishing gear',[['Stang','Rod'],['Snelle','Reel'],['Kroker','Hooks'],['Kniv','Knife'],['Fiskekort (ferskvann)','Fishing licence (freshwater)'],['Svivler / sene','Swivels / line'],['Pose','Bag']], {mode:'fiske'}),
     C('m_hytte','Hyttetur (DNT)','Cabin trip (DNT)',[['Lakenpose','Sleeping bag liner'],['Medlemskort','Membership card'],['Betaling (kort / Vipps)','Payment (card / Vipps)'],['Tørre ullsokker til innebruk','Dry wool socks for indoors']], {mode:'hytte'}),
 
     C('prep','Forberedelser','Preparations',[
       ['Før hver tur','Before every trip'],['> Sjekk værmeldingen','> Check the weather forecast'],['> Fortell noen hvor du går og når du er tilbake','> Tell someone your route and when you will be back'],['> Last ned offline kart','> Download offline maps'],
-      ['Lading av utstyr','Charging'],['> Mobil','> Phone'],['> GPS','> GPS'],['> Teltlykt (USB, må lades i vanlig USB-port)','> Tent lamp (USB, charge in a regular USB port)'],['> Hodelykt / håndlykt','> Headlamp / torch'],['> Powerbank(er)','> Power bank(s)'],['> Ekstra batterier (til lykter som ikke kan lades)','> Spare batteries (for lamps that cannot be charged)'],
+      ['Lading av utstyr','Charging'],['> Mobil','> Phone'],['> GPS','> GPS'],['> Teltlykt (USB)','> Tent lamp (USB)'],['> Hodelykt / håndlykt','> Headlamp / torch'],['> Powerbank(er)','> Power bank(s)'],['> Ekstra batterier (ved behov, som reserve)','> Spare batteries (if needed, as reserve)'],
       ['Komfort (valgfritt)','Comfort (optional)'],['> Bluetooth-høyttaler','> Bluetooth speaker'],['> Headsett','> Headset'],['> Laptop / nettbrett','> Laptop / tablet'],['> Last ned musikk og film for offline bruk','> Download music and films for offline use'],['> Mobilholder','> Phone holder'],
       ['Sjekk','Checks'],['> Test brenneren','> Test the stove'],['> Sjekk teltet','> Check the tent'],['> Sjekk skredvarselet (varsom.no) (skredterreng)','> Check the avalanche forecast (varsom.no) (avalanche terrain)'],['> Test skredsøkere i gruppen (skredterreng)','> Test transceivers in the group (avalanche terrain)']], {bag:true}),
     C('firstaid','Førstehjelpssett','First aid kit',[
@@ -596,11 +712,11 @@ function friluftsliv(L){
     C('repair','Reparasjonssett','Repair and spares kit',[
       ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
       ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Nylonsnor 2x','> Nylon cord 2x'],['> Diverse','> Miscellaneous'],
-      ['Ild','Fire'],['> Fyrstikker','> Matches'],['> Tennstål','> Fire steel'],['> Tennbriketter (4x)','> Fire starters (4x)'],
+      ['Ild','Fire'],['> Fyrstikker (vanntett pakket)','> Matches (waterproof packed)'],['> Tennstål','> Fire steel'],['> Tennbriketter (4x)','> Fire starters (4x)'],
       ['Diverse','Miscellaneous'],['> Nål og tråd','> Needle and thread'],['> USB-C-kabel','> USB-C cable'],['> Stropper (2x)','> Straps (2x)'],['> Tau (kompakt)','> Rope (compact)'],['> Små karabinkroker (4x)','> Small carabiners (4x)'],['> Diverse plastposer','> Assorted plastic bags']],
       {bag:true, note: note('Liten drybag, ca. 3 liter','Small dry bag, about 3 litres')}),
     C('personal','Personlig pleie','Personal care',[
-      ['Tannbørste og tannkrem','Toothbrush and toothpaste'],['Dopapir (min. 2x)','Toilet paper (min. 2x)'],['Håndkle (kompakt)','Towel (compact)'],['Vaskeklut','Washcloth'],['Våtservietter (ca. 4x)','Wet wipes (approx. 4x)'],['Hånddesinfeksjon','Hand sanitiser'],['Reisesåpe','Travel soap'],['Papirlommetørkle','Tissues'],['Solkrem','Sunscreen'],['Leppepomade med UV','Lip balm with UV'],['Myggmiddel','Insect repellent'],['Biopose (20 l)','Biodegradable bag (20 l)'],['Sovemaske','Sleep mask'],['Ørepropper','Earplugs']], {bag:true})
+      ['Tannbørste og tannkrem','Toothbrush and toothpaste'],['Dopapir (min. 2x)','Toilet paper (min. 2x)'],['Håndkle (kompakt)','Towel (compact)'],['Vaskeklut','Washcloth'],['Våtservietter (nedbrytbare)','Wet wipes (biodegradable)'],['Hånddesinfeksjon','Hand sanitiser'],['Reisesåpe','Travel soap'],['Papirlommetørkle','Tissues'],['Solkrem','Sunscreen'],['Leppepomade med UV','Lip balm with UV'],['Myggmiddel','Insect repellent'],['Myggnetting (hodenett)','Mosquito head net'],['Biopose (20 l)','Biodegradable bag (20 l)'],['Sovemaske','Sleep mask'],['Ørepropper','Earplugs']], {bag:true})
   ]};
 }
 function buildTemplates(L){ return { friluftsliv: friluftsliv(L) }; }
@@ -625,7 +741,7 @@ function fromTemplate(key, name){
   tp.cats.forEach(c => ids[c.key] = uid());
   return { id:uid(), name: name || tp.name, notes:'', modes:{}, cats: tp.cats.map(c => ({
     id: ids[c.key], icon:c.key, name:c.name, note:c.note || '', mode:c.mode || null, bag:!!c.bag, lightOnly:false, open:true,
-    items: c.items.map(x => parseItem(x, ids))
+    items: c.items.map(x => parseItem(typeof x === 'string' ? x : x.t, ids))
   }))};
 }
 function cloneList(src, keepDone){
@@ -642,17 +758,72 @@ function cloneList(src, keepDone){
   return { id:uid(), name:String(src.name || t().myList), notes: typeof src.notes === 'string' ? src.notes : '', modes, cats };
 }
 function load(){
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.lists) && s.lists.length) return s; } catch(e){}
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.lists)) return s; } catch(e){}
   return null;
 }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
 
 let state = load();
-if (!state){
-  state = { lists:[], active:null, hidePacked:false, lang:detectLang() };
-  const l = fromTemplate('friluftsliv'); state.lists.push(l); state.active = l.id;
-}
+if (!state) state = { lists:[], hidePacked:false, lang:detectLang() };
 if (!state.lang) state.lang = detectLang();
+
+/* ---------- standard list (built in, follows the language) ---------- */
+const slug = x => String(x).replace(/^> /,'').replace(/^\* /,'').replace(/^@\w+ /,'').trim().toLowerCase();
+const stdId = (key, no) => 'std:' + key + ':' + slug(no);
+let stdCache = null;
+function stdList(){
+  if (stdCache && stdCache.lang === state.lang) return stdCache;
+  const tp = friluftsliv(state.lang), S = state.std, ids = {};
+  tp.cats.forEach(c => ids[c.key] = 'std:' + c.key);
+  stdCache = { id:'std', std:true, lang:state.lang, name:tp.name, notes:'', modes:S.modes, cats: tp.cats.map(c => ({
+    id: ids[c.key], icon:c.key, name:c.name, note:c.note || '', mode:c.mode || null, bag:!!c.bag,
+    lightOnly: !!S.light[ids[c.key]], open: S.open[ids[c.key]] !== false,
+    items: c.items.map(x => { const it = parseItem(x.t, ids); it.id = stdId(c.key, x.no); it.done = !!S.done[it.id]; return it; })
+  }))};
+  return stdCache;
+}
+const isStd = c => typeof c.id === 'string' && c.id.indexOf('std:') === 0;
+function setDone(c, i, v){ if (isStd(c)){ if (v) state.std.done[i.id] = true; else delete state.std.done[i.id]; } else i.done = v; stdCache = null; }
+function setOpen(c, v){ if (isStd(c)) state.std.open[c.id] = v; else c.open = v; stdCache = null; }
+function setLight(c, v){ if (isStd(c)) state.std.light[c.id] = v; else c.lightOnly = v; stdCache = null; }
+function mainList(){ return (state.main && state.main !== 'std' && state.lists.find(l => l.id === state.main)) || stdList(); }
+function ownList(id){ return state.lists.find(l => l.id === id); }
+
+function migrate(){
+  state.std = state.std || {done:{}, modes:{}, light:{}, open:{}};
+  const alias = {
+    'Fyrstikker (2x)':'Fyrstikker (2x, vanntett pakket)', 'Matches (2x)':'Fyrstikker (2x, vanntett pakket)',
+    'Sukker':'Sukker (i liten plastboks)', 'Sugar':'Sukker (i liten plastboks)',
+    'Kaffe':'Kaffe (i liten plastboks)', 'Coffee':'Kaffe (i liten plastboks)',
+    'Chili':'Chili og krydder', 'Krydder':'Chili og krydder', 'Spices':'Chili og krydder',
+    'Vannbeholder / dusj (10 l)':'Turdusj (pocket shower, 10 l)', 'Water container / shower (10 l)':'Turdusj (pocket shower, 10 l)',
+    'Våtservietter (ca. 4x)':'Våtservietter (nedbrytbare)', 'Wet wipes (approx. 4x)':'Våtservietter (nedbrytbare)',
+    'Teltlykt (USB, må lades i vanlig USB-port)':'Teltlykt (USB)', 'Tent lamp (USB, charge in a regular USB port)':'Teltlykt (USB)',
+    'Ekstra batterier (til lykter som ikke kan lades)':'Ekstra batterier (ved behov, som reserve)', 'Spare batteries (for lamps that cannot be charged)':'Ekstra batterier (ved behov, som reserve)',
+    'Fyrstikker':'Fyrstikker (vanntett pakket)', 'Matches':'Fyrstikker (vanntett pakket)'
+  };
+  const no = friluftsliv('no'), en = friluftsliv('en'), byKey = {};
+  no.cats.forEach((c, n) => { const m = {}; c.items.forEach((x, k) => { m[slug(x.no)] = x.no; m[slug(en.cats[n].items[k].t)] = x.no; }); byKey[c.key] = m; });
+  const match = (key, text) => { const m = byKey[key]; if (!m) return null; const sl = slug(text); if (m[sl]) return m[sl]; const a = alias[String(text).trim()]; return a && m[slug(a)] ? m[slug(a)] : null; };
+  const keep = [];
+  (state.lists || []).forEach(l => {
+    const fromTpl = Array.isArray(l.cats) && l.cats.length && l.cats.every(c => c.icon && byKey[c.icon] && c.items.every(i => match(c.icon, i.text)));
+    if (!fromTpl){ l.tripType = !!l.tripType; keep.push(l); return; }
+    l.cats.forEach(c => {
+      const cid = 'std:' + c.icon;
+      if (c.lightOnly) state.std.light[cid] = true;
+      if (c.open === false) state.std.open[cid] = false;
+      c.items.forEach(i => { if (i.done) state.std.done[stdId(c.icon, match(c.icon, i.text))] = true; });
+    });
+    Object.keys(l.modes || {}).forEach(k => { if (l.modes[k]) state.std.modes[k] = true; });
+  });
+  state.lists = keep;
+  state.main = 'std';
+  delete state.active;
+  state.v = 2;
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+}
+if (state.v !== 2) migrate();
 let editing = false;
 let view = null;
 let tab = 'list';
@@ -660,17 +831,22 @@ let modesOpen = false;
 let rainLocked = false;
 let lastTick = null;
 const t = () => UI[state.lang] || UI.en;
-const modeName = k => (MODES[k] && (MODES[k][state.lang] || MODES[k].en)) || k;
+const modeName = k => { if (k.indexOf('L:') === 0){ const L = ownList(k.slice(2)); return L ? '+ ' + L.name : k; } return (MODES[k] && (MODES[k][state.lang] || MODES[k].en)) || k; };
 
 const $ = id => document.getElementById(id);
 const main = $('main'), overlay = $('overlay'), panel = $('panel');
 
-function cur(){
-  let l = state.lists.find(x => x.id === state.active);
-  if (!l){ l = state.lists[0]; state.active = l.id; }
-  return l;
+function cur(){ return (view && view.indexOf('edit:') === 0 && ownList(view.slice(5))) || mainList(); }
+let extraFrom = new Map();
+function visibleCats(l){
+  const m = l.modes || {};
+  const out = l.cats.filter(c => !c.bag && (!c.mode || m[c.mode]));
+  state.lists.forEach(L => {
+    if (!L.tripType || L.id === l.id || !m['L:' + L.id]) return;
+    L.cats.filter(c => !c.bag && !c.mode).forEach(c => { extraFrom.set(c.id, L.name); out.push(c); });
+  });
+  return out;
 }
-function visibleCats(l){ return l.cats.filter(c => !c.bag && (!c.mode || (l.modes && l.modes[c.mode]))); }
 function hasLight(c){ return c.items.some(i => i.light); }
 function shownItems(c){
   if (!c.lightOnly || !hasLight(c)) return c.items;
@@ -693,7 +869,12 @@ function countCats(cats){
   return {t:tot, d};
 }
 function stats(l){ return countCats(visibleCats(l)); }
-function findCat(id){ return cur().cats.find(c => c.id === id); }
+function findCat(id){
+  if (!id) return null;
+  if (id.indexOf('std:') === 0) return stdList().cats.find(c => c.id === id) || null;
+  for (const l of state.lists){ const c = l.cats.find(x => x.id === id); if (c) return c; }
+  return null;
+}
 
 const CAT_ICONS = {
   start:'<path d="M9 4h6v3H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="M9 13l2 2 4-4"/>',
@@ -755,52 +936,55 @@ function render(){
     if (view === 'tool:knots') return renderKnots();
     if (view === 'tool:sun') return renderSun();
     if (view === 'tool:phone') return renderPhone();
+    if (view === 'tool:howto') return renderHowto();
     view = null;
     return renderIndex();
   }
-  const l = cur();
-  const bag = view ? l.cats.find(c => c.id === view) : null;
-  if (view && !bag) view = null;
-  if (state.field) editing = false;
-  const cats = bag ? [bag] : visibleCats(l);
+  stdCache = null; extraFrom = new Map();
+  if (view === 'lists') return renderLists();
+  const editL = view && view.indexOf('edit:') === 0 ? ownList(view.slice(5)) : null;
+  if (view && view.indexOf('edit:') === 0 && !editL) view = null;
+  editing = !!editL;
+  const l = editL || mainList();
+  const bag = (!editL && view) ? findCat(view) : null;
+  if (view && !editL && !bag) view = null;
+  const cats = editL ? l.cats : bag ? [bag] : visibleCats(l);
   const {t:tot, d} = countCats(cats);
   $('listName').textContent = l.name;
   document.title = l.name + ' · ' + T.app;
   $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
   $('progText').textContent = tot ? T.packed(d, tot) : T.noItems;
 
+  if (editL) document.body.classList.add('notlist');
   let html = '';
-  if (bag){
+  if (editL){
+    html += `<button class="back" data-act="back">${CHEV_L}${T.yourLists}</button>
+      <div class="edit-bar"><span>${T.editing}</span><button class="chip field-on" data-act="back">${T.doneEdit}</button></div>`;
+  } else if (bag){
     html += `<button class="back" data-act="back">${CHEV_L}${esc(l.name)}</button>`;
-  }
-  // toolbar
-  html += '<div class="toolbar">';
-  if (bag && hasLight(bag)){
-    html += `<button class="chip" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
-  }
-  html += `<button class="chip${state.field ? ' field-on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${T.field}</button>`;
-  if (state.field){
-    html += `<button class="chip" data-act="rainLock">${T.lockScreen}</button>`;
-    html += `<button class="chip" data-act="nightToggle" aria-pressed="${!!state.night}">${T.nightLight}</button>`;
-    html += `<button class="chip" data-act="undoTick" ${lastTick ? '' : 'disabled'}>${T.undoLast}</button>`;
-  }
-  html += `<button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button>`;
-  if (!state.field){
-    html += `<button class="chip" data-act="editToggle" aria-pressed="${editing}">${editing ? T.doneEdit : T.edit}</button>`;
-    html += `<button class="chip" data-act="resetList">${T.reset}</button>`;
-  }
-  html += '</div>';
-  if (!bag){
-    const keys = [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))];
+    html += '<div class="toolbar">';
+    if (hasLight(bag)) html += `<button class="chip" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
+    html += `<button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
+  } else {
+    html += `<button class="field-btn${state.field ? ' on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${ICON_FIELD}<span>${T.field}</span><small>${state.field ? T.fieldOn : T.fieldOff}</small></button>`;
+    if (state.field){
+      html += `<div class="field-tools">
+        <button class="chip" data-act="rainLock">${T.lockScreen}</button>
+        <button class="chip" data-act="nightToggle" aria-pressed="${!!state.night}">${T.nightLight}</button>
+        <button class="chip" data-act="undoTick" ${lastTick ? '' : 'disabled'}>${T.undoLast}</button></div>`;
+    }
+    const keys = [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))]
+      .concat(state.lists.filter(L => L.tripType && L.id !== l.id).map(L => 'L:' + L.id));
     if (keys.length){
       const on = keys.filter(k => l.modes && l.modes[k]).map(modeName);
       html += `<button class="modes-toggle" data-act="modesToggle" aria-expanded="${modesOpen}"><span>${T.tripType}:</span><span class="mt-val">${on.length ? esc(on.join(', ')) : '–'}</span>${CHEV}</button>`;
       if (modesOpen){
-        html += `<div class="modes-open"><div class="chips">` +
-          keys.map(k => `<button class="chip" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
+        html += `<div class="modes-open"><p class="mode-hint">${T.tripHint}</p><div class="chips">` +
+          keys.map(k => `<button class="chip${k.indexOf('L:') === 0 ? ' own' : ''}" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
           '</div></div>';
       }
     }
+    html += `<div class="sub-tools"><button class="chip small" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
   }
   if (tot && d === tot && !editing){
     html += `<div class="done-banner">${T_MARK}<span>${T.allDone}</span></div>`;
@@ -814,11 +998,14 @@ function render(){
     const counted = list.filter(i => !heads.has(i.id));
     const ct = counted.length, cd = counted.filter(i => i.done).length;
     const complete = ct > 0 && cd === ct;
-    const open = bag ? true : c.open;
-    html += `<section class="cat${open ? '' : ' closed'}${complete ? ' complete' : ''}" data-cat="${c.id}">
+    const open = (bag || editing) ? true : c.open;
+    const from = extraFrom.get(c.id);
+    html += `<section class="cat${open ? '' : ' closed'}${complete ? ' complete' : ''}${from ? ' extra' : ''}" data-cat="${c.id}">
       <button class="cat-head" data-act="toggleCat" aria-expanded="${open}">
-        ${c.icon && CAT_ICONS[c.icon] ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}</h2><span class="count">${cd}/${ct}</span>${bag ? '' : CHEV}
+        ${c.icon && CAT_ICONS[c.icon] ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}${from && from !== c.name ? ` <span class="from">+ ${esc(from)}</span>` : ''}</h2><span class="count">${cd}/${ct}</span>${(bag || editing) ? '' : CHEV}
       </button>`;
+    if (c.mode && editing) html += `<p class="cat-note">${T.tripType}: ${esc(modeName(c.mode))}</p>`;
+    if (c.bag && editing) html += `<p class="cat-note">${T.bagList}</p>`;
     if (c.note) html += `<p class="cat-note">${esc(c.note)}</p>`;
     if (editing){
       html += `<div class="cat-tools"><button class="btn small" data-act="renameCat">${T.rename}</button><button class="btn small" data-act="noteCat">${T.catNote}</button><button class="btn small danger" data-act="deleteCat">${T.delCat}</button></div>`;
@@ -831,14 +1018,14 @@ function render(){
       if (pending && i.sub){ html += `<li class="subhead">${esc(pending.text)}</li>`; }
       pending = null;
       shown++;
-      const target = i.link ? l.cats.find(x => x.id === i.link) : null;
+      const target = i.link ? findCat(i.link) : null;
       html += `<li class="item${i.done ? ' done' : ''}${i.sub && (editing || !heads.size) ? ' sub' : ''}" data-item="${i.id}">
         <button class="check" data-act="toggleItem" role="checkbox" aria-checked="${i.done}">
           <span class="mark">${T_MARK}</span><span class="txt">${esc(i.text)}</span>
         </button>`;
       if (target && !editing){
-        const s = countCats([target]);
-        html += `<button class="link-btn${s.t && s.d === s.t ? ' complete' : ''}" data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${s.d}/${s.t}${CHEV_R}</button>`;
+        const st = countCats([target]);
+        html += `<button class="link-btn${st.t && st.d === st.t ? ' complete' : ''}" data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${st.d}/${st.t}${CHEV_R}</button>`;
       }
       if (editing){
         html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
@@ -855,7 +1042,7 @@ function render(){
     }
     html += '</ul></section>';
   });
-  if (editing && !bag){
+  if (editing){
     html += `<button class="add-cat" data-act="addCat">${T.addCat}</button>`;
   }
   if (!bag && ((l.notes && l.notes.trim()) || editing)){
@@ -866,6 +1053,62 @@ function render(){
   }
   main.innerHTML = html;
 }
+
+/* ---------- lists page ---------- */
+let selList = null;
+function listCard(L){
+  const T = t(), isMain = (state.main || 'std') === L.id || (L.std && (!state.main || state.main === 'std'));
+  const {t:tot, d} = countCats(visibleCats(L));
+  const sel = selList === L.id;
+  let h = `<div class="lcard${sel ? ' sel' : ''}${isMain ? ' main' : ''}">
+    <button class="lc-top" data-sel="${L.id}"><span class="lc-name">${esc(L.name)}</span>
+      ${isMain ? `<span class="badge">${T.mainBadge}</span>` : ''}${L.tripType ? `<span class="badge own">${T.tripBadge}</span>` : ''}
+      <span class="lc-count">${d}/${tot}</span>${CHEV}</button>`;
+  if (sel){
+    h += '<div class="lc-body">';
+    if (L.std) h += `<p class="role-hint">${T.stdHint}</p>`;
+    h += `<div class="role"><button class="switch" data-role="main" data-id="${L.id}" aria-pressed="${isMain}" ${isMain ? 'disabled' : ''}><i></i></button>
+      <div><b>${T.useMain}</b><span>${isMain ? T.isMainHint : T.useMainHint}</span></div></div>`;
+    if (!L.std){
+      h += `<div class="role"><button class="switch" data-role="trip" data-id="${L.id}" aria-pressed="${!!L.tripType}"><i></i></button>
+        <div><b>${T.useTrip}</b><span>${T.useTripHint}</span></div></div>`;
+    }
+    h += '<div class="lc-actions">';
+    if (L.std){
+      h += `<button class="btn" data-la="copy" data-id="std">${T.makeCopy}</button>`;
+    } else {
+      h += `<button class="btn" data-la="edit" data-id="${L.id}">${T.edit}</button>
+        <button class="btn" data-la="rename" data-id="${L.id}">${T.rename}</button>
+        <button class="btn" data-la="dup" data-id="${L.id}">${T.duplicate}</button>
+        <button class="btn" data-la="share" data-id="${L.id}">${T.share}</button>`;
+    }
+    h += `<button class="btn" data-la="reset" data-id="${L.id}">${T.reset}</button>`;
+    if (!L.std) h += `<button class="btn danger" data-la="delete" data-id="${L.id}">${T.del}</button>`;
+    h += '</div></div>';
+  }
+  return h + '</div>';
+}
+function renderLists(){
+  const T = t();
+  $('listName').textContent = T.yourLists;
+  document.title = T.yourLists + ' · ' + T.app;
+  document.body.classList.add('notlist');
+  if (!selList) selList = state.main || 'std';
+  let html = `<button class="back" data-act="back">${CHEV_L}${esc(mainList().name)}</button>
+    <p class="tool-sub">${T.listsSub}</p>
+    <div class="section-label">${T.stdList}</div>${listCard(stdList())}
+    <div class="section-label">${T.ownLists}</div>`;
+  if (!state.lists.length) html += `<p class="empty-own">${T.noOwn}</p>`;
+  state.lists.forEach(L => { html += listCard(L); });
+  html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>
+    <div class="section-label">${T.appearance}</div>
+    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
+    <div class="section-label">${T.language}</div>
+    <div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
+    <p class="tool-tip">${T.langNote}</p>
+    <div class="row-btns"><button class="btn" data-la="intro">${T.showIntro}</button></div>`;
+  main.innerHTML = html;
+}
 function renderIndex(){
   const T = t();
   const isPlan = tab === 'plan';
@@ -873,7 +1116,7 @@ function renderIndex(){
   document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
   const items = isPlan
     ? [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]]
-    : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['phone', T.phoneTool, T.phoneShort]];
+    : [['howto', T.howTool, T.howShort], ['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['phone', T.phoneTool, T.phoneShort]];
   main.innerHTML = `<p class="tool-sub">${isPlan ? T.planSub : T.guideSub}</p><div class="index">` +
     items.map(([k, n, dsc]) => `<button data-open="${k}"><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
 }
@@ -902,7 +1145,7 @@ function renderCompass(){
   main.innerHTML = `<div class="compass">
       <svg class="rose" viewBox="0 0 320 320" aria-hidden="true">
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
-        <g class="dial" id="dial">${ticks}${labels}</g>
+        <g class="dial" id="dial">${ticks}${labels}${sunMarks()}</g>
         <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
         <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
         <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
@@ -913,6 +1156,7 @@ function renderCompass(){
         : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
       <p class="c-msg" id="cMsg"></p>
     </div>
+    ${sunHtml()}${linksHtml()}
     <section class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
   paintCompass();
 }
@@ -968,6 +1212,200 @@ function stopCompass(){
   window.removeEventListener('deviceorientation', onOrient);
   clearTimeout(cTimer);
 }
+/* ---------- sharing ---------- */
+function packList(L){
+  const idx = new Map(); L.cats.forEach((c, n) => idx.set(c.id, n));
+  return {v:1, n:L.name, o:L.notes || '', c:L.cats.map(c => [c.name, c.note || '', c.mode || '', c.bag ? 1 : 0, c.icon || '',
+    c.items.map(i => [i.text, (i.sub ? 1 : 0) | (i.light ? 2 : 0), i.link && idx.has(i.link) ? idx.get(i.link) : -1])])};
+}
+function unpackList(p){
+  if (!p || !Array.isArray(p.c)) throw new Error('bad');
+  const ids = p.c.map(() => uid());
+  return {id:uid(), name:String(p.n || 'Varde'), notes:String(p.o || ''), modes:{}, tripType:false, cats:p.c.map((c, n) => ({
+    id:ids[n], name:String(c[0] || ''), note:String(c[1] || ''), mode:MODES[c[2]] ? c[2] : null, bag:!!c[3], icon:c[4] || null, lightOnly:false, open:true,
+    items:(Array.isArray(c[5]) ? c[5] : []).map(i => ({id:uid(), text:String(i[0] || ''), done:false, sub:!!(i[1] & 1), light:!!(i[1] & 2), link:(i[2] >= 0 && ids[i[2]]) ? ids[i[2]] : null}))
+  }))};
+}
+function b64u(bytes){ let b = ''; for (let i = 0; i < bytes.length; i++) b += String.fromCharCode(bytes[i]); return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64u(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '='; const bin = atob(str), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+async function encodeList(L){
+  const json = new TextEncoder().encode(JSON.stringify(packList(L)));
+  if (typeof CompressionStream !== 'undefined'){
+    try { const st = new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw')); return 'z' + b64u(new Uint8Array(await new Response(st).arrayBuffer())); } catch(e){}
+  }
+  return 'j' + b64u(json);
+}
+async function decodeList(code){
+  let bytes = unb64u(code.slice(1));
+  if (code[0] === 'z'){ const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')); bytes = new Uint8Array(await new Response(st).arrayBuffer()); }
+  return unpackList(JSON.parse(new TextDecoder().decode(bytes)));
+}
+async function shareList(L){
+  const T = t();
+  const url = location.origin + location.pathname + '#share=' + await encodeList(L);
+  if (navigator.share){
+    try { await navigator.share({title:L.name, text:T.shareText(L.name), url}); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  openSheet(`<h3>${T.share}</h3><p>${T.shareFallback}</p><textarea id="shOut" readonly>${esc(url)}</textarea>
+    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="shCopy">${T.copyLink}</button></div><div class="status" id="shSt"></div>`);
+  $('shCopy').onclick = async () => {
+    try { await navigator.clipboard.writeText(url); $('shSt').textContent = T.linkCopied; }
+    catch(e){ $('shOut').select(); try { document.execCommand('copy'); $('shSt').textContent = T.linkCopied; } catch(_){} }
+  };
+}
+async function checkShared(){
+  const h = location.hash;
+  if (h.indexOf('#share=') !== 0) return;
+  history.replaceState(history.state, '', location.pathname + location.search);
+  const T = t();
+  let L;
+  try { L = await decodeList(h.slice(7)); } catch(e){ await confirmBox(T.share, T.shareBad, T.ok); return; }
+  const n = countCats(L.cats).t;
+  if (await confirmBox(T.importQ(L.name), T.importMsg(n), T.importOk)){
+    state.lists.push(L); selList = L.id; save();
+    go('list', 'lists');
+  }
+}
+
+/* ---------- introduction ---------- */
+const INTRO_ICONS = [
+  '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="50" rx="18" ry="6"/><ellipse cx="30.5" cy="38.5" rx="13" ry="5"/><ellipse cx="33" cy="29" rx="10" ry="4.5"/><ellipse cx="31" cy="21" rx="7" ry="3.6"/><ellipse cx="32.5" cy="14.5" rx="4.5" ry="2.8"/></svg>',
+  '<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
+  '<svg viewBox="0 0 24 24"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg>',
+  '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  '<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4M9 9l2 2 4-4"/></svg>'
+];
+let introStep = -1, introThen = null;
+function showIntro(step, then){
+  introStep = step; if (then) introThen = then;
+  const T = t(), el = $('intro');
+  if (step < 0 || step > T.intro.length){ el.hidden = true; return; }
+  el.hidden = false;
+  if (step === 0){
+    el.innerHTML = `<div class="intro-card"><div class="intro-ic">${INTRO_ICONS[0]}</div><h2>Varde</h2><p>${T.introLang}</p>
+      <div class="intro-lang"><button class="btn${state.lang === 'no' ? ' primary' : ''}" data-ilang="no">Norsk</button><button class="btn${state.lang === 'en' ? ' primary' : ''}" data-ilang="en">English</button></div>
+      <div class="intro-nav"><button class="btn" data-intro="skip">${T.introSkip}</button><button class="btn primary" data-intro="next">${T.introNext}</button></div></div>`;
+  } else {
+    const c = T.intro[step - 1], last = step === T.intro.length;
+    el.innerHTML = `<div class="intro-card"><div class="intro-ic">${INTRO_ICONS[step - 1]}</div><h2>${c[0]}</h2><p>${c[1]}</p>
+      <div class="intro-dots">${T.intro.map((_, k) => `<i class="${k === step - 1 ? 'on' : ''}"></i>`).join('')}</div>
+      <div class="intro-nav">${last ? '<span></span>' : `<button class="btn" data-intro="skip">${T.introSkip}</button>`}<button class="btn primary" data-intro="${last ? 'skip' : 'next'}">${last ? T.introStart : T.introNext}</button></div></div>`;
+  }
+}
+$('intro').addEventListener('click', e => {
+  const lg = e.target.closest('[data-ilang]');
+  if (lg){ state.lang = lg.dataset.ilang; stdCache = null; save(); render(); showIntro(0); return; }
+  const b = e.target.closest('[data-intro]');
+  if (!b) return;
+  if (b.dataset.intro === 'next') showIntro(introStep + 1);
+  else {
+    $('intro').hidden = true; introStep = -1; state.introDone = true; save(); render();
+    const f = introThen; introThen = null; if (f) f();
+  }
+});
+function renderHowto(){
+  const T = t();
+  $('listName').textContent = T.howTool;
+  document.title = T.howTool + ' · ' + T.app;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+    <section class="manual guide">${T.intro.map(x => `<details open><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</section>
+    <div class="row-btns"><button class="btn" data-la="intro">${T.showIntro}</button></div>`;
+}
+
+/* ---------- sun times (calculated on the phone) ---------- */
+let sunDate = null, posBusy = false, posMsg = '';
+function sunPos(date, lat, lon){
+  const r = Math.PI / 180, n = date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+  const L = (280.460 + 0.9856474 * n) % 360, g = ((357.528 + 0.9856003 * n) % 360) * r;
+  const lam = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * r, eps = (23.439 - 0.0000004 * n) * r;
+  const ra = Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam)), dec = Math.asin(Math.sin(eps) * Math.sin(lam));
+  const gmst = (280.46061837 + 360.98564736629 * n) % 360;
+  const H = ((gmst + lon) * r - ra), la = lat * r;
+  const el = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(H));
+  const az = Math.atan2(-Math.sin(H), Math.tan(dec) * Math.cos(la) - Math.sin(la) * Math.cos(H));
+  return {el: el / r, az: (az / r + 360) % 360};
+}
+function sunDay(dateStr, lat, lon){
+  const p = dateStr.split('-').map(Number), base = new Date(p[0], p[1] - 1, p[2]).getTime(), step = 120000;
+  const ev = {}; let prev = null, maxEl = -90, minEl = 90;
+  const cross = (a, b, th, up, down) => {
+    const f = (th - a.el) / (b.el - a.el), tm = new Date(a.t + f * (b.t - a.t));
+    if (a.el < th && b.el >= th && !ev[up]) ev[up] = tm;
+    if (a.el >= th && b.el < th && !ev[down]) ev[down] = tm;
+  };
+  for (let k = 0; k <= 720; k++){
+    const tm = base + k * step, s = sunPos(new Date(tm), lat, lon), cur = {t:tm, el:s.el};
+    maxEl = Math.max(maxEl, s.el); minEl = Math.min(minEl, s.el);
+    if (prev){ cross(prev, cur, -0.833, 'rise', 'set'); cross(prev, cur, -6, 'dawn', 'dusk'); cross(prev, cur, 6, 'gm', 'ge'); }
+    prev = cur;
+  }
+  return {ev, maxEl, minEl, rAz: ev.rise ? sunPos(ev.rise, lat, lon).az : null, sAz: ev.set ? sunPos(ev.set, lat, lon).az : null};
+}
+const hm = d => d ? d.toLocaleTimeString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {hour:'2-digit', minute:'2-digit'}) : '–';
+const dur = ms => { const m = Math.max(0, Math.round(ms / 60000)), h = Math.floor(m / 60); return state.lang === 'no' ? `${h} t ${m % 60} min` : `${h} h ${m % 60} min`; };
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+function sunData(){ if (!state.pos) return null; return sunDay(sunDate || today(), state.pos.lat, state.pos.lon); }
+function sunMarks(){
+  const sd = sunData(); if (!sd) return '';
+  const T = t(), mk = (az, lbl) => az === null ? '' :
+    `<g transform="rotate(${az} 160 160)"><circle cx="160" cy="44" r="9" fill="none" stroke="var(--red)" stroke-width="2"/><path d="M160 32v-5M160 61v-5" stroke="var(--red)" stroke-width="2"/></g>
+     <text x="${160 + 92 * Math.sin(az * Math.PI / 180)}" y="${164 - 92 * Math.cos(az * Math.PI / 180)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--red)">${lbl}</text>`;
+  return mk(sd.rAz, '↑') + mk(sd.sAz, '↓');
+}
+function sunHtml(){
+  const T = t();
+  let h = `<section class="manual sun"><h2>${T.sunTitle}</h2>`;
+  if (!state.pos){
+    h += `<p class="tool-sub">${T.posNote}</p><div class="row-btns"><button class="btn primary" data-act="getPos">${posBusy ? T.posWait : T.getPos}</button></div>`;
+    if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
+    return h + '</section>';
+  }
+  const sd = sunData(), ev = sd.ev, isToday = !sunDate || sunDate === today(), now = Date.now();
+  const p = state.pos, pt = new Date(p.t);
+  const coord = `${Math.abs(p.lat).toFixed(2).replace('.', state.lang === 'no' ? ',' : '.')}° ${p.lat >= 0 ? 'N' : 'S'}, ${Math.abs(p.lon).toFixed(2).replace('.', state.lang === 'no' ? ',' : '.')}° ${p.lon >= 0 ? (state.lang === 'no' ? 'Ø' : 'E') : (state.lang === 'no' ? 'V' : 'W')}`;
+  const when = pt.toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short'}) + ' ' + hm(pt);
+  h += `<div class="sun-top"><label class="cfield"><span>${T.date}</span><input type="date" data-sundate value="${sunDate || today()}"></label></div>`;
+  let big = '';
+  if (sd.minEl > -0.833) big = T.midnightSun;
+  else if (sd.maxEl < -0.833) big = T.polarNight;
+  else if (isToday){
+    if (ev.rise && now < ev.rise.getTime()) big = T.untilRise(dur(ev.rise - now));
+    else if (ev.set && now < ev.set.getTime()) big = T.untilSet(dur(ev.set - now));
+    else big = T.sunDown;
+  }
+  if (big) h += `<p class="sun-big">${big}</p>`;
+  const dirOf = az => az === null ? '' : ` · ${T.cDirs[Math.round(az / 45) % 8]} ${Math.round(az)}°`;
+  const rows = [];
+  if (ev.rise) rows.push([T.sunrise, hm(ev.rise) + dirOf(sd.rAz)]);
+  if (ev.set) rows.push([T.sunset, hm(ev.set) + dirOf(sd.sAz)]);
+  if (ev.rise && ev.set && ev.set > ev.rise) rows.push([T.daylight, dur(ev.set - ev.rise)]);
+  if (!ev.rise && ev.dawn && ev.dusk) rows.push([T.twilight, hm(ev.dawn) + '–' + hm(ev.dusk)]);
+  else if (ev.dusk) rows.push([T.dusk, hm(ev.dusk)]);
+  if (ev.ge && ev.set) rows.push([T.golden, hm(ev.ge) + '–' + hm(ev.set)]);
+  if (rows.length) h += `<ul class="food-out">${rows.map(r => `<li><span>${r[0]}</span><span class="q sm">${r[1]}</span></li>`).join('')}</ul>`;
+  h += `<p class="calc-basis">${T.posFrom(coord, when)}</p><div class="row-btns"><button class="btn" data-act="getPos">${posBusy ? T.posWait : T.updPos}</button></div>`;
+  if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
+  h += `<p class="calc-basis">${T.sunCaveat}</p></section>`;
+  return h;
+}
+function getPos(){
+  const T = t();
+  if (!navigator.geolocation){ posMsg = T.posErr; renderCompass(); return; }
+  posBusy = true; posMsg = ''; renderCompass();
+  navigator.geolocation.getCurrentPosition(p => {
+    posBusy = false; state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now()}; save(); if (tab === 'compass') renderCompass();
+  }, () => { posBusy = false; posMsg = T.posErr; if (tab === 'compass') renderCompass(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:600000});
+}
+function linksHtml(){
+  const T = t();
+  return `<section class="manual"><h2>${T.linksTitle}</h2>
+    <div class="links"><a class="btn" href="https://www.yr.no" target="_blank" rel="noopener">${T.yrLink}</a><a class="btn" href="https://www.varsom.no" target="_blank" rel="noopener">${T.varsomLink}</a></div>
+    <p class="calc-basis">${T.linksNote}</p></section>`;
+}
+main.addEventListener('change', e => {
+  if (e.target.matches && e.target.matches('[data-sundate]')){ sunDate = e.target.value || null; renderCompass(); }
+});
 const num = v => parseFloat(String(v).replace(',', '.').trim());
 const fmt = n => (Math.round(n * 10) / 10).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:1});
 function renderWater(){
@@ -1126,8 +1564,19 @@ function renderKnots(){
   main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.knotSub}</p>
     <p class="calc-warn">${T.knotWarn}</p>
-    ${T.knots.map(k => `<details class="knot"><summary><b>${k.n}</b><span>${k.u}</span></summary>
-      <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('')}`;
+    ${T.knots.map((k, n) => `<details class="knot"><summary>${KNOT_FILES[n] ? (/\.svg$/.test(KNOT_FILES[n]) ? `<div class="knot-img" data-knotsrc="${KNOT_FILES[n]}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${KNOT_FILES[n]}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`) : ''}<b>${k.n}</b><span>${k.u}</span></summary>
+      <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('')}
+    ${KNOT_CREDITS.length ? `<p class="credits"><b>${T.credits}:</b> ${KNOT_CREDITS.slice().sort((a, b) => a.k - b.k).map(c => `${esc(T.knots[c.k].n)}: ${c.author
+      ? `${c.photo ? T.photoBy : T.illBy} <a href="${c.url}" target="_blank" rel="noopener">${esc(c.author)}</a>, Wikimedia Commons`
+      : `${c.photo ? T.photoFrom : T.illFrom} <a href="${c.url}" target="_blank" rel="noopener">Wikimedia Commons</a> (${T.noAuthor})`}, <a href="${c.licUrl}" target="_blank" rel="noopener">${c.lic}</a>, ${T[c.chg || 'adapted']}.`).join(' ')}</p>` : ''}`;
+  main.querySelectorAll('[data-knotsrc]').forEach(async el => {
+    const src = el.dataset.knotsrc;
+    if (!knotSvgCache[src]){
+      try { const r = await fetch(src); if (!r.ok) throw 0; knotSvgCache[src] = await r.text(); }
+      catch(e){ el.remove(); return; }
+    }
+    el.innerHTML = knotSvgCache[src];
+  });
 }
 function foodState(){
   state.foodCalc = Object.assign({ days:3, people:1, oats:165, snacks:1, homeBreakfast:true, homeDinner:true, reserve:true, season:'summer', kOats:370, kLunch:450, kDinner:600, kSnack:250 }, state.foodCalc || {});
@@ -1258,101 +1707,62 @@ function confirmBox(title, msg, ok){
   });
 }
 
-function listsSheet(){
+async function listAction(a, id){
   const T = t();
-  let html = `<h3>${T.yourLists}</h3><div class="choices">`;
-  state.lists.forEach(l => {
-    const {t:tot, d} = stats(l);
-    html += `<button class="choice${l.id === state.active ? ' active' : ''}" data-switch="${l.id}"><span class="c-name">${esc(l.name)}</span><span class="c-sub">${d}/${tot}</span></button>`;
-  });
-  html += `</div>
-    <div class="section-label">${T.thisList}</div>
-    <div class="row" style="justify-content:flex-start;margin-top:0">
-      <button class="btn" data-m="rename">${T.rename}</button>
-      <button class="btn" data-m="duplicate">${T.duplicate}</button>
-      <button class="btn danger" data-m="delete">${T.del}</button>
-    </div>
-    <div class="section-label">${T.more}</div>
-    <div class="row" style="justify-content:flex-start;margin-top:0">
-      <button class="btn primary" data-m="new">${T.newList}</button>
-      <button class="btn" data-m="backup">${T.backup}</button>
-    </div>
-    <div class="section-label">${T.appearance}</div>
-    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
-    <div class="section-label">${T.language}</div>
-    <div class="row" style="justify-content:flex-start;margin-top:0">
-      <button class="btn" data-lang="no" aria-pressed="${state.lang==='no'}">Norsk</button>
-      <button class="btn" data-lang="en" aria-pressed="${state.lang==='en'}">English</button>
-    </div>
-    <p style="margin-top:10px;font-size:.9rem">${T.langNote}</p>`;
-  openSheet(html);
-  panel.querySelectorAll('[data-switch]').forEach(b => b.onclick = () => {
-    state.active = b.dataset.switch; view = null; tab = 'list'; save(); closeSheet(); render(); top();
-  });
-  panel.querySelectorAll('[data-m]').forEach(b => b.onclick = () => menuAction(b.dataset.m));
-  panel.querySelectorAll('[data-skin]').forEach(b => b.onclick = () => { state.skin = b.dataset.skin; save(); render(); listsSheet(); });
-  panel.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
-    state.lang = b.dataset.lang; save(); render(); listsSheet();
-  });
-}
-
-async function menuAction(m){
-  const T = t(), l = cur();
-  if (m === 'rename'){
-    closeSheet();
-    const v = await askText(T.renameList, l.name, T.rename);
-    if (v){ l.name = v; save(); render(); }
-  } else if (m === 'duplicate'){
-    closeSheet();
-    const v = await askText(T.copyName, l.name + T.copySuffix, T.duplicate);
-    if (v){
-      const copy = cloneList(l, false); copy.name = v;
-      state.lists.push(copy); state.active = copy.id; view = null; save(); render();
-    }
-  } else if (m === 'delete'){
-    closeSheet();
-    if (state.lists.length === 1){ await confirmBox(T.keepOne, T.keepOneMsg, T.ok); return; }
-    if (await confirmBox(T.delList, T.delListMsg(l.name), T.delListOk)){
-      withUndo(T.listDeleted, () => { state.lists = state.lists.filter(x => x.id !== l.id); state.active = state.lists[0].id; view = null; });
-    }
-  } else if (m === 'new'){
-    newListSheet();
-  } else if (m === 'backup'){
-    backupSheet();
-  } else if (m === 'water'){
-    closeSheet(); view = 'tool:water'; render(); top();
-  } else if (m === 'fuel'){
-    closeSheet(); view = 'tool:fuel'; render(); top();
-  } else if (m === 'food'){
-    closeSheet(); view = 'tool:food'; render(); top();
-  } else if (m === 'knots'){
-    closeSheet(); view = 'tool:knots'; render(); top();
-  } else if (m === 'sun'){
-    closeSheet(); view = 'tool:sun'; render(); top();
-  }
-}
-
-function newListSheet(){
-  const T = t(), TPL = buildTemplates(state.lang);
-  let html = `<h3>${T.newList}</h3><p>${T.newListMsg}</p><div class="choices">`;
-  Object.entries(TPL).forEach(([k, tp]) => {
-    const n = tp.cats.filter(c => !c.mode && !c.bag).reduce((a, c) => a + c.items.length, 0);
-    html += `<button class="choice" data-tpl="${k}"><span class="c-name">${esc(tp.name)}</span><span class="c-sub">${T.items(n)}</span></button>`;
-  });
-  html += `<button class="choice" data-tpl="blank"><span class="c-name">${T.emptyList}</span><span class="c-sub">${T.emptySub}</span></button></div>
-    <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button></div>`;
-  openSheet(html);
-  panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
-  panel.querySelectorAll('[data-tpl]').forEach(b => b.onclick = async () => {
-    const k = b.dataset.tpl;
-    closeSheet();
-    const name = await askText(T.nameList, k === 'blank' ? T.myList : TPL[k].name, T.create);
+  const L = id && id !== 'std' ? ownList(id) : null;
+  if (a === 'new'){
+    const choice = await new Promise(res => {
+      sheetResolve = res;
+      openSheet(`<h3>${T.newList}</h3><p>${T.newListMsg}</p><div class="choices">
+        <button class="choice" data-tpl="std"><span class="c-name">${esc(stdList().name)}</span><span class="c-sub">${T.fromStd}</span></button>
+        <button class="choice" data-tpl="blank"><span class="c-name">${T.emptyList}</span><span class="c-sub">${T.emptySub}</span></button></div>`);
+      panel.querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => closeSheet(b.dataset.tpl));
+    });
+    if (!choice) return;
+    const name = await askText(T.nameList, choice === 'blank' ? T.myList : stdList().name, T.create);
     if (!name) return;
-    const l = k === 'blank' ? {id:uid(), name, notes:'', modes:{}, cats:[]} : fromTemplate(k, name);
-    state.lists.push(l); state.active = l.id; view = null;
-    if (k === 'blank') editing = true;
-    save(); render(); top();
-  });
+    const nl = choice === 'blank' ? {id:uid(), name, notes:'', modes:{}, cats:[]} : cloneList(stdList(), false);
+    nl.name = name; nl.tripType = false;
+    state.lists.push(nl); selList = nl.id; save();
+    go('list', 'edit:' + nl.id);
+  } else if (a === 'copy'){
+    const name = await askText(T.nameList, stdList().name, T.create);
+    if (!name) return;
+    const nl = cloneList(stdList(), false); nl.name = name; nl.tripType = false;
+    state.lists.push(nl); selList = nl.id; save();
+    go('list', 'edit:' + nl.id);
+  } else if (a === 'edit' && L){
+    go('list', 'edit:' + L.id);
+  } else if (a === 'rename' && L){
+    const v = await askText(T.renameList, L.name, T.rename);
+    if (v){ L.name = v; save(); render(); }
+  } else if (a === 'dup' && L){
+    const v = await askText(T.copyName, L.name + T.copySuffix, T.duplicate);
+    if (v){ const c = cloneList(L, false); c.name = v; c.tripType = false; state.lists.push(c); selList = c.id; save(); render(); }
+  } else if (a === 'share' && L){
+    shareList(L);
+  } else if (a === 'reset'){
+    const target = L || stdList();
+    if (await confirmBox(T.resetQ, T.resetMsg(target.name), T.resetOk)){
+      withUndo(T.resetDone, () => {
+        if (!L) state.std.done = {};
+        else L.cats.forEach(c => c.items.forEach(i => i.done = false));
+        stdCache = null;
+      });
+    }
+  } else if (a === 'delete' && L){
+    if (await confirmBox(T.delList, T.delListMsg(L.name), T.delListOk)){
+      withUndo(T.listDeleted, () => {
+        state.lists = state.lists.filter(x => x.id !== L.id);
+        if (state.main === L.id) state.main = 'std';
+        selList = state.main || 'std';
+      });
+    }
+  } else if (a === 'backup'){
+    backupSheet();
+  } else if (a === 'intro'){
+    showIntro(0);
+  }
 }
 
 function backupSheet(){
@@ -1380,7 +1790,7 @@ function backupSheet(){
       let added = 0;
       obj.lists.forEach(l => {
         if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
-        state.lists.push(cloneList(l, true)); added++;
+        const c = cloneList(l, true); c.tripType = !!l.tripType; state.lists.push(c); added++;
       });
       if (!added) throw 0;
       save(); render();
@@ -1408,6 +1818,21 @@ main.addEventListener('click', async e => {
     l.modes[chip.dataset.mode] = !l.modes[chip.dataset.mode];
     save(); render(); return;
   }
+  const sl = e.target.closest('[data-sel]');
+  if (sl){ selList = selList === sl.dataset.sel ? null : sl.dataset.sel; render(); return; }
+  const rl = e.target.closest('[data-role]');
+  if (rl){
+    const id = rl.dataset.id;
+    if (rl.dataset.role === 'main'){ state.main = id; }
+    else { const L = ownList(id); if (L){ L.tripType = !L.tripType; if (!L.tripType) [stdList()].concat(state.lists).forEach(x => { if (x.modes) delete x.modes['L:' + id]; }); } }
+    save(); render(); return;
+  }
+  const la = e.target.closest('[data-la]');
+  if (la){ listAction(la.dataset.la, la.dataset.id); return; }
+  const sk = e.target.closest('.skin-btn[data-skin]');
+  if (sk){ state.skin = sk.dataset.skin; save(); render(); return; }
+  const lg = e.target.closest('[data-lang]');
+  if (lg){ state.lang = lg.dataset.lang; stdCache = null; save(); render(); return; }
   const op = e.target.closest('[data-open]');
   if (op){ go(tab, 'tool:' + op.dataset.open); return; }
   const b = e.target.closest('[data-act]');
@@ -1415,35 +1840,28 @@ main.addEventListener('click', async e => {
   const T = t(), act = b.dataset.act;
   if (act === 'back'){ goBack(); return; }
   if (act === 'cStart'){ startCompass(); return; }
+  if (act === 'getPos'){ getPos(); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
   if (act === 'rainLock'){ rainLocked = true; history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); render(); return; }
-  if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ it.done = lastTick.prev; save(); } lastTick = null; render(); } return; }
+  if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
-  if (act === 'editToggle'){ editing = !editing; render(); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
-  if (act === 'resetList'){
-    const l = cur();
-    if (await confirmBox(T.resetQ, T.resetMsg(l.name), T.resetOk)){
-      withUndo(T.resetDone, () => l.cats.forEach(c => c.items.forEach(i => i.done = false))); top();
-    }
-    return;
-  }
   if (act === 'fuelShared'){ const f = fuelState(); f.shared = !f.shared; save(); render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.custom[f.fuel + '_' + f.use]; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
-  if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ bg.lightOnly = !bg.lightOnly; save(); render(); } return; }
+  if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
   const cat = catEl ? findCat(catEl.dataset.cat) : null;
   const itemEl = b.closest('[data-item]');
   const item = cat && itemEl ? cat.items.find(i => i.id === itemEl.dataset.item) : null;
 
-  if (act === 'toggleCat'){ if (!view){ cat.open = !cat.open; save(); render(); } }
+  if (act === 'toggleCat'){ if (!view){ setOpen(cat, !cat.open); save(); render(); } }
   else if (act === 'toggleItem'){
     if (state.field && !tapOk()) return;
     lastTick = {cat:cat.id, item:item.id, prev:item.done};
-    item.done = !item.done; save(); render();
+    setDone(cat, item, !item.done); save(); render();
   }
   else if (act === 'indentItem'){ item.sub = !item.sub; save(); render(); }
   else if (act === 'noteCat'){
@@ -1491,8 +1909,8 @@ function addItem(catId){
   if (again) again.focus();
 }
 
-$('listBtn').onclick = listsSheet;
-$('menuBtn').onclick = listsSheet;
+$('listBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
+$('menuBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
 $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
@@ -1504,8 +1922,15 @@ $('tabbar').addEventListener('click', e => {
 /* ---------- navigation history (Android back button) ---------- */
 function go(newTab, newView){
   tab = newTab; view = newView;
-  const depth = ((history.state && history.state.depth) || 0) + 1;
-  history.pushState({tab, view, depth}, '');
+  const st = history.state || {};
+  const depth = (st.depth || 0) + 1;
+  if (sheetPushed && overlay.hidden){
+    // a closed sheet still owns the top history entry: reuse it for the new screen
+    sheetPushed = false;
+    history.replaceState({tab, view, depth}, '');
+  } else {
+    history.pushState({tab, view, depth}, '');
+  }
   render(); top();
 }
 function goBack(){
@@ -1515,6 +1940,7 @@ function goBack(){
 history.replaceState({tab:'list', view:null, depth:0}, '');
 window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
+  if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
   if (rainLocked){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
   const st = e.state || {tab:'list', view:null};
@@ -1526,11 +1952,11 @@ window.addEventListener('popstate', e => {
 let toastTimer = null;
 function withUndo(msg, fn){
   const snap = JSON.stringify(state);
-  fn(); save(); render();
+  fn(); stdCache = null; save(); render();
   const el = $('toast');
   el.innerHTML = `<span>${esc(msg)}</span><button>${t().undo}</button>`;
   el.hidden = false;
-  el.querySelector('button').onclick = () => { state = JSON.parse(snap); save(); el.hidden = true; render(); };
+  el.querySelector('button').onclick = () => { state = JSON.parse(snap); stdCache = null; save(); el.hidden = true; render(); };
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
 }
@@ -1591,6 +2017,7 @@ document.addEventListener('visibilitychange', updateWake);
 
 render();
 updateWake();
+if (!state.introDone) showIntro(0, checkShared); else checkShared();
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){ window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
 })();
 </script>
