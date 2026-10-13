@@ -13,7 +13,7 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - `friluftsliv(L)` – the template list, written as `[Norwegian, English]` pairs. Prefixes in item strings: `> ` = sub-item, `* ` = included in the light day-hike view, `@key ` = links to a bag list.
 - Main sections, trip modes (`mode:`), and bag lists (`bag:true`: Forberedelser, Førstehjelpssett, Reparasjonssett, Personlig pleie). A non-sub item followed by sub-items is rendered as a subheading and is not counted.
 - `MODES` (trip types), `CAT_ICONS` (section icons), `SKINS` (Fjell, Mose, Fjord, Sommereng).
-- Tabs: Pakkliste, Planlegg (Mat, Drivstoff, Vannblanding), Guider (Knuter, Solbriller, Mobilen på tur), Kompass.
+- Tabs: Pakkliste, Planlegg (Mat, Drivstoff, Vannblanding), Guider (grouped: Utstyr og vedlikehold, Ferdigheter i felt, Vær og sikkerhet), Kompass.
 - Utemodus (outdoor mode): larger targets, editing locked, screen kept on, strict tap filter, Regnlås (rain lock), Nattlys (red night light), Angre (undo).
 - Data is stored in `localStorage` under `KEY`.
 
@@ -26,7 +26,10 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - **Introduction:** shown once (`state.introDone`), and from Guider → Slik bruker du Varde.
 - **Fuel planner:** litres boiled per person per day (`USE_KEYS`, defaults in `WATER_DEFAULT`, drinking water is always boiled) times fuel per litre (`FUELS[x].perL`: gas 15 g, petrol 30 ml, spirit 50 ml; own figure in `fuelCalc.perLc`). Water from snow multiplies everything by `SNOW_BOIL` (2.5). Day hike mode (`fuelCalc.mode = 'day'`) hides the table and uses one figure (`dayL`). The summary at the top shows the whole calculation.
 - **Food planner:** meals per person per day with their energy side by side; the gauge at the top shows one full day against zones (`KZONES`: summer red below 2000 kcal, yellow below 3000, green above; winter 2500 / 3500).
-- **Guide drawings:** own drawings (no licence needed) in `guides/`, loaded inline by `loadSvgs()` and coloured with `--sb-*` variables; precached in `sw.js`. The Brennerplate line in the standard list links to the stove board guide.
+- **Guide drawings:** own drawings (no licence needed) in `guides/`, loaded inline by `loadSvgs()` and coloured with `--sb-*` variables; precached in `sw.js`.
+- **Text guides:** plain text guides (Skalltøy, Fjellsko with Skistøvler, Telt, Tarp, Bål) live in `GUIDE_TXT` (`no` and `en`, each `{title, short, sub, secs}`; a section can carry a third value as its id) and are drawn by `renderTextGuide()`. Kept in their own object, not in `UI`, so their keys cannot clash with interface text. A new text guide only needs an entry in both languages and a place in `GUIDE_GROUPS`.
+- **Guide groups:** `GUIDE_GROUPS` sets the order and group of every guide on the Guider page. Each group has a colour (`--gc`: `--lichen`, `--red`, `--gsafe`) shown as a stripe and a group heading, never colour alone.
+- **Guide links:** `GUIDE_LINKS` maps standard list item ids to a guide (`'boots#ski'` opens that section). Links appear only on the standard list, as part of the app's basics; own lists get none. Changing the Norwegian text of a linked template line changes its id, so update the map at the same time.
 - **List lock:** `state.listLock` blocks ticking in both normal and outdoor mode (Lås listen, next to Skjul pakket); other tabs keep working.
 - **Header:** on the packing list, the whole header is one button (`#listBtn`) to Dine lister; on other pages it is a plain title (class `plain`). Long names drop the label, use up to two lines, then end with "…". In outdoor mode, a labelled Regnlås button (`#hdrLock`) sits at the right.
 - **Dine lister:** all cards start folded. Lists received through a share link get `sharedIn: true` and are shown under Delte lister; Dupliser makes an own list.

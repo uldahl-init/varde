@@ -179,6 +179,14 @@ body.notlist .list-switch svg{display:none}
 .index .ix-t{display:block;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
 .index .ix-d{display:block;color:var(--muted);font-size:.95rem}
 .index .ix-txt{flex:1}
+.ix-group{display:flex;align-items:center;gap:8px;margin:22px 0 -6px;font-family:var(--head);font-weight:600;font-size:.95rem;letter-spacing:.02em}
+.ix-group i{width:10px;height:10px;border-radius:50%;background:var(--gc)}
+.ix-group{color:var(--gc)}
+.index button.g-gear,.index button.g-field,.index button.g-safety{border-left:5px solid var(--gc)}
+.g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}
+body{--gsafe:#3F7FA8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--gsafe:#7FB2D4}}
+:root[data-theme="dark"] body{--gsafe:#7FB2D4}
 .index svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2.5;stroke-linecap:round}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;max-width:608px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600}
 .toast[hidden]{display:none}
@@ -432,7 +440,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v16';
+const APP_VERSION = 'varde-v17';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -793,7 +801,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
 const MODES = {
   vinter:{no:'Vinter', en:'Winter'}, pulk:{no:'Pulktur', en:'Pulk trip'}, skred:{no:'Skredterreng', en:'Avalanche terrain'},
   topptur:{no:'Topptur / Randonee', en:'Ski touring'}, bil:{no:'Camping og biltur', en:'Camping and road trip'},
-  fiske:{no:'Fiske', en:'Fishing'}, hytte:{no:'Hyttetur (DNT)', en:'Cabin trip (DNT)'}
+  fiske:{no:'Fiske', en:'Fishing'}, hund:{no:'Hund', en:'Dog'}, hytte:{no:'Hyttetur (DNT)', en:'Cabin trip (DNT)'}
 };
 
 /* ---------- template ---------- */
@@ -804,7 +812,7 @@ function friluftsliv(L){
   const note = (no, eng) => en ? eng : no;
   return { name: en ? 'Outdoor checklist' : 'Friluftsliv', cats:[
     C('start','Før tur','Before you go',[['@prep Forberedelser','@prep Preparations']]),
-    C('sleep','Overnatting','Sleeping',[['Telt','Tent'],['Teltlykt','Tent lamp'],['Sovepose','Sleeping bag'],['Pute (kompakt)','Pillow (compact)'],['Lakenpose (ekstra)','Sleeping bag liner (extra)'],['Liggeunderlag','Sleeping pad']]),
+    C('sleep','Overnatting','Sleeping',[['Telt','Tent'],['Teltlykt','Tent lamp'],['Sovepose (komforttemperatur etter årstid)','Sleeping bag (comfort temperature to suit the season)'],['Pute (kompakt)','Pillow (compact)'],['Lakenpose (ekstra)','Sleeping bag liner (extra)'],['Liggeunderlag (skum og/eller oppblåsbart)','Sleeping pad (foam and/or inflatable)']]),
     C('general','Generelt turutstyr','General gear',[
       ['@firstaid Førstehjelpssett','@firstaid First aid kit'],['@repair Reparasjonssett','@repair Repair and spares kit'],['@personal Personlig pleie','@personal Personal care'],
       ['Kart og kompass i vanntett kartmappe','Map and compass in a waterproof map case'],
@@ -814,7 +822,8 @@ function friluftsliv(L){
       ['Hodelykt / lommelykt','Headlamp / torch'],['Solbriller / snøbriller','Sunglasses / snow goggles'],
       ['Vindsekk','Bivy sack / emergency shelter'],['Jervenduk','Jerven bag (bivy, poncho, tarp)'],
       ['DNT-nøkkel (for medlemmer, nødly i ubetjente hytter)','DNT key (for members, emergency shelter in self-service cabins)'],
-      ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']]),
+      ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']],
+      {note: note('Ha ting du trenger ofte i topplokket eller hoftebeltelommen.','Keep things you need often in the lid or a hip-belt pocket.')}),
     C('cook','Matlaging','Cooking',[
       ['Brenner / primus (vinter: 2 stk, eller reservedeler, for vann fra snø)','Stove (winter: 2, or spare parts, for melting snow)'],
       ['Brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)','Fuel (enough for the trip, winter approx. 0.3 l per day when melting snow)'],
@@ -826,13 +835,13 @@ function friluftsliv(L){
       ['Vannfilter / rensetabletter (ved usikker vannkvalitet)','Water filter / purification tablets (if water quality is uncertain)']]),
     C('clothes','Tøy','Clothing',[
       ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
-      ['Ullsokker (tur)','Wool socks (hiking)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
+      ['Ullsokker (2–3 par)','Wool socks (2–3 pairs)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
       ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],['Tynn vindjakke og lett vindbukse (valgfritt, erstatter ikke skalltøyet)','Thin wind jacket and light wind trousers (optional, not a replacement for the shell)'],
-      ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Hals / skjerf','Neck gaiter / scarf'],
+      ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Pannebånd (kan også brukes som sovemaske)','Headband (can double as a sleep mask)'],['Hals / skjerf','Neck gaiter / scarf'],
       ['Hansker (lette, hele året)','Gloves (light, all year)'],['Ullvotter (varme også når de er våte)','Wool mittens (warm even when wet)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters'],['Lette leirsko (valgfritt)','Light camp shoes (optional)']]),
     C('food','Mat','Food',[
       ['Middag','Dinner'],['> Turmat (frysetørket eller hjemmelaget)','> Trail meals (freeze-dried or homemade)'],
-      ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker (i liten plastboks)','> Sugar (in a small plastic box)'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],['> Kjeks / crackers','> Crackers'],['> Turmiks (nøtter og frø, energitett)','> Trail mix (nuts and seeds, energy dense)'],
+      ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker (i liten plastboks)','> Sugar (in a small plastic box)'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],['> Kjeks / crackers','> Crackers'],['> Turmiks (nøtter og frø, energitett)','> Trail mix (nuts and seeds, energy dense)'],['> Sjokolade','> Chocolate'],
       ['> Vinterlunsj: enkel mat som ikke må varmes (f.eks. lefser)','> Winter lunch: simple food that needs no heating (e.g. lefse)'],
       ['Tilbehør','Extras'],['> Kaffe (i liten plastboks)','> Coffee (in a small plastic box)'],['> Rett i koppen','> Instant meals'],['> Salt','> Salt'],['> Chili og krydder','> Chili and spices'],
       ['Nødproviant','Emergency food'],['> Energisnacks (rask energi)','> Energy snacks (quick energy)'],['> Mørk kokesjokolade','> Dark cooking chocolate'],['> Proteinbarer','> Protein bars']]),
@@ -848,6 +857,8 @@ function friluftsliv(L){
       {mode:'topptur', note: note('Bruk sammen med Vinter, og Skredterreng når ruten går i skredterreng.','Use together with Winter, and Avalanche terrain when the route crosses avalanche terrain.')}),
     C('m_bil','Camping og biltur','Camping and road trip',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Turdusj (pocket shower, 10 l)','Pocket shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
     C('m_fiske','Fiskeutstyr','Fishing gear',[['Stang','Rod'],['Snelle','Reel'],['Kroker','Hooks'],['Kniv','Knife'],['Fiskekort (ferskvann)','Fishing licence (freshwater)'],['Svivler / sene','Swivels / line'],['Pose','Bag']], {mode:'fiske'}),
+    C('m_hund','Hund','Dog',[['Hundemat (porsjonert per dag) og godbiter','Dog food (portioned per day) and treats'],['Sammenleggbar vannskål','Collapsible water bowl'],['Bånd og sele (langline valgfritt)','Lead and harness (long line optional)'],['Bæsjeposer','Poo bags'],['Liggeunderlag eller pledd til hunden (for teltet)','Sleeping pad or blanket for the dog (for the tent)'],['Dekken (kulde og regn)','Dog coat (cold and rain)'],['Potesokker og potesalve (snø, skarp stein, skare)','Paw socks and paw balm (snow, sharp rock, crust)'],['Lys eller refleks på hunden','Light or reflector on the dog'],['Flåttang','Tick remover'],['Hundesekk (valgfritt, hunden bærer selv)','Dog pack (optional, the dog carries its own)'],['Halsbånd med navn og telefonnummer','Collar with name and phone number']],
+      {mode:'hund', note: note('Båndtvang 1. april – 20. august i hele landet. Kommunen kan ha strengere regler.','In Norway, dogs must be kept on a lead from 1 April to 20 August. The municipality may have stricter rules.')}),
     C('m_hytte','Hyttetur (DNT)','Cabin trip (DNT)',[['Lakenpose','Sleeping bag liner'],['Medlemskort','Membership card'],['Betaling (kort / Vipps)','Payment (card / Vipps)'],['Tørre ullsokker til innebruk','Dry wool socks for indoors']], {mode:'hytte'}),
 
     C('prep','Forberedelser','Preparations',[
@@ -861,7 +872,7 @@ function friluftsliv(L){
       ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol)','> * Painkillers (paracetamol)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],['> Melatonin','> Melatonin'],
       ['Utstyr','Tools'],['> Pinsett (flått, fliser)','> Tweezers (ticks, splinters)'],['> Sikkerhetsnåler','> Safety pins'],['> Neglesaks','> Nail clippers'],['> Saks (bandasjer og tape)','> Scissors (bandages and tape)'],
       ['Varme og nød','Warmth and emergency'],['> * Redningsfolie','> * Emergency foil blanket'],
-      ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag']],
+      ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag'],['> Førstehjelp til hund (bandasje og potesokk, på hundetur)','> Dog first aid (bandage and paw sock, on dog trips)']],
       {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
     C('repair','Reparasjonssett','Repair and spares kit',[
       ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
@@ -955,7 +966,10 @@ function migrate(){
     'Teltlykt (USB, må lades i vanlig USB-port)':'Teltlykt (USB)', 'Tent lamp (USB, charge in a regular USB port)':'Teltlykt (USB)',
     'Ekstra batterier (til lykter som ikke kan lades)':'Ekstra batterier (ved behov, som reserve)', 'Spare batteries (for lamps that cannot be charged)':'Ekstra batterier (ved behov, som reserve)',
     'Fyrstikker':'Fyrstikker (vanntett pakket)', 'Matches':'Fyrstikker (vanntett pakket)',
-    'Hjelm':'Hjelm (til nedkjøringen)', 'Helmet':'Hjelm (til nedkjøringen)'
+    'Hjelm':'Hjelm (til nedkjøringen)', 'Helmet':'Hjelm (til nedkjøringen)',
+    'Sovepose':'Sovepose (komforttemperatur etter årstid)', 'Sleeping bag':'Sovepose (komforttemperatur etter årstid)',
+    'Liggeunderlag':'Liggeunderlag (skum og/eller oppblåsbart)', 'Sleeping pad':'Liggeunderlag (skum og/eller oppblåsbart)',
+    'Ullsokker (tur)':'Ullsokker (2–3 par)', 'Wool socks (hiking)':'Ullsokker (2–3 par)'
   };
   const no = friluftsliv('no'), en = friluftsliv('en'), byKey = {};
   no.cats.forEach((c, n) => { const m = {}; c.items.forEach((x, k) => { m[slug(x.no)] = x.no; m[slug(en.cats[n].items[k].t)] = x.no; }); byKey[c.key] = m; });
@@ -1046,6 +1060,7 @@ const CAT_ICONS = {
   m_topptur:'<path d="M3 20l6-10 4 6 3-4 5 8z"/><path d="M9 10l1.5-3 1.5 3"/>',
   m_bil:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3z"/><path d="M7 19v2M17 19v2"/>',
   m_fiske:'<path d="M3 12c4-6 11-6 15 0-4 6-11 6-15 0z"/><path d="M18 12l3-3v6z"/><circle cx="8" cy="11" r=".5"/>',
+  m_hund:'<circle cx="6.5" cy="10" r="1.8"/><circle cx="10" cy="6" r="1.8"/><circle cx="14" cy="6" r="1.8"/><circle cx="17.5" cy="10" r="1.8"/><path d="M12 11c-3 0-5.5 4-5.5 6.5 0 2 2 2.5 3.5 2s1.5-.5 2-.5 .5 0 2 .5 3.5 0 3.5-2c0-2.5-2.5-6.5-5.5-6.5z"/>',
   m_hytte:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   firstaid:'<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M9 6V4h6v2M12 10v6M9 13h6"/>',
   repair:'<path d="M14 6a4 4 0 0 0 5 5l-9 9a2 2 0 0 1-3-3l9-9a4 4 0 0 1-2-2z"/>',
@@ -1102,6 +1117,7 @@ function render(){
     if (view === 'tool:phone') return renderPhone();
     if (view === 'tool:winter') return renderWinter();
     if (view === 'tool:stoveboard') return renderStoveBoard();
+    if (view && view.indexOf('tool:') === 0 && GUIDE_TXT.en[view.slice(5)]) return renderTextGuide(view.slice(5));
     view = null;
     return renderIndex();
   }
@@ -1194,8 +1210,9 @@ function render(){
         const st = countCats([target]);
         html += `<button class="link-btn${st.t && st.d === st.t ? ' complete' : ''}" data-nav data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${st.d}/${st.t}${CHEV_R}</button>`;
       }
-      if (!editing && typeof i.id === 'string' && i.id.indexOf('std:cook:brennerplate') === 0){
-        html += `<button class="link-btn" data-nav data-act="openGuide" data-guide="stoveboard">${T.guideLink}${CHEV_R}</button>`;
+      if (!editing && typeof i.id === 'string' && GUIDE_LINKS[i.id]){
+        const gl = GUIDE_LINKS[i.id].split('#');
+        html += `<button class="link-btn" data-nav data-act="openGuide" data-guide="${gl[0]}"${gl[1] ? ` data-sec="${gl[1]}"` : ''}>${T.guideLink}${CHEV_R}</button>`;
       }
       if (editing){
         html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
@@ -1295,11 +1312,107 @@ function renderIndex(){
   const isPlan = tab === 'plan';
   $('listName').textContent = isPlan ? T.tabPlan : T.tabGuide;
   document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
-  const items = isPlan
-    ? [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]]
-    : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['winter', T.winterTool, T.winterShort], ['stoveboard', T.sbTool, T.sbShort], ['phone', T.phoneTool, T.phoneShort]];
-  main.innerHTML = `<p class="tool-sub">${isPlan ? T.planSub : T.guideSub}</p><div class="index">` +
-    items.map(([k, n, dsc]) => `<button data-open="${k}" data-nav><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
+  const card = ([k, n, dsc], grp) => `<button data-open="${k}" data-nav${grp ? ` class="g-${grp}"` : ''}><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`;
+  if (isPlan){
+    const items = [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]];
+    main.innerHTML = `<p class="tool-sub">${T.planSub}</p><div class="index">` + items.map(x => card(x)).join('') + '</div>';
+    return;
+  }
+  const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
+  const old = {knots:[T.knotTool, T.knotShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
+  const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
+  main.innerHTML = `<p class="tool-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
+    `<h2 class="ix-group g-${gr.key}"><i aria-hidden="true"></i>${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
+}
+/* ---------- text guides (v17) ---------- */
+const GUIDE_TXT = {
+  no:{
+    shell:{title:'Skalltøy', short:'Pust, vask og impregnering', sub:'En rask sjekk før og etter tur. Vaskeanvisningen og produsentens råd går først.', secs:[
+      ['Hvorfor det betyr noe','<p>Ytterstoffet har et vannavstøtende belegg som får vannet til å perle og renne av. Når belegget slites, trekker stoffet til seg vann. Jakken lekker ikke, men slutter å puste og blir klam inni. Skitt, svette, solkrem og røyk sliter belegget raskere.</p>'],
+      ['Før turen','<ul><li>Dryss litt vann på skuldrene. Perler det, er det greit. Blir stoffet mørkt og trekker det inn, bør plagget vaskes og impregneres.</li><li>Sjekk glidelåser, mansjetter, hettejustering og at tapen i sømmene ikke løsner.</li></ul>'],
+      ['Etter turen','<ul><li>Heng plagget til tørk før du legger det bort, ikke rett ved sterk varme.</li><li>Børst av tørr gjørme, og oppbevar det hengende, ikke presset sammen.</li></ul>'],
+      ['Vask','<ul><li>Vask når plagget er skittent eller slutter å perle, etter vaskeanvisningen (ofte 30–40 °C).</li><li>Lukk alle glidelåser og borrelåser, og bruk flytende vaskemiddel eller et vaskemiddel for funksjonstøy.</li><li>Aldri tøymykner, blekemiddel eller rens. Skyll godt.</li></ul>'],
+      ['Ny impregnering','<ul><li>Varme gir ofte tilbake den vannavstøtende effekten: tørketrommel på lav eller middels varme i omtrent 20 minutter, hvis vaskeanvisningen tillater det.</li><li>Perler det fortsatt ikke, bruk impregnering på spray utenpå, og varm etter det produktet beskriver.</li></ul>']]},
+    boots:{title:'Fjellsko', short:'Lærsko, tekniske sko og skistøvler', sub:'En rask sjekk før og etter tur. Vaskeanvisningen og produsentens råd går først.', secs:[
+      ['Før turen','<ul><li>Sjekk såle og mønster, sømmer, gummikanten, lisser og maljer.</li><li>Se at skoene er behandlet siden forrige tur.</li></ul>'],
+      ['Etter turen, alle sko','<ul><li>Ta ut innleggssålene, løsne lissene, og børst eller skyll av gjørme. Tørket gjørme trekker fuktighet ut av lær.</li><li>Tørk skoene langsomt i romtemperatur, med avispapir inni som byttes når det er vått.</li><li>Aldri ved bål, ovn eller panelovn. Varme sprekker lær og svekker limet.</li><li>Oppbevar dem tørt og luftig, ikke i plastpose eller i en varm bil.</li></ul>'],
+      ['Lærsko','<ul><li>Når de er rene, behandle dem med voks eller pleiemiddel for lærtypen. Glatt lær og nubuk trenger ulike produkter.</li><li>Har skoene membran, unngå tungt fett. Det mykner læret og gir dårligere pust. Bruk et produkt laget for sko med membran.</li></ul>'],
+      ['Tekniske sko (stoff og syntet)','<ul><li>Rengjør med vann, og mild såpe ved behov. Ikke bruk voks på stoffet.</li><li>Impregner med spray når vannet ikke lenger perler.</li></ul>'],
+      ['Skistøvler','<p>Som for fjellsko: tørk langsomt i romtemperatur, aldri ved bål eller ovn, og behandle skistøvler i lær som lærsko.</p><ul><li>Kan innerstøvlene tas ut, ta dem ut etter hver dag og tørk dem for seg. Det er der fuktigheten sitter. I telt kan de ligge i soveposen om natten, så de ikke fryser.</li><li>Før turen, sjekk delen som møter bindingen (sålekant, bøyle eller innfestinger) for slitasje og sprekker, og at den ikke er full av is eller skitt.</li><li>Sjekk spenner, stropper og lisser.</li><li>Oppbevar plaststøvler med spennene løst lukket, så skallet holder formen.</li></ul>','ski']]},
+    tent:{title:'Telt', short:'Sjekk før og etter tur', sub:'En rask sjekk før og etter tur. Produsentens råd går først.', secs:[
+      ['Før turen','<ul><li>Etter lagring, eller før sesongens første tur: slå opp teltet hjemme og sjekk at alt er med: innertelt, duk, stenger, plugger og barduner.</li><li>Sjekk stangledd og strikken inni, glidelåser, tapen i sømmene og at vannet perler på duken.</li><li>Se at lappesett og reparasjonshylse til stengene ligger i reparasjonssettet.</li></ul>'],
+      ['På tur','<ul><li>Selve teltet (innertelt og duk) kan pakkes inni sekken i stedet for utenpå. Det holder seg tørt, henger ikke fast i greiner og sekken blir bedre balansert. Stengene utenpå eller langs ryggen.</li><li>En våt duk kan pakkes i egen pose eller i en ytterlomme, så resten av sekken holder seg tørr.</li><li>Unngå å la teltet stå i sterk sol i dagevis. Sollys sliter på stoffet.</li></ul>'],
+      ['Etter turen','<ul><li>Tørk teltet helt innen en dag eller to, selv om det virket tørt da du pakket det. Lagres det fuktig, blir det mugg og sur lukt, og belegget brytes ned.</li><li>Rist ut sand og barnåler, og tørk av gjørme med vann og svamp. Ikke vaskemiddel eller vaskemaskin.</li><li>Rengjør og tell pluggene.</li><li>Oppbevar teltet løst pakket, tørt og kjølig, ikke hardt komprimert.</li></ul>']]},
+    tarp:{title:'Tarp', short:'Til telt, alene eller over hengekøye', sub:'Det grunnleggende for å komme i gang.', secs:[
+      ['Bruk','<ul><li><b>Sammen med teltet:</b> et tørt sted å lage mat og sitte ute når det regner.</li><li><b>Alene:</b> lettere og luftigere enn telt, men mindre ly mot vind og insekter. Best om sommeren og under tregrensen.</li><li><b>Over hengekøye:</b> taket, hengt lengre enn hengekøya.</li><li><b>Som skygge</b> på varme dager og i midtdagssola.</li><li><b>I en nødsituasjon</b> kan en vindsekk eller Jervenduk rigges som et enkelt ly.</li></ul>'],
+      ['Oppsett, det grunnleggende','<ul><li>Strekk en stram mønelinje mellom to trær: pålestikk i den ene enden og teltstikk i den andre, så du kan stramme den.</li><li>Bruk teltstikk på bardunene, så de kan justeres.</li><li>I dårlig vær: lavt, med ryggen mot vinden. I fint vær: høyere og mer åpent.</li><li>Stram tarpen godt og med fall, så den ikke blafrer og vannet ikke samler seg.</li></ul><p><button class="btn small" data-nav data-act="openGuide" data-guide="knots">Knuter ›</button></p>'],
+      ['Vedlikehold','<p>Som for telt: tørk tarpen helt før den legges bort.</p>']]},
+    fire:{title:'Bål', short:'Godt bål og ild i en nødsituasjon', sub:'Det grunnleggende om bål på tur.', secs:[
+      ['Før du tenner','<ul><li><b>Bålforbud:</b> det er forbudt å gjøre opp ild i eller nær skog og annen utmark fra 15. april til 15. september, med mindre det åpenbart ikke kan føre til brann. Kommunen kan ha strengere regler.</li><li>Bruk et eksisterende bålsted hvis det finnes. Unngå bart fjell, som sprekker og får merker, og hold avstand til teltet. Gnister smelter stoffet.</li><li>Sjekk vinden, og ha vann klart.</li></ul>'],
+      ['Tenning','<ul><li>Samle alt før du tenner: never eller annet opptenningsmateriale, tynne kvister, tykkere pinner og ved.</li><li>Bjørkenever brenner også når den er våt. Døde kvister nederst på grantrær er som regel tørre.</li><li>Kløyv våt ved. Innsiden er ofte tørr.</li><li>Start smått og legg på gradvis. Et lite bål er lettere å holde i gang og gir bedre varme til matlaging.</li></ul>'],
+      ['I en nødsituasjon','<ul><li>Bålet skal gi varme og tørke klær. Hold det lite og i le for vinden.</li><li>Tennbriketter og tennstål ligger i Ild i reparasjonssettet.</li><li>I en reell nødsituasjon går liv og helse foran.</li></ul>'],
+      ['Etterpå','<ul><li>Slokk med vann til asken er kald å ta på.</li><li>Ikke brenn plast eller søppel, og forlat stedet slik du fant det.</li></ul>']]}
+  },
+  en:{
+    shell:{title:'Shell clothing', short:'Breathability, washing and re-proofing', sub:'A quick check before and after a trip. The care label and the manufacturer\'s advice come first.', secs:[
+      ['Why it matters','<p>The outer fabric has a water-repellent coating that makes water bead and roll off. When the coating wears off, the fabric soaks up water. The jacket doesn\'t leak, but it stops breathing and feels clammy inside. Dirt, sweat, sunscreen and smoke wear the coating down faster.</p>'],
+      ['Before the trip','<ul><li>Sprinkle some water on the shoulders. If it beads, it\'s fine. If it darkens and soaks in, wash and re-proof the garment.</li><li>Check zips, cuffs, the hood adjustment and that the seam tape isn\'t peeling.</li></ul>'],
+      ['After the trip','<ul><li>Hang it up to dry fully before storing it, away from direct heat.</li><li>Brush off dry mud, and store it hanging, not compressed.</li></ul>'],
+      ['Washing','<ul><li>Wash when it\'s dirty or stops beading, following the care label (usually 30–40 °C).</li><li>Close all zips and Velcro, and use liquid detergent or a technical wash.</li><li>Never use fabric softener, bleach or dry cleaning. Rinse well.</li></ul>'],
+      ['Re-proofing','<ul><li>Heat often brings back the water repellency: tumble dry on low or medium for about 20 minutes, if the label allows.</li><li>If it still doesn\'t bead, use a spray-on proofing product on the outside, then heat as the product describes.</li></ul>']]},
+    boots:{title:'Hiking boots', short:'Leather, technical and ski boots', sub:'A quick check before and after a trip. The care label and the manufacturer\'s advice come first.', secs:[
+      ['Before the trip','<ul><li>Check the soles and tread, stitching, the rubber rand, laces and eyelets.</li><li>Make sure the boots have been treated since the last trip.</li></ul>'],
+      ['After the trip, all boots','<ul><li>Take out the insoles, loosen the laces, and brush or rinse off mud. Dried mud draws moisture out of leather.</li><li>Dry them slowly at room temperature, with newspaper inside, changed when it\'s wet.</li><li>Never by a fire, stove or radiator. Heat cracks leather and weakens the glue.</li><li>Store them dry and airy, not in a plastic bag or a hot car.</li></ul>'],
+      ['Leather boots','<ul><li>When clean, treat them with wax or care products for the leather type. Smooth leather and nubuck need different products.</li><li>For boots with a membrane, avoid heavy grease. It softens the leather and reduces breathability. Use a product meant for membrane boots.</li></ul>'],
+      ['Technical boots (fabric and synthetic)','<ul><li>Clean with water, and mild soap if needed. Don\'t use wax on the fabric.</li><li>Re-proof with a spray when water no longer beads.</li></ul>'],
+      ['Ski boots','<p>As for hiking boots: dry slowly at room temperature, never by a fire or stove, and treat leather ski boots like leather hiking boots.</p><ul><li>If the liners come out, take them out after each day and dry them separately. That\'s where the moisture sits. In a tent, they can go in the sleeping bag overnight so they don\'t freeze.</li><li>Before the trip, check the part that meets the binding (sole edge, bar or inserts) for wear and cracks, and that it isn\'t packed with ice or dirt.</li><li>Check buckles, straps and laces.</li><li>Store plastic boots with the buckles loosely closed, so the shell keeps its shape.</li></ul>','ski']]},
+    tent:{title:'Tent', short:'Check before and after a trip', sub:'A quick check before and after a trip. The manufacturer\'s advice comes first.', secs:[
+      ['Before the trip','<ul><li>After storage, or before the first trip of the season, pitch the tent at home and check that everything is there: inner tent, fly, poles, pegs and guylines.</li><li>Check the pole sections and the elastic cord, the zips, the seam tape, and that water still beads on the fly.</li><li>Make sure the patch kit and a pole repair sleeve are in the repair kit.</li></ul>'],
+      ['On the trip','<ul><li>The tent itself (inner tent and fly) can be packed inside the backpack instead of strapped outside. It stays dry, doesn\'t catch on branches and keeps the pack balanced. The poles go outside or along the back.</li><li>A wet fly can go in its own bag or an outer pocket, so the rest of the pack stays dry.</li><li>Avoid leaving the tent pitched in strong sun for days. Sunlight wears down the fabric.</li></ul>'],
+      ['After the trip','<ul><li>Dry the tent completely within a day or two, even if it seemed dry when you packed it. Stored damp, it gets mould and a sour smell, and the coating breaks down.</li><li>Shake out sand and needles, and wipe off mud with water and a sponge. No detergent or washing machine.</li><li>Clean and count the pegs.</li><li>Store it loosely packed, dry and cool, not tightly compressed.</li></ul>']]},
+    tarp:{title:'Tarp', short:'With the tent, on its own or over a hammock', sub:'The basics to get started.', secs:[
+      ['Uses','<ul><li><b>With the tent:</b> a dry place for cooking and sitting outside when it rains.</li><li><b>On its own:</b> lighter and airier than a tent, but less protection from wind and insects. Best in summer and below the tree line.</li><li><b>Over a hammock:</b> the roof, hung longer than the hammock.</li><li><b>As shade</b> on hot days and in the midday sun.</li><li><b>In an emergency,</b> a bivy sack or Jervenduk can be rigged as a simple shelter.</li></ul>'],
+      ['Pitching, the basics','<ul><li>Tie a tight ridgeline between two trees: a bowline at one end and a taut-line hitch at the other, so you can tighten it.</li><li>Use taut-line hitches on the guylines, so they can be adjusted.</li><li>In bad weather: low, with the back to the wind. In good weather: higher and more open.</li><li>Pitch it tight and with a slope, so it doesn\'t flap and water doesn\'t collect.</li></ul><p><button class="btn small" data-nav data-act="openGuide" data-guide="knots">Knots ›</button></p>'],
+      ['Care','<p>As for the tent: dry the tarp completely before storing it.</p>']]},
+    fire:{title:'Campfire', short:'A good fire, and fire in an emergency', sub:'The basics of making a fire on a trip.', secs:[
+      ['Before you light it','<ul><li><b>Fire ban:</b> in Norway, lighting fires in or near forest and other open country is banned from 15 April to 15 September, unless there is clearly no chance of a fire spreading. The municipality may have stricter rules.</li><li>Use an existing fire pit if there is one. Avoid bare rock, which cracks and gets marked, and keep away from the tent. Sparks melt the fabric.</li><li>Check the wind, and have water ready.</li></ul>'],
+      ['Lighting it','<ul><li>Gather everything before you strike a match: tinder, thin twigs, thicker sticks and firewood.</li><li>Birch bark burns even when wet. Dead twigs at the bottom of spruce trees are usually dry.</li><li>Split wet wood. The inside is often dry.</li><li>Start small and add fuel gradually. A small fire is easier to keep going and gives better heat for cooking.</li></ul>'],
+      ['In an emergency','<ul><li>The fire is for warmth and drying out. Keep it small and sheltered from the wind.</li><li>Fire starters and the fire steel are under Fire in the repair kit.</li><li>In a real emergency, life and health come first.</li></ul>'],
+      ['Afterwards','<ul><li>Put it out with water until the ashes are cold to the touch.</li><li>Don\'t burn plastic or rubbish, and leave the place the way you found it.</li></ul>']]}
+  }
+};
+const GUIDE_GROUPS = [
+  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['shell', 'boots', 'tent', 'stoveboard', 'phone']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'fire']},
+  {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['winter', 'sun']}
+];
+/* standard list line -> guide (standard list only) */
+const GUIDE_LINKS = {
+  'std:sleep:telt':'tent',
+  'std:clothes:skalljakke':'shell', 'std:clothes:skallbukse':'shell',
+  'std:clothes:fjellsko / lette tursko (etter tur og årstid)':'boots',
+  'std:m_vinter:skistøvler':'boots#ski',
+  'std:general:solbriller / snøbriller':'sun', 'std:m_vinter:goggles / alpinbriller (dårlig vær, også reserve for solbrillene)':'sun',
+  'std:prep:mobil':'phone',
+  'std:repair:tau / paracord (langt)':'knots',
+  'std:cook:brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)':'stoveboard',
+  'std:m_bil:tarp':'tarp', 'std:m_bil:tarpstenger':'tarp', 'std:general:jervenduk':'tarp',
+  'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
+  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire', 'std:repair:tennbriketter (4x)':'fire'
+};
+let guideSec = null;
+function renderTextGuide(k){
+  const T = t(), g = (GUIDE_TXT[state.lang] || GUIDE_TXT.en)[k];
+  $('listName').textContent = g.title;
+  document.title = g.title + ' · ' + T.app;
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
+    <p class="tool-sub">${g.sub}</p>
+    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+  if (guideSec){
+    const d = main.querySelector(`details[data-sec="${guideSec}"]`);
+    guideSec = null;
+    if (d) requestAnimationFrame(() => d.scrollIntoView({block:'start'}));
+  }
 }
 function renderPhone(){
   const T = t();
@@ -2231,7 +2344,7 @@ main.addEventListener('click', async e => {
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
-  if (act === 'openGuide'){ go('guide', 'tool:' + b.dataset.guide); return; }
+  if (act === 'openGuide'){ guideSec = b.dataset.sec || null; go('guide', 'tool:' + b.dataset.guide); return; }
   if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
   const cat = catEl ? findCat(catEl.dataset.cat) : null;
