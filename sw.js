@@ -1,5 +1,5 @@
 // Bump this version every time you upload a new index.html, so phones pick up the update.
-const CACHE = 'varde-v17';
+const CACHE = 'varde-v18';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './knots/bowline.svg', './knots/taut-line.webp', './knots/clove-hitch.svg', './knots/prusik.webp', './knots/sheet-bend.webp', './guides/stove-board.svg', './guides/stove-board-strap.svg'];
 
 self.addEventListener('install', e => {

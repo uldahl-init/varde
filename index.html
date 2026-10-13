@@ -157,7 +157,7 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .lc-track i{position:absolute;top:2px;bottom:2px;border-radius:4px;background:var(--ink)}
 body.notlist .progress{display:none}
 body.notlist .list-switch svg{display:none}
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);display:grid;grid-template-columns:repeat(4,1fr)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);display:grid;grid-template-columns:repeat(5,1fr)}
 .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer}
 .tabbar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabbar button[aria-current="page"]{color:var(--red)}
@@ -179,6 +179,14 @@ body.notlist .list-switch svg{display:none}
 .index .ix-t{display:block;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
 .index .ix-d{display:block;color:var(--muted);font-size:.95rem}
 .index .ix-txt{flex:1}
+.note-full{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.note-full h2{margin:0;font-family:var(--head);font-weight:600;font-size:1.35rem}
+.note-date{margin:2px 0 10px;color:var(--muted);font-size:.85rem}
+.note-body{white-space:pre-wrap;line-height:1.55;overflow-wrap:anywhere}
+.notes-ix .note-prev{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.notes-ix .note-date{margin:4px 0 0;font-size:.8rem}
+.notes-ix .ix-t{font-size:1.15rem}
+.note-area{min-height:40vh}
 .ix-group{display:flex;align-items:center;gap:8px;margin:22px 0 -6px;font-family:var(--head);font-weight:600;font-size:.95rem;letter-spacing:.02em}
 .ix-group i{width:10px;height:10px;border-radius:50%;background:var(--gc)}
 .ix-group{color:var(--gc)}
@@ -230,7 +238,9 @@ body.field .mark{width:32px;height:32px}
 body.field .mark svg{width:22px;height:22px}
 body.field .item.sub .check{padding-left:56px}
 body.field .chip{padding:12px 18px}
-body.field .tabbar button{min-height:70px;font-size:.85rem}
+body.field .tabbar button{min-height:70px;font-size:.8rem}
+.tabbar button{min-width:0;padding:0 2px}
+@media (max-width:370px){.tabbar button,body.field .tabbar button{font-size:.74rem}}
 body.field .link-btn{padding:10px 12px 10px 16px}
 body[data-skin="fjell"]{--bg:#E9ECEA;--surface:#FFFFFF;--ink:#1D2B2A;--muted:#5E6B69;--line:#D6DCD9;--line-strong:#A9B5B0;--red:#C8372D;--lichen:#5E7A4A;--hd:#1F3532;--hdt:#F2F5F3;--chip:#2C4743}
 body[data-skin="mose"]{--bg:#EFEBE2;--surface:#FBF9F4;--ink:#2A2E22;--muted:#6B6A5C;--line:#DDD7CA;--line-strong:#B5AE9C;--red:#B9730C;--lichen:#5E7344;--hd:#3D4F2E;--hdt:#F4F1E8;--chip:#4E6340}
@@ -440,7 +450,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v17';
+const APP_VERSION = 'varde-v18';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -467,7 +477,7 @@ const UI = {
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
       ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on and editing is locked. Rain lock lets you read without water on the screen ticking anything.'],
       ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
-      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Plan, Guides and Compass are at the bottom.']
+      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Notes, Plan, Guides and Compass are at the bottom.']
     ],
     help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', howShort:'A short introduction to the app',
     sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
@@ -515,7 +525,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
+    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
     field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -636,7 +646,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
       ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på og redigering låses. Regnlås lar deg lese uten at vann på skjermen krysser av noe.'],
       ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
-      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Planlegg, Guider og Kompass finner du nederst.']
+      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Notater, Planlegg, Guider og Kompass finner du nederst.']
     ],
     help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
     sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
@@ -684,7 +694,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    tabList:'Pakkliste', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
+    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
     field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
@@ -994,9 +1004,16 @@ function migrate(){
 }
 if (state.v !== 2) migrate();
 (state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
+/* notes moved from lists into the notepad (v18), never wiped */
+if (!Array.isArray(state.notes)) state.notes = [];
+function notesFromList(l){
+  if (l && typeof l.notes === 'string' && l.notes.trim()) state.notes.push({id:uid(), title:String(l.name || ''), text:l.notes, t:Date.now()});
+  if (l) l.notes = '';
+}
+if (!state.notesMoved){ (state.lists || []).forEach(notesFromList); state.notesMoved = true; save(); }
 let editing = false;
 let view = (state.lastNav && typeof state.lastNav.view === 'string') ? state.lastNav.view : null;
-let tab = (state.lastNav && ['list', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
+let tab = (state.lastNav && ['list', 'notes', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
 let modesOpen = false;
 let rainLocked = !!(state.field && state.rainLocked);
 let lastTick = null;
@@ -1069,12 +1086,13 @@ const CAT_ICONS = {
 const ICONS = {
   list:'<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
   plan:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h2M16 15v3"/></svg>',
+  notes:'<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 15h7M9 18h4"/></svg>',
   guide:'<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/></svg>',
   compass:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>'
 };
 function renderTabs(){
   const T = t();
-  $('tabbar').innerHTML = [['list', T.tabList], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
+  $('tabbar').innerHTML = [['list', T.tabList], ['notes', T.tabNotes], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
     `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
 const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']} };
@@ -1108,6 +1126,7 @@ function render(){
   requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
   if (tab !== 'compass') stopCompass();
   if (tab === 'compass') return renderCompass();
+  if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
     if (view === 'tool:water') return renderWater();
     if (view === 'tool:fuel') return renderFuel();
@@ -1231,12 +1250,6 @@ function render(){
   });
   if (editing){
     html += `<button class="add-cat" data-act="addCat">${T.addCat}</button>`;
-  }
-  if (!bag && ((l.notes && l.notes.trim()) || editing)){
-    const has = l.notes && l.notes.trim();
-    html += `<section class="notes"><h2>${T.notes}</h2><div class="notes-body${has ? '' : ' placeholder'}">${has ? esc(l.notes) : T.notesEmpty}</div>`;
-    if (editing) html += `<div class="cat-tools" style="margin-top:8px"><button class="btn small" data-act="editNotes">${T.editNotes}</button></div>`;
-    html += '</section>';
   }
   main.innerHTML = html;
 }
@@ -1414,6 +1427,42 @@ function renderTextGuide(k){
     if (d) requestAnimationFrame(() => d.scrollIntoView({block:'start'}));
   }
 }
+/* ---------- notes (v18) ---------- */
+function askNote(title, n){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(title)}</h3>
+      <input type="text" id="noteTitle" placeholder="${esc(T.noteTitlePh)}" value="${esc(n ? n.title : '')}">
+      <textarea class="plain note-area" id="noteText" placeholder="${esc(T.noteTextPh)}">${esc(n ? n.text : '')}</textarea>
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
+    panel.querySelector('[data-s=ok]').onclick = () => {
+      const ti = $('noteTitle').value.trim(), tx = $('noteText').value;
+      closeSheet(ti || tx.trim() ? {title:ti, text:tx} : null);
+    };
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  });
+}
+const noteDate = ms => { try { return new Date(ms).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}); } catch(e){ return ''; } };
+function renderNotes(){
+  const T = t();
+  $('listName').textContent = T.tabNotes;
+  document.title = T.tabNotes + ' · ' + T.app;
+  const n = view && view.indexOf('note:') === 0 ? state.notes.find(x => x.id === view.slice(5)) : null;
+  if (view && !n) view = null;
+  if (n){
+    main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>
+      <article class="note-full"><h2>${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p><div class="note-body">${esc(n.text)}</div></article>` +
+      (state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`);
+    return;
+  }
+  const list = state.notes.slice().sort((a, b) => (b.t || 0) - (a.t || 0));
+  let h = `<p class="tool-sub">${T.notesSub}</p>`;
+  h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
+  if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
+  else h += '<div class="index notes-ix">' + list.map(x => `<button data-act="openNote" data-id="${x.id}" data-nav><span class="ix-txt"><span class="ix-t">${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span></span>${CHEV_R}</button>`).join('') + '</div>';
+  main.innerHTML = h;
+}
 function renderPhone(){
   const T = t();
   $('listName').textContent = T.phoneTool;
@@ -1557,7 +1606,7 @@ async function checkShared(){
   try { L = await decodeList(h.slice(7)); } catch(e){ await confirmBox(T.share, T.shareBad, T.ok); return; }
   const n = countCats(L.cats).t;
   if (await confirmBox(T.importQ(L.name), T.importMsg(n), T.importOk)){
-    L.sharedIn = true; state.lists.push(L); selList = L.id; save();
+    L.sharedIn = true; notesFromList(L); state.lists.push(L); selList = L.id; save();
     go('list', 'lists');
   }
 }
@@ -2244,7 +2293,7 @@ async function listAction(a, id){
 
 function backupSheet(){
   const T = t();
-  const data = JSON.stringify({app:'trip-checklist', version:2, lists:state.lists});
+  const data = JSON.stringify({app:'trip-checklist', version:2, lists:state.lists, notes:state.notes});
   openSheet(`<h3>${T.backup}</h3>
     <p>${T.bkMsg}</p>
     <textarea id="bkOut" readonly>${esc(data)}</textarea>
@@ -2264,12 +2313,16 @@ function backupSheet(){
     try {
       const obj = JSON.parse($('bkIn').value);
       if (!obj || !Array.isArray(obj.lists)) throw 0;
-      let added = 0;
+      let added = 0, notesIn = 0;
       obj.lists.forEach(l => {
         if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
-        const c = cloneList(l, true); c.tripType = !!l.tripType; c.sharedIn = !!l.sharedIn; state.lists.push(c); added++;
+        const c = cloneList(l, true); c.tripType = !!l.tripType; c.sharedIn = !!l.sharedIn; notesFromList(c); state.lists.push(c); added++;
       });
-      if (!added) throw 0;
+      if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
+        if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id)) return;
+        state.notes.push({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}); notesIn++;
+      });
+      if (!added && !notesIn) throw 0;
       save(); render();
       status.textContent = T.bkAdded(added);
       $('bkIn').value = '';
@@ -2344,6 +2397,23 @@ main.addEventListener('click', async e => {
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
+  if (act === 'newNote' || act === 'editNote'){
+    if (state.field) return;
+    const n = act === 'editNote' ? state.notes.find(x => x.id === b.dataset.id) : null;
+    const v = await askNote(n ? T.noteEdit : T.newNote, n);
+    if (!v) return;
+    if (n){ n.title = v.title; n.text = v.text; n.t = Date.now(); save(); render(); }
+    else { const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; state.notes.push(nn); save(); go('notes', 'note:' + nn.id); }
+    return;
+  }
+  if (act === 'delNote'){
+    if (state.field) return;
+    const id = b.dataset.id;
+    view = null; history.replaceState({tab, view:null, depth:(history.state && history.state.depth) || 0}, '');
+    withUndo(T.noteDeleted, () => { state.notes = state.notes.filter(x => x.id !== id); });
+    return;
+  }
+  if (act === 'openNote'){ go('notes', 'note:' + b.dataset.id); return; }
   if (act === 'openGuide'){ guideSec = b.dataset.sec || null; go('guide', 'tool:' + b.dataset.guide); return; }
   if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
