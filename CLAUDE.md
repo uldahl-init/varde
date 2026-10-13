@@ -51,6 +51,7 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - The Android back button is handled with the History API (`go`, `goBack`, `popstate`). New screens and sheets must use `go()` or `openSheet()` so back keeps working.
 - The body element carries `data-skin`, so click handlers must never match `closest('[data-skin]')` without a class (use `.skin-btn[data-skin]`); a generic match caught every click in the app once.
 - Sheets that close and are followed by navigation must not leave a history entry behind: `go()` reuses a closed sheet's entry.
+- All interface text for one language shares a single object in `UI`, so check that a new key is not already in use before adding it (a guide called `winter` once overwrote the season label `winter`).
 - Regnlås (rain lock) blocks taps but allows scrolling, and is unlocked by a one-second hold that handles touch events directly.
 
 ## Name
