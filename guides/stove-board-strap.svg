@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" role="img" aria-label="Bottle strap, seen from the end of the bottle">
+  <style>
+    .ink{stroke:var(--sb-ink,#1D2B2A);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .num circle{fill:var(--sb-accent,#C8372D)} .num text{fill:#fff;font:700 13px system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+  </style>
+  <!-- board in section, with two slots -->
+  <path d="M20 150H98M118 150H182M202 150H280M20 164H98M118 164H182M202 164H280M20 150v14M280 150v14M98 150v14M118 150v14M182 150v14M202 150v14" class="ink"/>
+  <rect x="20" y="150" width="78" height="14" style="fill:var(--sb-board,#E3D3B5)"/>
+  <rect x="118" y="150" width="64" height="14" style="fill:var(--sb-board,#E3D3B5)"/>
+  <rect x="202" y="150" width="78" height="14" style="fill:var(--sb-board,#E3D3B5)"/>
+  <path d="M20 150H98M118 150H182M202 150H280M20 164H98M118 164H182M202 164H280" class="ink"/>
+  <!-- foam under the board -->
+  <rect x="20" y="172" width="260" height="16" rx="3" style="fill:var(--sb-foam,#9DB58A)" class="ink" stroke-width="1.5"/>
+  <!-- strap: under the board between the slots, up through both slots and over the bottle -->
+  <path d="M108 168V150 M192 168V150" stroke="var(--sb-strap,#3F7A8C)" stroke-width="8" stroke-linecap="butt"/>
+  <path d="M108 168H192" stroke="var(--sb-strap,#3F7A8C)" stroke-width="7"/>
+  <!-- bottle seen end-on -->
+  <circle cx="150" cy="104" r="44" style="fill:var(--sb-surface,#fff)" class="ink"/>
+  <circle cx="150" cy="104" r="12" class="ink" stroke-width="1.5"/>
+  <!-- strap over the bottle -->
+  <path d="M108 150V118c0-34 18-58 42-58s42 24 42 58V150" stroke="var(--sb-strap,#3F7A8C)" stroke-width="8" fill="none"/>
+  <!-- buckle on the side -->
+  <rect x="182" y="112" width="20" height="24" rx="4" style="fill:var(--sb-surface,#fff)" class="ink" stroke-width="1.8"/>
+  <path d="M186 124h12" class="ink" stroke-width="1.8"/>
+  <!-- turning arrow -->
+  <path d="M104 64a62 62 0 0 1 92 0" class="ink" stroke-width="1.6"/><path d="M190 56l6 8-10 2" class="ink" stroke-width="1.6"/>
+  <!-- labels -->
+  <g class="num">
+    <g transform="translate(84 136)"><circle r="11"/><text>A</text></g>
+    <g transform="translate(150 36)"><circle r="11"/><text>B</text></g>
+    <g transform="translate(222 120)"><circle r="11"/><text>C</text></g>
+    <g transform="translate(150 202)"><circle r="11"/><text>D</text></g>
+  </g>
+</svg>

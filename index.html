@@ -323,6 +323,16 @@ h3.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25r
 .zone-text.yellow{color:#A87500}
 .zone-text.green{color:#2F7D44}
 body.night .zone-text{color:var(--ink)}
+.sb-fig{margin:16px 0 0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);--sb-ink:var(--ink);--sb-surface:var(--surface);--sb-muted:var(--muted);--sb-accent:var(--red);--sb-alu:var(--line-strong);--sb-board:#E3D3B5;--sb-foam:#9DB58A;--sb-strap:#3F7A8C}
+.sb-fig figcaption{font-weight:600;margin:0 0 8px}
+.sb-fig [data-svgsrc]{max-width:340px;margin:0 auto}
+.sb-fig svg{display:block;width:100%;height:auto}
+.fig-legend{list-style:none;margin:10px 0 0;padding:0;line-height:1.45;font-size:.95rem}
+.fig-legend li{display:flex;gap:8px;margin-bottom:6px}
+.fig-num{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-size:.75rem}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}}
+:root[data-theme="dark"] .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}
+body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-alu:#5c1712}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -483,6 +493,18 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Goggles','<ul><li>A <b>light lens</b> (yellow, orange or rose) suits the flat light of a Scandinavian winter; a darker lens suits spring sun.</li><li>If they <b>fog up</b>, do not wipe the inside: wave them in the air or put them in a dry, warm pocket.</li><li>If you wear glasses, look for goggles marked <b>OTG</b> (over the glasses).</li><li>Thick, soft foam gives a comfortable fit, and avoid the widest models if you wear a helmet.</li></ul>'],
       ['If it happens','<p><b>Snow blindness:</b> find darkness or cover the eyes, do not rub them, remove contact lenses, and cool compresses ease the pain. It usually passes in 1–3 days. Get medical help for strong pain or if it does not improve.</p><p><b>Lost your glasses?</b> Make emergency glasses: cut narrow slits in cardboard, tape or a piece of fabric, and fasten it in front of the eyes. It lets in far less light. On winter and glacier trips, always bring a spare pair.</p>']
     ],
+    sbTool:'Stove board', sbShort:'Make your own', guideLink:'Guide',
+    sbSub:'A steady base keeps the stove upright on snow and uneven ground, and stops it tipping over in the vestibule. Most people make their own.',
+    sbFig1:['The board: floor laminate or plywood','Aluminium heat shield under the stove','Stove fixed with wing screws','Strap around the middle of the bottle, through two slots','Fuel hose with slack, so the bottle can turn half a turn','Tape mark showing ON and OFF','Foam under the board (seen from the side), so it does not melt down into the snow'],
+    sbFig2Title:'How the strap holds the bottle (seen from the end of the bottle)',
+    sbFig2:[['A','Two slots in the board, as wide as the strap, one on each side of the bottle.'],['B','The strap goes over the bottle and holds it by friction.'],['C','The buckle sits on the side: loosen a notch, turn the bottle, and tighten again.'],['D','Under the board, the strap runs from slot to slot. Fit it before gluing on the foam, or cut a groove in the foam.']],
+    sb:[
+      ['Materials','<p><b>Floor laminate</b> or thin <b>plywood</b> (3–5 mm, varnished) is stiff and tolerates spilt fuel. A thin <b>aluminium tray</b> is light and will not burn, but leads heat straight into the snow, so foam underneath matters even more. Avoid <b>plastic</b>: it can soften, melt or catch fire when you prime the stove. The board only needs to be big enough for the stove to stand firmly, with the bottle beside it.</p>'],
+      ['The heat shield','<p>An aluminium plate or aluminium tape under the stove protects the board from radiant heat and flare-ups when priming. Laminate tolerates short flare-ups, but its surface can scorch and give off unpleasant fumes under direct flame over time. Check the board now and then for scorch marks.</p>'],
+      ['The stove','<p><b>Wing screws</b> through the board hold the stove steady and are easy to undo with mittens on. <b>Cable ties or wire</b> give a simpler set-up that is always ready.</p>'],
+      ['The bottle','<p>The bottle must lie steady, but still turn around its own length: on most liquid fuel stoves you turn it to switch off and empty the fuel line. A <b>strap through two slots</b> is the recommended solution. Alternatives: a snug loop that turns with a firm twist, or a small cradle that stops the bottle rolling. Put the strap around the middle of the bottle, never by the neck, leave slack in the hose, and mark ON and OFF with tape. Some prefer the bottle loose beside the board; that works as long as it lies steady and does not pull on the hose.</p>'],
+      ['Safety','<p>Prime the stove outdoors or with the tent door open, and never use it in a closed tent: there is a risk of fire and carbon monoxide poisoning. Keep the bottle and spare fuel away from the flame.</p>']
+    ],
     winterTool:'Winter advice', winterShort:'Cold, clothing and winter camp', winterSub:'Short advice for cold weather, based on the Norwegian Armed Forces and the Directorate of Health, among others.',
     winterAdv:[
       ['Dress in layers','<ul><li><b>Three layers:</b> wool closest to the skin, a looser mid layer, and a roomy wind- and water-repellent shell. Air between the layers insulates.</li><li><b>Mittens</b> keep warmer than gloves.</li><li>A <b>windproof hat that covers the ears</b>, and a neck gaiter or scarf: head, neck and face lose a lot of heat.</li><li><b>Boots one or two sizes bigger</b>, with room for thick wool socks and a good insole.</li></ul>'],
@@ -635,6 +657,18 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Velg etter tur','<ul><li><b>Lett sommertur</b> i skog og lavland: kategori 2–3, lette solbriller holder.</li><li><b>Fjelltur om sommeren:</b> kategori 3, gjerne med god dekning på sidene.</li><li><b>Vintertur og skitur:</b> kategori 3 i sol, kategori 1–2 i kontrastfarge (rav, rosa) i flatt lys. Goggles i vind og snøfokk.</li><li><b>Topptur / randonee:</b> selvtonende 1–3, eller to par, fordi lyset skifter fra skog til åpen fjellside. Goggles til nedkjøringen.</li><li><b>Bre og høyfjell:</b> kategori 4 med sidebeskyttelse (brebriller), og alltid et reservepar.</li><li><b>Vann og fiske:</b> polarisert kategori 3.</li></ul>'],
       ['Goggles','<ul><li>Et <b>lyst glass</b> (gult, oransje eller rosa) passer det flate lyset i en skandinavisk vinter; et mørkere glass passer vårsola.</li><li>Hvis de <b>dugger</b>, ikke tørk innsiden: vift dem i lufta eller legg dem i en tørr, varm lomme.</li><li>Bruker du briller, se etter goggles merket <b>OTG</b> (over the glasses).</li><li>Tykt, mykt skum gir god passform, og unngå de bredeste modellene hvis du bruker hjelm.</li></ul>'],
       ['Hvis uhellet er ute','<p><b>Snøblindhet:</b> søk mørke eller dekk til øynene, ikke gni, ta ut kontaktlinser, og kalde kompresser lindrer. Det går vanligvis over på 1–3 døgn. Søk legehjelp ved sterke smerter eller hvis det ikke bedres.</p><p><b>Mistet brillene?</b> Lag nødbriller: skjær smale spalter i papp, tape eller et stykke stoff, og fest det foran øynene. Det slipper inn langt mindre lys. Ha alltid et reservepar på vinter- og breturer.</p>']
+    ],
+    sbTool:'Brennerplate', sbShort:'Lag din egen', guideLink:'Guide',
+    sbSub:'Et stødig underlag gjør at brenneren står trygt på snø og ujevnt underlag, og ikke velter i forteltet. De fleste lager den selv.',
+    sbFig1:['Platen: gulvlaminat eller kryssfiner','Varmeskjold av aluminium under brenneren','Brenneren festet med vingeskruer','Stropp rundt midten av flasken, gjennom to slisser','Slange med slakk, så flasken kan snus en halv omdreining','Teipmerke som viser ON og OFF','Skum under platen (sett fra siden), så den ikke smelter seg ned i snøen'],
+    sbFig2Title:'Slik holder stroppen flasken (sett fra enden av flasken)',
+    sbFig2:[['A','To slisser i platen, like brede som stroppen, én på hver side av flasken.'],['B','Stroppen går over flasken og holder den på plass med friksjon.'],['C','Spennen sitter på siden: løsne et hakk, snu flasken og stram igjen.'],['D','Under platen går stroppen fra slisse til slisse. Legg den før du limer på skummet, eller lag en rille i skummet.']],
+    sb:[
+      ['Materialer','<p><b>Gulvlaminat</b> eller tynn <b>kryssfiner</b> (3–5 mm, lakkert) er stivt og tåler drivstoffsøl. Et tynt <b>aluminiumsbrett</b> er lett og brenner ikke, men leder varme rett ned i snøen, så skum under er ekstra viktig. Unngå <b>plast</b>: den kan bli myk, smelte eller ta fyr når du forvarmer. Platen trenger bare være stor nok til at brenneren står stødig, med flasken ved siden av.</p>'],
+      ['Varmeskjoldet','<p>En aluminiumsplate eller aluminiumstape under brenneren beskytter platen mot strålevarme og stikkflammer når du forvarmer. Laminat tåler korte stikkflammer, men overflaten kan svi seg og avgi ubehagelig røyk ved direkte flamme over tid. Sjekk platen av og til for svimerker.</p>'],
+      ['Brenneren','<p><b>Vingeskruer</b> gjennom platen holder brenneren stødig og er lette å løsne med votter. <b>Strips eller ståltråd</b> gir et enklere oppsett som alltid står klart.</p>'],
+      ['Flasken','<p>Flasken må ligge stødig, men fortsatt kunne snus rundt sin egen lengde: på de fleste brennere for flytende drivstoff snur du den for å slå av og tømme slangen. En <b>stropp gjennom to slisser</b> er den anbefalte løsningen. Alternativer: en tett løkke som kan snus med et fast grep, eller en liten vugge som hindrer at flasken ruller. Ha stroppen rundt midten av flasken, aldri ved halsen, la slangen ha slakk, og merk ON og OFF med teip. Noen foretrekker å la flasken ligge løst ved siden av platen; det går fint så lenge den ligger stødig og ikke drar i slangen.</p>'],
+      ['Sikkerhet','<p>Forvarm ute eller med teltdøra åpen, og bruk aldri brenneren i lukket telt: det gir fare for brann og kullosforgiftning. Hold flasken og ekstra drivstoff unna flammen.</p>']
     ],
     winterTool:'Vinterråd', winterShort:'Kulde, klær og vinterleir', winterSub:'Korte råd for kalde dager, blant annet fra Forsvaret og Helsedirektoratet.',
     winterAdv:[
@@ -1017,6 +1051,7 @@ function render(){
     if (view === 'tool:sun') return renderSun();
     if (view === 'tool:phone') return renderPhone();
     if (view === 'tool:winter') return renderWinter();
+    if (view === 'tool:stoveboard') return renderStoveBoard();
     view = null;
     return renderIndex();
   }
@@ -1107,6 +1142,9 @@ function render(){
       if (target && !editing){
         const st = countCats([target]);
         html += `<button class="link-btn${st.t && st.d === st.t ? ' complete' : ''}" data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${st.d}/${st.t}${CHEV_R}</button>`;
+      }
+      if (!editing && typeof i.id === 'string' && i.id.indexOf('std:cook:brennerplate') === 0){
+        html += `<button class="link-btn" data-act="openGuide" data-guide="stoveboard">${T.guideLink}${CHEV_R}</button>`;
       }
       if (editing){
         html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
@@ -1204,7 +1242,7 @@ function renderIndex(){
   document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
   const items = isPlan
     ? [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]]
-    : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['winter', T.winterTool, T.winterShort], ['phone', T.phoneTool, T.phoneShort]];
+    : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['winter', T.winterTool, T.winterShort], ['stoveboard', T.sbTool, T.sbShort], ['phone', T.phoneTool, T.phoneShort]];
   main.innerHTML = `<p class="tool-sub">${isPlan ? T.planSub : T.guideSub}</p><div class="index">` +
     items.map(([k, n, dsc]) => `<button data-open="${k}"><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
 }
@@ -1392,6 +1430,31 @@ $('intro').addEventListener('click', e => {
     const f = introThen; introThen = null; if (f) f();
   }
 });
+const guideSvgCache = {};
+function loadSvgs(){
+  main.querySelectorAll('[data-svgsrc]').forEach(async el => {
+    const src = el.dataset.svgsrc;
+    if (!guideSvgCache[src]){
+      try { const r = await fetch(src); if (!r.ok) throw 0; guideSvgCache[src] = await r.text(); }
+      catch(e){ el.remove(); return; }
+    }
+    el.innerHTML = guideSvgCache[src];
+  });
+}
+function renderStoveBoard(){
+  const T = t();
+  $('listName').textContent = T.sbTool;
+  document.title = T.sbTool + ' · ' + T.app;
+  const dot = k => `<b class="fig-num">${k}</b>`;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+    <p class="tool-sub">${T.sbSub}</p>
+    <figure class="sb-fig"><div data-svgsrc="guides/stove-board.svg"></div>
+      <ul class="fig-legend">${T.sbFig1.map((x, n) => `<li>${dot(n + 1)}<span>${x}</span></li>`).join('')}</ul></figure>
+    <figure class="sb-fig"><figcaption>${T.sbFig2Title}</figcaption><div data-svgsrc="guides/stove-board-strap.svg"></div>
+      <ul class="fig-legend">${T.sbFig2.map(x => `<li>${dot(x[0])}<span>${x[1]}</span></li>`).join('')}</ul></figure>
+    <section class="manual guide">${T.sb.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+  loadSvgs();
+}
 function renderWinter(){
   const T = t();
   $('listName').textContent = T.winterTool;
@@ -1972,6 +2035,7 @@ main.addEventListener('click', async e => {
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
+  if (act === 'openGuide'){ go('guide', 'tool:' + b.dataset.guide); return; }
   if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
   const cat = catEl ? findCat(catEl.dataset.cat) : null;

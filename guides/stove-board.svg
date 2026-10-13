@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 330" role="img" aria-label="Stove board">
+  <style>
+    .ink{stroke:var(--sb-ink,#1D2B2A);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .num circle{fill:var(--sb-accent,#C8372D)} .num text{fill:#fff;font:700 13px system-ui,sans-serif;text-anchor:middle;dominant-baseline:central}
+  </style>
+  <!-- TOP VIEW: board, long side horizontal -->
+  <rect x="14" y="14" width="272" height="196" rx="14" style="fill:var(--sb-board,#E3D3B5)" class="ink"/>
+  <!-- heat shield -->
+  <rect x="32" y="44" width="120" height="120" rx="6" fill="var(--sb-alu,#C9D0D3)" stroke="var(--sb-ink,#1D2B2A)" stroke-width="1.5"/>
+  <path d="M38 64l14-14M38 94l44-44M38 124l74-74M38 154l104-104M62 160l84-84M92 160l54-54M122 160l24-24" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>
+  <!-- burner -->
+  <g class="ink">
+    <path d="M92 104L56 74M92 104l38-28M92 104v44"/>
+    <circle cx="92" cy="104" r="26" style="fill:var(--sb-surface,#fff)"/>
+    <circle cx="92" cy="104" r="9"/>
+  </g>
+  <g fill="var(--sb-ink,#1D2B2A)">
+    <circle cx="56" cy="74" r="4"/><circle cx="130" cy="76" r="4"/><circle cx="92" cy="148" r="4"/>
+    <path d="M48 74h16M122 76h16M84 148h16" stroke="var(--sb-ink,#1D2B2A)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <!-- fuel hose with slack, to the pump at the top of the bottle -->
+  <path d="M116 92c18-6 22-40 46-46s36 10 50-4c6-6 10-8 18-8" class="ink" stroke-width="3"/>
+  <!-- bottle lying parallel to the short side, pump at the top -->
+  <rect x="227" y="22" width="22" height="22" rx="4" style="fill:var(--sb-surface,#fff)" class="ink"/>
+  <rect x="215" y="42" width="46" height="150" rx="20" style="fill:var(--sb-surface,#fff)" class="ink"/>
+  <!-- ON/OFF tape mark at the bottom end -->
+  <rect x="215" y="168" width="46" height="10" fill="var(--sb-accent,#C8372D)" fill-opacity=".85"/>
+  <!-- strap through two slots, across the middle of the bottle -->
+  <rect x="198" y="106" width="7" height="22" rx="3" fill="var(--sb-ink,#1D2B2A)"/>
+  <rect x="271" y="106" width="7" height="22" rx="3" fill="var(--sb-ink,#1D2B2A)"/>
+  <rect x="202" y="110" width="72" height="14" rx="4" fill="var(--sb-strap,#3F7A8C)" stroke="var(--sb-ink,#1D2B2A)" stroke-width="1.5"/>
+  <!-- rotate arrow around the bottle -->
+  <path d="M206 82a34 10 0 0 0 64 0" class="ink" stroke-width="1.6"/><path d="M266 90l5-8 3 8" class="ink" stroke-width="1.6"/>
+  <!-- numbers -->
+  <g class="num">
+    <g transform="translate(30 30)"><circle r="11"/><text>1</text></g>
+    <g transform="translate(40 176)"><circle r="11"/><text>2</text></g>
+    <g transform="translate(150 140)"><circle r="11"/><text>3</text></g>
+    <g transform="translate(238 140)"><circle r="11"/><text>4</text></g>
+    <g transform="translate(176 28)"><circle r="11"/><text>5</text></g>
+    <g transform="translate(238 196)"><circle r="11"/><text>6</text></g>
+  </g>
+  <!-- SIDE VIEW (from the long side): bottle seen end-on -->
+  <path d="M14 304c40-8 80 6 120-2s90 8 150-2" stroke="var(--sb-muted,#5E6B69)" stroke-width="1.5" fill="none" stroke-dasharray="4 4"/>
+  <rect x="32" y="276" width="236" height="16" rx="3" style="fill:var(--sb-foam,#9DB58A)" class="ink" stroke-width="1.5"/>
+  <rect x="32" y="266" width="236" height="10" rx="3" style="fill:var(--sb-board,#E3D3B5)" class="ink" stroke-width="1.5"/>
+  <rect x="56" y="262" width="80" height="4" fill="var(--sb-alu,#C9D0D3)" stroke="var(--sb-ink,#1D2B2A)" stroke-width="1"/>
+  <path d="M72 262l-8-14M96 262v-18M120 262l8-14M78 244h36" class="ink"/>
+  <circle cx="238" cy="244" r="22" style="fill:var(--sb-surface,#fff)" class="ink" stroke-width="1.5"/>
+  <g class="num"><g transform="translate(284 270)"><circle r="11"/><text>7</text></g></g>
+</svg>
