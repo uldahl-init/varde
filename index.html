@@ -404,7 +404,7 @@ const UI = {
     editing:'Editing list', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
-    useMain:'Use as main list', useMainHint:'Shown on the front page instead of the current main list. One list at a time.', isMainHint:'This is the list on the front page now.',
+    useMain:'Use as main list', useMainHint:'Shown on the front page instead of the current main list. One list at a time.', isMainHint:'This is the list on the front page now.', isMainOwnHint:'This list is on the front page now. Switch off to go back to the standard list.',
     useTrip:'Add as trip type', useTripHint:'Its items are added to the main list when you switch the trip type on under Trip type.',
     makeCopy:'Make my own copy', share:'Share', listsSub:'Choose which list is on the front page, and manage your own lists.', stdList:'Standard list', ownLists:'Your own lists',
     noOwn:"You haven't made any lists yet. Make one from the standard list or start empty.", showIntro:'Show the introduction again', fromStd:'Start from the standard list',
@@ -532,7 +532,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     editing:'Redigerer liste', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
-    useMain:'Bruk som hovedliste', useMainHint:'Vises på forsiden i stedet for nåværende hovedliste. Én liste om gangen.', isMainHint:'Dette er listen som vises på forsiden nå.',
+    useMain:'Bruk som hovedliste', useMainHint:'Vises på forsiden i stedet for nåværende hovedliste. Én liste om gangen.', isMainHint:'Dette er listen som vises på forsiden nå.', isMainOwnHint:'Denne listen vises på forsiden nå. Slå av for å gå tilbake til standardlisten.',
     useTrip:'Legg til i turtype', useTripHint:'Tingene i listen legges til i hovedlisten når du slår på turtypen under Turtype.',
     makeCopy:'Lag egen kopi', share:'Del', listsSub:'Velg hvilken liste som vises på forsiden, og administrer dine egne lister.', stdList:'Standardliste', ownLists:'Dine egne lister',
     noOwn:'Du har ikke laget noen lister ennå. Lag en fra standardlisten eller start med en tom liste.', showIntro:'Vis introduksjonen igjen', fromStd:'Start fra standardlisten',
@@ -824,6 +824,7 @@ function migrate(){
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
 }
 if (state.v !== 2) migrate();
+(state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
 let editing = false;
 let view = null;
 let tab = 'list';
@@ -1067,8 +1068,8 @@ function listCard(L){
   if (sel){
     h += '<div class="lc-body">';
     if (L.std) h += `<p class="role-hint">${T.stdHint}</p>`;
-    h += `<div class="role"><button class="switch" data-role="main" data-id="${L.id}" aria-pressed="${isMain}" ${isMain ? 'disabled' : ''}><i></i></button>
-      <div><b>${T.useMain}</b><span>${isMain ? T.isMainHint : T.useMainHint}</span></div></div>`;
+    h += `<div class="role"><button class="switch" data-role="main" data-id="${L.id}" aria-pressed="${isMain}" ${isMain && L.std ? 'disabled' : ''}><i></i></button>
+      <div><b>${T.useMain}</b><span>${isMain ? (L.std ? T.isMainHint : T.isMainOwnHint) : T.useMainHint}</span></div></div>`;
     if (!L.std){
       h += `<div class="role"><button class="switch" data-role="trip" data-id="${L.id}" aria-pressed="${!!L.tripType}"><i></i></button>
         <div><b>${T.useTrip}</b><span>${T.useTripHint}</span></div></div>`;
@@ -1823,8 +1824,16 @@ main.addEventListener('click', async e => {
   const rl = e.target.closest('[data-role]');
   if (rl){
     const id = rl.dataset.id;
-    if (rl.dataset.role === 'main'){ state.main = id; }
-    else { const L = ownList(id); if (L){ L.tripType = !L.tripType; if (!L.tripType) [stdList()].concat(state.lists).forEach(x => { if (x.modes) delete x.modes['L:' + id]; }); } }
+    const L = ownList(id);
+    const dropTrip = () => { if (!L) return; L.tripType = false; [stdList()].concat(state.lists).forEach(x => { if (x.modes) delete x.modes['L:' + id]; }); };
+    if (rl.dataset.role === 'main'){
+      // the two roles rule each other out; switching an own list off falls back to the standard list
+      if (L && state.main === id) state.main = 'std';
+      else { state.main = id; dropTrip(); }
+    } else if (L){
+      if (L.tripType) dropTrip();
+      else { L.tripType = true; if (state.main === id) state.main = 'std'; }
+    }
     save(); render(); return;
   }
   const la = e.target.closest('[data-la]');
