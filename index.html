@@ -411,6 +411,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
+const APP_VERSION = 'varde-v15';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -439,7 +440,7 @@ const UI = {
       ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Plan, Guides and Compass are at the bottom.']
     ],
-    help:'Help', howTool:'How to use Varde', howShort:'A short introduction to the app',
+    help:'Help', versionLbl:'Version', howTool:'How to use Varde', howShort:'A short introduction to the app',
     sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
     posNote:'The sun times are calculated on the phone from your position and the date. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
@@ -604,7 +605,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Planlegg, Guider og Kompass finner du nederst.']
     ],
-    help:'Hjelp', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
+    help:'Hjelp', versionLbl:'Versjon', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
     sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
     posNote:'Soltidene regnes ut på mobilen fra posisjonen og datoen. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
@@ -950,8 +951,8 @@ function migrate(){
 if (state.v !== 2) migrate();
 (state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
 let editing = false;
-let view = null;
-let tab = 'list';
+let view = (state.lastNav && typeof state.lastNav.view === 'string') ? state.lastNav.view : null;
+let tab = (state.lastNav && ['list', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
 let modesOpen = false;
 let rainLocked = !!(state.field && state.rainLocked);
 let lastTick = null;
@@ -1044,6 +1045,8 @@ function bodyClasses(){
 }
 function render(){
   const T = t();
+  state.lastNav = {tab, view};
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
   document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
   bodyClasses();
   renderTabs();
@@ -1246,7 +1249,8 @@ function renderLists(){
     <div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
     <p class="tool-tip">${T.langNote}</p>
     <div class="section-label">${T.help}</div>
-    <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>`;
+    <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>
+    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>`;
   main.innerHTML = html;
 }
 function renderIndex(){
@@ -2137,9 +2141,9 @@ function go(newTab, newView){
 }
 function goBack(){
   if (history.state && history.state.depth > 0) history.back();
-  else { view = null; render(); top(); }
+  else { view = null; history.replaceState({tab, view:null, depth:0}, ''); render(); top(); }
 }
-history.replaceState({tab:'list', view:null, depth:0}, '');
+history.replaceState({tab, view, depth:0}, '');
 window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
@@ -2194,11 +2198,16 @@ let navUntil = 0, navTimer = null;
 const NAV_MS = 3000;
 function navOpen(){ return Date.now() < navUntil; }
 function lockRain(){ if (!state.field) return; rainLocked = true; state.rainLocked = true; save(); navUntil = 0; render(); }
+function lockUi(){
+  // update only the lock state and the lock bar, so open sections and scroll position stay as they are
+  document.body.classList.toggle('navopen', rainLocked && navOpen());
+  if (rainLocked) renderLock();
+}
 function openNav(){
   navUntil = Date.now() + NAV_MS;
   clearTimeout(navTimer);
-  navTimer = setTimeout(() => { navUntil = 0; if (rainLocked) render(); }, NAV_MS + 30);
-  render();
+  navTimer = setTimeout(() => { navUntil = 0; if (rainLocked) lockUi(); }, NAV_MS + 30);
+  lockUi();
 }
 function extendNav(){ if (navOpen()) openNav(); }
 function holdButton(btn, ms, fn){

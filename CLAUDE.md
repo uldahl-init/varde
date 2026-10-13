@@ -32,7 +32,7 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
 
 ## Standing rules
-1. Every change to `index.html` must also raise the `CACHE` version in `sw.js` (e.g. `varde-v1` → `varde-v2`), so installed apps fetch the update.
+1. Every change to `index.html` must also raise the `CACHE` version in `sw.js` and `APP_VERSION` in `index.html` to the same value (shown under Hjelp on the lists page) (e.g. `varde-v1` → `varde-v2`), so installed apps fetch the update.
 2. Never change the storage `KEY` (`outdoor-lists-v1`) in `index.html`, not even if the app is renamed. People have their own lists on their phones; changing it would wipe them. Template changes only affect newly created lists.
 3. Keep Norwegian and English in step: every text and template line exists in both languages.
 4. No brand names or organisation symbols in the app or the lists (except the user's deliberate choices: Jervenduk, DNT key / Hyttetur (DNT), varsom.no, yr.no).
@@ -53,6 +53,8 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - The body element carries `data-skin`, so click handlers must never match `closest('[data-skin]')` without a class (use `.skin-btn[data-skin]`); a generic match caught every click in the app once.
 - Sheets that close and are followed by navigation must not leave a history entry behind: `go()` reuses a closed sheet's entry.
 - All interface text for one language shares a single object in `UI`, so check that a new key is not already in use before adding it (a guide called `winter` once overwrote the season label `winter`).
+- Opening or closing the rain lock's navigation window must not redraw the page (`lockUi()` only), or open sections and the scroll position are lost.
+- The app remembers the last page (`state.lastNav`) and reopens there; `render()` falls back to the main page if that page no longer exists.
 - Regnlås (rain lock, Utemodus only, also from the lock button in the header) blocks every change and all navigation while scrolling still works. Holding Naviger (1 s) opens navigation for 3 seconds (`NAV_MS`), renewed on each page change; holding Lås opp (1 s) switches it off. Both use `holdButton`, which handles touch events directly. The rain lock is saved (`state.rainLocked`), because Chrome on Android lets the back button close the app even while it is locked; on reopening, the app is still locked.
 
 ## Name
