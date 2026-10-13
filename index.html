@@ -101,7 +101,7 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .link-btn svg,.back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
 .back{display:inline-flex;align-items:center;gap:4px;margin-top:14px;background:none;border:0;color:var(--muted);font-weight:600;cursor:pointer;padding:6px 0}
 .tool-sub{color:var(--muted);margin:6px 0 0}
-.calc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;align-items:end}
 .cfield{display:flex;flex-direction:column;gap:6px;font-size:.9rem;color:var(--muted);font-weight:600}
 .cfield input{font-size:1.15rem;font-variant-numeric:tabular-nums}
 .calc-result{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
@@ -300,6 +300,28 @@ html,body{touch-action:manipulation}
 body.night .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-rotate(-50deg) saturate(4)}
 .credits{margin-top:18px;font-size:.8rem;color:var(--muted);line-height:1.5}
 .credits a{color:inherit}
+.sum-card{margin-top:14px;padding:16px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.sum-card .chips{margin-bottom:6px}
+.sum-label{display:block;color:var(--muted);font-size:.9rem;font-weight:600}
+.sum-big{display:block;font-family:var(--head);font-weight:600;font-size:2.2rem;line-height:1.1;color:var(--red)}
+.sum-sub{display:block;font-weight:600;margin-top:4px}
+h3.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25rem}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.mrow .m-name{grid-column:1/-1;font-weight:600}
+.gauge{position:relative;display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:10px}
+.gauge .z{display:block;height:100%}
+.gauge .z.red{background:#D64545}
+.gauge .z.yellow{background:#E3A81B}
+.gauge .z.green{background:#3E9A55}
+.gauge .marker{position:absolute;top:-3px;bottom:-3px;width:6px;margin-left:-3px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 2px var(--surface)}
+.gauge-scale{position:relative;height:18px;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.gauge-scale span{position:absolute;top:2px;transform:translateX(-50%)}
+.gauge-scale span:first-child{transform:none;left:0}
+.zone-text{margin:6px 0 0;font-weight:600}
+.zone-text.red{color:#C23B3B}
+.zone-text.yellow{color:#A87500}
+.zone-text.green{color:#2F7D44}
+body.night .zone-text{color:var(--ink)}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -401,7 +423,7 @@ const UI = {
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
     linksTitle:'Weather and warnings', linksNote:'Needs a connection.', yrLink:'yr.no: weather forecast', varsomLink:'varsom.no: avalanche, flood and landslide warnings',
-    editing:'Editing list', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
+    editing:'Editing list', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
     useMain:'Use as main list', useMainHint:'Shown on the front page instead of the current main list. One list at a time.', isMainHint:'This is the list on the front page now.', isMainOwnHint:'This list is on the front page now. Switch off to go back to the standard list.',
@@ -468,8 +490,20 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       {n:'Sheet bend', u:'Joins two ropes, also of different thickness. Good for lengthening a line.', s:['Make a U-shaped bight in the thicker rope.','Bring the end of the thinner rope up through the bight from below.','Pass it around behind both legs of the bight.','Tuck it under itself, but over the bight, not through it.','Pull tight on all four parts.'], c:'Both short ends should be on the same side. For slippery rope, take one more turn around the bight (double sheet bend).'},
       {n:'Prusik', u:'A friction hitch that grips when loaded and slides when slack. For fastening a tarp to a ridgeline, tensioning, or hanging gear on a line.', s:['Use a closed loop of cord that is clearly thinner than the main rope.','Lay the loop behind the main rope.','Pass one end of the loop around the main rope and through itself, inside the loop.','Repeat 2–3 times, each new wrap inside the previous one.','Straighten the wraps so they lie neatly side by side, and pull tight.'], c:'It grips when loaded and slides when you push it while slack. More wraps give more grip, especially on slippery rope.'}
     ],
-    foodTool:'Food planner', foodShort:'Meals for the trip', foodSub:'Count the basic meals for the trip. Adjust the oat portion and snacks to your own needs.',
-    oats:'Oats per breakfast (g)', snacks:'Energy snacks per day', homeBreakfast:'Breakfast at home on day 1', homeDinner:'Home for dinner on the last day', reserve:'Reserve day',
+    trip:'The trip', perDayGrp:'Per person per day', toPack:'To pack or buy', mOats:'Oats', mLunch:'Lunch', mDinner:'Trail meal', mSnack:'Energy snacks',
+    amountG:'Amount (g)', count:'Number', kcalEach:'kcal each', kcalPer100:'kcal per 100 g',
+    defaultNote:'Default values. Check the packets of your own food and change the numbers; the app remembers them.',
+    zone_red:'Too little for a full day on the trail.', zone_yellow:'Low, but fine for shorter trips.', zone_green:'Good for a normal day on the trail.',
+    fuelNeed:'Fuel for the trip', snowWater:'Water from snow', meltL:'Drinking water melted from snow (litres per person per day)',
+    snowNote:'Everything you boil starts as snow, which takes about twice the fuel. Drinking water is only melted, not boiled.',
+    heatPerDay:'What you heat per person per day (litres)', preOvernight:'Overnight trip', preDay:'Day hike with a cooked lunch',
+    useL:{breakfast:'Breakfast (porridge)', coffee:'Coffee / tea in the morning', thermos:'Thermos for the day', lunch:'Lunch cooked outdoors', dinner:'Dinner (trail meal)', evening:'Evening drink'},
+    waterTotal:l=>`In total ${l} l boiled per person per day.`, stoveUse:'Your stove', perL:u=>`Fuel per litre boiled (${u})`,
+    perLNote:'A rule of thumb for normal conditions. Wind, cold and a lid make a big difference: enter your own figure once you know your stove.',
+    fuelEmpty:'Enter what you heat each day to see how much fuel you need.',
+    fuelBasis:(r,u,d,n,m)=>`About ${r} ${u} per person per day × ${d} days × ${n} ${n === 1 ? 'person' : 'people'} + ${m} % margin`,
+    foodTool:'Food planner', foodShort:'Meals for the trip', foodSub:'Plan the food for the trip: the gauge shows if one day of food gives enough energy, and the list shows what to pack.',
+    oats:'Oats per breakfast (g)', lunchN:'Lunches per day', dinnerN:'Trail meals per day', snacks:'Energy snacks per day', homeBreakfast:'Breakfast at home on day 1', homeDinner:'Home for dinner on the last day', reserve:'Reserve day',
     fOats:'Oats', fBreakfasts:n=>`for ${n} breakfast${n===1?'':'s'}`, fLunch:'Lunches', fDinner:'Dinners (trail meals)', fSnacks:'Energy snacks',
     fBasis:(d,p,r)=>`${d} day${d===1?'':'s'}, ${p} ${p===1?'person':'people'}${r?', including 1 reserve day':''}`,
     kcalTitle:'Energy', season:'Season', summer:'Summer', winter:'Winter', fullDay:'One full trip day',
@@ -486,7 +520,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['One food bag','Keep all food together in one dry bag. It stays dry, is easy to find, and is easy to keep closed at camp, where mice and birds may be interested.'],
       ['Less packaging','Remove outer cardboard and extra packaging at home to save weight and rubbish, but keep the cooking instructions for trail meals. Bring a bag for rubbish and carry it home.']
     ],
-    fuelTool:'Fuel planner', fuelShort:'How much fuel for the trip', fuelSub:'Estimate how much fuel to bring. The figures are common rules of thumb: adjust them to your own stove and habits.',
+    fuelTool:'Fuel planner', fuelShort:'How much fuel for the trip', fuelSub:'Built from what you heat in a day. The figures are rules of thumb: adjust them to your own stove and habits.',
     fuelType:'Fuel', useType:'Use', fGas:'Gas', fPetrol:'Petrol / multifuel', fSpirit:'Methylated spirit',
     uBoil:'Boiling water only', uCook:'Cooking', uSnow:'Melting snow',
     days:'Days', people:'People', shared:'Shared stove', perDay:u=>`Per person per day (${u})`, margin:'Safety margin (%)', bottle:'Bottle size (litres)',
@@ -529,7 +563,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
     linksTitle:'Vær og varsler', linksNote:'Krever nett.', yrLink:'yr.no: værmelding', varsomLink:'varsom.no: snøskred-, flom- og jordskredvarsel',
-    editing:'Redigerer liste', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
+    editing:'Redigerer liste', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
     useMain:'Bruk som hovedliste', useMainHint:'Vises på forsiden i stedet for nåværende hovedliste. Én liste om gangen.', isMainHint:'Dette er listen som vises på forsiden nå.', isMainOwnHint:'Denne listen vises på forsiden nå. Slå av for å gå tilbake til standardlisten.',
@@ -596,8 +630,20 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       {n:'Flaggstikk (Sheet Bend)', u:'Skjøter to tau, også med ulik tykkelse. Bra for å forlenge en line.', s:['Lag en U-formet bukt i det tykkeste tauet.','Før tampen på det tynne tauet opp gjennom bukten nedenfra.','Før den rundt bak begge partene av bukten.','Stikk den under seg selv, men over bukten, ikke gjennom den.','Trekk til i alle fire partene.'], c:'Begge de korte tampene skal være på samme side. På glatt tau, ta ett ekstra tørn rundt bukten (dobbelt flaggstikk).'},
       {n:'Prusik', u:'En friksjonsknute som låser når den belastes og kan skyves når den er slakk. For å feste tarp til en møneline, stramme, eller henge opp utstyr på en line.', s:['Bruk en lukket slynge av snor som er tydelig tynnere enn hovedtauet.','Legg slyngen bak hovedtauet.','Før den ene enden av slyngen rundt hovedtauet og gjennom seg selv, inne i slyngen.','Gjenta 2–3 ganger, hvert nytt tørn innenfor det forrige.','Rett opp tørnene så de ligger pent side om side, og trekk til.'], c:'Den låser ved belastning og glir når du skyver den mens den er slakk. Flere tørn gir mer grep, spesielt på glatt tau.'}
     ],
-    foodTool:'Mat', foodShort:'Måltider til turen', foodSub:'Tell opp grunnmåltidene til turen. Juster havreporsjonen og snacks etter eget behov.',
-    oats:'Havregryn per frokost (g)', snacks:'Energisnacks per dag', homeBreakfast:'Frokost hjemme første dag', homeDinner:'Hjemme til middag siste dag', reserve:'Reservedøgn',
+    trip:'Turen', perDayGrp:'Per person per dag', toPack:'Å pakke eller handle', mOats:'Havregryn', mLunch:'Lunsj', mDinner:'Turmat', mSnack:'Energisnacks',
+    amountG:'Mengde (g)', count:'Antall', kcalEach:'kcal per stk.', kcalPer100:'kcal per 100 g',
+    defaultNote:'Standardverdier. Sjekk pakken på din egen mat og endre tallene; appen husker dem.',
+    zone_red:'For lite til en hel turdag.', zone_yellow:'Lavt, men greit på kortere turer.', zone_green:'Godt for en vanlig turdag.',
+    fuelNeed:'Drivstoff til turen', snowWater:'Vann fra snø', meltL:'Drikkevann smeltet fra snø (liter per person per dag)',
+    snowNote:'Alt du koker starter som snø, og det tar omtrent dobbelt så mye drivstoff. Drikkevann blir bare smeltet, ikke kokt.',
+    heatPerDay:'Hva du varmer per person per dag (liter)', preOvernight:'Overnattingstur', preDay:'Dagstur med kokt lunsj',
+    useL:{breakfast:'Frokost (grøt)', coffee:'Kaffe / te om morgenen', thermos:'Termos til dagen', lunch:'Lunsj kokt ute', dinner:'Middag (turmat)', evening:'Kveldsdrikke'},
+    waterTotal:l=>`Til sammen ${l} l kokt per person per dag.`, stoveUse:'Brenneren din', perL:u=>`Drivstoff per liter kokt (${u})`,
+    perLNote:'En tommelfingerregel for vanlige forhold. Vind, kulde og lokk gjør stor forskjell: legg inn ditt eget tall når du kjenner brenneren din.',
+    fuelEmpty:'Fyll inn hva du varmer hver dag for å se hvor mye drivstoff du trenger.',
+    fuelBasis:(r,u,d,n,m)=>`Ca. ${r} ${u} per person per døgn × ${d} døgn × ${n} ${n === 1 ? 'person' : 'personer'} + ${m} % margin`,
+    foodTool:'Mat', foodShort:'Måltider til turen', foodSub:'Planlegg maten til turen: måleren viser om én dag med mat gir nok energi, og listen viser hva du skal pakke.',
+    oats:'Havregryn per frokost (g)', lunchN:'Lunsjer per dag', dinnerN:'Turmat per dag', snacks:'Energisnacks per dag', homeBreakfast:'Frokost hjemme første dag', homeDinner:'Hjemme til middag siste dag', reserve:'Reservedøgn',
     fOats:'Havregryn', fBreakfasts:n=>`til ${n} frokost${n===1?'':'er'}`, fLunch:'Lunsjer', fDinner:'Middager (turmat)', fSnacks:'Energisnacks',
     fBasis:(d,p,r)=>`${d} dag${d===1?'':'er'}, ${p} person${p===1?'':'er'}${r?', inkludert 1 reservedøgn':''}`,
     kcalTitle:'Energi', season:'Årstid', summer:'Sommer', winter:'Vinter', fullDay:'En full turdag',
@@ -614,7 +660,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Én matpose','Hold all mat samlet i én drybag. Den holder seg tørr, er lett å finne, og er lett å holde lukket i leiren, der mus og fugler kan være interessert.'],
       ['Mindre emballasje','Fjern ytre papp og ekstra emballasje hjemme for å spare vekt og søppel, men ta vare på koketiden for turmaten. Ha med en søppelpose og bær alt hjem.']
     ],
-    fuelTool:'Drivstoff', fuelShort:'Hvor mye drivstoff til turen', fuelSub:'Anslå hvor mye drivstoff du trenger. Tallene er vanlige tommelfingerregler: juster dem etter egen brenner og egne vaner.',
+    fuelTool:'Drivstoff', fuelShort:'Hvor mye drivstoff til turen', fuelSub:'Regnet ut fra hva du varmer i løpet av en dag. Tallene er tommelfingerregler: juster dem etter egen brenner og egne vaner.',
     fuelType:'Drivstoff', useType:'Bruk', fGas:'Gass', fPetrol:'Bensin / multifuel', fSpirit:'Rødsprit',
     uBoil:'Kun koke vann', uCook:'Matlaging', uSnow:'Snøsmelting',
     days:'Døgn', people:'Personer', shared:'Felles kokeapparat', perDay:u=>`Per person per døgn (${u})`, margin:'Sikkerhetsmargin (%)', bottle:'Flaskestørrelse (liter)',
@@ -943,8 +989,8 @@ function render(){
   }
   stdCache = null; extraFrom = new Map();
   if (view === 'lists') return renderLists();
-  const editL = view && view.indexOf('edit:') === 0 ? ownList(view.slice(5)) : null;
-  if (view && view.indexOf('edit:') === 0 && !editL) view = null;
+  const editL = view && view.indexOf('edit:') === 0 && !state.field ? ownList(view.slice(5)) : null;
+  if (view && view.indexOf('edit:') === 0 && (!editL || state.field)) view = null;
   editing = !!editL;
   const l = editL || mainList();
   const bag = (!editL && view) ? findCat(view) : null;
@@ -1066,6 +1112,7 @@ function listCard(L){
       ${isMain ? `<span class="badge">${T.mainBadge}</span>` : ''}${L.tripType ? `<span class="badge own">${T.tripBadge}</span>` : ''}
       <span class="lc-count">${d}/${tot}</span>${CHEV}</button>`;
   if (sel){
+    const locked = !!state.field;
     h += '<div class="lc-body">';
     if (L.std) h += `<p class="role-hint">${T.stdHint}</p>`;
     h += `<div class="role"><button class="switch" data-role="main" data-id="${L.id}" aria-pressed="${isMain}" ${isMain && L.std ? 'disabled' : ''}><i></i></button>
@@ -1075,7 +1122,9 @@ function listCard(L){
         <div><b>${T.useTrip}</b><span>${T.useTripHint}</span></div></div>`;
     }
     h += '<div class="lc-actions">';
-    if (L.std){
+    if (locked){
+      if (!L.std) h += `<button class="btn" data-la="share" data-id="${L.id}">${T.share}</button>`;
+    } else if (L.std){
       h += `<button class="btn" data-la="copy" data-id="std">${T.makeCopy}</button>`;
     } else {
       h += `<button class="btn" data-la="edit" data-id="${L.id}">${T.edit}</button>
@@ -1083,8 +1132,10 @@ function listCard(L){
         <button class="btn" data-la="dup" data-id="${L.id}">${T.duplicate}</button>
         <button class="btn" data-la="share" data-id="${L.id}">${T.share}</button>`;
     }
-    h += `<button class="btn" data-la="reset" data-id="${L.id}">${T.reset}</button>`;
-    if (!L.std) h += `<button class="btn danger" data-la="delete" data-id="${L.id}">${T.del}</button>`;
+    if (!locked){
+      h += `<button class="btn" data-la="reset" data-id="${L.id}">${T.reset}</button>`;
+      if (!L.std) h += `<button class="btn danger" data-la="delete" data-id="${L.id}">${T.del}</button>`;
+    }
     h += '</div></div>';
   }
   return h + '</div>';
@@ -1096,12 +1147,13 @@ function renderLists(){
   document.body.classList.add('notlist');
   if (!selList) selList = state.main || 'std';
   let html = `<button class="back" data-act="back">${CHEV_L}${esc(mainList().name)}</button>
-    <p class="tool-sub">${T.listsSub}</p>
+    <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}
     <div class="section-label">${T.stdList}</div>${listCard(stdList())}
     <div class="section-label">${T.ownLists}</div>`;
   if (!state.lists.length) html += `<p class="empty-own">${T.noOwn}</p>`;
   state.lists.forEach(L => { html += listCard(L); });
-  html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>
+  if (!state.field) html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>`;
+  html += `
     <div class="section-label">${T.appearance}</div>
     <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
     <div class="section-label">${T.language}</div>
@@ -1409,6 +1461,7 @@ main.addEventListener('change', e => {
 });
 const num = v => parseFloat(String(v).replace(',', '.').trim());
 const fmt = n => (Math.round(n * 10) / 10).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:1});
+const fmt2 = n => (Math.round(n * 100) / 100).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:2});
 function renderWater(){
   const T = t();
   state.calc = Object.assign({mode:'mix', target:38, volume:10, cold:10, hot:100, pot:1.5, hotL:2, coldL:8}, state.calc || {});
@@ -1455,53 +1508,60 @@ main.addEventListener('input', e => {
   updateWater();
 });
 const FUELS = {
-  gas:    { unit:'g',  rates:{ boil:25, cook:40,  snow:75 } },
-  petrol: { unit:'ml', rates:{ boil:50, cook:75,  snow:150 } },
-  spirit: { unit:'ml', rates:{ boil:75, cook:110, snow:200 } }
+  gas:    { unit:'g',  perL:15 },
+  petrol: { unit:'ml', perL:30 },
+  spirit: { unit:'ml', perL:50 }
+};
+const SNOW_BOIL = 2.5, SNOW_MELT = 1.5;
+const USE_KEYS = ['breakfast', 'coffee', 'thermos', 'lunch', 'dinner', 'evening'];
+const PRESETS = {
+  overnight: {breakfast:0.4, coffee:0.3, thermos:0.75, lunch:0, dinner:0.5, evening:0.4},
+  day:       {breakfast:0, coffee:0.3, thermos:0, lunch:0.5, dinner:0, evening:0}
 };
 function fuelState(){
-  state.fuelCalc = Object.assign({ fuel:'petrol', use:'boil', days:3, people:1, shared:true, margin:20, bottle:{petrol:1, spirit:0.5}, custom:{} }, state.fuelCalc || {});
-  return state.fuelCalc;
+  const f = state.fuelCalc = Object.assign({ fuel:'petrol', days:3, people:1, margin:20, bottle:{petrol:1, spirit:0.5}, snow:false, melt:2, perLc:{} }, state.fuelCalc || {});
+  if (!f.water || typeof f.water !== 'object') f.water = Object.assign({}, PRESETS.overnight);
+  if (!f.perLc) f.perLc = {};
+  return f;
 }
-function rateFor(f){ const k = f.fuel + '_' + f.use; return (f.custom && typeof f.custom[k] === 'number') ? f.custom[k] : FUELS[f.fuel].rates[f.use]; }
+function perLFor(f){ return (typeof f.perLc[f.fuel] === 'number') ? f.perLc[f.fuel] : FUELS[f.fuel].perL; }
 function renderFuel(){
   const T = t(), f = fuelState(), fu = FUELS[f.fuel];
-    $('listName').textContent = T.fuelTool;
+  $('listName').textContent = T.fuelTool;
   document.title = T.fuelTool + ' · ' + T.app;
-  const chip = (attr, val, cur, label) => `<button class="chip" ${attr}="${val}" aria-pressed="${cur === val}">${label}</button>`;
-  const field = (k, label, v) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt(v).replace(/\s/g,''))}"></label>`;
-  const k = f.fuel + '_' + f.use, custom = f.custom && typeof f.custom[k] === 'number';
-  let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  const chip = (attr, val, on, label) => `<button class="chip" ${attr}="${val}" aria-pressed="${on}">${label}</button>`;
+  const field = (k, label, v, extra) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt2(v).replace(/\s/g,''))}">${extra || ''}</label>`;
+  const custom = typeof f.perLc[f.fuel] === 'number';
+  const preset = Object.keys(PRESETS).find(k => USE_KEYS.every(u => Math.abs((f.water[u] || 0) - PRESETS[k][u]) < 1e-9));
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabPlan}</button>
     <p class="tool-sub">${T.fuelSub}</p>
+    <section class="sum-card" id="fuelOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
-      ${chip('data-fueltype','gas',f.fuel,T.fGas)}${chip('data-fueltype','petrol',f.fuel,T.fPetrol)}${chip('data-fueltype','spirit',f.fuel,T.fSpirit)}
+      ${chip('data-fueltype','gas',f.fuel === 'gas',T.fGas)}${chip('data-fueltype','petrol',f.fuel === 'petrol',T.fPetrol)}${chip('data-fueltype','spirit',f.fuel === 'spirit',T.fSpirit)}
     </div></div>
-    <div class="modes"><span class="modes-label">${T.useType}</span><div class="chips">
-      ${chip('data-fueluse','boil',f.use,T.uBoil)}${chip('data-fueluse','cook',f.use,T.uCook)}${chip('data-fueluse','snow',f.use,T.uSnow)}
-    </div></div>
-    <div class="calc">
-      ${field('days', T.days, f.days)}${field('people', T.people, f.people)}
-      <div class="cfield"><span>${T.perDay(fu.unit)}</span><input type="text" inputmode="decimal" data-fuel="rate" value="${esc(fmt(rateFor(f)).replace(/\s/g,''))}">
-        ${custom ? `<button class="reset-link" data-act="resetRate">${T.resetRate}</button>` : ''}</div>
-      ${field('margin', T.margin, f.margin)}
-      ${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}
-    </div>
-    <div class="chips tight" style="margin-top:12px">${`<button class="chip" data-act="fuelShared" aria-pressed="${!!f.shared}">${T.shared}</button>`}</div>
-    <div class="calc-result" id="fuelOut" aria-live="polite"></div>
+    <h3 class="grp">${T.trip}</h3>
+    <div class="calc">${field('days', T.days, f.days)}${field('people', T.people, f.people)}${field('margin', T.margin, f.margin)}${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}</div>
+    <div class="chips" style="margin-top:12px"><button class="chip" data-act="fuelSnow" aria-pressed="${!!f.snow}">${T.snowWater}</button></div>
+    ${f.snow ? `<div class="calc one">${field('melt', T.meltL, f.melt)}</div><p class="calc-basis">${T.snowNote}</p>` : ''}
+    <h3 class="grp">${T.heatPerDay}</h3>
+    <div class="chips">${chip('data-preset','overnight',preset === 'overnight',T.preOvernight)}${chip('data-preset','day',preset === 'day',T.preDay)}</div>
+    <div class="calc">${USE_KEYS.map(u => field('w_' + u, T.useL[u], f.water[u] || 0)).join('')}</div>
+    <p class="calc-basis" id="waterSum"></p>
+    <h3 class="grp">${T.stoveUse}</h3>
+    <div class="calc one">${field('perL', T.perL(fu.unit), perLFor(f), custom ? `<button class="reset-link" data-act="resetRate">${T.resetRate}</button>` : '')}</div>
+    <p class="calc-basis">${T.perLNote}</p>
     <section class="manual"><h2>${T.manualTitle}</h2>
       ${[T.manGas, T.manPetrol, T.manSpirit, T.manSafety].map(m => `<details><summary>${m[0]}</summary><p>${m[1]}</p></details>`).join('')}
     </section>`;
-  main.innerHTML = html;
   updateFuel();
 }
 function bestCans(g){
-  const sizes = [450, 230, 100];
   let best = null;
   for (let a = 0; a <= 12; a++) for (let b = 0; b <= 6; b++) for (let c = 0; c <= 4; c++){
     const cap = a*450 + b*230 + c*100;
     if (cap < g) continue;
     const n = a + b + c;
-    if (!best || cap < best.cap || (cap === best.cap && n < best.n)) best = {cap, n, a, b, c};
+    if (!best || n < best.n || (n === best.n && cap < best.cap)) best = {cap, n, a, b, c};
   }
   if (!best) return '';
   return [[best.a,450],[best.b,230],[best.c,100]].filter(x => x[0]).map(x => `${x[0]} × ${x[1]} g`).join(' + ');
@@ -1509,35 +1569,39 @@ function bestCans(g){
 function updateFuel(){
   const T = t(), f = fuelState(), out = $('fuelOut');
   if (!out) return;
-  const fu = FUELS[f.fuel];
-  const days = f.days, n = Math.round(f.people), rate = rateFor(f), margin = f.margin;
-  if ([days, n, rate, margin].some(v => isNaN(v)) || days <= 0 || n < 1 || rate <= 0 || margin < 0){ out.innerHTML = ''; return; }
-  const factor = f.shared ? 1 + 0.5 * (n - 1) : n;
-  const total = rate * days * factor * (1 + margin / 100);
+  const fu = FUELS[f.fuel], days = f.days, n = Math.round(f.people), margin = f.margin, perL = perLFor(f);
+  const boil = USE_KEYS.reduce((a, u) => a + (Number(f.water[u]) || 0), 0);
+  const melt = f.snow ? (Number(f.melt) || 0) : 0;
+  const ws = $('waterSum');
+  if (ws) ws.textContent = T.waterTotal(fmt2(boil));
+  if ([days, n, margin, perL].some(v => isNaN(v)) || days <= 0 || n < 1 || margin < 0 || perL <= 0 || boil + melt <= 0){ out.innerHTML = `<p class="calc-basis">${T.fuelEmpty}</p>`; return; }
+  const perDay = (boil * (f.snow ? SNOW_BOIL : 1) + melt * SNOW_MELT) * perL;
+  const total = perDay * days * n * (1 + margin / 100);
   const name = T.fuelNames[f.fuel];
   let big, pack = '';
   if (fu.unit === 'g'){
     big = `${fmt(Math.ceil(total))} g ${name}`;
-    pack = `<p class="calc-boils">${T.canisters}: ${bestCans(total)}</p>`;
+    pack = `${T.canisters}: ${bestCans(total)}`;
   } else {
     const l = total / 1000;
     big = `${(Math.ceil(l * 100) / 100).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:2})} l ${name}`;
     const b = f.bottle[f.fuel];
-    if (b > 0){ const cnt = Math.max(1, Math.ceil(l / b - 1e-9)); pack = `<p class="calc-boils">${T.bottles(cnt, fmt(b))}</p>`; }
+    if (b > 0){ const cnt = Math.max(1, Math.ceil(l / b - 1e-9)); pack = T.bottles(cnt, fmt(b)); }
   }
   let warn = '';
-  if (f.fuel === 'gas' && f.use === 'snow') warn = `<p class="calc-warn">${T.warnGasCold}</p>`;
-  if (f.fuel === 'spirit' && f.use === 'snow') warn = `<p class="calc-warn">${T.warnSpiritSnow}</p>`;
-  out.innerHTML = `<span class="big" style="display:block;font-family:var(--head);font-weight:600;font-size:2.2rem;line-height:1.1;color:var(--red)">${big}</span>${pack}
-    <p class="calc-basis">${T.basis(fmt(rate), fu.unit, fmt(days), T.peopleFactor(n, !!f.shared))} (${fmt(margin)} %)</p>${warn}`;
+  if (f.fuel === 'gas' && f.snow) warn = `<p class="calc-warn">${T.warnGasCold}</p>`;
+  if (f.fuel === 'spirit' && f.snow) warn = `<p class="calc-warn">${T.warnSpiritSnow}</p>`;
+  out.innerHTML = `<span class="sum-label">${T.fuelNeed}</span><span class="sum-big">${big}</span>${pack ? `<span class="sum-sub">${pack}</span>` : ''}
+    <p class="calc-basis">${T.fuelBasis(fmt(Math.round(perDay)), fu.unit, fmt(days), n, fmt(margin))}</p>${warn}`;
 }
 main.addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.fuel;
   if (!k) return;
   const v = num(e.target.value), f = fuelState();
   if (!isNaN(v)){
-    if (k === 'rate'){ f.custom[f.fuel + '_' + f.use] = v; }
-    else if (k === 'bottle'){ f.bottle[f.fuel] = v; }
+    if (k === 'perL') f.perLc[f.fuel] = v;
+    else if (k === 'bottle') f.bottle[f.fuel] = v;
+    else if (k.indexOf('w_') === 0) f.water[k.slice(2)] = v;
     else f[k] = v;
     save();
   }
@@ -1580,62 +1644,65 @@ function renderKnots(){
   });
 }
 function foodState(){
-  state.foodCalc = Object.assign({ days:3, people:1, oats:165, snacks:1, homeBreakfast:true, homeDinner:true, reserve:true, season:'summer', kOats:370, kLunch:450, kDinner:600, kSnack:250 }, state.foodCalc || {});
+  state.foodCalc = Object.assign({ days:3, people:1, reserve:true, season:'summer', oats:165, kOats:370, lunchN:1, kLunch:450, dinnerN:1, kDinner:600, snacks:1, kSnack:250 }, state.foodCalc || {});
   return state.foodCalc;
 }
+const KZONES = { summer:[2000, 3000, 4500], winter:[2500, 3500, 5500] };
 function renderFood(){
   const T = t(), f = foodState();
-    $('listName').textContent = T.foodTool;
+  $('listName').textContent = T.foodTool;
   document.title = T.foodTool + ' · ' + T.app;
-  const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
-  const tog = (k, label) => `<button class="chip" data-foodtoggle="${k}" aria-pressed="${!!f[k]}">${label}</button>`;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  const inp = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
+  const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}</span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
+  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabPlan}</button>
     <p class="tool-sub">${T.foodSub}</p>
-    <div class="calc">${field('days', T.days)}${field('people', T.people)}${field('oats', T.oats)}${field('snacks', T.snacks)}</div>
-    <div class="chips" style="margin-top:12px">${tog('homeBreakfast', T.homeBreakfast)}${tog('homeDinner', T.homeDinner)}${tog('reserve', T.reserve)}</div>
-    <div class="calc-result" id="foodOut" aria-live="polite"></div>
-    <section class="manual energy"><h2>${T.kcalTitle}</h2>
+    <section class="sum-card">
       <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
       <div id="kcalOut" aria-live="polite"></div>
-      <details><summary>${T.kcalValues}</summary><div class="calc">${field('kOats', T.kOats)}${field('kLunch', T.kLunch)}${field('kDinner', T.kDinner)}${field('kSnack', T.kSnack)}</div></details>
     </section>
+    <h3 class="grp">${T.trip}</h3>
+    <div class="calc">${inp('days', T.days)}${inp('people', T.people)}</div>
+    <div class="chips" style="margin-top:12px"><button class="chip" data-foodtoggle="reserve" aria-pressed="${!!f.reserve}">${T.reserve}</button></div>
+    <h3 class="grp">${T.perDayGrp}</h3>
+    ${mrow(T.mOats, 'oats', T.amountG, 'kOats', T.kcalPer100)}
+    ${mrow(T.mLunch, 'lunchN', T.count, 'kLunch', T.kcalEach)}
+    ${mrow(T.mDinner, 'dinnerN', T.count, 'kDinner', T.kcalEach)}
+    ${mrow(T.mSnack, 'snacks', T.count, 'kSnack', T.kcalEach)}
+    <p class="calc-basis">${T.defaultNote}</p>
+    <h3 class="grp">${T.toPack}</h3>
+    <div class="calc-result" id="foodOut" aria-live="polite"></div>
     <section class="manual"><h2>${T.packTitle}</h2>
       ${T.pack.map(m => `<details><summary>${m[0]}</summary><p>${m[1]}</p></details>`).join('')}
     </section>`;
   updateFood();
 }
 function updateFood(){
-  const T = t(), f = foodState(), out = $('foodOut');
+  const T = t(), f = foodState(), out = $('foodOut'), kOut = $('kcalOut');
   if (!out) return;
-  const d = Math.round(f.days), p = Math.round(f.people), oats = f.oats, sn = f.snacks;
-  if ([d, p, oats, sn].some(v => isNaN(v)) || d < 1 || p < 1 || oats < 0 || sn < 0){ out.innerHTML = ''; return; }
-  const r = f.reserve ? 1 : 0;
-  const br = Math.max(0, d - (f.homeBreakfast ? 1 : 0)) + r;
-  const lu = d + r;
-  const di = Math.max(0, d - (f.homeDinner ? 1 : 0)) + r;
-  const snTot = Math.ceil(sn * (d + r) * p);
+  const d = Math.round(f.days), p = Math.round(f.people);
+  const vals = [f.oats, f.lunchN, f.dinnerN, f.snacks, f.kOats, f.kLunch, f.kDinner, f.kSnack];
+  if (isNaN(d) || isNaN(p) || d < 1 || p < 1 || vals.some(v => isNaN(v) || v < 0)){ out.innerHTML = ''; if (kOut) kOut.innerHTML = ''; return; }
+  const D = d + (f.reserve ? 1 : 0), np = D * p;
   const row = (label, q) => `<li><span>${label}</span><span class="q">${q}</span></li>`;
   out.innerHTML = `<ul class="food-out">
-      ${row(`${T.fOats} <span style="color:var(--muted)">${T.fBreakfasts(br * p)}</span>`, `${fmt(br * p * oats)} g`)}
-      ${row(T.fLunch, lu * p)}
-      ${row(T.fDinner, di * p)}
-      ${snTot ? row(T.fSnacks, snTot) : ''}
+      ${f.oats > 0 ? row(`${T.mOats} <span style="color:var(--muted)">${T.fBreakfasts(np)}</span>`, `${fmt(np * f.oats)} g`) : ''}
+      ${Math.ceil(np * f.lunchN) ? row(T.fLunch, Math.ceil(np * f.lunchN)) : ''}
+      ${Math.ceil(np * f.dinnerN) ? row(T.fDinner, Math.ceil(np * f.dinnerN)) : ''}
+      ${Math.ceil(np * f.snacks) ? row(T.fSnacks, Math.ceil(np * f.snacks)) : ''}
     </ul><p class="calc-basis">${T.fBasis(d, p, !!f.reserve)}</p>`;
-  const kOut = $('kcalOut');
-  if (kOut){
-    const vals = [f.kOats, f.kLunch, f.kDinner, f.kSnack];
-    if (vals.some(v => isNaN(v) || v < 0)){ kOut.innerHTML = ''; return; }
-    const day = oats * f.kOats / 100 + f.kLunch + f.kDinner + sn * f.kSnack;
-    const [lo, hi] = f.season === 'winter' ? [3500, 5000] : [3000, 4000];
-    const pct = Math.min(100, day / hi * 100);
-    const low = day < lo;
-    const n0 = v => Math.round(v).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB');
-    kOut.innerHTML = `<div class="kcal-head"><span>${T.fullDay}</span><span class="q">${n0(day)} kcal</span></div>
-      <div class="kcal-bar"><span class="${low ? 'low' : ''}" style="width:${pct}%"></span></div>
-      <p class="calc-basis">${T.kcalTarget(n0(lo), n0(hi))}</p>
-      <p class="${low ? 'calc-warn' : 'calc-basis'}">${low ? T.kcalLow : T.kcalOk}</p>
-      <p class="calc-basis">${T.kcalNote}</p>`;
-  }
+  if (!kOut) return;
+  const day = f.oats * f.kOats / 100 + f.lunchN * f.kLunch + f.dinnerN * f.kDinner + f.snacks * f.kSnack;
+  const [r, y, max] = KZONES[f.season === 'winter' ? 'winter' : 'summer'];
+  const zone = day < r ? 'red' : day < y ? 'yellow' : 'green';
+  const pos = Math.min(100, day / max * 100);
+  const n0 = v => Math.round(v).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB');
+  kOut.innerHTML = `<div class="kcal-head"><span>${T.fullDay}</span><span class="q">${n0(day)} kcal</span></div>
+    <div class="gauge" role="img" aria-label="${n0(day)} kcal">
+      <i class="z red" style="width:${r / max * 100}%"></i><i class="z yellow" style="width:${(y - r) / max * 100}%"></i><i class="z green" style="width:${100 - y / max * 100}%"></i>
+      <b class="marker" style="left:${pos}%"></b>
+    </div>
+    <div class="gauge-scale"><span>0</span><span style="left:${r / max * 100}%">${n0(r)}</span><span style="left:${y / max * 100}%">${n0(y)}</span></div>
+    <p class="zone-text ${zone}">${T['zone_' + zone]}</p>`;
 }
 main.addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.food;
@@ -1710,6 +1777,7 @@ function confirmBox(title, msg, ok){
 
 async function listAction(a, id){
   const T = t();
+  if (state.field && ['new', 'copy', 'edit', 'rename', 'dup', 'reset', 'delete', 'backup'].indexOf(a) >= 0) return;
   const L = id && id !== 'std' ? ownList(id) : null;
   if (a === 'new'){
     const choice = await new Promise(res => {
@@ -1809,8 +1877,8 @@ main.addEventListener('click', async e => {
   if (fdt){ const f = foodState(); f[fdt.dataset.foodtoggle] = !f[fdt.dataset.foodtoggle]; save(); render(); return; }
   const ft = e.target.closest('[data-fueltype]');
   if (ft){ fuelState().fuel = ft.dataset.fueltype; save(); render(); return; }
-  const fuse = e.target.closest('[data-fueluse]');
-  if (fuse){ fuelState().use = fuse.dataset.fueluse; save(); render(); return; }
+  const pre = e.target.closest('[data-preset]');
+  if (pre){ fuelState().water = Object.assign({}, PRESETS[pre.dataset.preset]); save(); render(); return; }
   const cm = e.target.closest('[data-calcmode]');
   if (cm){ state.calc.mode = cm.dataset.calcmode; save(); render(); return; }
   const chip = e.target.closest('[data-mode]');
@@ -1857,8 +1925,8 @@ main.addEventListener('click', async e => {
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
-  if (act === 'fuelShared'){ const f = fuelState(); f.shared = !f.shared; save(); render(); return; }
-  if (act === 'resetRate'){ const f = fuelState(); delete f.custom[f.fuel + '_' + f.use]; save(); render(); return; }
+  if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
+  if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
   if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
