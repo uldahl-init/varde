@@ -24,8 +24,9 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - Always change ticks, folding and light view through `setDone`, `setOpen` and `setLight`, which handle both kinds of list.
 - **Sharing:** `#share=<code>` links carry a packed list (`packList`/`unpackList`), deflate-compressed when the browser supports it (`z` prefix) or plain (`j`). Nothing is stored on a server.
 - **Introduction:** shown once (`state.introDone`), and from Guider → Slik bruker du Varde.
-- **Fuel planner:** built from litres heated per person per day (`USE_KEYS`, presets in `PRESETS`) times fuel per litre boiled (`FUELS[x].perL`: gas 15 g, petrol 30 ml, spirit 50 ml; own figure in `fuelCalc.perLc`). Water from snow multiplies boiled water by `SNOW_BOIL` (2.5) and adds melted drinking water times `SNOW_MELT` (1.5). The summary sits at the top.
+- **Fuel planner:** litres boiled per person per day (`USE_KEYS`, defaults in `WATER_DEFAULT`, drinking water is always boiled) times fuel per litre (`FUELS[x].perL`: gas 15 g, petrol 30 ml, spirit 50 ml; own figure in `fuelCalc.perLc`). Water from snow multiplies everything by `SNOW_BOIL` (2.5). Day hike mode (`fuelCalc.mode = 'day'`) hides the table and uses one figure (`dayL`). The summary at the top shows the whole calculation.
 - **Food planner:** meals per person per day with their energy side by side; the gauge at the top shows one full day against zones (`KZONES`: summer red below 2000 kcal, yellow below 3000, green above; winter 2500 / 3500).
+- **List lock:** `state.listLock` blocks ticking in both normal and outdoor mode (Lås listen, next to Skjul pakket); other tabs keep working.
 - **Sun times:** calculated offline (`sunPos`, `sunDay`) from `state.pos` (GPS) and the date.
 - **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
 
