@@ -953,7 +953,7 @@ let editing = false;
 let view = null;
 let tab = 'list';
 let modesOpen = false;
-let rainLocked = false;
+let rainLocked = !!(state.field && state.rainLocked);
 let lastTick = null;
 const t = () => UI[state.lang] || UI.en;
 const modeName = k => { if (k.indexOf('L:') === 0){ const L = ownList(k.slice(2)); return L ? '+ ' + L.name : k; } return (MODES[k] && (MODES[k][state.lang] || MODES[k].en)) || k; };
@@ -2039,7 +2039,7 @@ main.addEventListener('click', async e => {
   if (act === 'cStart'){ startCompass(); return; }
   if (act === 'getPos'){ getPos(); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
-  if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
+  if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; state.rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
   if (act === 'rainLock'){ lockRain(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
@@ -2193,7 +2193,7 @@ function tapOk(){ return Date.now() - lastTap.t > 800 || lastTap.ok; }
 let navUntil = 0, navTimer = null;
 const NAV_MS = 3000;
 function navOpen(){ return Date.now() < navUntil; }
-function lockRain(){ if (!state.field) return; rainLocked = true; navUntil = 0; render(); }
+function lockRain(){ if (!state.field) return; rainLocked = true; state.rainLocked = true; save(); navUntil = 0; render(); }
 function openNav(){
   navUntil = Date.now() + NAV_MS;
   clearTimeout(navTimer);
@@ -2232,7 +2232,7 @@ function renderLock(){
     requestAnimationFrame(() => { bar.style.transition = `width ${left}ms linear`; bar.style.width = '0'; });
   }
   holdButton($('navBtn'), 1000, openNav);
-  holdButton($('unlockBtn'), 1000, () => { rainLocked = false; navUntil = 0; clearTimeout(navTimer); render(); });
+  holdButton($('unlockBtn'), 1000, () => { rainLocked = false; state.rainLocked = false; save(); navUntil = 0; clearTimeout(navTimer); render(); });
 }
 let wakeLock = null;
 async function updateWake(){

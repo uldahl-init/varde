@@ -53,7 +53,7 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - The body element carries `data-skin`, so click handlers must never match `closest('[data-skin]')` without a class (use `.skin-btn[data-skin]`); a generic match caught every click in the app once.
 - Sheets that close and are followed by navigation must not leave a history entry behind: `go()` reuses a closed sheet's entry.
 - All interface text for one language shares a single object in `UI`, so check that a new key is not already in use before adding it (a guide called `winter` once overwrote the season label `winter`).
-- Regnlås (rain lock, Utemodus only, also from the lock button in the header) blocks every change and all navigation while scrolling still works. Holding Naviger (1 s) opens navigation for 3 seconds (`NAV_MS`), renewed on each page change; holding Lås opp (1 s) switches it off. Both use `holdButton`, which handles touch events directly.
+- Regnlås (rain lock, Utemodus only, also from the lock button in the header) blocks every change and all navigation while scrolling still works. Holding Naviger (1 s) opens navigation for 3 seconds (`NAV_MS`), renewed on each page change; holding Lås opp (1 s) switches it off. Both use `holdButton`, which handles touch events directly. The rain lock is saved (`state.rainLocked`), because Chrome on Android lets the back button close the app even while it is locked; on reopening, the app is still locked.
 
 ## Name
 "Varde" is a working name. If the app is renamed, change the display name (`<title>`, `application-name`, `apple-mobile-web-app-title`, `UI.app` in both languages, `manifest.webmanifest`, README) and the `CACHE` prefix in `sw.js`, but never the storage `KEY`.
