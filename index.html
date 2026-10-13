@@ -187,6 +187,19 @@ body.notlist .list-switch svg{display:none}
 .notes-ix .note-date{margin:4px 0 0;font-size:.8rem}
 .notes-ix .ix-t{font-size:1.15rem}
 .note-area{min-height:40vh}
+.w-list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.w-list li{display:flex;align-items:center;gap:10px;padding:6px 10px 6px 14px;border-top:1px solid var(--line)}
+.w-list li:first-child{border-top:0}
+.w-name{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 0;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.w-tag{padding:1px 8px;border-radius:999px;border:1px solid var(--line-strong);color:var(--muted);font-size:.75rem;font-weight:600}
+.w-tag.dog{border-color:var(--red);color:var(--red)}
+.w-in{flex:none;display:flex;align-items:center;gap:4px;color:var(--muted);font-weight:600}
+.w-in input{width:5.5em !important;min-width:0;padding:8px 10px;text-align:right;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.w-pick{max-height:55vh;overflow:auto}
+.w-pi{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line)}
+.w-pi input{width:22px;height:22px;flex:none}
+.w-pi input:disabled + span{color:var(--muted)}
+#panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
 .ix-group{display:flex;align-items:center;gap:8px;margin:22px 0 -6px;font-family:var(--head);font-weight:600;font-size:.95rem;letter-spacing:.02em}
 .ix-group i{width:10px;height:10px;border-radius:50%;background:var(--gc)}
 .ix-group{color:var(--gc)}
@@ -450,7 +463,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v18';
+const APP_VERSION = 'varde-v19';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -594,6 +607,15 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     fuelEmpty:'Enter what you boil to see how much fuel you need.',
     fuelBasis:(l,p,u,d,n,m,sn)=>`${l} l boiled per person per day × ${p} ${u} per litre${sn ? ' × 2.5 for snow' : ''} × ${d} days × ${n} ${n === 1 ? 'person' : 'people'} + ${m} % margin`,
     fuelBasisDay:(l,p,u,n,m,sn)=>`${l} l boiled per person × ${p} ${u} per litre${sn ? ' × 2.5 for snow' : ''} × ${n} ${n === 1 ? 'person' : 'people'} + ${m} % margin`,
+    weightTool:'Pack weight', weightShort:'Weight per item and in total', weightSub:'List what you carry and its weight, and see the total. Weigh your own gear once; the app remembers it.',
+    wUnit:'Unit', wAddList:'Add from the packing list', wAddOwn:'Add your own', wAdd:'Add', wEmpty:'Nothing here yet. Add items from the packing list or type in your own.',
+    wPickMsg:'Tick what you want to weigh. Items already added are greyed out.', wYour:'Your pack', wBase:'Base weight', wCons:'Consumables (food, water, fuel)', wConsTag:'consumable', wDogTag:'dog',
+    wDog:'Dog pack', wDogNote:'Let the dog start light. Puppies and old dogs should not carry.', wName:'Name', wWeight:u=>`Weight (${u})`, wCat:'Category', wOther:'Other',
+    wConsLbl:'Consumable (food, water, fuel)', wDogLbl:'In the dog pack', wDeleted:'Removed from pack weight.',
+    wBaseNote:'Base weight is everything except consumables. It does not change with the length of the trip, so it is the number most people compare between trips.',
+    dogChip:'Dog', mDog:'Dog food', dogs:'Dogs', dogG:'g per dog per day', dogNote:'The amount on the packet is for normal activity. Active trip days often need more, so adjust it to your dog.',
+    fDogDays:(d,n)=>`${d} days × ${n} ${n === 1 ? 'dog' : 'dogs'}`,
+    fuelDogL:'Dog: litres of water per day', fuelDogNote:'Water for the dog also comes from snow. Roughly 1 litre a day for a medium-sized dog, more when it works hard.', fuelDogBasis:l=>`Dog: + ${l} l per day from snow.`,
     foodTool:'Food planner', foodShort:'Meals for the trip', foodSub:'Plan the food for the trip: the gauge shows if one day of food gives enough energy, and the list shows what to pack.',
     oats:'Oats per breakfast (g)', lunchN:'Lunches per day', dinnerN:'Trail meals per day', snacks:'Energy snacks per day', homeBreakfast:'Breakfast at home on day 1', homeDinner:'Home for dinner on the last day', reserve:'Reserve day',
     fOats:'Oats', fBreakfasts:n=>`for ${n} breakfast${n===1?'':'s'}`, fLunch:'Lunches', fDinner:'Dinners (trail meals)', fSnacks:'Energy snacks',
@@ -763,6 +785,15 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     fuelEmpty:'Fyll inn hva du koker for å se hvor mye drivstoff du trenger.',
     fuelBasis:(l,p,u,d,n,m,sn)=>`${l} l kokt per person per døgn × ${p} ${u} per liter${sn ? ' × 2,5 for snø' : ''} × ${d} døgn × ${n} ${n === 1 ? 'person' : 'personer'} + ${m} % margin`,
     fuelBasisDay:(l,p,u,n,m,sn)=>`${l} l kokt per person × ${p} ${u} per liter${sn ? ' × 2,5 for snø' : ''} × ${n} ${n === 1 ? 'person' : 'personer'} + ${m} % margin`,
+    weightTool:'Sekkvekt', weightShort:'Vekt per ting og totalt', weightSub:'List opp det du bærer og hva det veier, og se totalen. Vei eget utstyr én gang, så husker appen det.',
+    wUnit:'Enhet', wAddList:'Legg til fra pakklisten', wAddOwn:'Legg til egen', wAdd:'Legg til', wEmpty:'Ingenting her ennå. Legg til ting fra pakklisten eller skriv inn dine egne.',
+    wPickMsg:'Kryss av det du vil veie. Ting som allerede er lagt til, er grået ut.', wYour:'Din sekk', wBase:'Basisvekt', wCons:'Forbruk (mat, vann, brensel)', wConsTag:'forbruk', wDogTag:'hund',
+    wDog:'Hundens sekk', wDogNote:'La hunden starte lett. Valper og eldre hunder bør ikke bære.', wName:'Navn', wWeight:u=>`Vekt (${u})`, wCat:'Kategori', wOther:'Annet',
+    wConsLbl:'Forbruk (mat, vann, brensel)', wDogLbl:'I hundens sekk', wDeleted:'Fjernet fra sekkvekten.',
+    wBaseNote:'Basisvekt er alt unntatt forbruk. Den endrer seg ikke med turens lengde, og er derfor tallet de fleste sammenligner mellom turer.',
+    dogChip:'Hund', mDog:'Hundemat', dogs:'Hunder', dogG:'g per hund per døgn', dogNote:'Mengden på pakken gjelder vanlig aktivitet. Aktive turdager trenger ofte mer, så juster etter hunden din.',
+    fDogDays:(d,n)=>`${d} døgn × ${n} ${n === 1 ? 'hund' : 'hunder'}`,
+    fuelDogL:'Hund: liter vann per døgn', fuelDogNote:'Vannet til hunden kommer også fra snø. Omtrent 1 liter i døgnet for en middels stor hund, mer når den jobber hardt.', fuelDogBasis:l=>`Hund: + ${l} l per døgn fra snø.`,
     foodTool:'Mat', foodShort:'Måltider til turen', foodSub:'Planlegg maten til turen: måleren viser om én dag med mat gir nok energi, og listen viser hva du skal pakke.',
     oats:'Havregryn per frokost (g)', lunchN:'Lunsjer per dag', dinnerN:'Turmat per dag', snacks:'Energisnacks per dag', homeBreakfast:'Frokost hjemme første dag', homeDinner:'Hjemme til middag siste dag', reserve:'Reservedøgn',
     fOats:'Havregryn', fBreakfasts:n=>`til ${n} frokost${n===1?'':'er'}`, fLunch:'Lunsjer', fDinner:'Middager (turmat)', fSnacks:'Energisnacks',
@@ -1131,6 +1162,7 @@ function render(){
     if (view === 'tool:water') return renderWater();
     if (view === 'tool:fuel') return renderFuel();
     if (view === 'tool:food') return renderFood();
+    if (view === 'tool:weight') return renderWeight();
     if (view === 'tool:knots') return renderKnots();
     if (view === 'tool:sun') return renderSun();
     if (view === 'tool:phone') return renderPhone();
@@ -1327,7 +1359,7 @@ function renderIndex(){
   document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
   const card = ([k, n, dsc], grp) => `<button data-open="${k}" data-nav${grp ? ` class="g-${grp}"` : ''}><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`;
   if (isPlan){
-    const items = [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]];
+    const items = [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['weight', T.weightTool, T.weightShort], ['water', T.water, T.waterShort]];
     main.innerHTML = `<p class="tool-sub">${T.planSub}</p><div class="index">` + items.map(x => card(x)).join('') + '</div>';
     return;
   }
@@ -1974,7 +2006,7 @@ const SNOW_BOIL = 2.5;
 const USE_KEYS = ['breakfast', 'coffee', 'thermos', 'lunch', 'dinner', 'evening', 'drink'];
 const WATER_DEFAULT = {breakfast:0.4, coffee:0.3, thermos:0.75, lunch:0, dinner:0.5, evening:0.4, drink:0};
 function fuelState(){
-  const f = state.fuelCalc = Object.assign({ fuel:'petrol', mode:'overnight', days:3, people:1, margin:20, bottle:{petrol:1, spirit:0.5}, snow:false, dayL:0.8, perLc:{} }, state.fuelCalc || {});
+  const f = state.fuelCalc = Object.assign({ fuel:'petrol', mode:'overnight', days:3, people:1, margin:20, bottle:{petrol:1, spirit:0.5}, snow:false, dayL:0.8, perLc:{}, dog:false, dogL:1 }, state.fuelCalc || {});
   if (!f.water || typeof f.water !== 'object') f.water = Object.assign({}, WATER_DEFAULT);
   if (typeof f.water.drink !== 'number') f.water.drink = 0;
   if (!f.perLc) f.perLc = {};
@@ -1998,8 +2030,9 @@ function renderFuel(){
     <h3 class="grp">${T.trip}</h3>
     <div class="chips">${chip('data-fuelmode','overnight',!day,T.preOvernight)}${chip('data-fuelmode','day',day,T.preDayTrip)}</div>
     <div class="calc">${day ? '' : field('days', T.days, f.days)}${field('people', T.people, f.people)}${day ? field('dayL', T.dayL, f.dayL) : ''}${field('margin', T.margin, f.margin)}${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}</div>
-    <div class="chips" style="margin-top:12px"><button class="chip" data-act="fuelSnow" aria-pressed="${!!f.snow}">${T.snowWater}</button></div>
+    <div class="chips" style="margin-top:12px"><button class="chip" data-act="fuelSnow" aria-pressed="${!!f.snow}">${T.snowWater}</button>${f.snow ? `<button class="chip" data-act="fuelDog" aria-pressed="${!!f.dog}">${T.dogChip}</button>` : ''}</div>
     ${f.snow ? `<p class="calc-basis">${T.snowNote}</p>` : ''}
+    ${f.snow && f.dog ? `<div class="calc one">${field('dogL', T.fuelDogL, f.dogL)}</div><p class="calc-basis">${T.fuelDogNote}</p>` : ''}
     ${day ? '' : `<h3 class="grp">${T.heatPerDay}</h3>
     <div class="calc">${USE_KEYS.map(u => field('w_' + u, T.useL[u], f.water[u] || 0)).join('')}</div>
     <p class="calc-basis" id="waterSum"></p>`}
@@ -2030,8 +2063,9 @@ function updateFuel(){
   const ws = $('waterSum');
   if (ws) ws.textContent = T.waterTotal(fmt2(boil));
   if ([days, n, margin, perL].some(v => isNaN(v)) || days <= 0 || n < 1 || margin < 0 || perL <= 0 || boil <= 0){ out.innerHTML = `<p class="calc-basis">${T.fuelEmpty}</p>`; return; }
+  const dogL = f.snow && f.dog ? Math.max(0, Number(f.dogL) || 0) : 0;
   const perDay = boil * (f.snow ? SNOW_BOIL : 1) * perL;
-  const total = perDay * days * n * (1 + margin / 100);
+  const total = (perDay * n + dogL * SNOW_BOIL * perL) * days * (1 + margin / 100);
   const name = T.fuelNames[f.fuel];
   let big, pack = '';
   if (fu.unit === 'g'){
@@ -2047,7 +2081,7 @@ function updateFuel(){
   if (f.fuel === 'gas' && f.snow) warn = `<p class="calc-warn">${T.warnGasCold}</p>`;
   if (f.fuel === 'spirit' && f.snow) warn = `<p class="calc-warn">${T.warnSpiritSnow}</p>`;
   out.innerHTML = `<span class="sum-label">${T.fuelNeed}</span><span class="sum-big">${big}</span>${pack ? `<span class="sum-sub">${pack}</span>` : ''}
-    <p class="calc-basis">${day ? T.fuelBasisDay(fmt2(boil), fmt(perL), fu.unit, n, fmt(margin), !!f.snow) : T.fuelBasis(fmt2(boil), fmt(perL), fu.unit, fmt(days), n, fmt(margin), !!f.snow)}</p>${warn}`;
+    <p class="calc-basis">${day ? T.fuelBasisDay(fmt2(boil), fmt(perL), fu.unit, n, fmt(margin), !!f.snow) : T.fuelBasis(fmt2(boil), fmt(perL), fu.unit, fmt(days), n, fmt(margin), !!f.snow)}${dogL ? ' ' + T.fuelDogBasis(fmt2(dogL)) : ''}</p>${warn}`;
 }
 main.addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.fuel;
@@ -2099,7 +2133,7 @@ function renderKnots(){
   });
 }
 function foodState(){
-  state.foodCalc = Object.assign({ days:3, people:1, reserve:true, season:'summer', oats:165, kOats:370, lunchN:1, kLunch:450, dinnerN:1, kDinner:600, snacks:1, kSnack:250 }, state.foodCalc || {});
+  state.foodCalc = Object.assign({ days:3, people:1, reserve:true, dog:false, dogs:1, dogG:300, season:'summer', oats:165, kOats:370, lunchN:1, kLunch:450, dinnerN:1, kDinner:600, snacks:1, kSnack:250 }, state.foodCalc || {});
   return state.foodCalc;
 }
 const KZONES = { summer:[2000, 3000, 4500], winter:[2500, 3500, 5500] };
@@ -2117,7 +2151,8 @@ function renderFood(){
     </section>
     <h3 class="grp">${T.trip}</h3>
     <div class="calc">${inp('days', T.days)}${inp('people', T.people)}</div>
-    <div class="chips" style="margin-top:12px"><button class="chip" data-foodtoggle="reserve" aria-pressed="${!!f.reserve}">${T.reserve}</button></div>
+    <div class="chips" style="margin-top:12px"><button class="chip" data-foodtoggle="reserve" aria-pressed="${!!f.reserve}">${T.reserve}</button><button class="chip" data-foodtoggle="dog" aria-pressed="${!!f.dog}">${T.dogChip}</button></div>
+    ${f.dog ? `<div class="mrow"><span class="m-name">${T.mDog}</span>${inp('dogs', T.dogs)}${inp('dogG', T.dogG)}</div><p class="calc-basis">${T.dogNote}</p>` : ''}
     <h3 class="grp">${T.perDayGrp}</h3>
     ${mrow(T.mOats, 'oats', T.amountG, 'kOats', T.kcalPer100)}
     ${mrow(T.mLunch, 'lunchN', T.count, 'kLunch', T.kcalEach)}
@@ -2144,6 +2179,7 @@ function updateFood(){
       ${Math.ceil(np * f.lunchN) ? row(T.fLunch, Math.ceil(np * f.lunchN)) : ''}
       ${Math.ceil(np * f.dinnerN) ? row(T.fDinner, Math.ceil(np * f.dinnerN)) : ''}
       ${Math.ceil(np * f.snacks) ? row(T.fSnacks, Math.ceil(np * f.snacks)) : ''}
+      ${f.dog && f.dogs > 0 && f.dogG > 0 ? row(`${T.mDog} <span style="color:var(--muted)">${T.fDogDays(D, Math.round(f.dogs))}</span>`, `${fmt(D * Math.round(f.dogs) * f.dogG)} g`) : ''}
     </ul><p class="calc-basis">${T.fBasis(d, p, !!f.reserve)}</p>`;
   if (!kOut) return;
   const day = f.oats * f.kOats / 100 + f.lunchN * f.kLunch + f.dinnerN * f.kDinner + f.snacks * f.kSnack;
@@ -2166,6 +2202,126 @@ main.addEventListener('input', e => {
   if (!isNaN(v)){ foodState()[k] = v; save(); }
   updateFood();
 });
+/* ---------- Sekkvekt (pack weight, v19) ---------- */
+function packW(){
+  if (!state.packW || typeof state.packW !== 'object') state.packW = {};
+  const w = state.packW;
+  if (w.unit !== 'kg') w.unit = 'g';
+  if (!Array.isArray(w.items)) w.items = [];
+  return w;
+}
+const wShow = g => { const w = packW(); return w.unit === 'kg' ? fmt2(g / 1000) : fmt(Math.round(g)); };
+const wTotal = g => { const w = packW(); return w.unit === 'kg' ? `${fmt2(g / 1000)} kg` : (g >= 1000 ? `${fmt(Math.round(g)).replace(/\s/g, ' ')} g` : `${fmt(Math.round(g))} g`); };
+function wCats(){
+  const T = t(), l = mainList();
+  const names = visibleCats(l).filter(c => !c.bag).map(c => c.name);
+  return [...new Set(names.concat(T.wOther))];
+}
+function renderWeight(){
+  const T = t(), w = packW();
+  $('listName').textContent = T.weightTool;
+  document.title = T.weightTool + ' · ' + T.app;
+  const chip = (u, label) => `<button class="chip" data-wunit="${u}" aria-pressed="${w.unit === u}">${label}</button>`;
+  let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
+    <p class="tool-sub">${T.weightSub}</p>
+    <section class="sum-card" id="wOut" aria-live="polite"></section>
+    <div class="modes"><span class="modes-label">${T.wUnit}</span><div class="chips">${chip('g', 'g')}${chip('kg', 'kg')}</div></div>
+    <div class="row-btns"><button class="btn primary" data-act="wAddList">${T.wAddList}</button><button class="btn" data-act="wAddOwn">${T.wAddOwn}</button></div>`;
+  if (!w.items.length) h += `<p class="empty">${T.wEmpty}</p>`;
+  const groups = [];
+  w.items.forEach(it => { let g = groups.find(x => x.cat === it.cat); if (!g) groups.push(g = {cat:it.cat, items:[]}); g.items.push(it); });
+  groups.forEach(g => {
+    h += `<h3 class="grp">${esc(g.cat || T.wOther)}</h3><ul class="w-list">` + g.items.map(it => `<li>
+      <button class="w-name" data-act="wEdit" data-id="${it.id}"><span>${esc(it.name)}</span>${it.cons ? `<small class="w-tag">${T.wConsTag}</small>` : ''}${it.dog ? `<small class="w-tag dog">${T.wDogTag}</small>` : ''}</button>
+      <label class="w-in"><input type="text" inputmode="decimal" data-wid="${it.id}" value="${it.g ? esc(wShow(it.g).replace(/\s/g, '')) : ''}" placeholder="0" aria-label="${esc(T.wWeight(w.unit) + ': ' + it.name)}"><span>${w.unit}</span></label></li>`).join('') + '</ul>';
+  });
+  h += `<p class="calc-basis">${T.wBaseNote}</p>`;
+  main.innerHTML = h;
+  updateWeight();
+}
+function updateWeight(){
+  const T = t(), w = packW(), out = $('wOut');
+  if (!out) return;
+  const mine = w.items.filter(i => !i.dog), dog = w.items.filter(i => i.dog);
+  const sum = a => a.reduce((s, i) => s + (Number(i.g) || 0), 0);
+  const total = sum(mine), cons = sum(mine.filter(i => i.cons)), dogT = sum(dog);
+  const cats = [];
+  mine.forEach(i => { let c = cats.find(x => x.cat === i.cat); if (!c) cats.push(c = {cat:i.cat, g:0}); c.g += Number(i.g) || 0; });
+  const row = (label, v, sm) => `<li><span>${label}</span><span class="q${sm ? ' sm' : ''}">${wTotal(v)}</span></li>`;
+  out.innerHTML = `<span class="sum-label">${T.wYour}</span><span class="sum-big">${wTotal(total)}</span>
+    <ul class="food-out">${cons > 0 ? row(T.wBase, total - cons, true) + row(T.wCons, cons, true) : ''}
+    ${cats.length > 1 ? cats.map(c => row(esc(c.cat || T.wOther), c.g, true)).join('') : ''}
+    ${dog.length ? row(T.wDog, dogT) : ''}</ul>${dog.length ? `<p class="calc-basis">${T.wDogNote}</p>` : ''}`;
+}
+main.addEventListener('input', e => {
+  const id = e.target.dataset && e.target.dataset.wid;
+  if (!id) return;
+  const w = packW(), it = w.items.find(x => x.id === id);
+  if (!it) return;
+  const v = num(e.target.value);
+  it.g = isNaN(v) ? 0 : Math.max(0, w.unit === 'kg' ? v * 1000 : v);
+  save(); updateWeight();
+});
+function askWeightItem(title, it){
+  const T = t(), w = packW(), cats = wCats();
+  if (it && it.cat && cats.indexOf(it.cat) < 0) cats.unshift(it.cat);
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(title)}</h3>
+      <label class="cfield"><span>${T.wName}</span><input type="text" id="wName" value="${esc(it ? it.name : '')}"></label>
+      <label class="cfield"><span>${T.wWeight(w.unit)}</span><input type="text" inputmode="decimal" id="wG" value="${it && it.g ? esc(wShow(it.g).replace(/\s/g, '')) : ''}"></label>
+      <label class="cfield"><span>${T.wCat}</span><select id="wCat">${cats.map(c => `<option${(it ? it.cat === c : c === T.wOther) ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+      <div class="chips" style="margin-top:12px"><button class="chip" id="wCons" aria-pressed="${!!(it && it.cons)}">${T.wConsLbl}</button><button class="chip" id="wDogC" aria-pressed="${!!(it && it.dog)}">${T.wDogLbl}</button></div>
+      <div class="row">${it ? `<button class="btn danger" data-s="del">${T.del}</button>` : ''}<button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
+    ['wCons', 'wDogC'].forEach(k => $(k).onclick = () => $(k).setAttribute('aria-pressed', $(k).getAttribute('aria-pressed') !== 'true'));
+    panel.querySelector('[data-s=ok]').onclick = () => {
+      const name = $('wName').value.trim(); if (!name) return $('wName').focus();
+      const v = num($('wG').value);
+      closeSheet({name, g: isNaN(v) ? 0 : Math.max(0, w.unit === 'kg' ? v * 1000 : v), cat:$('wCat').value, cons:$('wCons').getAttribute('aria-pressed') === 'true', dog:$('wDogC').getAttribute('aria-pressed') === 'true'});
+    };
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    const d = panel.querySelector('[data-s=del]'); if (d) d.onclick = () => closeSheet('delete');
+  });
+}
+function pickFromList(){
+  const T = t(), l = mainList(), w = packW();
+  const cats = visibleCats(l).filter(c => !c.bag);
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${T.wAddList}</h3><p>${T.wPickMsg}</p><div class="w-pick">` + cats.map(c => {
+      const heads = headingIds(c);
+      const items = c.items.filter(i => !heads.has(i.id) && !/^@/.test(i.text));
+      if (!items.length) return '';
+      return `<div class="section-label">${esc(c.name)}</div>` + items.map(i => {
+        const has = w.items.some(x => x.name === i.text && x.cat === c.name);
+        return `<label class="w-pi"><input type="checkbox" data-pc="${esc(c.name)}" data-pf="${c.icon === 'food' ? 1 : 0}" data-pd="${c.mode === 'hund' ? 1 : 0}" value="${esc(i.text)}"${has ? ' disabled checked' : ''}><span>${esc(i.text)}</span></label>`;
+      }).join('');
+    }).join('') + `</div><div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.wAdd}</button></div>`);
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet([...panel.querySelectorAll('input[data-pc]:checked:not(:disabled)')].map(x => ({name:x.value, cat:x.dataset.pc, cons:x.dataset.pf === '1', dog:false})));
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  });
+}
+async function weightAction(act, id){
+  const T = t(), w = packW();
+  if (act === 'wAddList'){
+    const picked = await pickFromList();
+    if (!picked || !picked.length) return;
+    picked.forEach(p => w.items.push(Object.assign({id:uid(), g:0}, p)));
+    save(); render(); return;
+  }
+  if (act === 'wAddOwn'){
+    const v = await askWeightItem(T.wAddOwn, null);
+    if (!v || v === 'delete') return;
+    w.items.push(Object.assign({id:uid()}, v)); save(); render(); return;
+  }
+  if (act === 'wEdit'){
+    const it = w.items.find(x => x.id === id); if (!it) return;
+    const v = await askWeightItem(it.name, it);
+    if (!v) return;
+    if (v === 'delete'){ withUndo(T.wDeleted, () => { const pw = packW(); pw.items = pw.items.filter(x => x.id !== id); }); return; }
+    Object.assign(it, v); save(); render();
+  }
+}
 function top(){ try { window.scrollTo(0,0); } catch(e){} }
 
 /* ---------- sheets ---------- */
@@ -2332,6 +2488,8 @@ function backupSheet(){
 
 /* ---------- main interactions ---------- */
 main.addEventListener('click', async e => {
+  const wu = e.target.closest('[data-wunit]');
+  if (wu){ packW().unit = wu.dataset.wunit; save(); render(); return; }
   const fs_ = e.target.closest('[data-foodseason]');
   if (fs_){ foodState().season = fs_.dataset.foodseason; save(); render(); return; }
   const fdt = e.target.closest('[data-foodtoggle]');
@@ -2396,7 +2554,9 @@ main.addEventListener('click', async e => {
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
+  if (act === 'fuelDog'){ const f = fuelState(); f.dog = !f.dog; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
+  if (act === 'wAddList' || act === 'wAddOwn' || act === 'wEdit'){ weightAction(act, b.dataset.id); return; }
   if (act === 'newNote' || act === 'editNote'){
     if (state.field) return;
     const n = act === 'editNote' ? state.notes.find(x => x.id === b.dataset.id) : null;
