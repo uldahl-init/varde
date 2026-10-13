@@ -190,14 +190,26 @@ body.notlist .list-switch svg{display:none}
 .unlock small{display:block;font-weight:400;font-size:.8rem;opacity:.8}
 .nav-time{height:4px;border-radius:2px;background:var(--line);overflow:hidden;max-width:520px;width:100%;margin:0 auto}
 .nav-time i{display:block;height:100%;background:var(--red);width:0}
-.hdr-lock{flex:none;width:44px;height:44px;border:0;background:none;border-radius:10px;color:inherit;font-size:1.25rem;cursor:pointer;display:none}
-body.field .hdr-lock{display:grid;place-items:center}
-body.locked .hdr-lock{opacity:1}
+header .list-switch{gap:10px;color:inherit;border-radius:14px}
+header .list-switch:not(.plain){background:rgba(255,255,255,.13);padding:8px 12px;min-height:54px}
+header .list-switch .ls-ic{flex:none;display:grid}
+header .list-switch .ls-ic svg,header .list-switch .ls-chev{width:22px;height:22px;stroke:currentColor !important;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+header .list-switch .ls-chev{width:18px;height:18px;stroke-width:2.6}
+header .list-switch .ls-text{flex:1;min-width:0}
+header .list-switch h1{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:1.6rem;line-height:1.1}
+header .list-switch .ls-lbl{flex:none;font-size:.8rem;font-weight:600;opacity:.85;white-space:nowrap}
+header .list-switch.long .ls-lbl{display:none}
+header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
+header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
+header .list-switch.plain h1{font-size:1.9rem}
+.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:10px;padding:8px 12px;min-height:44px;border-radius:999px;border:1px solid currentColor;background:none;color:inherit;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
+body.field .hdr-rain{display:flex}
+.hdr-rain svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
 body.locked main,body.locked main *,body.locked header.top button,body.locked .toolbar{pointer-events:none}
 body.locked .tabbar{pointer-events:none}
 body.locked .tabbar button{opacity:.4}
-body.locked.navopen .tabbar,body.locked.navopen main .back,body.locked.navopen main [data-act="openBag"],body.locked.navopen main [data-open],body.locked.navopen main [data-act="openGuide"],body.locked.navopen main summary{pointer-events:auto}
+body.locked.navopen [data-nav],body.locked.navopen main summary{pointer-events:auto}
 body.locked.navopen .tabbar button{opacity:1}
 .rainlock[hidden]{display:none}
 .unlock{position:relative;overflow:hidden;width:100%;max-width:420px;padding:20px;border-radius:16px;border:2px solid var(--red);background:var(--surface);color:var(--ink);font-weight:600;font-size:1.05rem;cursor:pointer;user-select:none;-webkit-user-select:none}
@@ -344,6 +356,16 @@ body.night .zone-text{color:var(--ink)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}}
 :root[data-theme="dark"] .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}
 body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-alu:#5c1712}
+.sun-arc{display:block;width:100%;max-width:420px;margin:6px auto 0}
+.moon-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+.moon-row b{display:block}
+.moon-row span{color:var(--muted);font-size:.9rem}
+.moon-ic{flex:none}
+:root{--moon:#E3D08A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--moon:#E8DFC2}}
+body.night{--moon:#ff4a3d}
+.own-link{display:flex;align-items:center;gap:4px}
+.own-link .btn{flex:1}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -380,14 +402,13 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <header class="top">
   <div class="wrap">
     <div class="title-row">
-      <button class="list-switch" id="listBtn" aria-label="Switch list">
-        <h1 id="listName">Trip</h1>
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      <button class="list-switch" id="listBtn" data-nav aria-label="Lists">
+        <span class="ls-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span>
+        <span class="ls-text"><h1 id="listName">Trip</h1></span>
+        <span class="ls-lbl" id="lsLbl"></span>
+        <svg class="ls-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
-      <button class="hdr-lock" id="hdrLock" aria-label="Rain lock">🔒</button>
-      <button class="menu-btn" id="menuBtn" aria-label="Lists and options">
-        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-      </button>
+      <button class="hdr-rain" id="hdrLock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 7.5a3.75 3.75 0 0 1 .5 7.47"/><path d="M9 18l-1 2.5M13 18l-1 2.5M17 18l-1 2.5"/></svg><span id="hdrRainTxt"></span></button>
     </div>
     <div class="progress">
       <div class="bar"><span id="barFill"></span></div>
@@ -411,7 +432,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v15';
+const APP_VERSION = 'varde-v16';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -431,7 +452,7 @@ const CROSS = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const UI = {
   en: {
     shareText:n=>`Packing list "${n}" from Varde`, shareFallback:'Copy the link and send it to the people you want to share the list with.', copyLink:'Copy link', linkCopied:'Link copied.',
-    shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Your own lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', imported:'List added',
+    shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Shared lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', imported:'List added',
     introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
     intro:[
       ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
@@ -440,13 +461,17 @@ const UI = {
       ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Plan, Guides and Compass are at the bottom.']
     ],
-    help:'Help', versionLbl:'Version', howTool:'How to use Varde', howShort:'A short introduction to the app',
+    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', howShort:'A short introduction to the app',
     sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
     posNote:'The sun times are calculated on the phone from your position and the date. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
-    linksTitle:'Weather and warnings', linksNote:'Needs a connection.', yrLink:'yr.no: weather forecast', varsomLink:'varsom.no: avalanche, flood and landslide warnings',
+    linksTitle:'Weather and warnings', linksNote:'Needs a connection.', yrLink:'yr.no: weather forecast (worldwide)', varsomLink:'varsom.no: avalanche, flood and landslide warnings',
+    skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
+    phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
+    dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'The links match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
+    addLink:'Add your own link', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks cannot be changed.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
@@ -596,7 +621,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
   },
   no: {
     shareText:n=>`Pakkliste «${n}» fra Varde`, shareFallback:'Kopier lenken og send den til dem du vil dele listen med.', copyLink:'Kopier lenke', linkCopied:'Lenken er kopiert.',
-    shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Dine egne lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', imported:'Listen er lagt til',
+    shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Delte lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', imported:'Listen er lagt til',
     introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
     intro:[
       ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
@@ -605,13 +630,17 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Planlegg, Guider og Kompass finner du nederst.']
     ],
-    help:'Hjelp', versionLbl:'Versjon', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
+    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
     sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
     posNote:'Soltidene regnes ut på mobilen fra posisjonen og datoen. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
     linksTitle:'Vær og varsler', linksNote:'Krever nett.', yrLink:'yr.no: værmelding', varsomLink:'varsom.no: snøskred-, flom- og jordskredvarsel',
+    skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
+    phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
+    dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'Lenkene tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
+    addLink:'Legg til egen lenke', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger kan ikke endres.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
@@ -925,7 +954,8 @@ function migrate(){
     'Våtservietter (ca. 4x)':'Våtservietter (nedbrytbare)', 'Wet wipes (approx. 4x)':'Våtservietter (nedbrytbare)',
     'Teltlykt (USB, må lades i vanlig USB-port)':'Teltlykt (USB)', 'Tent lamp (USB, charge in a regular USB port)':'Teltlykt (USB)',
     'Ekstra batterier (til lykter som ikke kan lades)':'Ekstra batterier (ved behov, som reserve)', 'Spare batteries (for lamps that cannot be charged)':'Ekstra batterier (ved behov, som reserve)',
-    'Fyrstikker':'Fyrstikker (vanntett pakket)', 'Matches':'Fyrstikker (vanntett pakket)'
+    'Fyrstikker':'Fyrstikker (vanntett pakket)', 'Matches':'Fyrstikker (vanntett pakket)',
+    'Hjelm':'Hjelm (til nedkjøringen)', 'Helmet':'Hjelm (til nedkjøringen)'
   };
   const no = friluftsliv('no'), en = friluftsliv('en'), byKey = {};
   no.cats.forEach((c, n) => { const m = {}; c.items.forEach((x, k) => { m[slug(x.no)] = x.no; m[slug(en.cats[n].items[k].t)] = x.no; }); byKey[c.key] = m; });
@@ -1030,7 +1060,7 @@ const ICONS = {
 function renderTabs(){
   const T = t();
   $('tabbar').innerHTML = [['list', T.tabList], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
-    `<button data-tab="${k}" ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
+    `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
 const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']} };
 function bodyClasses(){
@@ -1050,8 +1080,11 @@ function render(){
   document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
   bodyClasses();
   renderTabs();
-  $('menuBtn').setAttribute('aria-label', T.menu);
-  $('listBtn').setAttribute('aria-label', T.switchList);
+  $('listBtn').setAttribute('aria-label', T.yourLists);
+  $('lsLbl').textContent = T.yourLists;
+  $('hdrRainTxt').textContent = T.lockScreen;
+  const listHeader = tab === 'list' && view !== 'lists' && view !== 'howto' && !(view && view.indexOf('edit:') === 0);
+  $('listBtn').classList.toggle('plain', !listHeader);
   $('rainlock').hidden = !rainLocked;
   document.body.classList.toggle('locked', rainLocked);
   document.body.classList.toggle('navopen', rainLocked && navOpen());
@@ -1084,6 +1117,7 @@ function render(){
   const cats = editL ? l.cats : bag ? [bag] : visibleCats(l);
   const {t:tot, d} = countCats(cats);
   $('listName').textContent = l.name;
+  $('listBtn').classList.toggle('long', l.name.length > 16);
   document.title = l.name + ' · ' + T.app;
   $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
   $('progText').textContent = tot ? T.packed(d, tot) : T.noItems;
@@ -1091,10 +1125,10 @@ function render(){
   if (editL) document.body.classList.add('notlist');
   let html = '';
   if (editL){
-    html += `<button class="back" data-act="back">${CHEV_L}${T.yourLists}</button>
+    html += `<button class="back" data-nav data-act="back">${CHEV_L}${T.yourLists}</button>
       <div class="edit-bar"><span>${T.editing}</span><button class="chip field-on" data-act="back">${T.doneEdit}</button></div>`;
   } else if (bag){
-    html += `<button class="back" data-act="back">${CHEV_L}${esc(l.name)}</button>`;
+    html += `<button class="back" data-nav data-act="back">${CHEV_L}${esc(l.name)}</button>`;
     html += '<div class="toolbar">';
     if (hasLight(bag)) html += `<button class="chip" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
     html += `<button class="chip" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
@@ -1110,7 +1144,7 @@ function render(){
       .concat(state.lists.filter(L => L.tripType && L.id !== l.id).map(L => 'L:' + L.id));
     if (keys.length){
       const on = keys.filter(k => l.modes && l.modes[k]).map(modeName);
-      html += `<button class="modes-toggle" data-act="modesToggle" aria-expanded="${modesOpen}"><span>${T.tripType}:</span><span class="mt-val">${on.length ? esc(on.join(', ')) : '–'}</span>${CHEV}</button>`;
+      html += `<button class="modes-toggle" data-nav data-act="modesToggle" aria-expanded="${modesOpen}"><span>${T.tripType}:</span><span class="mt-val">${on.length ? esc(on.join(', ')) : '–'}</span>${CHEV}</button>`;
       if (modesOpen){
         html += `<div class="modes-open"><p class="mode-hint">${T.tripHint}</p><div class="chips">` +
           keys.map(k => `<button class="chip${k.indexOf('L:') === 0 ? ' own' : ''}" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
@@ -1134,7 +1168,7 @@ function render(){
     const open = (bag || editing) ? true : c.open;
     const from = extraFrom.get(c.id);
     html += `<section class="cat${open ? '' : ' closed'}${complete ? ' complete' : ''}${from ? ' extra' : ''}" data-cat="${c.id}">
-      <button class="cat-head" data-act="toggleCat" aria-expanded="${open}">
+      <button class="cat-head" data-nav data-act="toggleCat" aria-expanded="${open}">
         ${c.icon && CAT_ICONS[c.icon] ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}${from && from !== c.name ? ` <span class="from">+ ${esc(from)}</span>` : ''}</h2><span class="count">${cd}/${ct}</span>${(bag || editing) ? '' : CHEV}
       </button>`;
     if (c.mode && editing) html += `<p class="cat-note">${T.tripType}: ${esc(modeName(c.mode))}</p>`;
@@ -1158,10 +1192,10 @@ function render(){
         </button>`;
       if (target && !editing){
         const st = countCats([target]);
-        html += `<button class="link-btn${st.t && st.d === st.t ? ' complete' : ''}" data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${st.d}/${st.t}${CHEV_R}</button>`;
+        html += `<button class="link-btn${st.t && st.d === st.t ? ' complete' : ''}" data-nav data-act="openBag" data-bag="${target.id}" aria-label="${esc(T.openList(target.name))}">${st.d}/${st.t}${CHEV_R}</button>`;
       }
       if (!editing && typeof i.id === 'string' && i.id.indexOf('std:cook:brennerplate') === 0){
-        html += `<button class="link-btn" data-act="openGuide" data-guide="stoveboard">${T.guideLink}${CHEV_R}</button>`;
+        html += `<button class="link-btn" data-nav data-act="openGuide" data-guide="stoveboard">${T.guideLink}${CHEV_R}</button>`;
       }
       if (editing){
         html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
@@ -1234,13 +1268,16 @@ function renderLists(){
   $('listName').textContent = T.yourLists;
   document.title = T.yourLists + ' · ' + T.app;
   document.body.classList.add('notlist');
-  if (!selList) selList = state.main || 'std';
-  let html = `<button class="back" data-act="back">${CHEV_L}${esc(mainList().name)}</button>
+  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${esc(mainList().name)}</button>
     <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}
     <div class="section-label">${T.stdList}</div>${listCard(stdList())}
     <div class="section-label">${T.ownLists}</div>`;
-  if (!state.lists.length) html += `<p class="empty-own">${T.noOwn}</p>`;
-  state.lists.forEach(L => { html += listCard(L); });
+  const own = state.lists.filter(L => !L.sharedIn), shared = state.lists.filter(L => L.sharedIn);
+  if (!own.length) html += `<p class="empty-own">${T.noOwn}</p>`;
+  own.forEach(L => { html += listCard(L); });
+  html += `<div class="section-label">${T.sharedLists}</div>`;
+  if (!shared.length) html += `<p class="empty-own">${T.noShared}</p>`;
+  shared.forEach(L => { html += listCard(L); });
   if (!state.field) html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>`;
   html += `
     <div class="section-label">${T.appearance}</div>
@@ -1262,13 +1299,13 @@ function renderIndex(){
     ? [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['water', T.water, T.waterShort]]
     : [['knots', T.knotTool, T.knotShort], ['sun', T.sunTool, T.sunShort], ['winter', T.winterTool, T.winterShort], ['stoveboard', T.sbTool, T.sbShort], ['phone', T.phoneTool, T.phoneShort]];
   main.innerHTML = `<p class="tool-sub">${isPlan ? T.planSub : T.guideSub}</p><div class="index">` +
-    items.map(([k, n, dsc]) => `<button data-open="${k}"><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
+    items.map(([k, n, dsc]) => `<button data-open="${k}" data-nav><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
 }
 function renderPhone(){
   const T = t();
   $('listName').textContent = T.phoneTool;
   document.title = T.phoneTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${T.phoneSub}</p>
     <section class="manual guide">${T.phone.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
 }
@@ -1407,7 +1444,7 @@ async function checkShared(){
   try { L = await decodeList(h.slice(7)); } catch(e){ await confirmBox(T.share, T.shareBad, T.ok); return; }
   const n = countCats(L.cats).t;
   if (await confirmBox(T.importQ(L.name), T.importMsg(n), T.importOk)){
-    state.lists.push(L); selList = L.id; save();
+    L.sharedIn = true; state.lists.push(L); selList = L.id; save();
     go('list', 'lists');
   }
 }
@@ -1464,7 +1501,7 @@ function renderStoveBoard(){
   $('listName').textContent = T.sbTool;
   document.title = T.sbTool + ' · ' + T.app;
   const dot = k => `<b class="fig-num">${k}</b>`;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${T.sbSub}</p>
     <figure class="sb-fig"><div data-svgsrc="guides/stove-board.svg"></div>
       <ul class="fig-legend">${T.sbFig1.map((x, n) => `<li>${dot(n + 1)}<span>${x}</span></li>`).join('')}</ul></figure>
@@ -1477,7 +1514,7 @@ function renderWinter(){
   const T = t();
   $('listName').textContent = T.winterTool;
   document.title = T.winterTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${T.winterSub}</p>
     <section class="manual guide">${T.winterAdv.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
 }
@@ -1486,7 +1523,7 @@ function renderHowto(){
   $('listName').textContent = T.howTool;
   document.title = T.howTool + ' · ' + T.app;
   document.body.classList.add('notlist');
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.yourLists}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.yourLists}</button>
     <section class="manual guide">${T.intro.map(x => `<details open><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</section>
     <div class="row-btns"><button class="btn" data-la="intro">${T.showIntro}</button></div>`;
 }
@@ -1531,19 +1568,101 @@ function sunMarks(){
      <text x="${160 + 92 * Math.sin(az * Math.PI / 180)}" y="${164 - 92 * Math.cos(az * Math.PI / 180)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--red)">${lbl}</text>`;
   return mk(sd.rAz, '↑') + mk(sd.sAz, '↓');
 }
+/* ---------- moon (calculated on the phone, standard low-precision formulas) ---------- */
+const RAD = Math.PI / 180, E_OBL = RAD * 23.4397;
+const toDays = d => d.getTime() / 86400000 - 0.5 + 2440588 - 2451545;
+const raOf = (l, b) => Math.atan2(Math.sin(l) * Math.cos(E_OBL) - Math.tan(b) * Math.sin(E_OBL), Math.cos(l));
+const decOf = (l, b) => Math.asin(Math.sin(b) * Math.cos(E_OBL) + Math.cos(b) * Math.sin(E_OBL) * Math.sin(l));
+function sunEq(d){
+  const M = RAD * (357.5291 + 0.98560028 * d), C = RAD * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+  const L = M + C + RAD * 102.9372 + Math.PI;
+  return {ra: raOf(L, 0), dec: decOf(L, 0)};
+}
+function moonEq(d){
+  const L = RAD * (218.316 + 13.176396 * d), M = RAD * (134.963 + 13.064993 * d), F = RAD * (93.272 + 13.229350 * d);
+  const l = L + RAD * 6.289 * Math.sin(M), b = RAD * 5.128 * Math.sin(F);
+  return {ra: raOf(l, b), dec: decOf(l, b), dist: 385001 - 20905 * Math.cos(M)};
+}
+function moonAlt(date, lat, lon){
+  const d = toDays(date), c = moonEq(d), phi = RAD * lat;
+  const H = RAD * (280.16 + 360.9856235 * d) + RAD * lon - c.ra;
+  return Math.asin(Math.sin(phi) * Math.sin(c.dec) + Math.cos(phi) * Math.cos(c.dec) * Math.cos(H)) / RAD;
+}
+function moonIllum(date){
+  const d = toDays(date), sn = sunEq(d), m = moonEq(d), sdist = 149598000;
+  const phi = Math.acos(Math.sin(sn.dec) * Math.sin(m.dec) + Math.cos(sn.dec) * Math.cos(m.dec) * Math.cos(sn.ra - m.ra));
+  const inc = Math.atan2(sdist * Math.sin(phi), m.dist - sdist * Math.cos(phi));
+  const ang = Math.atan2(Math.cos(sn.dec) * Math.sin(sn.ra - m.ra), Math.sin(sn.dec) * Math.cos(m.dec) - Math.cos(sn.dec) * Math.sin(m.dec) * Math.cos(sn.ra - m.ra));
+  return {fraction: (1 + Math.cos(inc)) / 2, phase: 0.5 + 0.5 * inc * (ang < 0 ? -1 : 1) / Math.PI};
+}
+const MOON_H0 = 0.125;
+function moonDay(dateStr, lat, lon){
+  const p = dateStr.split('-').map(Number), base = new Date(p[0], p[1] - 1, p[2]).getTime(), step = 600000;
+  let rise = null, set = null, prev = null;
+  for (let k = 0; k <= 144; k++){
+    const tm = base + k * step, h = moonAlt(new Date(tm), lat, lon) - MOON_H0;
+    if (prev){
+      const f = prev.h / (prev.h - h), at = new Date(prev.t + f * (tm - prev.t));
+      if (prev.h < 0 && h >= 0 && !rise) rise = at;
+      if (prev.h >= 0 && h < 0 && !set) set = at;
+    }
+    prev = {t:tm, h};
+  }
+  return {rise, set};
+}
+function phaseIndex(p){
+  const b = [0.03, 0.22, 0.28, 0.47, 0.53, 0.72, 0.78, 0.97];
+  if (p < b[0] || p >= b[7]) return 0;
+  for (let i = 1; i < 8; i++) if (p < b[i]) return i;
+  return 0;
+}
+function moonIcon(phase, size, south){
+  const r = 16, c = 18, pts = [], s = Math.cos(2 * Math.PI * phase), waxing = phase < 0.5, n = 24;
+  for (let i = 0; i <= n; i++){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([c + (waxing ? w : -w), c + y]); }
+  for (let i = n; i >= 0; i--){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([c + (waxing ? s * w : -s * w), c + y]); }
+  const poly = pts.map(q => q[0].toFixed(2) + ',' + q[1].toFixed(2)).join(' ');
+  return `<svg class="moon-ic" viewBox="0 0 36 36" width="${size}" height="${size}" aria-hidden="true"${south ? ' style="transform:scaleX(-1)"' : ''}><circle cx="18" cy="18" r="16" fill="var(--line)"/><polygon points="${poly}" fill="var(--moon,#E8D9A0)"/><circle cx="18" cy="18" r="16" fill="none" stroke="var(--line-strong)" stroke-width="1"/></svg>`;
+}
+
+/* ---------- sky section: at a glance, details, settings ---------- */
+function sunArc(sd, isToday){
+  const ev = sd.ev, now = Date.now();
+  const midnight = sd.minEl > -0.833, polar = sd.maxEl < -0.833;
+  const P = midnight ? [[30,72],[160,-12],[290,72]] : polar ? [[30,96],[160,150],[290,96]] : [[30,96],[160,-4],[290,96]];
+  const B = t => [(1-t)*(1-t)*P[0][0] + 2*(1-t)*t*P[1][0] + t*t*P[2][0], (1-t)*(1-t)*P[0][1] + 2*(1-t)*t*P[1][1] + t*t*P[2][1]];
+  const arc = `M${P[0][0]} ${P[0][1]} Q${P[1][0]} ${P[1][1]} ${P[2][0]} ${P[2][1]}`;
+  let passed = '', sun = '';
+  if (isToday && !midnight && !polar && ev.rise && ev.set){
+    const t = Math.max(0, Math.min(1, (now - ev.rise) / (ev.set - ev.rise)));
+    if (t > 0){
+      const q = [(1-t)*P[0][0] + t*P[1][0], (1-t)*P[0][1] + t*P[1][1]], e = B(t);
+      passed = `<path d="M${P[0][0]} ${P[0][1]} Q${q[0].toFixed(1)} ${q[1].toFixed(1)} ${e[0].toFixed(1)} ${e[1].toFixed(1)}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round"/>`;
+    }
+    if (t > 0 && t < 1){ const e = B(t); sun = `<circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="13" fill="var(--red)" opacity=".18"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="7.5" fill="var(--red)"/>`; }
+  }
+  const lbl = (x, txt) => `<text x="${x}" y="122" text-anchor="middle" font-size="12" fill="var(--muted)">${txt}</text>`;
+  return `<svg class="sun-arc" viewBox="0 0 320 128" aria-hidden="true">
+    <defs><linearGradient id="skyGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--red)" stop-opacity=".12"/><stop offset="1" stop-color="var(--red)" stop-opacity="0"/></linearGradient></defs>
+    ${polar ? '' : `<path d="${arc} Z" fill="url(#skyGlow)"/>`}
+    <line x1="10" y1="96" x2="310" y2="96" stroke="var(--line-strong)" stroke-width="1.3" stroke-dasharray="4 5"/>
+    <path d="${arc}" fill="none" stroke="var(--line-strong)" stroke-width="2.5" stroke-linecap="round"${polar ? ' stroke-dasharray="3 6"' : ''}/>
+    ${passed}${sun}
+    ${!midnight && !polar && ev.rise ? lbl(30, hm(ev.rise)) : ''}${!midnight && !polar && ev.set ? lbl(290, hm(ev.set)) : ''}
+  </svg>`;
+}
 function sunHtml(){
-  const T = t();
-  let h = `<section class="manual sun"><h2>${T.sunTitle}</h2>`;
+  const T = t(), isToday = !sunDate || sunDate === today(), now = Date.now(), date = sunDate || today();
+  const ph = moonIllum(isToday ? new Date() : new Date(date + 'T12:00:00')), pi = phaseIndex(ph.phase);
+  const south = state.pos && state.pos.lat < 0;
+  const phaseTxt = `${T.phases[pi]}, ${T.lit(Math.round(ph.fraction * 100))}`;
+  let h = `<section class="manual sky"><h2>${T.skyTitle}</h2>`;
   if (!state.pos){
-    h += `<p class="tool-sub">${T.posNote}</p><div class="row-btns"><button class="btn primary" data-act="getPos">${posBusy ? T.posWait : T.getPos}</button></div>`;
+    h += `<div class="moon-row">${moonIcon(ph.phase, 44, false)}<div><b>${phaseTxt}</b></div></div>
+      <p class="tool-sub">${T.posNote}</p><div class="row-btns"><button class="btn primary" data-act="getPos">${posBusy ? T.posWait : T.getPos}</button></div>`;
     if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
     return h + '</section>';
   }
-  const sd = sunData(), ev = sd.ev, isToday = !sunDate || sunDate === today(), now = Date.now();
-  const p = state.pos, pt = new Date(p.t);
-  const coord = `${Math.abs(p.lat).toFixed(2).replace('.', state.lang === 'no' ? ',' : '.')}° ${p.lat >= 0 ? 'N' : 'S'}, ${Math.abs(p.lon).toFixed(2).replace('.', state.lang === 'no' ? ',' : '.')}° ${p.lon >= 0 ? (state.lang === 'no' ? 'Ø' : 'E') : (state.lang === 'no' ? 'V' : 'W')}`;
-  const when = pt.toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short'}) + ' ' + hm(pt);
-  h += `<div class="sun-top"><label class="cfield"><span>${T.date}</span><input type="date" data-sundate value="${sunDate || today()}"></label></div>`;
+  const p = state.pos, sd = sunData(), ev = sd.ev, md = moonDay(date, p.lat, p.lon);
   let big = '';
   if (sd.minEl > -0.833) big = T.midnightSun;
   else if (sd.maxEl < -0.833) big = T.polarNight;
@@ -1552,7 +1671,12 @@ function sunHtml(){
     else if (ev.set && now < ev.set.getTime()) big = T.untilSet(dur(ev.set - now));
     else big = T.sunDown;
   }
+  const up = isToday ? moonAlt(new Date(), p.lat, p.lon) > MOON_H0 : null;
+  // 1. at a glance
+  h += sunArc(sd, isToday);
   if (big) h += `<p class="sun-big">${big}</p>`;
+  h += `<div class="moon-row">${moonIcon(ph.phase, 44, south)}<div><b>${phaseTxt}</b>${up === null ? '' : `<span>${up ? T.moonUp : T.moonDown}</span>`}</div></div>`;
+  // 2. details
   const dirOf = az => az === null ? '' : ` · ${T.cDirs[Math.round(az / 45) % 8]} ${Math.round(az)}°`;
   const rows = [];
   if (ev.rise) rows.push([T.sunrise, hm(ev.rise) + dirOf(sd.rAz)]);
@@ -1561,9 +1685,19 @@ function sunHtml(){
   if (!ev.rise && ev.dawn && ev.dusk) rows.push([T.twilight, hm(ev.dawn) + '–' + hm(ev.dusk)]);
   else if (ev.dusk) rows.push([T.dusk, hm(ev.dusk)]);
   if (ev.ge && ev.set) rows.push([T.golden, hm(ev.ge) + '–' + hm(ev.set)]);
-  if (rows.length) h += `<ul class="food-out">${rows.map(r => `<li><span>${r[0]}</span><span class="q sm">${r[1]}</span></li>`).join('')}</ul>`;
-  h += `<p class="calc-basis">${T.posFrom(coord, when)}</p><div class="row-btns"><button class="btn" data-act="getPos">${posBusy ? T.posWait : T.updPos}</button></div>`;
+  const list = rr => `<ul class="food-out">${rr.map(r => `<li><span>${r[0]}</span><span class="q sm">${r[1]}</span></li>`).join('')}</ul>`;
+  h += `<h3 class="grp">${T.sunTitle}</h3>${list(rows)}`;
+  h += `<h3 class="grp">${T.moonTitle}</h3>${list([[T.phaseLbl, T.phases[pi]], [T.litLbl, Math.round(ph.fraction * 100) + ' %'], [T.moonrise, md.rise ? hm(md.rise) : T.noneToday], [T.moonset, md.set ? hm(md.set) : T.noneToday]])}`;
+  // 3. settings
+  const pt = new Date(p.t), dec = x => x.toFixed(2).replace('.', state.lang === 'no' ? ',' : '.');
+  const coord = `${dec(Math.abs(p.lat))}° ${p.lat >= 0 ? 'N' : 'S'}, ${dec(Math.abs(p.lon))}° ${p.lon >= 0 ? (state.lang === 'no' ? 'Ø' : 'E') : (state.lang === 'no' ? 'V' : 'W')}`;
+  const when = pt.toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short'}) + ' ' + hm(pt);
+  h += `<h3 class="grp">${T.dateAndPos}</h3>
+    <div class="calc"><label class="cfield"><span>${T.date}</span><input type="date" data-sundate value="${date}"></label>
+      <div class="cfield"><span>${T.posLbl}</span><button class="btn" data-act="getPos">${posBusy ? T.posWait : T.updPos}</button></div></div>
+    <p class="calc-basis">${T.posFrom(coord, when)}</p>`;
   if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
+  // 4. note
   h += `<p class="calc-basis">${T.sunCaveat}</p></section>`;
   return h;
 }
@@ -1575,11 +1709,48 @@ function getPos(){
     posBusy = false; state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now()}; save(); if (tab === 'compass') renderCompass();
   }, () => { posBusy = false; posMsg = T.posErr; if (tab === 'compass') renderCompass(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:600000});
 }
+const NO_POLY = [[4.6,58.0],[7.0,57.8],[8.6,57.9],[11.0,58.9],[12.2,60.1],[12.6,61.0],[12.3,62.3],[12.1,63.6],[14.1,64.5],[14.5,65.8],[15.9,66.9],[16.4,67.9],[18.0,68.5],[20.0,69.0],[21.0,69.2],[22.4,68.7],[24.9,68.6],[26.0,69.7],[28.0,69.9],[28.9,69.0],[29.4,69.0],[30.9,69.6],[31.2,70.3],[28.3,71.2],[23.5,71.1],[18.0,70.3],[15.5,69.6],[12.0,68.6],[11.2,67.4],[10.8,66.0],[9.2,64.3],[7.2,63.3],[4.4,62.0],[4.4,61.0]];
+function inPoly(x, y, poly){
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++){
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+function region(p){
+  if (!p) return null;
+  const {lat, lon} = p;
+  if (lat > 74 && lat < 81.5 && lon > 9 && lon < 35) return 'no';
+  if (inPoly(lon, lat, NO_POLY)) return 'no';
+  if (lat > 55 && lat < 69.1 && lon > 10.9 && lon < 24.2) return 'se';
+  if (lat > 63 && lat < 67 && lon > -25 && lon < -13) return 'is';
+  if (lat > 34 && lat < 72 && lon > -25 && lon < 45) return 'eu';
+  if (lat > 51 && lat < 72 && lon > -170 && lon < -141) return 'us';
+  if (lat > 49 && lat < 84 && lon > -141 && lon < -52) return 'ca';
+  if (lat > 24 && lat < 49.5 && lon > -125 && lon < -66) return 'us';
+  return 'other';
+}
+const AVALANCHE = {
+  no:[['https://www.varsom.no', 'varsom.no']], se:[['https://lavinprognoser.se', 'lavinprognoser.se']], is:[['https://en.vedur.is/avalanches', 'vedur.is']],
+  eu:[['https://www.avalanches.org', 'avalanches.org']], us:[['https://avalanche.org', 'avalanche.org']], ca:[['https://avalanche.ca', 'avalanche.ca']],
+  other:[['https://www.avalanches.org', 'avalanches.org'], ['https://avalanche.org', 'avalanche.org']]
+};
 function linksHtml(){
-  const T = t();
-  return `<section class="manual"><h2>${T.linksTitle}</h2>
-    <div class="links"><a class="btn" href="https://www.yr.no" target="_blank" rel="noopener">${T.yrLink}</a><a class="btn" href="https://www.varsom.no" target="_blank" rel="noopener">${T.varsomLink}</a></div>
-    <p class="calc-basis">${T.linksNote}</p></section>`;
+  const T = t(), rg = region(state.pos), a = (u, label) => `<a class="btn" data-nav href="${u}" target="_blank" rel="noopener">${label}</a>`;
+  let h = `<section class="manual"><h2>${T.linksTitle}</h2><div class="links">`;
+  h += rg === 'no' ? a('https://www.yr.no', T.yrLink) : a('https://www.yr.no/en', T.yrLink);
+  if (rg === 'no') h += a('https://www.varsom.no', T.varsomLink);
+  else if (rg) AVALANCHE[rg].forEach(x => { h += a(x[0], `${x[1]}: ${T.avalancheWord}`); });
+  (state.links || []).forEach((l, n) => {
+    h += `<div class="own-link">${a(l.u, esc(l.n))}${state.field ? '' : `<button class="icon del" data-act="delLink" data-n="${n}" aria-label="${esc(T.deleteX(l.n))}">${CROSS}</button>`}</div>`;
+  });
+  h += '</div>';
+  if (!rg) h += `<p class="calc-basis">${T.linksNoPos}</p>`;
+  else if (rg === 'other') h += `<p class="calc-basis">${T.avalancheLocal}</p>`;
+  if (!state.field) h += `<div class="row-btns"><button class="btn" data-act="addLink">${T.addLink}</button></div>`;
+  h += `<p class="calc-basis">${T.linksNote}</p></section>`;
+  return h;
 }
 main.addEventListener('change', e => {
   if (e.target.matches && e.target.matches('[data-sundate]')){ sunDate = e.target.value || null; renderCompass(); }
@@ -1594,7 +1765,7 @@ function renderWater(){
     $('listName').textContent = T.water;
   document.title = T.water + ' · ' + T.app;
   const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
-  let html = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.waterSub}</p>
     <div class="modes"><div class="chips">
       <button class="chip" data-calcmode="mix" aria-pressed="${c.mode === 'mix'}">${T.findMix}</button>
@@ -1656,7 +1827,7 @@ function renderFuel(){
   const field = (k, label, v, extra) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt2(v).replace(/\s/g,''))}">${extra || ''}</label>`;
   const custom = typeof f.perLc[f.fuel] === 'number';
   const day = f.mode === 'day';
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabPlan}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
     <p class="tool-sub">${T.fuelSub}</p>
     <section class="sum-card" id="fuelOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
@@ -1733,7 +1904,7 @@ function renderSun(){
   const T = t();
     $('listName').textContent = T.sunTool;
   document.title = T.sunTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.sunSub}</p>
     <p class="key-rule">${T.sunKey}</p>
     <section class="manual guide">${T.sun.map((x, i) => `<details><summary>${x[0]}</summary>${i === 1 ? lensChart(T) : ''}${x[1]}</details>`).join('')}</section>`;
@@ -1748,7 +1919,7 @@ function renderKnots(){
   const T = t();
     $('listName').textContent = T.knotTool;
   document.title = T.knotTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
     <p class="tool-sub">${T.knotSub}</p>
     <p class="calc-warn">${T.knotWarn}</p>
     ${T.knots.map((k, n) => `<details class="knot"><summary>${KNOT_FILES[n] ? (/\.svg$/.test(KNOT_FILES[n]) ? `<div class="knot-img" data-knotsrc="${KNOT_FILES[n]}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${KNOT_FILES[n]}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`) : ''}<b>${k.n}</b><span>${k.u}</span></summary>
@@ -1776,7 +1947,7 @@ function renderFood(){
   document.title = T.foodTool + ' · ' + T.app;
   const inp = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
   const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}</span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
-  main.innerHTML = `<button class="back" data-act="back">${CHEV_L}${T.tabPlan}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
     <p class="tool-sub">${T.foodSub}</p>
     <section class="sum-card">
       <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
@@ -1983,7 +2154,7 @@ function backupSheet(){
       let added = 0;
       obj.lists.forEach(l => {
         if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
-        const c = cloneList(l, true); c.tripType = !!l.tripType; state.lists.push(c); added++;
+        const c = cloneList(l, true); c.tripType = !!l.tripType; c.sharedIn = !!l.sharedIn; state.lists.push(c); added++;
       });
       if (!added) throw 0;
       save(); render();
@@ -2042,6 +2213,13 @@ main.addEventListener('click', async e => {
   if (act === 'back'){ goBack(); return; }
   if (act === 'cStart'){ startCompass(); return; }
   if (act === 'getPos'){ getPos(); return; }
+  if (act === 'addLink'){
+    const name = await askText(T.linkName, '', T.add); if (!name) return;
+    const url = await askText(T.linkUrl, 'https://', T.add); if (!url) return;
+    if (!/^https?:\/\/\S+\.\S+/.test(url)){ await confirmBox(T.addLink, T.linkBad, T.ok); return; }
+    state.links = (state.links || []).concat([{n:name, u:url}]); save(); renderCompass(); return;
+  }
+  if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; state.rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
@@ -2114,8 +2292,7 @@ function addItem(catId){
 }
 
 $('hdrLock').onclick = () => { if (!rainLocked && (!state.field || tapOk())) lockRain(); };
-$('listBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
-$('menuBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
+$('listBtn').onclick = () => { if ($('listBtn').classList.contains('plain')) return; selList = null; go('list', 'lists'); };
 $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
@@ -2176,6 +2353,9 @@ function withUndo(msg, fn){
 }
 
 /* ---------- outdoor mode: strict taps, rain lock, wake lock ---------- */
+// Rain lock rule: anything that only changes what you see carries data-nav (fold-out sections count automatically).
+// It works in the navigation window and restarts the timer; anything that changes data stays locked.
+document.addEventListener('click', e => { if (rainLocked && navOpen() && e.target.closest('[data-nav], summary')) extendNav(); }, true);
 const ptrs = new Map();
 let multi = false, lastTap = {ok:true, t:0};
 document.addEventListener('pointerdown', e => {
@@ -2256,7 +2436,13 @@ document.addEventListener('visibilitychange', updateWake);
 render();
 updateWake();
 if (!state.introDone) showIntro(0, checkShared); else checkShared();
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){ window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  // a new version takes over: reload once so it is in use straight away
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloading) return; reloading = true; location.reload(); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(r => r.update()).catch(() => {}); });
+}
 })();
 </script>
 </body>

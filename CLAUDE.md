@@ -28,8 +28,16 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - **Food planner:** meals per person per day with their energy side by side; the gauge at the top shows one full day against zones (`KZONES`: summer red below 2000 kcal, yellow below 3000, green above; winter 2500 / 3500).
 - **Guide drawings:** own drawings (no licence needed) in `guides/`, loaded inline by `loadSvgs()` and coloured with `--sb-*` variables; precached in `sw.js`. The Brennerplate line in the standard list links to the stove board guide.
 - **List lock:** `state.listLock` blocks ticking in both normal and outdoor mode (Lås listen, next to Skjul pakket); other tabs keep working.
+- **Header:** on the packing list, the whole header is one button (`#listBtn`) to Dine lister; on other pages it is a plain title (class `plain`). Long names drop the label, use up to two lines, then end with "…". In outdoor mode, a labelled Regnlås button (`#hdrLock`) sits at the right.
+- **Dine lister:** all cards start folded. Lists received through a share link get `sharedIn: true` and are shown under Delte lister; Dupliser makes an own list.
+- **Sky (Kompass):** sun arc and moon at a glance, then Sol and Måne details, then date and position. Moon phase, rise and set use standard low-precision formulas (`moonEq`, `moonIllum`, `moonDay`), offline.
+- **Weather and warnings:** chosen from the saved position (`region()`, `NO_POLY`, `AVALANCHE`), plus the user's own links in `state.links`. Check the addresses now and then.
+- **Updates:** `sw.js` fetches pages with `cache:'no-cache'`, registration uses `updateViaCache:'none'`, and the page reloads once when a new version takes over.
 - **Sun times:** calculated offline (`sunPos`, `sunDay`) from `state.pos` (GPS) and the date.
 - **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
+
+## Standing rule: rain lock and navigation
+Anything that only changes what you see (changing page, back, opening bags and guides, fold-out sections, folding list categories, the Turtype panel, the list button in the header, links that leave the app) carries the attribute `data-nav`; `<summary>` elements count automatically. In the rain lock these work during the navigation window and restart its 3 seconds. Anything that changes data (ticks, switches, typing, editing lists) never gets `data-nav` and stays locked. Every new feature must follow this.
 
 ## Standing rules
 1. Every change to `index.html` must also raise the `CACHE` version in `sw.js` and `APP_VERSION` in `index.html` to the same value (shown under Hjelp on the lists page) (e.g. `varde-v1` → `varde-v2`), so installed apps fetch the update.
