@@ -184,10 +184,21 @@ body.notlist .list-switch svg{display:none}
 .toast[hidden]{display:none}
 .toast span{flex:1}
 .toast button{border:0;border-radius:8px;padding:10px 14px;background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer}
-.rainlock{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:2px solid var(--red);pointer-events:auto}
+.rainlock{position:fixed;left:0;right:0;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:25;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px 16px 12px;background:var(--surface);border-top:2px solid var(--red);pointer-events:auto}
+.lock-btns{display:flex;gap:10px;max-width:520px;width:100%;margin:0 auto}
+.lock-btns .unlock{flex:1;padding:14px 10px}
+.unlock small{display:block;font-weight:400;font-size:.8rem;opacity:.8}
+.nav-time{height:4px;border-radius:2px;background:var(--line);overflow:hidden;max-width:520px;width:100%;margin:0 auto}
+.nav-time i{display:block;height:100%;background:var(--red);width:0}
+.hdr-lock{flex:none;width:44px;height:44px;border:0;background:none;border-radius:10px;color:inherit;font-size:1.25rem;cursor:pointer;display:none}
+body.field .hdr-lock{display:grid;place-items:center}
+body.locked .hdr-lock{opacity:1}
 .lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
 body.locked main,body.locked main *,body.locked header.top button,body.locked .toolbar{pointer-events:none}
-body.locked .tabbar{visibility:hidden}
+body.locked .tabbar{pointer-events:none}
+body.locked .tabbar button{opacity:.4}
+body.locked.navopen .tabbar,body.locked.navopen main .back,body.locked.navopen main [data-act="openBag"],body.locked.navopen main [data-open],body.locked.navopen main [data-act="openGuide"],body.locked.navopen main summary{pointer-events:auto}
+body.locked.navopen .tabbar button{opacity:1}
 .rainlock[hidden]{display:none}
 .unlock{position:relative;overflow:hidden;width:100%;max-width:420px;padding:20px;border-radius:16px;border:2px solid var(--red);background:var(--surface);color:var(--ink);font-weight:600;font-size:1.05rem;cursor:pointer;user-select:none;-webkit-user-select:none}
 .unlock .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);opacity:.25}
@@ -373,6 +384,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
         <h1 id="listName">Trip</h1>
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+      <button class="hdr-lock" id="hdrLock" aria-label="Rain lock">🔒</button>
       <button class="menu-btn" id="menuBtn" aria-label="Lists and options">
         <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
       </button>
@@ -470,7 +482,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
-    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: you can scroll and read, but nothing reacts to taps.',
+    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
@@ -479,7 +491,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so <b>Night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> blocks taps but lets you scroll and read, until you hold the unlock button, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> blocks every change in the app while you can still scroll and read; hold <b>Navigate</b> to move between pages for a few seconds, and hold <b>Unlock</b> to switch it off, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -635,7 +647,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
-    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: du kan rulle og lese, men ingenting reagerer på trykk.',
+    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
@@ -644,7 +656,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>Nattlys</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> blokkerer trykk, men lar deg rulle og lese, til du holder inne opplåsingsknappen, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> stopper alle endringer i appen mens du fortsatt kan rulle og lese; hold <b>Naviger</b> for å bytte side i noen sekunder, og hold <b>Lås opp</b> for å slå den av, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -1039,8 +1051,10 @@ function render(){
   $('listBtn').setAttribute('aria-label', T.switchList);
   $('rainlock').hidden = !rainLocked;
   document.body.classList.toggle('locked', rainLocked);
+  document.body.classList.toggle('navopen', rainLocked && navOpen());
+  $('hdrLock').setAttribute('aria-label', T.lockScreen);
   if (rainLocked) renderLock();
-  requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + 24) + 'px' : ''; });
+  requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
   if (tab !== 'compass') stopCompass();
   if (tab === 'compass') return renderCompass();
   if (tab !== 'list'){
@@ -2027,7 +2041,7 @@ main.addEventListener('click', async e => {
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
-  if (act === 'rainLock'){ rainLocked = true; history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); render(); return; }
+  if (act === 'rainLock'){ lockRain(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
@@ -2095,6 +2109,7 @@ function addItem(catId){
   if (again) again.focus();
 }
 
+$('hdrLock').onclick = () => { if (!rainLocked && (!state.field || tapOk())) lockRain(); };
 $('listBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
 $('menuBtn').onclick = () => { if (!(tab === 'list' && view === 'lists')) go('list', 'lists'); };
 $('tabbar').addEventListener('click', e => {
@@ -2107,6 +2122,7 @@ $('tabbar').addEventListener('click', e => {
 
 /* ---------- navigation history (Android back button) ---------- */
 function go(newTab, newView){
+  if (rainLocked) extendNav();
   tab = newTab; view = newView;
   const st = history.state || {};
   const depth = (st.depth || 0) + 1;
@@ -2128,7 +2144,8 @@ window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
-  if (rainLocked){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
+  if (rainLocked && !navOpen()){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
+  if (rainLocked) extendNav();
   const st = e.state || {tab:'list', view:null};
   tab = st.tab || 'list'; view = st.view || null;
   render(); top();
@@ -2173,21 +2190,24 @@ document.addEventListener('pointerup', e => {
 document.addEventListener('pointercancel', e => { ptrs.delete(e.pointerId); lastTap = {ok:false, t:Date.now()}; }, true);
 function tapOk(){ return Date.now() - lastTap.t > 800 || lastTap.ok; }
 
-function renderLock(){
-  $('rainlock').innerHTML = `<p class="lock-note">${t().lockNote}</p><button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${t().holdUnlock}</span></button>`;
-  const btn = $('unlockBtn');
-  let timer = null;
-  let holding = false;
-  const unlock = () => {
-    rainLocked = false;
-    if (history.state && history.state.lock){ ignorePop = true; history.back(); }
-    render();
-  };
+let navUntil = 0, navTimer = null;
+const NAV_MS = 3000;
+function navOpen(){ return Date.now() < navUntil; }
+function lockRain(){ if (!state.field) return; rainLocked = true; navUntil = 0; render(); }
+function openNav(){
+  navUntil = Date.now() + NAV_MS;
+  clearTimeout(navTimer);
+  navTimer = setTimeout(() => { navUntil = 0; if (rainLocked) render(); }, NAV_MS + 30);
+  render();
+}
+function extendNav(){ if (navOpen()) openNav(); }
+function holdButton(btn, ms, fn){
+  let timer = null, holding = false;
   const start = e => {
     if (e.cancelable) e.preventDefault();
     if (holding) return;
     holding = true; btn.classList.add('holding');
-    timer = setTimeout(() => { holding = false; unlock(); }, 1000);
+    timer = setTimeout(() => { holding = false; btn.classList.remove('holding'); fn(); }, ms);
   };
   const stop = () => { holding = false; btn.classList.remove('holding'); clearTimeout(timer); };
   btn.addEventListener('touchstart', start, {passive:false});
@@ -2197,6 +2217,22 @@ function renderLock(){
   btn.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') stop(); });
   btn.addEventListener('pointercancel', e => { if (e.pointerType !== 'touch') stop(); });
   btn.addEventListener('contextmenu', e => e.preventDefault());
+}
+function renderLock(){
+  const T = t(), open = navOpen(), left = Math.max(0, navUntil - Date.now());
+  $('rainlock').innerHTML = `<p class="lock-note">${open ? T.navOpenNote : T.lockNote}</p>
+    <div class="nav-time"><i id="navTime"></i></div>
+    <div class="lock-btns">
+      <button class="unlock" id="navBtn"><span class="fill"></span><span>${T.navHold}<small>${T.holdShort}</small></span></button>
+      <button class="unlock" id="unlockBtn"><span class="fill"></span><span>🔒 ${T.unlockTxt}<small>${T.holdLong}</small></span></button>
+    </div>`;
+  const bar = $('navTime');
+  if (open){
+    bar.style.width = (left / NAV_MS * 100) + '%';
+    requestAnimationFrame(() => { bar.style.transition = `width ${left}ms linear`; bar.style.width = '0'; });
+  }
+  holdButton($('navBtn'), 1000, openNav);
+  holdButton($('unlockBtn'), 1000, () => { rainLocked = false; navUntil = 0; clearTimeout(navTimer); render(); });
 }
 let wakeLock = null;
 async function updateWake(){
