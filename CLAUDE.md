@@ -36,13 +36,14 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - **Text guides:** plain text guides (Skalltøy, Fjellsko with Skistøvler, Telt, Tarp, Bål, Topptur og skred) live in `GUIDE_TXT` (`no` and `en`, each `{title, short, sub, secs}`; a section can carry a third value as its id) and are drawn by `renderTextGuide()`. Kept in their own object, not in `UI`, so their keys cannot clash with interface text. A new text guide only needs an entry in both languages and a place in `GUIDE_GROUPS`.
 - **Guide groups:** `GUIDE_GROUPS` sets the order and group of every guide on the Guider page. Order (from varde-v21): Ferdigheter i felt first (what you look for in a hurry), then Vær og sikkerhet, and Utstyr og vedlikehold last (what you check back home). Each group has a colour (`--gc`: `--lichen`, `--red`, `--gsafe`) shown as a stripe and a group heading, never colour alone.
 - **Guide links:** `GUIDE_LINKS` maps standard list item ids to a guide (`'boots#ski'` opens that section). Links appear only on the standard list, as part of the app's basics; own lists get none. Changing the Norwegian text of a linked template line changes its id, so update the map at the same time.
-- **List lock:** `state.listLock` blocks ticking in both normal and outdoor mode (Lås listen, next to Skjul pakket); other tabs keep working.
+- **List lock:** `state.listLock` blocks ticking, switching trip types and the light day-hike view of bags (from varde-v23), in both normal and outdoor mode (Lås listen, next to Skjul pakket). The Turtype panel still opens (navigation) and shows a locked hint, with the chips dimmed (class `lk`). Other tabs keep working.
 - **Header:** on the packing list, the whole header is one button (`#listBtn`) to Dine lister; on other pages it is a plain title (class `plain`). Long names drop the label, use up to two lines, then end with "…". In outdoor mode, a labelled Regnlås button (`#hdrLock`) sits at the right.
 - **Dine lister:** all cards start folded. Lists received through a share link get `sharedIn: true` and are shown under Delte lister; Dupliser makes an own list.
 - **Sky (Kompass):** sun arc and moon at a glance, then Sol and Måne details, then date and position. Moon phase, rise and set use standard low-precision formulas (`moonEq`, `moonIllum`, `moonDay`), offline.
 - **Weather and warnings:** chosen from the saved position (`region()`, `NO_POLY`, `AVALANCHE`), plus the user's own links in `state.links`. Check the addresses now and then.
 - **Updates:** `sw.js` fetches pages with `cache:'no-cache'`, registration uses `updateViaCache:'none'`, and the page reloads once when a new version takes over.
 - **Sun times:** calculated offline (`sunPos`, `sunDay`) from `state.pos` (GPS) and the date.
+- **Sun and moon on the compass rose (from varde-v23):** two chips under Hold retningen switch them, both on by default (`state.skyNow`, `state.skyRiseSet`, read through `skyOn()`). Sol og måne nå: the sun with rays and the moon in its phase (`skyNowMarks`, `moonAzAlt`, `moonGlyph`), faded below the horizon, redrawn every minute. Soloppgang og solnedgang: a half sun on a horizon with an arrow up or down, plus a short line at the rim for the exact direction (`sunMarks`, `riseSetMark`), for the chosen date. Sun symbols use `--sun` (amber; red in Nattlys), never the north red. Symbols carry the class `upr` and are turned back by `uprightMarks()` so they stay upright as the dial turns. The chips are switches, so they stay locked in Regnlås.
 - **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
 
 ## Standing rule: rain lock and navigation
@@ -59,8 +60,9 @@ Anything that only changes what you see (changing page, back, opening bags and g
 8. Keep commit summaries under 50 characters; put details in the extended description.
 
 ## Workflow
-- Most changes are prepared in a Claude chat and uploaded as whole files through the GitHub web interface.
-- Claude Code is used for smaller edits, checks and documentation.
+- Most changes are prepared in a Claude chat and uploaded as whole files through the GitHub web interface (the default when whole files were built and tested in the chat).
+- Claude Code is used only for smaller edits made directly in the repository, checks and documentation, where nothing needs to be handed over from a chat.
+- Every update ends with a check: manual upload or Claude Code. If Claude Code, say why it is better this time and give the message to paste; otherwise list the files to upload with the commit summary and description.
 - Whoever changes `index.html` must raise the `CACHE` version in `sw.js` in the same commit.
 
 ## Lessons learned

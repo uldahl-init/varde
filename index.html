@@ -91,6 +91,7 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.lk{opacity:.55}
 .link-btn{flex:none;display:flex;align-items:center;gap:2px;margin-right:8px;padding:6px 8px 6px 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--bg);font-size:.9rem;font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer}
 .link-btn.complete{border-color:var(--red);color:var(--red)}
 .link-btn svg,.back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
@@ -179,6 +180,8 @@ body.notlist .list-switch svg{display:none}
 .notes-ix .note-date{margin:4px 0 0;font-size:.8rem}
 .notes-ix .ix-t{font-size:1.15rem}
 .note-area{min-height:40vh}
+#noteTitle,#noteText{display:block}
+#noteTitle{margin-bottom:12px;font-weight:600}
 .w-list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 .w-list li{display:flex;align-items:center;gap:10px;padding:6px 10px 6px 14px;border-top:1px solid var(--line)}
 .w-list li:first-child{border-top:0}
@@ -384,9 +387,18 @@ body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-
 .moon-row b{display:block}
 .moon-row span{color:var(--muted);font-size:.9rem}
 .moon-ic{flex:none}
-:root{--moon:#E3D08A}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--moon:#E8DFC2}}
-body.night{--moon:#ff4a3d}
+:root{--moon:#E3D08A;--sun:#C77B0A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--moon:#E8DFC2;--sun:#F2B84B}}
+:root[data-theme="dark"]{--moon:#E8DFC2;--sun:#F2B84B}
+body.night{--moon:#ff4a3d;--sun:#ff4a3d}
+.c-sky{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.c-sky .chip{display:inline-flex;align-items:center;gap:8px;padding:12px 16px}
+.c-sky .chip svg{width:22px;height:22px;flex:none}
+.c-sky .chip.ico{width:56px;height:56px;padding:0;justify-content:center}
+.c-sky .chip.ico svg{width:30px;height:30px}
+.sky-lbl{display:inline-flex;align-items:center;gap:6px}
+.sky-lbl svg{width:18px;height:18px;flex:none}
+.c-sky-note{color:var(--muted);font-size:.9rem;text-align:center;margin:8px 0 0}
 .own-link{display:flex;align-items:center;gap:4px}
 .own-link .btn{flex:1}
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
@@ -455,7 +467,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v22';
+const APP_VERSION = 'varde-v23';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -483,7 +495,7 @@ const UI = {
       ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
       ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on and editing is locked. Rain lock lets you read without water on the screen ticking anything.'],
-      ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
+      ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Notes, Plan, Guides and Compass are at the bottom.']
     ],
     help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
@@ -496,7 +508,7 @@ const UI = {
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
     dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'The links match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
     addLink:'Add your own link', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
-    editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks cannot be changed.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
+    editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
     useMain:'Use as main list', useMainHint:'Shown on the front page instead of the current main list. One list at a time.', isMainHint:'This is the list on the front page now.', isMainOwnHint:'This list is on the front page now. Switch off to go back to the standard list.',
@@ -525,10 +537,11 @@ const UI = {
     resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
     catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
     tripType:'Trip type', lightDay:'Light day hike',
-appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
+appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
+      ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
     field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
@@ -653,7 +666,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
       ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på og redigering låses. Regnlås lar deg lese uten at vann på skjermen krysser av noe.'],
-      ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
+      ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Notater, Planlegg, Guider og Kompass finner du nederst.']
     ],
     help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
@@ -666,7 +679,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
     dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'Lenkene tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
     addLink:'Legg til egen lenke', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
-    editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger kan ikke endres.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
+    editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
     useMain:'Bruk som hovedliste', useMainHint:'Vises på forsiden i stedet for nåværende hovedliste. Én liste om gangen.', isMainHint:'Dette er listen som vises på forsiden nå.', isMainOwnHint:'Denne listen vises på forsiden nå. Slå av for å gå tilbake til standardlisten.',
@@ -695,10 +708,11 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
     catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
     tripType:'Turtype', lightDay:'Lett dagstur',
-appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
+appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
+      ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
     field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
@@ -1166,7 +1180,7 @@ function render(){
   } else if (bag){
     html += `<button class="back" data-nav data-act="back">${CHEV_L}${esc(l.name)}</button>`;
     html += '<div class="toolbar">';
-    if (hasLight(bag)) html += `<button class="chip" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
+    if (hasLight(bag)) html += `<button class="chip${state.listLock ? ' lk' : ''}" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
     html += `<button class="chip" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
   } else {
     html += `<button class="field-btn${state.field ? ' on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${ICON_FIELD}<span>${T.field}</span><small>${state.field ? T.fieldOn : T.fieldOff}</small></button>`;
@@ -1182,8 +1196,8 @@ function render(){
       const on = keys.filter(k => l.modes && l.modes[k]).map(modeName);
       html += `<button class="modes-toggle" data-nav data-act="modesToggle" aria-expanded="${modesOpen}"><span>${T.tripType}:</span><span class="mt-val">${on.length ? esc(on.join(', ')) : '–'}</span>${CHEV}</button>`;
       if (modesOpen){
-        html += `<div class="modes-open"><p class="mode-hint">${T.tripHint}</p><div class="chips">` +
-          keys.map(k => `<button class="chip${k.indexOf('L:') === 0 ? ' own' : ''}" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
+        html += `<div class="modes-open"><p class="mode-hint">${state.listLock ? T.tripLocked : T.tripHint}</p><div class="chips">` +
+          keys.map(k => `<button class="chip${k.indexOf('L:') === 0 ? ' own' : ''}${state.listLock ? ' lk' : ''}" data-mode="${k}" aria-pressed="${!!(l.modes && l.modes[k])}">${esc(modeName(k))}</button>`).join('') +
           '</div></div>';
       }
     }
@@ -1491,6 +1505,7 @@ function renderPhone(){
     <section class="manual guide">${T.phone.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
 }
 /* ---------- compass ---------- */
+let skyTimer = null;
 let cOn = false, cHeld = false, cGot = false, cVec = null, cHeading = null, cUpright = false, cRaf = null, cTimer = null;
 function renderCompass(){
   const T = t();
@@ -1507,7 +1522,7 @@ function renderCompass(){
   main.innerHTML = `<div class="compass">
       <svg class="rose" viewBox="0 0 320 320" aria-hidden="true">
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
-        <g class="dial" id="dial">${ticks}${labels}${sunMarks()}</g>
+        <g class="dial" id="dial">${ticks}${labels}${sunMarks()}<g id="skyNow">${skyNowMarks()}</g></g>
         <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
         <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
         <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
@@ -1516,11 +1531,18 @@ function renderCompass(){
       <div class="c-btns">${cOn
         ? `<button class="chip" data-act="cHold" aria-pressed="${cHeld}">${cHeld ? T.cRelease : T.cHold}</button>`
         : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
+      <div class="c-sky">
+        <button class="chip ico" data-act="cSkyNow" aria-pressed="${skyOn('now')}" aria-label="${T.cSkyNow}" title="${T.cSkyNow}">${ICO_SKYNOW}</button>
+        <button class="chip ico" data-act="cRiseSet" aria-pressed="${skyOn('rs')}" aria-label="${T.cRiseSet}" title="${T.cRiseSet}">${ICO_RISESET}</button>
+      </div>
+      ${!state.pos && (skyOn('now') || skyOn('rs')) ? `<p class="c-sky-note">${T.cSkyNoPos}</p>` : ''}
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${sunHtml()}${linksHtml()}
     <section class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
   paintCompass();
+  clearInterval(skyTimer);
+  skyTimer = setInterval(() => { const g = $('skyNow'); if (g){ g.innerHTML = skyNowMarks(); uprightMarks(); } else { clearInterval(skyTimer); skyTimer = null; } }, 60000);
 }
 function headingFrom(alpha, beta, gamma){
   const r = Math.PI / 180, cA = Math.cos(alpha * r), sA = Math.sin(alpha * r), cB = Math.cos(beta * r), sB = Math.sin(beta * r), cG = Math.cos(gamma * r), sG = Math.sin(gamma * r);
@@ -1544,10 +1566,15 @@ function onOrient(ev){
   cUpright = h.upright;
   if (!cRaf) cRaf = requestAnimationFrame(() => { cRaf = null; paintCompass(); });
 }
+function uprightMarks(){
+  if (cHeading === null) return;
+  document.querySelectorAll('#dial .upr').forEach(g => g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${cHeading.toFixed(1)})`));
+}
 function paintCompass(){
   const T = t(), dial = $('dial');
   if (!dial || cHeading === null) return;
   dial.setAttribute('transform', `rotate(${-cHeading} 160 160)`);
+  uprightMarks();
   $('cDeg').textContent = Math.round(cHeading) % 360 + '°';
   $('cDir').textContent = T.cDirs[Math.round(cHeading / 45) % 8];
   $('cMode').textContent = cUpright ? T.cUp : T.cFlat;
@@ -1742,12 +1769,50 @@ const hm = d => d ? d.toLocaleTimeString(state.lang === 'no' ? 'nb-NO' : 'en-GB'
 const dur = ms => { const m = Math.max(0, Math.round(ms / 60000)), h = Math.floor(m / 60); return state.lang === 'no' ? `${h} t ${m % 60} min` : `${h} h ${m % 60} min`; };
 const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 function sunData(){ if (!state.pos) return null; return sunDay(sunDate || today(), state.pos.lat, state.pos.lon); }
+/* ---------- sun and moon on the compass rose ----------
+   Rise and set: a half sun on a short horizon with an arrow (up = rise, down = set) inside the letter ring,
+   and a short line at the rim for the exact direction. Now: the sun with rays and the moon in its phase,
+   nearer the centre; faded when below the horizon. Both switched on by default (state.skyNow, state.skyRiseSet). */
+const skyOn = k => (k === 'now' ? state.skyNow : state.skyRiseSet) !== false;
+const riseSetIco = arrows => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="var(--sun)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M7 20a5 5 0 0 1 10 0${arrows}"/></svg>`;
+const ICO_RISE = riseSetIco('M12 4v8M9 7l3-3 3 3'), ICO_SET = riseSetIco('M12 4v8M9 9l3 3 3-3');
+const ICO_RISESET = riseSetIco('M7 4v8M4.5 6.5 7 4l2.5 2.5M17 4v8M14.5 9.5 17 12l2.5-2.5');
+const ICO_SKYNOW = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="3.6" fill="var(--sun)"/><path d="M9 4.5v2M9 17.5v2M1.5 12h2M3.7 6.7l1.4 1.4M3.7 17.3l1.4-1.4" stroke="var(--sun)" stroke-width="1.8" stroke-linecap="round"/><path d="M20.5 15.5a5 5 0 1 1-3.2-8.9 4 4 0 0 0 3.2 8.9z" fill="var(--moon,#E8D9A0)" stroke="var(--line-strong)" stroke-width="1"/></svg>`;
+// Symbols sit at their direction but stay upright as the dial turns (class "upr", turned back in paintCompass).
+const rosePt = (az, r) => [160 + r * Math.sin(az * RAD), 160 - r * Math.cos(az * RAD)];
+const upr = (az, r, inner) => { const q = rosePt(az, r); return `<g class="upr" data-x="${q[0].toFixed(1)}" data-y="${q[1].toFixed(1)}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)})${cHeading === null ? '' : ` rotate(${cHeading.toFixed(1)})`}">${inner}</g>`; };
+function riseSetMark(az, up){
+  if (az === null) return '';
+  const arrow = up ? 'M0 -1V-13M-4.5 -8.5 0 -13l4.5 4.5' : 'M0 -13V-1M-4.5 -5.5 0 -1l4.5-4.5';
+  return `<g stroke="var(--sun)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="160" y1="11" x2="160" y2="29" stroke-width="4" transform="rotate(${az.toFixed(1)} 160 160)"/>
+    ${upr(az, 80, `<path d="M-11 9h22M-6.5 9a6.5 6.5 0 0 1 13 0" stroke-width="2.4"/><path d="${arrow}" stroke-width="2.4"/>`)}</g>`;
+}
 function sunMarks(){
+  if (!skyOn('rs')) return '';
   const sd = sunData(); if (!sd) return '';
-  const T = t(), mk = (az, lbl) => az === null ? '' :
-    `<g transform="rotate(${az} 160 160)"><circle cx="160" cy="44" r="9" fill="none" stroke="var(--red)" stroke-width="2"/><path d="M160 32v-5M160 61v-5" stroke="var(--red)" stroke-width="2"/></g>
-     <text x="${160 + 92 * Math.sin(az * Math.PI / 180)}" y="${164 - 92 * Math.cos(az * Math.PI / 180)}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--red)">${lbl}</text>`;
-  return mk(sd.rAz, '↑') + mk(sd.sAz, '↓');
+  return riseSetMark(sd.rAz, true) + riseSetMark(sd.sAz, false);
+}
+function moonAzAlt(date, lat, lon){
+  const d = toDays(date), c = moonEq(d), phi = RAD * lat;
+  const H = RAD * (280.16 + 360.9856235 * d) + RAD * lon - c.ra;
+  const alt = Math.asin(Math.sin(phi) * Math.sin(c.dec) + Math.cos(phi) * Math.cos(c.dec) * Math.cos(H)) / RAD;
+  const az = Math.atan2(-Math.sin(H), Math.tan(c.dec) * Math.cos(phi) - Math.sin(phi) * Math.cos(H)) / RAD;
+  return {az: (az + 360) % 360, alt};
+}
+function moonGlyph(phase, cx, cy, r, south){
+  const s = Math.cos(2 * Math.PI * phase), waxing = (phase < 0.5) !== !!south, n = 16, pts = [];
+  for (let i = 0; i <= n; i++){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([cx + (waxing ? w : -w), cy + y]); }
+  for (let i = n; i >= 0; i--){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([cx + (waxing ? s * w : -s * w), cy + y]); }
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--line)"/><polygon points="${pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ')}" fill="var(--moon,#E8D9A0)"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--muted)" stroke-width="1.4"/>`;
+}
+function skyNowMarks(){
+  if (!skyOn('now') || !state.pos) return '';
+  const now = new Date(), p = state.pos, s = sunPos(now, p.lat, p.lon), m = moonAzAlt(now, p.lat, p.lon);
+  const rays = [0,45,90,135,180,225,270,315].map(a => `<line x1="0" y1="-9.5" x2="0" y2="-12.5" transform="rotate(${a})"/>`).join('');
+  const sun = `<g opacity="${s.el > -0.833 ? 1 : .35}">${upr(s.az, 48, `<circle r="6.5" fill="var(--sun)"/><g stroke="var(--sun)" stroke-width="2" stroke-linecap="round">${rays}</g>`)}</g>`;
+  const moon = `<g opacity="${m.alt > MOON_H0 ? 1 : .4}">${upr(m.az, 24, moonGlyph(moonIllum(now).phase, 0, 0, 7.5, p.lat < 0))}</g>`;
+  return moon + sun;
 }
 /* ---------- moon (calculated on the phone, standard low-precision formulas) ---------- */
 const RAD = Math.PI / 180, E_OBL = RAD * 23.4397;
@@ -1860,8 +1925,8 @@ function sunHtml(){
   // 2. details
   const dirOf = az => az === null ? '' : ` · ${T.cDirs[Math.round(az / 45) % 8]} ${Math.round(az)}°`;
   const rows = [];
-  if (ev.rise) rows.push([T.sunrise, hm(ev.rise) + dirOf(sd.rAz)]);
-  if (ev.set) rows.push([T.sunset, hm(ev.set) + dirOf(sd.sAz)]);
+  if (ev.rise) rows.push([`<span class="sky-lbl">${ICO_RISE}${T.sunrise}</span>`, hm(ev.rise) + dirOf(sd.rAz)]);
+  if (ev.set) rows.push([`<span class="sky-lbl">${ICO_SET}${T.sunset}</span>`, hm(ev.set) + dirOf(sd.sAz)]);
   if (ev.rise && ev.set && ev.set > ev.rise) rows.push([T.daylight, dur(ev.set - ev.rise)]);
   if (!ev.rise && ev.dawn && ev.dusk) rows.push([T.twilight, hm(ev.dawn) + '–' + hm(ev.dusk)]);
   else if (ev.dusk) rows.push([T.dusk, hm(ev.dusk)]);
@@ -2493,6 +2558,7 @@ main.addEventListener('click', async e => {
   if (cm){ state.calc.mode = cm.dataset.calcmode; save(); render(); return; }
   const chip = e.target.closest('[data-mode]');
   if (chip){
+    if (state.listLock){ showToast(t().lockedMsg); return; }
     const l = cur(); l.modes = l.modes || {};
     l.modes[chip.dataset.mode] = !l.modes[chip.dataset.mode];
     save(); render(); return;
@@ -2536,6 +2602,8 @@ main.addEventListener('click', async e => {
   }
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
+  if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
+  if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
   if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; state.rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
   if (act === 'rainLock'){ lockRain(); return; }
@@ -2566,7 +2634,7 @@ main.addEventListener('click', async e => {
   }
   if (act === 'openNote'){ go('notes', 'note:' + b.dataset.id); return; }
   if (act === 'openGuide'){ guideSec = b.dataset.sec || null; go('guide', 'tool:' + b.dataset.guide); return; }
-  if (act === 'lightToggle'){ const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
+  if (act === 'lightToggle'){ if (state.listLock){ showToast(T.lockedMsg); return; } const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
   const cat = catEl ? findCat(catEl.dataset.cat) : null;
   const itemEl = b.closest('[data-item]');
