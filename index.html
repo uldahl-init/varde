@@ -13,10 +13,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F3532'/%3E%3Cpolygon points='6,56 20,52.5 44,52.5 58,56' fill='%233E5A55'/%3E%3Cpolygon points='50.0,46.6 49.4,48.8 46.0,51.1 39.3,52.4 32.3,52.8 25.4,53.1 18.7,52.4 15.3,50.5 14.7,48.4 15.0,45.7 18.1,42.9 24.7,41.4 31.7,40.9 38.4,40.8 44.8,41.7 48.7,43.9' fill='%23D3DAD6'/%3E%3Cpolygon points='43.9,38.8 42.0,40.4 38.5,41.3 34.6,42.2 29.4,42.4 24.2,41.3 20.3,39.9 17.1,38.2 15.7,36.4 17.7,34.4 21.3,33.2 25.2,32.1 30.3,31.9 35.6,32.8 40.0,34.4 43.0,36.5' fill='%23EEF2EF'/%3E%3Cpolygon points='43.6,27.7 43.6,29.3 41.8,31.0 38.0,32.1 34.0,32.5 30.0,32.9 26.2,32.6 24.0,31.4 23.4,29.9 23.6,27.9 25.4,25.9 29.1,24.6 33.1,24.1 37.1,23.8 40.8,24.4 43.0,25.9' fill='%23C9D1CD'/%3E%3Cpolygon points='39.0,21.8 37.9,23.0 35.7,23.7 33.3,24.3 30.2,24.3 27.2,23.5 25.1,22.4 23.2,21.2 22.3,19.8 23.4,18.3 25.5,17.3 28.0,16.5 31.1,16.4 34.1,17.3 36.3,18.7 38.2,20.1' fill='%23EEF2EF'/%3E%3Cpolygon points='37.9,13.2 37.5,14.3 36.4,15.2 35.0,16.1 33.2,16.7 31.2,16.6 29.6,16.2 28.3,15.6 27.6,14.6 28.1,13.3 29.2,12.2 30.5,11.2 32.3,10.6 34.3,10.5 36.1,11.0 37.4,11.9' fill='%23D3DAD6'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
 <style>
+/* Barlow and Barlow Condensed (SIL Open Font License 1.1, fonts/OFL.txt), bundled so headings look right offline */
+@font-face{font-family:'Barlow';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/barlow-400.woff2) format('woff2')}
+@font-face{font-family:'Barlow';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-600.woff2) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-600.woff2) format('woff2')}
 :root{
   --bg:#E7EBE8; --surface:#F6F8F6; --ink:#1D2B2A; --muted:#5E6B69;
   --line:#D2D9D5; --line-strong:#A9B5B0; --red:#C42127; --lichen:#6F875A;
@@ -48,8 +49,6 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .list-switch{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;cursor:pointer;text-align:left}
 .list-switch h1{margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .list-switch svg{flex:none;width:20px;height:20px;stroke:var(--muted)}
-.menu-btn{flex:none;width:44px;height:44px;border:0;background:none;border-radius:10px;cursor:pointer;display:grid;place-items:center}
-.menu-btn svg{width:24px;height:24px;fill:currentColor}
 .list-switch svg{stroke:currentColor !important;opacity:.7}
 .progress{display:flex;align-items:center;gap:12px;margin-top:6px}
 .bar{flex:1;height:6px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
@@ -86,10 +85,6 @@ body.field main.wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom,0px)
 .item.sub .mark{width:22px;height:22px}
 .item.sub .mark svg{width:15px;height:15px}
 .cat-note{margin:0 2px 6px;color:var(--lichen);font-size:.9rem}
-.notes{margin-top:28px}
-.notes h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem}
-.notes-body{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;line-height:1.55}
-.notes-body.placeholder{color:var(--muted)}
 textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .modes{margin-top:16px}
 .modes-label{display:block;font-size:.9rem;color:var(--muted);font-weight:600;margin:0 0 8px}
@@ -128,9 +123,6 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .food-out li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .food-out li:first-child{border-top:0}
 .food-out .q{font-family:var(--head);font-weight:600;font-size:1.35rem;color:var(--red);white-space:nowrap;font-variant-numeric:tabular-nums}
-.kcal-bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:10px;position:relative}
-.kcal-bar span{display:block;height:100%;background:var(--lichen)}
-.kcal-bar span.low{background:var(--red)}
 .kcal-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:16px}
 .kcal-head .q{font-family:var(--head);font-weight:600;font-size:1.35rem;font-variant-numeric:tabular-nums}
 .energy details{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
@@ -200,6 +192,7 @@ body.notlist .list-switch svg{display:none}
 .w-pi input{width:22px;height:22px;flex:none}
 .w-pi input:disabled + span{color:var(--muted)}
 #panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
+.m-kcal{color:var(--muted);font-weight:600;font-size:.85rem;white-space:nowrap}
 .ix-group{display:flex;align-items:center;gap:8px;margin:22px 0 -6px;font-family:var(--head);font-weight:600;font-size:.95rem;letter-spacing:.02em}
 .ix-group i{width:10px;height:10px;border-radius:50%;background:var(--gc)}
 .ix-group{color:var(--gc)}
@@ -346,7 +339,6 @@ body.listlock .items .mark{opacity:.55}
 .intro-nav .btn{min-height:52px;padding:12px 22px}
 .sun-big{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red);margin:12px 0 6px}
 .food-out .q.sm{font-size:1.1rem;color:var(--ink)}
-.sun-top{max-width:220px}
 .links{display:flex;flex-direction:column;gap:8px}
 .links .btn{display:block;text-align:left;white-space:normal;text-decoration:none;color:var(--ink)}
 .knot-img{--knot-line:var(--ink);--knot-fill:var(--line-strong);--knot-pole:var(--bg);display:flex;justify-content:center;margin:0 0 10px}
@@ -463,7 +455,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v21';
+const APP_VERSION = 'varde-v22';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -486,8 +478,7 @@ const CROSS = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const UI = {
   en: {
     shareText:n=>`Packing list "${n}" from Varde`, shareFallback:'Copy the link and send it to the people you want to share the list with.', copyLink:'Copy link', linkCopied:'Link copied.',
-    shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Shared lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', imported:'List added',
-    introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
+    shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Shared lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
     intro:[
       ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
@@ -495,8 +486,7 @@ const UI = {
       ['Your own lists','Tap ⋯ at the top to make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Notes, Plan, Guides and Compass are at the bottom.']
     ],
-    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', howShort:'A short introduction to the app',
-    sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
+    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
     posNote:'The sun times are calculated on the phone from your position and the date. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
@@ -518,10 +508,9 @@ const UI = {
     empty:'This list is empty. Tap <strong>Edit list</strong> to add categories and items.',
     rename:'Rename', delCat:'Delete category', catPacked:'All packed in this category.', catEmpty:'No items yet.',
     addItemPh:'Add an item', add:'Add', addCat:'Add category', cancel:'Cancel', save:'Save', ok:'OK', close:'Close',
-    yourLists:'Your lists', thisList:'This list', duplicate:'Duplicate', del:'Delete', more:'More', newList:'New list',
-    backup:'Back up or restore', language:'Language', switchList:'Switch list', menu:'Lists and options',
+    yourLists:'Your lists', duplicate:'Duplicate', del:'Delete', more:'More', newList:'New list',
+    backup:'Back up or restore', language:'Language', menu:'Lists and options',
     renameList:'Rename list', copyName:'Name of the copy', copySuffix:' (copy)',
-    keepOne:'Keep at least one list', keepOneMsg:'Create a new list first, then you can delete this one.',
     delList:'Delete this list?', delListMsg:n=>`"${n}" and all its items will be removed from this phone.`, delListOk:'Delete list',
     newListMsg:'Start from the standard list and change it, or start with an empty list.', items:n=>`${n} items`,
     emptyList:'Empty list', emptySub:'Build your own', nameList:'Name your list', myList:'My list', create:'Create list',
@@ -534,7 +523,7 @@ const UI = {
     delCatMsg:(n,c)=>`"${n}" and its ${c} items will be removed.`, newCat:'New category', category:'Category',
     resetQ:'Start over?', resetMsg:n=>`All ticks in "${n}", including the bag lists, will be cleared so the list is ready for the next trip. Your items stay.`,
     resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
-    catNote:'Note', editCatNote:'Category note', notes:'Notes', editNotes:'Edit notes', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
+    catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
     tripType:'Trip type', lightDay:'Light day hike',
 appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
@@ -542,7 +531,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
-    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -552,7 +541,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so <b>Night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. <b>Rain lock</b> blocks every change in the app while you can still scroll and read; hold <b>Navigate</b> to move between pages for a few seconds, and hold <b>Unlock</b> to switch it off, <b>Night light</b> turns the app red to keep your night vision, and <b>Undo</b> reverses the last tick.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything.</p><p><b>Rain lock</b> stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Night light</b> turns the app red so you keep your night vision, and <b>Undo</b> takes back the last tick.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -604,8 +593,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     amountG:'Amount (g)', count:'Number', kcalEach:'kcal each', kcalPer100:'kcal per 100 g',
     defaultNote:'Default values. Check the packets of your own food and change the numbers; the app remembers them.',
     zone_red:'Too little for a full day on the trail.', zone_yellow:'Low, but fine for shorter trips.', zone_green:'Good for a normal day on the trail.',
-    fuelNeed:'Fuel for the trip', snowWater:'Water from snow', meltL:'Drinking water melted from snow (litres per person per day)',
-    snowNote:'Everything you heat starts as snow, which takes about two and a half times the fuel.',
+    fuelNeed:'Fuel for the trip', snowWater:'Water from snow', snowNote:'Everything you heat starts as snow, which takes about two and a half times the fuel.',
     heatPerDay:'What you boil per person per day (litres)', preOvernight:'Overnight trip', preDayTrip:'Day hike', dayL:'Litres boiled on the trip, per person',
     useL:{breakfast:'Breakfast (porridge)', coffee:'Coffee / tea in the morning', thermos:'Thermos for the day', lunch:'Lunch cooked outdoors', dinner:'Dinner (trail meal)', evening:'Evening drink', drink:'Drinking water (boiled)'},
     waterTotal:l=>`In total ${l} l boiled per person per day.`, stoveUse:'Your stove', perL:u=>`Your stove: ${u} per litre boiled`,
@@ -623,15 +611,11 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     fDogDays:(d,n)=>`${d} days × ${n} ${n === 1 ? 'dog' : 'dogs'}`,
     fuelDogL:'Dog: litres of water per day', fuelDogNote:'Water for the dog also comes from snow. Roughly 1 litre a day for a medium-sized dog, more when it works hard.', fuelDogBasis:l=>`Dog: + ${l} l per day from snow.`,
     foodTool:'Food planner', foodShort:'Meals for the trip', foodSub:'Plan the food for the trip: the gauge shows if one day of food gives enough energy, and the list shows what to pack.',
-    oats:'Oats per breakfast (g)', lunchN:'Lunches per day', dinnerN:'Trail meals per day', snacks:'Energy snacks per day', homeBreakfast:'Breakfast at home on day 1', homeDinner:'Home for dinner on the last day', reserve:'Reserve day',
-    fOats:'Oats', fBreakfasts:n=>`for ${n} breakfast${n===1?'':'s'}`, fLunch:'Lunches', fDinner:'Dinners (trail meals)', fSnacks:'Energy snacks',
+    oats:'Oats per breakfast (g)', lunchN:'Lunches per day', dinnerN:'Trail meals per day', snacks:'Energy snacks per day', reserve:'Reserve day',
+    fBreakfasts:n=>`for ${n} breakfast${n===1?'':'s'}`, fLunch:'Lunches', fDinner:'Dinners (trail meals)', fSnacks:'Energy snacks',
     fBasis:(d,p,r)=>`${d} day${d===1?'':'s'}, ${p} ${p===1?'person':'people'}${r?', including 1 reserve day':''}`,
-    kcalTitle:'Energy', season:'Season', summer:'Summer', winter:'Winter', fullDay:'One full trip day',
-    kcalTarget:(a,b)=>`Common guideline for hiking with a pack: about ${a}–${b} kcal per day`,
-    kcalLow:'Below the guideline. Top up with energy-dense food: nuts, cheese, chocolate, and butter or oil in the porridge and dinner.',
-    kcalOk:'Within the guideline.',
-    kcalNote:'The need varies with body weight, pace, terrain, pack weight and cold. A day or two below is normal on short trips, but on longer trips the food should cover the need.',
-    kcalValues:'Energy content (edit to match your food)', kOats:'Oats (kcal per 100 g)', kLunch:'Lunch (kcal)', kDinner:'Trail meal (kcal)', kSnack:'Energy snack (kcal)',
+    season:'Season', summer:'Summer', winter:'Winter', fullDay:'One full trip day',
+    kOats:'Oats (kcal per 100 g)', kLunch:'Lunch (kcal)', kDinner:'Trail meal (kcal)', kSnack:'Energy snack (kcal)',
     packTitle:'Packing food',
     pack:[
       ['Day rations','Pack each day\'s breakfast, lunch and snacks together in one bag, and mark it with the day number. You take one bag per day, it is easy to see that you have enough, and nothing gets eaten too early.'],
@@ -641,13 +625,10 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Less packaging','Remove outer cardboard and extra packaging at home to save weight and rubbish, but keep the cooking instructions for trail meals. Bring a bag for rubbish and carry it home.']
     ],
     fuelTool:'Fuel planner', fuelShort:'How much fuel for the trip', fuelSub:'Built from what you heat in a day. The figures are rules of thumb: adjust them to your own stove and habits.',
-    fuelType:'Fuel', useType:'Use', fGas:'Gas', fPetrol:'Petrol / multifuel', fSpirit:'Methylated spirit',
-    uBoil:'Boiling water only', uCook:'Cooking', uSnow:'Melting snow',
+    fuelType:'Fuel', fGas:'Gas', fPetrol:'Petrol / multifuel', fSpirit:'Methylated spirit',
     days:'Days', people:'People', shared:'Shared stove', perDay:u=>`Per person per day (${u})`, margin:'Safety margin (%)', bottle:'Bottle size (litres)',
-    resetRate:'Reset to rule of thumb', ownRate:'Your own figure',
-    fuelNames:{gas:'gas', petrol:'petrol', spirit:'methylated spirit'},
+    resetRate:'Reset to rule of thumb', fuelNames:{gas:'gas', petrol:'petrol', spirit:'methylated spirit'},
     basis:(r,u,d,f)=>`Based on ${r} ${u} per person per day × ${d} days × ${f} + margin`,
-    peopleFactor:(n,sh)=>n===1?'1 person':(sh?`${n} people sharing (×${String(1+0.5*(n-1)).replace('.',',')})`:`${n} people`),
     canisters:'Canisters', bottles:(n,b)=>`${n} bottle${n>1?'s':''} of ${b} l`,
     warnGasCold:'Ordinary gas canisters work poorly below freezing. Use a winter mix with propane, keep the canister warm (e.g. in your sleeping bag), or choose petrol / multifuel.',
     warnSpiritSnow:'Methylated spirit is slow in the cold and poorly suited for melting a lot of snow. Consider petrol / multifuel for winter trips.',
@@ -667,8 +648,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
   },
   no: {
     shareText:n=>`Pakkliste «${n}» fra Varde`, shareFallback:'Kopier lenken og send den til dem du vil dele listen med.', copyLink:'Kopier lenke', linkCopied:'Lenken er kopiert.',
-    shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Delte lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', imported:'Listen er lagt til',
-    introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
+    shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Delte lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
     intro:[
       ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
@@ -676,8 +656,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Dine egne lister','Trykk ⋯ øverst for å lage egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Notater, Planlegg, Guider og Kompass finner du nederst.']
     ],
-    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', howShort:'En kort innføring i appen',
-    sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
+    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
     posNote:'Soltidene regnes ut på mobilen fra posisjonen og datoen. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
@@ -699,10 +678,9 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     empty:'Listen er tom. Trykk <strong>Rediger liste</strong> for å legge til kategorier og ting.',
     rename:'Gi nytt navn', delCat:'Slett kategori', catPacked:'Alt i denne kategorien er pakket.', catEmpty:'Ingen ting ennå.',
     addItemPh:'Legg til en ting', add:'Legg til', addCat:'Legg til kategori', cancel:'Avbryt', save:'Lagre', ok:'OK', close:'Lukk',
-    yourLists:'Dine lister', thisList:'Denne listen', duplicate:'Dupliser', del:'Slett', more:'Mer', newList:'Ny liste',
-    backup:'Sikkerhetskopi', language:'Språk', switchList:'Bytt liste', menu:'Lister og valg',
+    yourLists:'Dine lister', duplicate:'Dupliser', del:'Slett', more:'Mer', newList:'Ny liste',
+    backup:'Sikkerhetskopi', language:'Språk', menu:'Lister og valg',
     renameList:'Gi listen nytt navn', copyName:'Navn på kopien', copySuffix:' (kopi)',
-    keepOne:'Behold minst én liste', keepOneMsg:'Lag en ny liste først, så kan du slette denne.',
     delList:'Slette denne listen?', delListMsg:n=>`«${n}» og alt innholdet blir fjernet fra denne telefonen.`, delListOk:'Slett liste',
     newListMsg:'Start fra standardlisten og endre den, eller start med en tom liste.', items:n=>`${n} ting`,
     emptyList:'Tom liste', emptySub:'Lag din egen', nameList:'Gi listen et navn', myList:'Min liste', create:'Lag liste',
@@ -715,7 +693,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     delCatMsg:(n,c)=>`«${n}» og ${c} ting i den blir fjernet.`, newCat:'Ny kategori', category:'Kategori',
     resetQ:'Nullstille listen?', resetMsg:n=>`Alle avkrysninger i «${n}», også i pakkelistene, fjernes, så listen er klar til neste tur. Tingene blir værende.`,
     resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
-    catNote:'Notat', editCatNote:'Notat til kategorien', notes:'Notater', editNotes:'Rediger notater', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
+    catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
     tripType:'Turtype', lightDay:'Lett dagstur',
 appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
@@ -723,7 +701,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
-    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
@@ -733,7 +711,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>Nattlys</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. <b>Regnlås</b> stopper alle endringer i appen mens du fortsatt kan rulle og lese; hold <b>Naviger</b> for å bytte side i noen sekunder, og hold <b>Lås opp</b> for å slå den av, <b>Nattlys</b> gjør appen rød så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe.</p><p><b>Regnlås</b> stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Nattlys</b> gjør appen rød, så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -785,8 +763,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     amountG:'Mengde (g)', count:'Antall', kcalEach:'kcal per stk.', kcalPer100:'kcal per 100 g',
     defaultNote:'Standardverdier. Sjekk pakken på din egen mat og endre tallene; appen husker dem.',
     zone_red:'For lite til en hel turdag.', zone_yellow:'Lavt, men greit på kortere turer.', zone_green:'Godt for en vanlig turdag.',
-    fuelNeed:'Drivstoff til turen', snowWater:'Vann fra snø', meltL:'Drikkevann smeltet fra snø (liter per person per dag)',
-    snowNote:'Alt du varmer starter som snø, og det tar omtrent to og en halv gang så mye drivstoff.',
+    fuelNeed:'Drivstoff til turen', snowWater:'Vann fra snø', snowNote:'Alt du varmer starter som snø, og det tar omtrent to og en halv gang så mye drivstoff.',
     heatPerDay:'Hva du koker per person per dag (liter)', preOvernight:'Overnattingstur', preDayTrip:'Dagstur', dayL:'Liter kokt på turen, per person',
     useL:{breakfast:'Frokost (grøt)', coffee:'Kaffe / te om morgenen', thermos:'Termos til dagen', lunch:'Lunsj kokt ute', dinner:'Middag (turmat)', evening:'Kveldsdrikke', drink:'Drikkevann (kokt)'},
     waterTotal:l=>`Til sammen ${l} l kokt per person per dag.`, stoveUse:'Brenneren din', perL:u=>`Din brenner: ${u} per liter kokt`,
@@ -804,15 +781,11 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     fDogDays:(d,n)=>`${d} døgn × ${n} ${n === 1 ? 'hund' : 'hunder'}`,
     fuelDogL:'Hund: liter vann per døgn', fuelDogNote:'Vannet til hunden kommer også fra snø. Omtrent 1 liter i døgnet for en middels stor hund, mer når den jobber hardt.', fuelDogBasis:l=>`Hund: + ${l} l per døgn fra snø.`,
     foodTool:'Mat', foodShort:'Måltider til turen', foodSub:'Planlegg maten til turen: måleren viser om én dag med mat gir nok energi, og listen viser hva du skal pakke.',
-    oats:'Havregryn per frokost (g)', lunchN:'Lunsjer per dag', dinnerN:'Turmat per dag', snacks:'Energisnacks per dag', homeBreakfast:'Frokost hjemme første dag', homeDinner:'Hjemme til middag siste dag', reserve:'Reservedøgn',
-    fOats:'Havregryn', fBreakfasts:n=>`til ${n} frokost${n===1?'':'er'}`, fLunch:'Lunsjer', fDinner:'Middager (turmat)', fSnacks:'Energisnacks',
+    oats:'Havregryn per frokost (g)', lunchN:'Lunsjer per dag', dinnerN:'Turmat per dag', snacks:'Energisnacks per dag', reserve:'Reservedøgn',
+    fBreakfasts:n=>`til ${n} frokost${n===1?'':'er'}`, fLunch:'Lunsjer', fDinner:'Middager (turmat)', fSnacks:'Energisnacks',
     fBasis:(d,p,r)=>`${d} dag${d===1?'':'er'}, ${p} person${p===1?'':'er'}${r?', inkludert 1 reservedøgn':''}`,
-    kcalTitle:'Energi', season:'Årstid', summer:'Sommer', winter:'Vinter', fullDay:'En full turdag',
-    kcalTarget:(a,b)=>`Vanlig rettesnor for tur med sekk: ca. ${a}–${b} kcal per dag`,
-    kcalLow:'Under rettesnoren. Fyll på med energitett mat: nøtter, ost, sjokolade, og smør eller olje i grøten og middagen.',
-    kcalOk:'Innenfor rettesnoren.',
-    kcalNote:'Behovet varierer med kroppsvekt, tempo, terreng, sekkevekt og kulde. En dag eller to under er vanlig på korte turer, men på lengre turer bør maten dekke behovet.',
-    kcalValues:'Energiinnhold (endre etter din egen mat)', kOats:'Havregryn (kcal per 100 g)', kLunch:'Lunsj (kcal)', kDinner:'Turmat (kcal)', kSnack:'Energisnack (kcal)',
+    season:'Årstid', summer:'Sommer', winter:'Vinter', fullDay:'En full turdag',
+    kOats:'Havregryn (kcal per 100 g)', kLunch:'Lunsj (kcal)', kDinner:'Turmat (kcal)', kSnack:'Energisnack (kcal)',
     packTitle:'Pakking av mat',
     pack:[
       ['Dagsrasjoner','Pakk frokost, lunsj og snacks for hver dag sammen i én pose, og merk den med dagnummer. Du tar én pose per dag, det er lett å se at maten holder, og ingenting blir spist for tidlig.'],
@@ -822,13 +795,10 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Mindre emballasje','Fjern ytre papp og ekstra emballasje hjemme for å spare vekt og søppel, men ta vare på koketiden for turmaten. Ha med en søppelpose og bær alt hjem.']
     ],
     fuelTool:'Drivstoff', fuelShort:'Hvor mye drivstoff til turen', fuelSub:'Regnet ut fra hva du varmer i løpet av en dag. Tallene er tommelfingerregler: juster dem etter egen brenner og egne vaner.',
-    fuelType:'Drivstoff', useType:'Bruk', fGas:'Gass', fPetrol:'Bensin / multifuel', fSpirit:'Rødsprit',
-    uBoil:'Kun koke vann', uCook:'Matlaging', uSnow:'Snøsmelting',
+    fuelType:'Drivstoff', fGas:'Gass', fPetrol:'Bensin / multifuel', fSpirit:'Rødsprit',
     days:'Døgn', people:'Personer', shared:'Felles kokeapparat', perDay:u=>`Per person per døgn (${u})`, margin:'Sikkerhetsmargin (%)', bottle:'Flaskestørrelse (liter)',
-    resetRate:'Tilbake til tommelfingerregel', ownRate:'Ditt eget tall',
-    fuelNames:{gas:'gass', petrol:'bensin', spirit:'rødsprit'},
+    resetRate:'Tilbake til tommelfingerregel', fuelNames:{gas:'gass', petrol:'bensin', spirit:'rødsprit'},
     basis:(r,u,d,f)=>`Grunnlag: ${r} ${u} per person per døgn × ${d} døgn × ${f} + margin`,
-    peopleFactor:(n,sh)=>n===1?'1 person':(sh?`${n} personer med felles kokeapparat (×${String(1+0.5*(n-1)).replace('.',',')})`:`${n} personer`),
     canisters:'Gassbokser', bottles:(n,b)=>`${n} flaske${n>1?'r':''} à ${b} l`,
     warnGasCold:'Vanlige gassbokser fungerer dårlig under frysepunktet. Bruk vintergass med propan, hold boksen varm (f.eks. i soveposen), eller velg bensin / multifuel.',
     warnSpiritSnow:'Rødsprit er treg i kulde og lite egnet til å smelte mye snø. Vurder bensin / multifuel på vinterturer.',
@@ -949,15 +919,6 @@ function parseItem(x, ids){
   const m = x.match(/^@(\w+) (.*)$/);
   if (m){ link = ids[m[1]] || null; x = m[2]; }
   return {id:uid(), text:x, done:false, sub, link, light};
-}
-function fromTemplate(key, name){
-  const tp = buildTemplates(state.lang)[key];
-  const ids = {};
-  tp.cats.forEach(c => ids[c.key] = uid());
-  return { id:uid(), name: name || tp.name, notes:'', modes:{}, cats: tp.cats.map(c => ({
-    id: ids[c.key], icon:c.key, name:c.name, note:c.note || '', mode:c.mode || null, bag:!!c.bag, lightOnly:false, open:true,
-    items: c.items.map(x => parseItem(typeof x === 'string' ? x : x.t, ids))
-  }))};
 }
 function cloneList(src, keepDone){
   const map = {};
@@ -1095,7 +1056,6 @@ function countCats(cats){
   cats.forEach(c => { const h = headingIds(c); shownItems(c).forEach(i => { if (h.has(i.id)) return; tot++; if (i.done) d++; }); });
   return {t:tot, d};
 }
-function stats(l){ return countCats(visibleCats(l)); }
 function findCat(id){
   if (!id) return null;
   if (id.indexOf('std:') === 0) return stdList().cats.find(c => c.id === id) || null;
@@ -2169,7 +2129,7 @@ function renderFood(){
   $('listName').textContent = T.foodTool;
   document.title = T.foodTool + ' · ' + T.app;
   const inp = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
-  const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}</span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
+  const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}<small class="m-kcal" data-mk="${kN}"></small></span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
     <p class="tool-sub">${T.foodSub}</p>
     <section class="sum-card">
@@ -2209,7 +2169,9 @@ function updateFood(){
       ${f.dog && f.dogs > 0 && f.dogG > 0 ? row(`${T.mDog} <span style="color:var(--muted)">${T.fDogDays(D, Math.round(f.dogs))}</span>`, `${fmt(D * Math.round(f.dogs) * f.dogG)} g`) : ''}
     </ul><p class="calc-basis">${T.fBasis(d, p, !!f.reserve)}</p>`;
   if (!kOut) return;
-  const day = f.oats * f.kOats / 100 + f.lunchN * f.kLunch + f.dinnerN * f.kDinner + f.snacks * f.kSnack;
+  const meal = {oats: f.oats * f.kOats / 100, lunchN: f.lunchN * f.kLunch, dinnerN: f.dinnerN * f.kDinner, snacks: f.snacks * f.kSnack};
+  main.querySelectorAll('[data-mk]').forEach(el => { el.textContent = ` ≈ ${Math.round(meal[el.dataset.mk]).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB')} kcal`; });
+  const day = meal.oats + meal.lunchN + meal.dinnerN + meal.snacks;
   const [r, y, max] = KZONES[f.season === 'winter' ? 'winter' : 'summer'];
   const zone = day < r ? 'red' : day < y ? 'yellow' : 'green';
   const pos = Math.min(100, day / max * 100);
@@ -2376,17 +2338,6 @@ function closeSheet(val){
 overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(null); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeSheet(null); });
 
-function askArea(title, value){
-  const T = t();
-  return new Promise(res => {
-    sheetResolve = res;
-    openSheet(`<h3>${esc(title)}</h3>
-      <textarea class="plain" id="askArea">${esc(value || '')}</textarea>
-      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
-    panel.querySelector('[data-s=ok]').onclick = () => closeSheet($('askArea').value);
-    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
-  });
-}
 function askText(title, value, ok, allowEmpty){
   const T = t();
   return new Promise(res => {
@@ -2632,10 +2583,6 @@ main.addEventListener('click', async e => {
   else if (act === 'noteCat'){
     const v = await askText(T.editCatNote, cat.note || '', T.save, true);
     if (v !== null && v !== undefined){ cat.note = v; save(); render(); }
-  }
-  else if (act === 'editNotes'){
-    const v = await askArea(T.notes, cur().notes || '');
-    if (v !== null && v !== undefined){ cur().notes = v; save(); render(); }
   }
   else if (act === 'renameItem'){
     const v = await askText(T.renameItem, item.text, T.save);

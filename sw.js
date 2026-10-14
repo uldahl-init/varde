@@ -1,6 +1,6 @@
 // Bump this version every time you upload a new index.html, so phones pick up the update.
-const CACHE = 'varde-v21';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './knots/bowline.svg', './knots/taut-line.webp', './knots/clove-hitch.svg', './knots/prusik.webp', './knots/sheet-bend.webp', './knots/timber-hitch.webp', './knots/figure-eight.svg', './knots/figure-eight-loop.webp', './guides/stove-board.svg', './guides/stove-board-strap.svg'];
+const CACHE = 'varde-v22';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './knots/bowline.svg', './knots/taut-line.webp', './knots/clove-hitch.svg', './knots/prusik.webp', './knots/sheet-bend.webp', './knots/timber-hitch.webp', './knots/figure-eight.svg', './knots/figure-eight-loop.webp', './guides/stove-board.svg', './guides/stove-board-strap.svg', './fonts/barlow-400.woff2', './fonts/barlow-600.woff2', './fonts/barlow-condensed-600.woff2'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -18,8 +18,8 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match('./index.html')));
     return;
   }
-  // Everything else (icons, fonts): use the saved copy, fetch and save it the first time.
-  if (url.origin === location.origin || url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com')){
+  // Everything else (icons, pictures, fonts, all bundled with the app): use the saved copy, fetch and save it the first time.
+  if (url.origin === location.origin){
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })));
   }
 });
