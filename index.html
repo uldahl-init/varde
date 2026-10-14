@@ -463,7 +463,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v19';
+const APP_VERSION = 'varde-v20';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp'];
 const KNOT_CREDITS = [
   {k:0, author:'Hella', file:'Bowline (standard).svg', url:'https://commons.wikimedia.org/wiki/File:Bowline_(standard).svg', lic:'CC BY-SA 2.5', licUrl:'https://creativecommons.org/licenses/by-sa/2.5/'},
@@ -540,6 +540,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
     field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', holdUnlock:'Hold to unlock', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
@@ -718,6 +719,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
     field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', holdUnlock:'Hold for å låse opp', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
@@ -1350,6 +1352,8 @@ function renderLists(){
     <div class="section-label">${T.help}</div>
     <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>
     <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>`;
+  if (!state.field) html += `<div class="section-label">${T.startOver}</div><p class="tool-tip">${T.startOverHint}</p>
+    <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`;
   main.innerHTML = html;
 }
 function renderIndex(){
@@ -2388,7 +2392,7 @@ function confirmBox(title, msg, ok){
 
 async function listAction(a, id){
   const T = t();
-  if (state.field && ['new', 'copy', 'edit', 'rename', 'dup', 'reset', 'delete', 'backup'].indexOf(a) >= 0) return;
+  if (state.field && ['new', 'copy', 'edit', 'rename', 'dup', 'reset', 'delete', 'backup', 'startOver'].indexOf(a) >= 0) return;
   const L = id && id !== 'std' ? ownList(id) : null;
   if (a === 'new'){
     const choice = await new Promise(res => {
@@ -2421,6 +2425,19 @@ async function listAction(a, id){
     if (v){ const c = cloneList(L, false); c.name = v; c.tripType = false; state.lists.push(c); selList = c.id; save(); render(); }
   } else if (a === 'share' && L){
     shareList(L);
+  } else if (a === 'startOver'){
+    if (await confirmBox(T.startOverQ, T.startOverMsg, T.startOverOk)){
+      withUndo(T.startOverDone, () => {
+        state.std.done = {}; state.std.modes = {}; state.std.open = {};
+        state.lists.forEach(x => { x.modes = {}; x.cats.forEach(c => { delete c.open; c.items.forEach(i => i.done = false); }); });
+        state.main = 'std'; selList = 'std';
+        state.field = false; state.rainLocked = false; rainLocked = false;
+        state.hidePacked = false; state.listLock = false; editing = false;
+        stdCache = null; tab = 'list'; view = null;
+      });
+      history.replaceState({tab:'list', view:null, depth:0}, '');
+      updateWake(); top();
+    }
   } else if (a === 'reset'){
     const target = L || stdList();
     if (await confirmBox(T.resetQ, T.resetMsg(target.name), T.resetOk)){
