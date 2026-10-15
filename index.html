@@ -212,6 +212,26 @@ body{--gsafe:#3F7FA8}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--gsafe:#7FB2D4}}
 :root[data-theme="dark"] body{--gsafe:#7FB2D4}
 .index svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2.5;stroke-linecap:round}
+/* Planlegg cards (v26): solid outline and icon in the calculator's own colour */
+body{--pc-food:#94700F;--pc-fuel:#BF5418;--pc-weight:#7352A6;--pc-water:#13807A;--pc-wind:#A23B7A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--pc-food:#D9B45A;--pc-fuel:#F08A4E;--pc-weight:#B79DE2;--pc-water:#5CC2BA;--pc-wind:#E58AC2}}
+:root[data-theme="dark"] body{--pc-food:#D9B45A;--pc-fuel:#F08A4E;--pc-weight:#B79DE2;--pc-water:#5CC2BA;--pc-wind:#E58AC2}
+.pc-food{--pc:var(--pc-food)}.pc-fuel{--pc:var(--pc-fuel)}.pc-weight{--pc:var(--pc-weight)}.pc-water{--pc:var(--pc-water)}.pc-wind{--pc:var(--pc-wind)}
+body.night .pc-food,body.night .pc-fuel,body.night .pc-weight,body.night .pc-water,body.night .pc-wind{--pc:var(--red)}
+.index button.pc{border:1.5px solid var(--pc)}
+.pc-ic{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1.5px solid var(--pc)}
+.index .pc-ic svg{width:26px;height:26px;stroke:var(--pc);stroke-width:2;stroke-linejoin:round}
+.wc-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;color:var(--muted);font-weight:600;font-size:.9rem;cursor:pointer}
+.wc-btn svg{width:20px;height:20px;fill:none;stroke:var(--pc-wind);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.night .wc-btn svg{stroke:var(--red)}
+.wind-row{display:flex;align-items:center;gap:8px}
+.wind-row input{flex:1;min-width:0;text-align:center}
+.wind-row .btn{min-width:46px;min-height:46px;padding:0;font-size:1.3rem}
+.calc.wind{grid-template-columns:1fr}
+.wind-big{display:block;font-family:var(--head);font-weight:600;font-size:3rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.wind-lbl{display:block;color:var(--muted);font-size:.9rem}
+.wind-risk{margin:12px 0 0;font-weight:600}
+.wind-risk.hi{color:var(--red)}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;max-width:608px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600}
 .toast[hidden]{display:none}
 .toast span{flex:1}
@@ -475,7 +495,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v25';
+const APP_VERSION = 'varde-v26';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -599,7 +619,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Avoid sweat and damp','<p>Damp is one of the biggest enemies in the cold. Take off a layer before you start sweating, vent your clothes, and change into something dry when you stop. Keep a dry set that is only used in the tent.</p>'],
       ['Skin, metal and nicotine','<ul><li>Avoid <b>moisturiser and liquid make-up</b>: they contain water and increase the risk of frostbite. Use a water-free cold cream instead.</li><li>Avoid shaving and heavy face washing before going out: the skin\'s natural oils protect it.</li><li>Do not touch <b>bare metal</b> with your fingers in hard frost; at –10 °C it can damage skin quickly. Be aware of rings, earrings and watches.</li><li><b>Nicotine</b> narrows the blood vessels in fingers and toes and increases the risk of cold injuries.</li></ul>'],
       ['Food and drink','<p>The body needs about <b>30 % more energy</b> in the cold, so eat often. Too little fluid makes it harder for the body to keep warm and increases the risk of cold injuries. Carry the water bottle inside your jacket so it does not freeze, and bring a thermos with a hot drink.</p>'],
-      ['Warning signs of cold injury','<ul><li>Fingers that get clumsy</li><li>Pain in hands or feet</li><li>Red skin, swelling, stinging, tingling or numbness</li><li>White patches or blisters, first on the nose, cheeks, ears and fingers</li></ul><p>Warm up early, check each other\'s faces, and seek medical help for blisters or skin that stays white and hard.</p>'],
+      ['Warning signs of cold injury','<ul><li>Fingers that get clumsy</li><li>Pain in hands or feet</li><li>Red skin, swelling, stinging, tingling or numbness</li><li>White patches or blisters, first on the nose, cheeks, ears and fingers</li></ul><p>Warm up early, check each other\'s faces, and seek medical help for blisters or skin that stays white and hard.</p><p>Wind makes it colder on bare skin. <button class="btn small" data-nav data-act="openWind" data-from="guide">Wind chill ›</button></p>'],
       ['The tent on a winter evening','<p>Pack what goes into the tent in its own stuff sacks, so you get in quickly. Take in: the <b>dry tent clothes</b> (thick wool socks and underwear, balaclava, down booties and mittens), the food you need for the evening, thermos and bottle, stove, pot and fuel, toiletries, head torch and tent lamp, <b>batteries in the sleeping bag</b>, a snow brush, and a large bag of clean snow for melting. Keep the camera in a zip bag against condensation, and the first aid and repair kits close by. The rest can stay in the pulk.</p>'],
       ['A hot water bottle in the sleeping bag','<p>Fill a tight bottle with about 1 litre of freshly boiled water and wrap it in a thick wool sock. It still gives warmth in the morning, and the water is ready to drink. Check the lid carefully.</p>'],
       ['Children, older people and hard exercise','<p>Children and older people lose heat faster and need extra attention. Avoid hard intervals when it is colder than about –15 °C, and change into dry clothes as soon as the trip is over.</p>']
@@ -668,6 +688,13 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     manPetrol:['Petrol / multifuel','The most reliable choice in cold weather and high mountains, and fuel is available almost everywhere. Needs priming and some maintenance, and can soot. The first choice for winter trips and melting snow.'],
     manSpirit:['Methylated spirit','A simple, reliable burner with no moving parts: quiet and cheap. Gives less heat per litre than gas and petrol, so you need more, and it is slow in the cold. The flame is almost invisible in daylight.'],
     manSafety:['Safety','Never mix fuels, and label your bottles clearly. Never refuel near an open flame. Do not cook inside a closed tent: there is a risk of fire and carbon monoxide poisoning. If you must, use a well-ventilated vestibule. Do not fill fuel bottles completely to the top.'],
+    windTool:'Wind chill', windShort:'How cold the wind feels on bare skin', windSub:'Wind makes bare skin lose heat faster. Enter the temperature and the wind from the forecast to see how cold it feels and how quickly bare skin can freeze.',
+    windT:'Air temperature (°C)', windV:'Wind (m/s, mean wind as in the forecast)', windMinus:'Lower', windPlus:'Higher', windSign:'Switch between plus and minus',
+    windOut:'Wind chill: feels like this on bare skin', windAir:'Air temperature', windWarm:'Wind chill applies at 10 °C or colder.', windCalm:'Below about 1.3 m/s it counts as calm, and the wind chill is the same as the air temperature.',
+    windR0:'Low risk of frostbite.', windR1:'Low risk of frostbite, but a risk of hypothermia over time without good clothing.', windR2:'Bare skin can freeze within 10–30 minutes.', windR3:'Bare skin can freeze within 5–10 minutes.', windR4:'Bare skin can freeze within 2–5 minutes.', windR5:'Bare skin can freeze in under 2 minutes.',
+    windStrong:'In wind over about 14 m/s, frostbite can come faster than shown.', windBasis:(v, k) => `Wind ${v} m/s = ${k} km/h.`,
+    windNote:'The figure uses the mean wind from the forecast. Gusts, wet clothes and tiredness make it colder in practice; sunshine makes it feel warmer. Calculated on the phone, works offline.',
+    windSrc:'Wind chill index from Environment Canada and the US National Weather Service (2001).',
     tools:'Tools', water:'Water mixing', waterShort:'Showering and washing', waterSub:'Mix boiling water with cold water from nature for showering or washing.',
     findMix:'Find the mix', findTemp:'Find the temperature', target:'Final temperature (°C)', volume:'Final volume (litres)',
     coldT:'Cold water (°C)', hotT:'Hot water (°C)', pot:'Pot size (litres)', hotL:'Hot water (litres)', coldL:'Cold water (litres)',
@@ -775,7 +802,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Unngå svette og fukt','<p>Fukt er en av de største fiendene i kulda. Ta av et lag før du blir svett, luft ut klærne, og skift til noe tørt når du stopper. Ha et tørt sett som bare brukes i teltet.</p>'],
       ['Hud, metall og nikotin','<ul><li>Unngå <b>fuktighetskrem og flytende sminke</b>: de inneholder vann og øker faren for frostskader. Bruk heller kuldekrem uten vann.</li><li>Unngå barbering og kraftig ansiktsvask før du går ut: hudens naturlige fett beskytter.</li><li>Ikke ta på <b>bart metall</b> med fingrene i sprengkulde; ved –10 °C kan det skade huden raskt. Tenk på ringer, øreringer og klokker.</li><li><b>Nikotin</b> trekker sammen blodårene i fingre og tær og øker faren for kuldeskader.</li></ul>'],
       ['Mat og drikke','<p>Kroppen trenger omtrent <b>30 % mer energi</b> i kulde, så spis ofte. For lite væske gjør det vanskeligere for kroppen å holde varmen og øker faren for kuldeskader. Bær vannflasken innenfor jakka så den ikke fryser, og ha med termos med varm drikke.</p>'],
-      ['Faresignaler for kuldeskader','<ul><li>Fingre som blir klønete</li><li>Smerter i hender eller føtter</li><li>Rød hud, hevelse, stikking, prikking eller nummenhet</li><li>Hvite flekker eller blemmer, først på nese, kinn, ører og fingre</li></ul><p>Varm opp tidlig, sjekk ansiktene til hverandre, og søk legehjelp ved blemmer eller hud som forblir hvit og hard.</p>'],
+      ['Faresignaler for kuldeskader','<ul><li>Fingre som blir klønete</li><li>Smerter i hender eller føtter</li><li>Rød hud, hevelse, stikking, prikking eller nummenhet</li><li>Hvite flekker eller blemmer, først på nese, kinn, ører og fingre</li></ul><p>Varm opp tidlig, sjekk ansiktene til hverandre, og søk legehjelp ved blemmer eller hud som forblir hvit og hard.</p><p>Vind gjør det kaldere på bar hud. <button class="btn small" data-nav data-act="openWind" data-from="guide">Vindkjøling ›</button></p>'],
       ['Teltet en vinterkveld','<p>Pakk det som skal inn i teltet i egne pakkposer, så kommer du raskt inn. Ta inn: <b>de tørre teltklærne</b> (tykke ullsokker og ullundertøy, balaklava, dunsokker og dunvotter), maten du trenger for kvelden, termos og flaske, brenner, kjele og brensel, toalettsaker, hodelykt og teltlykt, <b>batterier i soveposen</b>, en snøbørste, og en stor pose ren snø til smelting. Ha kameraet i en zippose mot kondens, og førstehjelps- og reparasjonssettet i nærheten. Resten kan ligge i pulken.</p>'],
       ['Varmeflaske i soveposen','<p>Fyll en tett flaske med omtrent 1 liter nykokt vann og pakk den inn i en tykk ullsokk. Den gir fortsatt varme om morgenen, og vannet er klart til å drikke. Sjekk lokket nøye.</p>'],
       ['Barn, eldre og hard trening','<p>Barn og eldre taper varme raskere og trenger ekstra oppfølging. Unngå harde intervaller når det er kaldere enn rundt –15 °C, og skift til tørre klær så snart turen er over.</p>']
@@ -844,6 +871,13 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     manPetrol:['Bensin / multifuel','Det mest driftssikre valget i kulde og høyfjell, og drivstoffet finnes nesten overalt. Krever forvarming og litt vedlikehold, og kan sote. Førstevalget på vinterturer og til snøsmelting.'],
     manSpirit:['Rødsprit','En enkel og driftssikker brenner uten bevegelige deler: stille og billig. Gir mindre varme per liter enn gass og bensin, så du trenger mer, og den er treg i kulde. Flammen er nesten usynlig i dagslys.'],
     manSafety:['Sikkerhet','Bland aldri drivstoff, og merk flaskene tydelig. Fyll aldri drivstoff nær åpen flamme. Ikke kok inne i lukket telt: det gir fare for brann og kullosforgiftning. Må du, bruk et godt ventilert fortelt. Fyll ikke drivstoffflasker helt opp.'],
+    windTool:'Vindkjøling', windShort:'Hvor kald vinden føles på bar hud', windSub:'Vind får bar hud til å tape varme raskere. Skriv inn temperaturen og vinden fra værmeldingen, så ser du hvor kaldt det føles og hvor raskt bar hud kan fryse.',
+    windT:'Lufttemperatur (°C)', windV:'Vind (m/s, middelvind som i værmeldingen)', windMinus:'Lavere', windPlus:'Høyere', windSign:'Bytt mellom pluss og minus',
+    windOut:'Vindkjøling: slik føles det på bar hud', windAir:'Lufttemperatur', windWarm:'Vindkjøling gjelder ved 10 °C eller kaldere.', windCalm:'Under omtrent 1,3 m/s regnes det som stille, og vindkjølingen er lik lufttemperaturen.',
+    windR0:'Lav risiko for frostskader.', windR1:'Lav risiko for frostskader, men fare for nedkjøling over tid uten gode klær.', windR2:'Bar hud kan fryse i løpet av 10–30 minutter.', windR3:'Bar hud kan fryse i løpet av 5–10 minutter.', windR4:'Bar hud kan fryse i løpet av 2–5 minutter.', windR5:'Bar hud kan fryse på under 2 minutter.',
+    windStrong:'I vind over omtrent 14 m/s kan frostskader komme raskere enn vist.', windBasis:(v, k) => `Vind ${v} m/s = ${k} km/t.`,
+    windNote:'Tallet bruker middelvinden fra værmeldingen. Vindkast, våte klær og slitenhet gjør det kaldere i praksis, og sol gjør at det føles varmere. Regnes ut på mobilen og virker uten nett.',
+    windSrc:'Vindkjølingsindeksen fra Environment Canada og den amerikanske værtjenesten (NWS, 2001).',
     tools:'Verktøy', water:'Vannblanding', waterShort:'Dusj og vask', waterSub:'Bland kokende vann med kaldt vann fra naturen til dusj eller vask.',
     findMix:'Finn blandingen', findTemp:'Finn temperaturen', target:'Ønsket temperatur (°C)', volume:'Ferdig mengde (liter)',
     coldT:'Kaldt vann (°C)', hotT:'Varmt vann (°C)', pot:'Kjelestørrelse (liter)', hotL:'Varmt vann (liter)', coldL:'Kaldt vann (liter)',
@@ -1166,6 +1200,7 @@ function render(){
   if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
     if (view === 'tool:water') return renderWater();
+    if (view === 'tool:wind') return renderWind();
     if (view === 'tool:fuel') return renderFuel();
     if (view === 'tool:food') return renderFood();
     if (view === 'tool:weight') return renderWeight();
@@ -1371,8 +1406,9 @@ function renderIndex(){
   document.title = (isPlan ? T.tabPlan : T.tabGuide) + ' · ' + T.app;
   const card = ([k, n, dsc], grp) => `<button data-open="${k}" data-nav${grp ? ` class="g-${grp}"` : ''}><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`;
   if (isPlan){
-    const items = [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['weight', T.weightTool, T.weightShort], ['water', T.water, T.waterShort]];
-    main.innerHTML = `<p class="tool-sub">${T.planSub}</p><div class="index">` + items.map(x => card(x)).join('') + '</div>';
+    const items = [['food', T.foodTool, T.foodShort], ['fuel', T.fuelTool, T.fuelShort], ['weight', T.weightTool, T.weightShort], ['water', T.water, T.waterShort], ['wind', T.windTool, T.windShort]];
+    main.innerHTML = `<p class="tool-sub">${T.planSub}</p><div class="index">` + items.map(([k, n, dsc]) =>
+      `<button data-open="${k}" data-nav class="pc pc-${k}"><span class="pc-ic" aria-hidden="true"><svg viewBox="0 0 24 24">${PLAN_ICONS[k]}</svg></span><span class="ix-txt"><span class="ix-t">${n}</span><span class="ix-d">${dsc}</span></span>${CHEV_R}</button>`).join('') + '</div>';
     return;
   }
   const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
@@ -1381,6 +1417,14 @@ function renderIndex(){
   main.innerHTML = `<p class="tool-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
     `<h2 class="ix-group g-${gr.key}"><i aria-hidden="true"></i>${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
 }
+/* Planlegg: each calculator has its own icon and colour (v26). The icon carries the meaning, never colour alone. */
+const PLAN_ICONS = {
+  food:'<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 7c0-2 2-2 2-4M13 7c0-2 2-2 2-4"/>',
+  fuel:'<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/>',
+  weight:'<path d="M10 5V4a2 2 0 0 1 4 0v1"/><path d="M6 11a6 6 0 0 1 6-6 6 6 0 0 1 6 6v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M9 21v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4"/><path d="M10 10h4"/>',
+  water:'<path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+  wind:'<path d="M6 14.5V5a2 2 0 0 1 4 0v9.5a3.5 3.5 0 1 1-4 0z"/><path d="M8 17v-6"/><path d="M13 8h5a2 2 0 1 0-2-2M13 12h8M13 16h5a2 2 0 1 1-2 2"/>'
+};
 /* ---------- text guides (v17) ---------- */
 const GUIDE_TXT = {
   no:{
@@ -1453,7 +1497,7 @@ const GUIDE_TXT = {
   }
 };
 const GUIDE_GROUPS = [
-  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'fishing', 'tarp', 'fire']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'fishing', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['winter', 'aval', 'sun']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['shell', 'boots', 'tent', 'stoveboard', 'phone']}
 ];
@@ -2031,6 +2075,7 @@ function linksHtml(){
     h += `<div class="own-link">${a(l.u, esc(l.n))}${state.field ? '' : `<button class="icon del" data-act="delLink" data-n="${n}" aria-label="${esc(T.deleteX(l.n))}">${CROSS}</button>`}</div>`;
   });
   h += '</div>';
+  h += `<button class="wc-btn" data-nav data-act="openWind" data-from="compass"><svg viewBox="0 0 24 24" aria-hidden="true">${PLAN_ICONS.wind}</svg><span>${T.windTool}</span></button>`;
   if (!rg) h += `<p class="calc-basis">${T.linksNoPos}</p>`;
   else if (rg === 'other') h += `<p class="calc-basis">${T.avalancheLocal}</p>`;
   if (!state.field) h += `<div class="row-btns"><button class="btn add-link" data-act="addLink"><span aria-hidden="true">+</span>${T.addLink}</button></div><p class="calc-basis">${T.addLinkHint}</p>`;
@@ -2043,6 +2088,71 @@ main.addEventListener('change', e => {
 const num = v => parseFloat(String(v).replace(',', '.').trim());
 const fmt = n => (Math.round(n * 10) / 10).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:1});
 const fmt2 = n => (Math.round(n * 100) / 100).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {maximumFractionDigits:2});
+/* ---------- Vindkjøling / wind chill (v26) ---------- */
+// NWS and Environment Canada wind chill index (2001): T in °C, V in km/h at 10 m (forecast mean wind).
+// Valid at 10 °C or colder and from 4.8 km/h (about 1.3 m/s).
+let windFrom = null;
+function windState(){ return state.wind = Object.assign({t:-10, v:5}, state.wind || {}); }
+function windChill(T, vms){
+  const V = vms * 3.6;
+  if (T > 10 || V < 4.8) return null;
+  const p = Math.pow(V, 0.16);
+  return 13.12 + 0.6215 * T - 11.37 * p + 0.3965 * T * p;
+}
+function windRisk(w){
+  const T = t();
+  if (w <= -55) return [T.windR5, true];
+  if (w <= -48) return [T.windR4, true];
+  if (w <= -40) return [T.windR3, true];
+  if (w <= -28) return [T.windR2, true];
+  if (w <= -10) return [T.windR1, false];
+  return [T.windR0, false];
+}
+function renderWind(){
+  const T = t(), w = windState();
+  $('listName').textContent = T.windTool;
+  document.title = T.windTool + ' · ' + T.app;
+  const back = windFrom === 'compass' ? T.tabCompass : windFrom === 'guide' ? T.tabGuide : T.tabPlan;
+  const val = x => esc(fmt(x).replace(/\s/g, '').replace('−', '-'));
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${back}</button>
+    <p class="tool-sub">${T.windSub}</p>
+    <div class="calc wind">
+      <label class="cfield"><span>${T.windT}</span><span class="wind-row">
+        <button class="btn" data-act="windStep" data-k="t" data-d="-1" aria-label="${T.windMinus}">−</button>
+        <input type="text" inputmode="decimal" data-wind="t" value="${val(w.t)}">
+        <button class="btn" data-act="windStep" data-k="t" data-d="1" aria-label="${T.windPlus}">+</button>
+        <button class="btn" data-act="windSign" aria-label="${T.windSign}">±</button></span></label>
+      <label class="cfield"><span>${T.windV}</span><span class="wind-row">
+        <button class="btn" data-act="windStep" data-k="v" data-d="-1" aria-label="${T.windMinus}">−</button>
+        <input type="text" inputmode="decimal" data-wind="v" value="${val(w.v)}">
+        <button class="btn" data-act="windStep" data-k="v" data-d="1" aria-label="${T.windPlus}">+</button></span></label>
+    </div>
+    <div class="calc-result" id="windOut" aria-live="polite"></div>
+    <p class="calc-basis">${T.windNote}</p>
+    <p class="calc-basis">${T.windSrc}</p>
+    <div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="winter">${T.winterTool} ›</button></div>`;
+  updateWind();
+}
+function updateWind(){
+  const T = t(), w = windState(), out = $('windOut');
+  if (!out) return;
+  if (isNaN(w.t) || isNaN(w.v) || w.v < 0){ out.innerHTML = ''; return; }
+  const wc = windChill(w.t, w.v), kmh = Math.round(w.v * 3.6);
+  const basis = `<p class="calc-basis">${T.windBasis(fmt(w.v), kmh)}</p>`;
+  if (wc === null){
+    out.innerHTML = `<span class="wind-big">${fmt(w.t)} °C</span><span class="wind-lbl">${T.windAir}</span><p class="calc-basis">${w.t > 10 ? T.windWarm : T.windCalm}</p>`;
+    return;
+  }
+  const r = Math.round(wc), [txt, hi] = windRisk(r);
+  out.innerHTML = `<span class="wind-big">${r.toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB')} °C</span><span class="wind-lbl">${T.windOut}</span><p class="wind-risk${hi ? ' hi' : ''}">${txt}</p>${w.v * 3.6 > 50 ? `<p class="calc-basis">${T.windStrong}</p>` : ''}${basis}`;
+}
+main.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.wind;
+  if (!k) return;
+  const v = num(String(e.target.value).replace('−', '-'));
+  if (!isNaN(v)){ windState()[k] = v; save(); }
+  updateWind();
+});
 function renderWater(){
   const T = t();
   state.calc = Object.assign({mode:'mix', target:38, volume:10, cold:10, hot:100, pot:1.5, hotL:2, coldL:8}, state.calc || {});
@@ -2520,7 +2630,7 @@ async function listAction(a, id){
   } else if (a === 'startOver'){
     if (await confirmBox(T.startOverQ, T.startOverMsg, T.startOverOk)){
       withUndo(T.startOverDone, () => {
-        state.std.done = {}; state.std.modes = {}; state.std.open = {};
+        state.std.done = {}; state.std.modes = {}; state.std.open = {}; state.folds = {}; modesOpen = false;
         state.lists.forEach(x => { x.modes = {}; x.cats.forEach(c => { delete c.open; c.items.forEach(i => i.done = false); }); });
         state.main = 'std'; selList = 'std';
         state.field = false; state.rainLocked = false; rainLocked = false;
@@ -2640,7 +2750,7 @@ main.addEventListener('click', async e => {
   const lg = e.target.closest('[data-lang]');
   if (lg){ state.lang = lg.dataset.lang; stdCache = null; save(); render(); return; }
   const op = e.target.closest('[data-open]');
-  if (op){ go(tab, 'tool:' + op.dataset.open); return; }
+  if (op){ windFrom = null; go(tab, 'tool:' + op.dataset.open); return; }
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const T = t(), act = b.dataset.act;
@@ -2661,7 +2771,10 @@ main.addEventListener('click', async e => {
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
   if (act === 'rainLock'){ lockRain(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
-  if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); save(); render(); return; }
+  if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); if (all) modesOpen = false; save(); render(); return; }
+  if (act === 'openWind'){ windFrom = b.dataset.from || null; go('plan', 'tool:wind'); return; }
+  if (act === 'windStep'){ const w = windState(), k = b.dataset.k; w[k] = Math.round((w[k] + (+b.dataset.d)) * 10) / 10; if (k === 'v' && w.v < 0) w.v = 0; save(); renderWind(); return; }
+  if (act === 'windSign'){ const w = windState(); w.t = -w.t; save(); renderWind(); return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
