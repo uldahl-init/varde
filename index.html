@@ -346,6 +346,7 @@ body.listlock .items .mark{opacity:.55}
 .links .btn{display:block;text-align:left;white-space:normal;text-decoration:none;color:var(--ink)}
 .knot-img{--knot-line:var(--ink);--knot-fill:var(--line-strong);--knot-pole:var(--bg);display:flex;justify-content:center;margin:0 0 10px}
 .knot-img svg{height:220px;width:auto;display:block}
+.knot-img.wide svg{width:100%;height:auto;max-height:220px}
 .knot-img.photo img{display:block;width:100%;max-width:420px;height:auto;border-radius:12px;background:#fff}
 body.night .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-rotate(-50deg) saturate(4)}
 .credits{margin-top:18px;font-size:.8rem;color:var(--muted);line-height:1.5}
@@ -467,7 +468,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v23';
+const APP_VERSION = 'varde-v24';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -478,6 +479,11 @@ const KNOT_CREDITS = [
   {k:4, author:'Agneta (de.wikipedia)', file:'Prusik.jpg', url:'https://commons.wikimedia.org/wiki/File:Prusik.jpg', lic:'CC BY-SA 3.0', licUrl:'https://creativecommons.org/licenses/by-sa/3.0/', photo:true, chg:'adaptedPrusik'},
   {k:3, author:'Markus Bärlocher', file:'Schotstek rechts.jpg', url:'https://commons.wikimedia.org/wiki/File:Schotstek_rechts.jpg', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Schotstek_rechts.jpg', photo:true, chg:'adaptedBg'},
   {k:1, author:'Dontpanic', file:'Topsegelschotstek.png', url:'https://commons.wikimedia.org/wiki/File:Topsegelschotstek.png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Topsegelschotstek.png', photo:true, chg:'adaptedPhoto'}
+];
+/* Fiske guide (v24): knot cards in their own set, same card layout as Knuter */
+const FISH_KNOT_FILES = [['knots/improved-uni-tie.svg', 'knots/improved-uni.svg'], ['knots/palomar-tie.webp', 'knots/palomar.webp']];
+const FISH_KNOT_CREDITS = [
+  {k:1, author:'Vaughan Pratt', file:'PalomarKnotSequence.jpg', url:'https://commons.wikimedia.org/wiki/File:PalomarKnotSequence.jpg', lic:'CC BY-SA 3.0', licUrl:'https://creativecommons.org/licenses/by-sa/3.0/', photo:true, chg:'adaptedCut'}
 ];
 const knotSvgCache = {};
 const ICON_FIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg>';
@@ -591,8 +597,13 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['A hot water bottle in the sleeping bag','<p>Fill a tight bottle with about 1 litre of freshly boiled water and wrap it in a thick wool sock. It still gives warmth in the morning, and the water is ready to drink. Check the lid carefully.</p>'],
       ['Children, older people and hard exercise','<p>Children and older people lose heat faster and need extra attention. Avoid hard intervals when it is colder than about –15 °C, and change into dry clothes as soon as the trip is over.</p>']
     ],
+    fishTool:'Fishing', fishShort:'Knots for hook, swivel and lure', fishSub:'Knots and tips for the fishing trip. Practise the knots at home, with the line you fish with.', fishHd:'Knots',
+    fishKnots:[
+      {n:'Improved uni knot', u:'Ties line to a hook, swivel or lure. Holds well in mono, fluorocarbon and slippery braid, and the lure never has to pass through a loop.', s:['Pass the line through the eye twice, making a double turn round the eye.','Lay the tag back along the line and form a loop by laying it over the doubled line.','Wrap the tag 5–6 times round the doubled line, inside the loop. In braid, 7–8.','Moisten and pull the tag to gather the wraps.','Pull the standing line until the knot slides down to the eye, and trim the tag.'], c:'Check: the wraps sit tight and even with no crossings, and the double turn is snug round the eye. Always moisten before tightening, so friction heat doesn\'t weaken the line, and give the knot a firm pull before casting. It is a standard uni knot with the line through the eye twice: the double turn adds grip and spreads the load. Also called the modified uni knot.'},
+      {n:'Palomar knot', u:'A very strong knot for a hook, swivel or small lure, good in braid. The whole hook or lure has to pass through the loop, so for large lures use the improved uni knot.', s:['Double about 15 cm of line and pass the doubled end through the eye.','Tie a loose overhand knot with the doubled line, without twisting it.','Pass the hook or lure through the loop.','Moisten and tighten by pulling both the standing line and the tag, so the loop settles over the eye.','Trim the tag.'], c:'Check: the loop sits round the eye, above the knot, and the two strands through the eye lie parallel with no crossings. If the eye is too small for doubled line, use the improved uni knot.'}
+    ],
     knotTool:'Knots', knotShort:'Seven essential knots', knotSub:'Short reminders for when you need a knot quickly. Practise them at home: a knot you have only read about is hard to tie in wind and cold.',
-    knotWarn:'For gear, tarp and tent. Not for climbing or belaying.', credits:'Image credits', noAuthor:'author not stated', illFrom:'illustration from', photoFrom:'photo from', adaptedPlain:'adapted (cropped, colours)', adaptedScaled:'adapted (scaled)', adaptedColours:'adapted (colours)', adaptedCrop:'adapted (cropped, scaled)', adaptedPrusik:'adapted (cropped, background lightened, enlarged)', adaptedBg:'adapted (cropped, background made white)', illBy:'illustration by', photoBy:'photo by', adapted:'adapted (cropped, labels removed, colours)', adaptedPhoto:'adapted (cropped, shadow softened)',
+    knotWarn:'For gear, tarp and tent. Not for climbing or belaying.', credits:'Image credits', noAuthor:'author not stated', illFrom:'illustration from', photoFrom:'photo from', adaptedPlain:'adapted (cropped, colours)', adaptedScaled:'adapted (scaled)', adaptedColours:'adapted (colours)', adaptedCrop:'adapted (cropped, scaled)', adaptedCut:'adapted (cropped)', adaptedPrusik:'adapted (cropped, background lightened, enlarged)', adaptedBg:'adapted (cropped, background made white)', illBy:'illustration by', photoBy:'photo by', adapted:'adapted (cropped, labels removed, colours)', adaptedPhoto:'adapted (cropped, shadow softened)',
     knots:[
       {n:'Bowline', u:'A fixed loop that does not slip, and is easy to untie after load. Around a tree, a person, or a pack.', s:['Make a small loop in the standing part, with the working end side on top.','Bring the end up through the small loop from below.','Pass it around behind the standing part.','Bring it back down through the small loop.','Hold the end and the big loop together, and pull the standing part tight.'], c:'Remember: the rabbit comes out of the hole, around the tree, and back down the hole. Leave the end at least 10 cm long.'},
       {n:'Taut-line hitch', u:'An adjustable loop for guy lines on tents and tarps. Slide the knot to tighten or loosen.', s:['Pass the end around the peg or anchor.','Make two turns around the standing part, working back towards the peg, inside the loop.','Make one more turn around the standing part, on the far side of the first two (furthest from the peg), and tuck the end under itself in this turn, so it forms a separate half hitch.','Pull it tight.','Slide the knot up the line to tighten, and down to loosen.'], c:'In Norwegian it is called teltstikk. Often confused with the similar Magnus hitch (Magnus-stikk). Check: the last turn should sit on its own, separate from the first two, with the end leaving from there. If the end goes back down between the turns, you have tied the Magnus variant. The taut-line hitch is the best choice for guy lines. If it slips in thin or slippery cord, add one more inside turn.'},
@@ -762,8 +773,13 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Varmeflaske i soveposen','<p>Fyll en tett flaske med omtrent 1 liter nykokt vann og pakk den inn i en tykk ullsokk. Den gir fortsatt varme om morgenen, og vannet er klart til å drikke. Sjekk lokket nøye.</p>'],
       ['Barn, eldre og hard trening','<p>Barn og eldre taper varme raskere og trenger ekstra oppfølging. Unngå harde intervaller når det er kaldere enn rundt –15 °C, og skift til tørre klær så snart turen er over.</p>']
     ],
+    fishTool:'Fiske', fishShort:'Knuter for krok, svivel og sluk', fishSub:'Knuter og råd til fisketuren. Øv på knutene hjemme, med snøret du fisker med.', fishHd:'Knuter',
+    fishKnots:[
+      {n:'Forbedret uniknute', u:'Fester snøret til krok, svivel eller sluk. Holder godt i nylon, fluorkarbon og glatt flettesnøre, og sluken trenger aldri gjennom en løkke.', s:['Træ snøret gjennom øyet to ganger, så det ligger en dobbel runde rundt øyet.','Legg tampen tilbake langs snøret og lag en løkke ved å legge den over det doble snøret.','Surr tampen 5–6 ganger rundt det doble snøret, inne i løkken. I flettesnøre 7–8.','Fukt og trekk i tampen så surringene samler seg.','Trekk i snøret til knuten glir ned mot øyet, og klipp tampen.'], c:'Sjekk: surringene ligger tett og jevnt uten kryss, og den doble runden ligger stramt rundt øyet. Fukt alltid før du strammer, så snøret ikke svekkes av friksjonsvarme, og gi knuten et fast drag før du kaster. Det er en vanlig uniknute der snøret går to ganger gjennom øyet: den doble runden gir mer friksjon og fordeler trekket. Kalles også modifisert uniknute.'},
+      {n:'Palomarknute', u:'Svært sterk knute for krok, svivel eller liten sluk, god i flettesnøre. Hele kroken eller sluken må gjennom løkken, så til store sluker passer forbedret uniknute bedre.', s:['Legg snøret dobbelt på ca. 15 cm og før den doble enden gjennom øyet.','Slå en løs halvknute med det doble snøret, uten å vri det.','Før kroken eller sluken gjennom løkken.','Fukt og stram ved å trekke i både snøret og tampen, så løkken legger seg over øyet.','Klipp tampen.'], c:'Sjekk: løkken ligger rundt øyet, over knuten, og de to partene gjennom øyet ligger parallelt uten kryss. Er øyet for lite til dobbelt snøre, bruk forbedret uniknute.'}
+    ],
     knotTool:'Knuter', knotShort:'Sju viktige knuter', knotSub:'Korte påminnelser for når du trenger en knute raskt. Øv på dem hjemme: en knute du bare har lest om, er vanskelig å slå i vind og kulde.',
-    knotWarn:'For utstyr, tarp og telt. Ikke for klatring eller sikring.', credits:'Bildekreditter', noAuthor:'forfatter ikke oppgitt', illFrom:'illustrasjon fra', photoFrom:'foto fra', adaptedPlain:'tilpasset (utsnitt, farger)', adaptedScaled:'tilpasset (skalert)', adaptedColours:'tilpasset (farger)', adaptedCrop:'tilpasset (utsnitt, skalert)', adaptedPrusik:'tilpasset (utsnitt, bakgrunn lysnet, forstørret)', adaptedBg:'tilpasset (utsnitt, hvit bakgrunn)', illBy:'illustrasjon av', photoBy:'foto av', adapted:'tilpasset (utsnitt, merking fjernet, farger)', adaptedPhoto:'tilpasset (utsnitt, skygge dempet)',
+    knotWarn:'For utstyr, tarp og telt. Ikke for klatring eller sikring.', credits:'Bildekreditter', noAuthor:'forfatter ikke oppgitt', illFrom:'illustrasjon fra', photoFrom:'foto fra', adaptedPlain:'tilpasset (utsnitt, farger)', adaptedScaled:'tilpasset (skalert)', adaptedColours:'tilpasset (farger)', adaptedCrop:'tilpasset (utsnitt, skalert)', adaptedCut:'tilpasset (utsnitt)', adaptedPrusik:'tilpasset (utsnitt, bakgrunn lysnet, forstørret)', adaptedBg:'tilpasset (utsnitt, hvit bakgrunn)', illBy:'illustrasjon av', photoBy:'foto av', adapted:'tilpasset (utsnitt, merking fjernet, farger)', adaptedPhoto:'tilpasset (utsnitt, skygge dempet)',
     knots:[
       {n:'Pålestikk (Bowline)', u:'En fast løkke som ikke glir, og som er lett å løse opp etter belastning. Rundt et tre, en person eller en sekk.', s:['Lag en liten løkke i den faste parten, med tamp-siden øverst.','Før tampen opp gjennom den lille løkka nedenfra.','Før den rundt bak den faste parten.','Før den ned igjen gjennom den lille løkka.','Hold tampen og den store løkka sammen, og trekk til i den faste parten.'], c:'Husk: haren kommer opp av hullet, løper rundt treet, og hopper ned i hullet igjen. La tampen være minst 10 cm lang.'},
       {n:'Teltstikk (Taut Line Hitch)', u:'En justerbar løkke for barduner på telt og tarp. Skyv knuten for å stramme eller slakke.', s:['Før tampen rundt pluggen eller festet.','Ta to tørn rundt den faste parten, innover mot pluggen, på innsiden av løkka.','Ta ett tørn til rundt den faste parten, på motsatt side av de to første (lengst fra pluggen), og stikk tampen under seg selv i dette tørnet, så det blir et eget halvstikk.','Trekk til.','Skyv knuten oppover for å stramme, nedover for å slakke.'], c:'Forveksles ofte med Magnus-stikket, som ligner. Sjekk: det siste tørnet skal ligge for seg selv, adskilt fra de to første, og tampen går ut derfra. Går tampen tilbake ned mellom tørnene, har du slått Magnus-varianten. Taut Line Hitch er det beste valget til barduner. Glir det i tynn eller glatt snor, ta ett ekstra tørn på innsiden.'},
@@ -1147,6 +1163,7 @@ function render(){
     if (view === 'tool:food') return renderFood();
     if (view === 'tool:weight') return renderWeight();
     if (view === 'tool:knots') return renderKnots();
+    if (view === 'tool:fishing') return renderKnots('fishing');
     if (view === 'tool:sun') return renderSun();
     if (view === 'tool:phone') return renderPhone();
     if (view === 'tool:winter') return renderWinter();
@@ -1349,7 +1366,7 @@ function renderIndex(){
     return;
   }
   const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
-  const old = {knots:[T.knotTool, T.knotShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
+  const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
   main.innerHTML = `<p class="tool-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
     `<h2 class="ix-group g-${gr.key}"><i aria-hidden="true"></i>${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
@@ -1426,7 +1443,7 @@ const GUIDE_TXT = {
   }
 };
 const GUIDE_GROUPS = [
-  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'fire']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'fishing', 'tarp', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['winter', 'aval', 'sun']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['shell', 'boots', 'tent', 'stoveboard', 'phone']}
 ];
@@ -1439,6 +1456,7 @@ const GUIDE_LINKS = {
   'std:general:solbriller / snøbriller':'sun', 'std:m_vinter:goggles / alpinbriller (dårlig vær, også reserve for solbrillene)':'sun',
   'std:prep:mobil':'phone',
   'std:repair:tau / paracord (langt)':'knots',
+  'std:m_fiske:kroker':'fishing', 'std:m_fiske:svivler / sene':'fishing',
   'std:cook:brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)':'stoveboard',
   'std:m_bil:tarp':'tarp', 'std:m_bil:tarpstenger':'tarp', 'std:general:jervenduk':'tarp',
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
@@ -2163,18 +2181,30 @@ function lensChart(T){
     ${rows.map(r => `<div class="lc-row"><span class="lc-lab">${T.sunCat} ${r[0]}<small>VLT ${r[1]}</small></span><div class="lc-track"><i style="left:${r[2]}%;width:${r[3]-r[2]}%;opacity:${r[4]}"></i></div></div>`).join('')}
   </div><p>${T.sunVlt}</p>`;
 }
-function renderKnots(){
+function knotCards(knots, files){
+  return knots.map((k, n) => `<details class="knot"><summary>${[].concat(files[n] || []).map(f => /\.svg$/.test(f) ? `<div class="knot-img" data-knotsrc="${f}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${f}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`).join('')}<b>${k.n}</b><span>${k.u}</span></summary>
+      <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('');
+}
+function knotCredits(knots, credits){
   const T = t();
-    $('listName').textContent = T.knotTool;
-  document.title = T.knotTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
-    <p class="tool-sub">${T.knotSub}</p>
-    <p class="calc-warn">${T.knotWarn}</p>
-    ${T.knots.map((k, n) => `<details class="knot"><summary>${[].concat(KNOT_FILES[n] || []).map(f => /\.svg$/.test(f) ? `<div class="knot-img" data-knotsrc="${f}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${f}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`).join('')}<b>${k.n}</b><span>${k.u}</span></summary>
-      <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('')}
-    ${KNOT_CREDITS.length ? `<p class="credits"><b>${T.credits}:</b> ${KNOT_CREDITS.slice().sort((a, b) => a.k - b.k).map(c => `${esc(T.knots[c.k].n)}: ${c.author
+  return credits.length ? `<p class="credits"><b>${T.credits}:</b> ${credits.slice().sort((a, b) => a.k - b.k).map(c => `${esc(knots[c.k].n)}: ${c.author
       ? `${c.photo ? T.photoBy : T.illBy} <a href="${c.url}" target="_blank" rel="noopener">${esc(c.author)}</a>, Wikimedia Commons`
-      : `${c.photo ? T.photoFrom : T.illFrom} <a href="${c.url}" target="_blank" rel="noopener">Wikimedia Commons</a> (${T.noAuthor})`}, <a href="${c.licUrl}" target="_blank" rel="noopener">${c.lic}</a>, ${T[c.chg || 'adapted']}.`).join(' ')}</p>` : ''}`;
+      : `${c.photo ? T.photoFrom : T.illFrom} <a href="${c.url}" target="_blank" rel="noopener">Wikimedia Commons</a> (${T.noAuthor})`}, <a href="${c.licUrl}" target="_blank" rel="noopener">${c.lic}</a>, ${T[c.chg || 'adapted']}.`).join(' ')}</p>` : '';
+}
+function renderKnots(set){
+  const T = t(), fish = set === 'fishing';
+  const title = fish ? T.fishTool : T.knotTool;
+  $('listName').textContent = title;
+  document.title = title + ' · ' + T.app;
+  const back = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? T.tabPlan : T.tabGuide}</button>`;
+  main.innerHTML = fish
+    ? `${back}<p class="tool-sub">${T.fishSub}</p>
+      <section class="manual"><h2>${T.fishHd}</h2>${knotCards(T.fishKnots, FISH_KNOT_FILES)}</section>
+      ${knotCredits(T.fishKnots, FISH_KNOT_CREDITS)}`
+    : `${back}<p class="tool-sub">${T.knotSub}</p>
+      <p class="calc-warn">${T.knotWarn}</p>
+      ${knotCards(T.knots, KNOT_FILES)}
+      ${knotCredits(T.knots, KNOT_CREDITS)}`;
   main.querySelectorAll('[data-knotsrc]').forEach(async el => {
     const src = el.dataset.knotsrc;
     if (!knotSvgCache[src]){
@@ -2182,6 +2212,8 @@ function renderKnots(){
       catch(e){ el.remove(); return; }
     }
     el.innerHTML = knotSvgCache[src];
+    const vb = el.firstElementChild && el.firstElementChild.viewBox && el.firstElementChild.viewBox.baseVal;
+    if (vb && vb.height && vb.width / vb.height > 1.6) el.classList.add('wide');
   });
 }
 function foodState(){

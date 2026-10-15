@@ -13,7 +13,7 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - `friluftsliv(L)` – the template list, written as `[Norwegian, English]` pairs. Prefixes in item strings: `> ` = sub-item, `* ` = included in the light day-hike view, `@key ` = links to a bag list.
 - Main sections, trip modes (`mode:`), and bag lists (`bag:true`: Forberedelser, Førstehjelpssett, Reparasjonssett, Personlig pleie). A non-sub item followed by sub-items is rendered as a subheading and is not counted.
 - `MODES` (trip types), `CAT_ICONS` (section icons), `SKINS` (Fjell, Mose, Fjord, Sommereng).
-- Tabs: Pakkliste, Notater, Planlegg (Mat, Drivstoff, Sekkvekt, Vannblanding), Guider (grouped: Utstyr og vedlikehold, Ferdigheter i felt, Vær og sikkerhet), Kompass.
+- Tabs: Pakkliste, Notater, Planlegg (Mat, Drivstoff, Sekkvekt, Vannblanding), Guider (grouped: Ferdigheter i felt, Vær og sikkerhet, Utstyr og vedlikehold; Fiske under Ferdigheter i felt), Kompass.
 - Utemodus (outdoor mode): larger targets, editing locked, screen kept on, strict tap filter, Regnlås (rain lock), Nattlys (red night light), Angre (undo).
 - Data is stored in `localStorage` under `KEY`.
 
@@ -44,6 +44,8 @@ Varde (working name, may change) is an offline web app (PWA) for planning and pa
 - **Updates:** `sw.js` fetches pages with `cache:'no-cache'`, registration uses `updateViaCache:'none'`, and the page reloads once when a new version takes over.
 - **Sun times:** calculated offline (`sunPos`, `sunDay`) from `state.pos` (GPS) and the date.
 - **Sun and moon on the compass rose (from varde-v23):** two chips under Hold retningen switch them, both on by default (`state.skyNow`, `state.skyRiseSet`, read through `skyOn()`). Sol og måne nå: the sun with rays and the moon in its phase (`skyNowMarks`, `moonAzAlt`, `moonGlyph`), faded below the horizon, redrawn every minute. Soloppgang og solnedgang: a half sun on a horizon with an arrow up or down, plus a short line at the rim for the exact direction (`sunMarks`, `riseSetMark`), for the chosen date. Sun symbols use `--sun` (amber; red in Nattlys), never the north red. Symbols carry the class `upr` and are turned back by `uprightMarks()` so they stay upright as the dial turns. The chips are switches, so they stay locked in Regnlås.
+- **Fiske guide (from varde-v24):** fishing knots live in their own guide (`fishing`, in Ferdigheter i felt after Knuter), so the Knuter page keeps its own warning and count. Cards in `UI.fishKnots` (both languages, same shape as `knots`), pictures in `FISH_KNOT_FILES`, credits in `FISH_KNOT_CREDITS`; drawn by `renderKnots('fishing')` with the shared `knotCards()` and `knotCredits()`. Linked from the Fiske trip type (Kroker, Svivler / sene). More fishing content goes on this page.
+- **Wide knot drawings:** an SVG whose viewBox is wider than 1.6 : 1 gets the class `wide` and fills the card width (max 220 px high) instead of the fixed 220 px height.
 - **Knot images:** separate SVG files in `knots/`, listed in `KNOT_FILES` (by knot index) and credited in `KNOT_CREDITS`, shown on the Knuter page. They keep their own licence (see `knots/LICENSE.md`), use `var(--knot-line)` and `var(--knot-fill)` for colours, and are precached in `sw.js`. Only add images that have been checked against the knot tied in real rope, and always add the credit and the licence row.
 
 ## Standing rule: rain lock and navigation
