@@ -120,6 +120,13 @@ textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .manual details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:8px}
 .manual summary{padding:12px 14px;font-weight:600;cursor:pointer}
 .manual details p{margin:0;padding:0 14px 14px;line-height:1.55}
+.sky details.fold{margin-top:14px}
+.sky .fold-in{padding:0 14px 14px}
+.sky .fold-in p{padding:0}
+.sky .fold-in p + p{margin-top:8px}
+.sky .fold-in h3.grp:first-child{margin-top:0}
+.btn.add-link{border:1.5px dashed var(--line-strong);background:transparent;gap:6px}
+.btn.add-link span{font-size:1.2em;line-height:1;font-weight:600;margin-right:6px}
 .food-out{list-style:none;margin:0;padding:0}
 .food-out li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .food-out li:first-child{border-top:0}
@@ -468,7 +475,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v24';
+const APP_VERSION = 'varde-v25';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -502,10 +509,10 @@ const UI = {
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
       ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on and editing is locked. Rain lock lets you read without water on the screen ticking anything.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
-      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Notes, Plan, Guides and Compass are at the bottom.']
+      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Varde has no account and sends nothing from your phone. Notes, Plan, Guides and Compass are at the bottom.']
     ],
     help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
-    posNote:'The sun times are calculated on the phone from your position and the date. GPS works without mobile coverage.',
+    posNote:'The position is fetched only when you tap Get position or Update position. It is stored only on your phone and sent nowhere. It is used for the sun and moon, the compass and to choose the right weather and avalanche links. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
@@ -513,7 +520,7 @@ const UI = {
     skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
     dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'The links match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
-    addLink:'Add your own link', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
+    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:'Varde has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). The code is open, so anyone can check what the app does:', privacyLink:'Varde on GitHub', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
@@ -678,10 +685,10 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
       ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på og redigering låses. Regnlås lar deg lese uten at vann på skjermen krysser av noe.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
-      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Notater, Planlegg, Guider og Kompass finner du nederst.']
+      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Varde har ingen konto og sender ingenting fra mobilen din. Notater, Planlegg, Guider og Kompass finner du nederst.']
     ],
     help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
-    posNote:'Soltidene regnes ut på mobilen fra posisjonen og datoen. GPS virker uten mobildekning.',
+    posNote:'Posisjonen hentes bare når du trykker Hent posisjon eller Oppdater posisjon. Den lagres bare på mobilen og sendes ingen steder. Den brukes til sol og måne, kompasset og til å velge riktige vær- og skredlenker. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
@@ -689,7 +696,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
     dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'Lenkene tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
-    addLink:'Legg til egen lenke', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
+    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:'Varde har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Koden er åpen, så alle kan sjekke hva appen gjør:', privacyLink:'Varde på GitHub', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
@@ -1218,7 +1225,8 @@ function render(){
           '</div></div>';
       }
     }
-    html += `<div class="sub-tools"><button class="chip small" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip small" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
+    const allOpen = cats.length > 1 && cats.every(c => c.open);
+    html += `<div class="sub-tools">${cats.length > 1 ? `<button class="chip small" data-nav data-act="foldAll" aria-expanded="${allOpen}">${allOpen ? T.foldAll : T.openAll}</button>` : ''}<button class="chip small" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip small" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
   }
   if (tot && d === tot && !editing){
     html += `<div class="done-banner">${T_MARK}<span>${T.allDone}</span></div>`;
@@ -1349,7 +1357,9 @@ function renderLists(){
     <p class="tool-tip">${T.langNote}</p>
     <div class="section-label">${T.help}</div>
     <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>
-    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>`;
+    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>
+    <div class="section-label">${T.privacy}</div>
+    <p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`;
   if (!state.field) html += `<div class="section-label">${T.startOver}</div><p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`;
   main.innerHTML = html;
@@ -1950,21 +1960,32 @@ function sunHtml(){
   else if (ev.dusk) rows.push([T.dusk, hm(ev.dusk)]);
   if (ev.ge && ev.set) rows.push([T.golden, hm(ev.ge) + '–' + hm(ev.set)]);
   const list = rr => `<ul class="food-out">${rr.map(r => `<li><span>${r[0]}</span><span class="q sm">${r[1]}</span></li>`).join('')}</ul>`;
+  h += `<details class="fold" data-fold="sky"${foldOpen('sky') ? ' open' : ''}><summary>${T.skyFold}</summary><div class="fold-in">`;
   h += `<h3 class="grp">${T.sunTitle}</h3>${list(rows)}`;
-  h += `<h3 class="grp">${T.moonTitle}</h3>${list([[T.phaseLbl, T.phases[pi]], [T.litLbl, Math.round(ph.fraction * 100) + ' %'], [T.moonrise, md.rise ? hm(md.rise) : T.noneToday], [T.moonset, md.set ? hm(md.set) : T.noneToday]])}`;
+  h += `<h3 class="grp">${T.moonTitle}</h3>${list([[T.phaseLbl, T.phases[pi]], [T.litLbl, Math.round(ph.fraction * 100) + ' %'], [T.moonrise, md.rise ? hm(md.rise) : T.noneToday], [T.moonset, md.set ? hm(md.set) : T.noneToday]])}</div></details>`;
   // 3. settings
   const pt = new Date(p.t), dec = x => x.toFixed(2).replace('.', state.lang === 'no' ? ',' : '.');
   const coord = `${dec(Math.abs(p.lat))}° ${p.lat >= 0 ? 'N' : 'S'}, ${dec(Math.abs(p.lon))}° ${p.lon >= 0 ? (state.lang === 'no' ? 'Ø' : 'E') : (state.lang === 'no' ? 'V' : 'W')}`;
   const when = pt.toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short'}) + ' ' + hm(pt);
-  h += `<h3 class="grp">${T.dateAndPos}</h3>
+  h += `<details class="fold" data-fold="pos"${foldOpen('pos') ? ' open' : ''}><summary>${T.dateAndPos}</summary><div class="fold-in">
     <div class="calc"><label class="cfield"><span>${T.date}</span><input type="date" data-sundate value="${date}"></label>
       <div class="cfield"><span>${T.posLbl}</span><button class="btn" data-act="getPos">${posBusy ? T.posWait : T.updPos}</button></div></div>
-    <p class="calc-basis">${T.posFrom(coord, when)}</p>`;
+    <p class="calc-basis">${T.posFrom(coord, when)}</p><p class="calc-basis">${T.posNote}</p>`;
   if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
+  h += '</div></details>';
   // 4. note
   h += `<p class="calc-basis">${T.sunCaveat}</p></section>`;
   return h;
 }
+/* fold-outs on Kompass (v25): open by default, state remembered; folding is navigation (summary) */
+function foldOpen(k){ return !(state.folds && state.folds[k] === false); }
+main.addEventListener('toggle', e => {
+  const d = e.target;
+  if (!d.matches || !d.matches('details.fold[data-fold]')) return;
+  state.folds = state.folds || {};
+  if (foldOpen(d.dataset.fold) === d.open) return;
+  state.folds[d.dataset.fold] = d.open; save();
+}, true);
 function getPos(){
   const T = t();
   if (!navigator.geolocation){ posMsg = T.posErr; renderCompass(); return; }
@@ -2012,7 +2033,7 @@ function linksHtml(){
   h += '</div>';
   if (!rg) h += `<p class="calc-basis">${T.linksNoPos}</p>`;
   else if (rg === 'other') h += `<p class="calc-basis">${T.avalancheLocal}</p>`;
-  if (!state.field) h += `<div class="row-btns"><button class="btn" data-act="addLink">${T.addLink}</button></div>`;
+  if (!state.field) h += `<div class="row-btns"><button class="btn add-link" data-act="addLink"><span aria-hidden="true">+</span>${T.addLink}</button></div><p class="calc-basis">${T.addLinkHint}</p>`;
   h += `<p class="calc-basis">${T.linksNote}</p></section>`;
   return h;
 }
@@ -2640,6 +2661,7 @@ main.addEventListener('click', async e => {
   if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
   if (act === 'rainLock'){ lockRain(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
+  if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); save(); render(); return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
