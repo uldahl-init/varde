@@ -64,7 +64,7 @@ body.field main.wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom,0px)
 .cat.complete .count{color:var(--red);font-weight:600}
 .chev{width:18px;height:18px;stroke:var(--muted);transition:transform .2s ease}
 .cat.closed .chev{transform:rotate(-90deg)}
-.cat.closed .items,.cat.closed .cat-tools{display:none}
+.cat.closed .items,.cat.closed .cat-tools,.cat.closed .cat-note{display:none}
 .cat-tools{display:flex;gap:8px;margin:2px 0 8px}
 
 .items{list-style:none;margin:4px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -171,7 +171,8 @@ body.notlist .list-switch svg{display:none}
 .modes-toggle .mt-val{flex:1;min-width:0;color:var(--muted);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .modes-toggle .chev{flex:none}
 .modes-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.modes-open{margin-top:10px}
+.modes-toggle[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.modes-open{margin-top:-1px;padding:2px 14px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
 .subhead{padding:14px 14px 4px;font-weight:600;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
 .items > li.subhead:first-child{border-top:0}
 .index{display:flex;flex-direction:column;gap:10px;margin-top:16px}
@@ -203,9 +204,9 @@ body.notlist .list-switch svg{display:none}
 .w-pi input:disabled + span{color:var(--muted)}
 #panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
 .m-kcal{color:var(--muted);font-weight:600;font-size:.85rem;white-space:nowrap}
-.ix-group{display:flex;align-items:center;gap:8px;margin:22px 0 -6px;font-family:var(--head);font-weight:600;font-size:.95rem;letter-spacing:.02em}
-.ix-group i{width:10px;height:10px;border-radius:50%;background:var(--gc)}
-.ix-group{color:var(--gc)}
+/* Guider groups (v27): a header band per group, tinted in the group colour, same left stripe as its cards */
+.ix-group{margin:28px 0 -4px;padding:10px 14px;border-left:5px solid var(--gc);border-radius:10px;background:var(--surface);background:color-mix(in srgb,var(--gc) 13%,var(--surface));color:var(--ink);font-family:var(--head);font-weight:600;font-size:1.3rem;line-height:1.2}
+.tool-sub + .ix-group{margin-top:18px}
 .index button.g-gear,.index button.g-field,.index button.g-safety{border-left:5px solid var(--gc)}
 .g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}
 body{--gsafe:#3F7FA8}
@@ -221,9 +222,14 @@ body.night .pc-food,body.night .pc-fuel,body.night .pc-weight,body.night .pc-wat
 .index button.pc{border:1.5px solid var(--pc)}
 .pc-ic{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1.5px solid var(--pc)}
 .index .pc-ic svg{width:26px;height:26px;stroke:var(--pc);stroke-width:2;stroke-linejoin:round}
-.wc-btn{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;color:var(--muted);font-weight:600;font-size:.9rem;cursor:pointer}
-.wc-btn svg{width:20px;height:20px;fill:none;stroke:var(--pc-wind);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-body.night .wc-btn svg{stroke:var(--red)}
+/* Links to Planlegg (v27): one style everywhere, as the Vindkjøling button on Kompass. Icon in the calculator's colour. */
+.plan-link{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;color:var(--muted);font-weight:600;font-size:.9rem;line-height:1.2;text-align:left;cursor:pointer}
+.plan-link svg{flex:none;width:20px;height:20px;fill:none;stroke:var(--pc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.item .plan-link{flex:none;margin:0 8px 0 0;padding:6px 10px;gap:6px;font-size:.85rem;background:var(--bg)}
+.item .plan-link svg{width:18px;height:18px}
+body.field .item .plan-link{padding:10px 12px}
+.guide p .plan-link{margin-top:0}
+.item .plan-link span{max-width:7em}
 .wind-row{display:flex;align-items:center;gap:8px}
 .wind-row input{flex:1;min-width:0;text-align:center}
 .wind-row .btn{min-width:46px;min-height:46px;padding:0;font-size:1.3rem}
@@ -290,8 +296,11 @@ body[data-skin="fjord"]{--bg:#E8EEF2;--surface:#FFFFFF;--ink:#17262F;--muted:#5A
 :root[data-theme="dark"] body[data-skin="mose"]{--bg:#1A1C15;--surface:#23261C;--ink:#ECE8DC;--muted:#A39F8C;--line:#343828;--line-strong:#555A43;--red:#D99A33;--lichen:#A9BD8A;--hd:#12140E;--hdt:#ECE8DC;--chip:#2C3122}
 :root[data-theme="dark"] body[data-skin="fjord"]{--bg:#111B23;--surface:#18252F;--ink:#E4ECF1;--muted:#8FA2AE;--line:#273744;--line-strong:#42596A;--red:#F07F3A;--lichen:#7FB6C6;--hd:#0B141B;--hdt:#E4ECF1;--chip:#1F3443}
 .cat-head .ci{width:22px;height:22px;flex:none;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;align-self:center}
-.skins{display:flex;gap:8px;flex-wrap:wrap}
-.skin-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:600}
+.appear{margin-top:18px;padding:2px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.appear .section-label{margin-top:14px}
+.skins{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:520px){.skins{grid-template-columns:1fr 1fr 1fr}}
+.skin-btn{width:100%;min-width:0;display:flex;align-items:center;gap:8px;padding:10px 12px;text-align:left;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:600}
 .skin-btn[aria-pressed="true"]{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
 .sw{display:flex;border-radius:4px;overflow:hidden}
 .sw i{width:12px;height:18px;display:block}
@@ -300,6 +309,17 @@ body[data-skin="eng"]{--bg:#F4EFF2;--surface:#FFFFFF;--ink:#2E2430;--muted:#6E60
 :root:not([data-theme="light"]) body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
 }
 :root[data-theme="dark"] body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
+/* Berg / Rock and Lett bris / Soft breeze (v27). Berg has a faint stone grain, drawn in the app (offline), off in Nattlys. */
+body[data-skin="berg"]{--bg:#D3D0CA;--surface:#ECEAE6;--ink:#1E1F21;--muted:#55575A;--line:#BFBBB4;--line-strong:#8E8A83;--red:#A84A24;--lichen:#5F6E42;--hd:#26272A;--hdt:#E8E6E1;--chip:#3A3B3F;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body[data-skin="bris"]{--bg:#E6F0F7;--surface:#FFF9E8;--ink:#1E2A33;--muted:#56646E;--line:#D3DFE8;--line-strong:#A4B6C3;--red:#BF4F33;--lichen:#4F8A62;--hd:#47759A;--hdt:#FFF9E8;--chip:#3D6688}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]) body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+:root:not([data-theme="light"]) body[data-skin="bris"]{--bg:#101B24;--surface:#182733;--ink:#F2EEDF;--muted:#9DAAB3;--line:#263A48;--line-strong:#3F5A6C;--red:#F08A6C;--lichen:#8FC3A0;--hd:#0B151D;--hdt:#F2EEDF;--chip:#1E3342}
+}
+:root[data-theme="dark"] body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+:root[data-theme="dark"] body[data-skin="bris"]{--bg:#101B24;--surface:#182733;--ink:#F2EEDF;--muted:#9DAAB3;--line:#263A48;--line-strong:#3F5A6C;--red:#F08A6C;--lichen:#8FC3A0;--hd:#0B151D;--hdt:#F2EEDF;--chip:#1E3342}
+body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
+body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
 :root body.night.night{--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
 body.night .chip.field-on,body.night .btn.primary{color:#000}
 .compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
@@ -325,7 +345,8 @@ html,body{touch-action:manipulation}
 .field-btn.on svg{stroke:#fff}
 .field-btn.on small{color:rgba(255,255,255,.85)}
 .field-tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
-.sub-tools{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.sub-tools{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:12px}
+.sub-tools .chip{min-width:0;width:100%;text-align:center;line-height:1.25}
 body.listlock .items .mark{opacity:.55}
 .chip.small{padding:6px 12px;font-size:.85rem}
 .chip.own{border-style:dashed;border-color:var(--red);color:var(--red)}
@@ -495,7 +516,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v26';
+const APP_VERSION = 'varde-v27';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -618,9 +639,9 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Dress in layers','<ul><li><b>Three layers:</b> wool closest to the skin, a looser mid layer, and a roomy wind- and water-repellent shell. Air between the layers insulates.</li><li><b>Mittens</b> keep warmer than gloves.</li><li>A <b>windproof hat that covers the ears</b>, and a neck gaiter or scarf: head, neck and face lose a lot of heat.</li><li><b>Boots one or two sizes bigger</b>, with room for thick wool socks and a good insole.</li></ul>'],
       ['Avoid sweat and damp','<p>Damp is one of the biggest enemies in the cold. Take off a layer before you start sweating, vent your clothes, and change into something dry when you stop. Keep a dry set that is only used in the tent.</p>'],
       ['Skin, metal and nicotine','<ul><li>Avoid <b>moisturiser and liquid make-up</b>: they contain water and increase the risk of frostbite. Use a water-free cold cream instead.</li><li>Avoid shaving and heavy face washing before going out: the skin\'s natural oils protect it.</li><li>Do not touch <b>bare metal</b> with your fingers in hard frost; at –10 °C it can damage skin quickly. Be aware of rings, earrings and watches.</li><li><b>Nicotine</b> narrows the blood vessels in fingers and toes and increases the risk of cold injuries.</li></ul>'],
-      ['Food and drink','<p>The body needs about <b>30 % more energy</b> in the cold, so eat often. Too little fluid makes it harder for the body to keep warm and increases the risk of cold injuries. Carry the water bottle inside your jacket so it does not freeze, and bring a thermos with a hot drink.</p>'],
-      ['Warning signs of cold injury','<ul><li>Fingers that get clumsy</li><li>Pain in hands or feet</li><li>Red skin, swelling, stinging, tingling or numbness</li><li>White patches or blisters, first on the nose, cheeks, ears and fingers</li></ul><p>Warm up early, check each other\'s faces, and seek medical help for blisters or skin that stays white and hard.</p><p>Wind makes it colder on bare skin. <button class="btn small" data-nav data-act="openWind" data-from="guide">Wind chill ›</button></p>'],
-      ['The tent on a winter evening','<p>Pack what goes into the tent in its own stuff sacks, so you get in quickly. Take in: the <b>dry tent clothes</b> (thick wool socks and underwear, balaclava, down booties and mittens), the food you need for the evening, thermos and bottle, stove, pot and fuel, toiletries, head torch and tent lamp, <b>batteries in the sleeping bag</b>, a snow brush, and a large bag of clean snow for melting. Keep the camera in a zip bag against condensation, and the first aid and repair kits close by. The rest can stay in the pulk.</p>'],
+      ['Food and drink','<p>The body needs about <b>30 % more energy</b> in the cold, so eat often. Too little fluid makes it harder for the body to keep warm and increases the risk of cold injuries. Carry the water bottle inside your jacket so it does not freeze, and bring a thermos with a hot drink.</p><p>Plan the food and energy for the trip:</p><p>[[plan:food]]</p>'],
+      ['Warning signs of cold injury','<ul><li>Fingers that get clumsy</li><li>Pain in hands or feet</li><li>Red skin, swelling, stinging, tingling or numbness</li><li>White patches or blisters, first on the nose, cheeks, ears and fingers</li></ul><p>Warm up early, check each other\'s faces, and seek medical help for blisters or skin that stays white and hard.</p><p>Wind makes it colder on bare skin.</p><p>[[plan:wind]]</p>'],
+      ['The tent on a winter evening','<p>Pack what goes into the tent in its own stuff sacks, so you get in quickly. Take in: the <b>dry tent clothes</b> (thick wool socks and underwear, balaclava, down booties and mittens), the food you need for the evening, thermos and bottle, stove, pot and fuel, toiletries, head torch and tent lamp, <b>batteries in the sleeping bag</b>, a snow brush, and a large bag of clean snow for melting. Keep the camera in a zip bag against condensation, and the first aid and repair kits close by. The rest can stay in the pulk.</p><p>Melting snow takes a lot of fuel:</p><p>[[plan:fuel]]</p>'],
       ['A hot water bottle in the sleeping bag','<p>Fill a tight bottle with about 1 litre of freshly boiled water and wrap it in a thick wool sock. It still gives warmth in the morning, and the water is ready to drink. Check the lid carefully.</p>'],
       ['Children, older people and hard exercise','<p>Children and older people lose heat faster and need extra attention. Avoid hard intervals when it is colder than about –15 °C, and change into dry clothes as soon as the trip is over.</p>']
     ],
@@ -801,9 +822,9 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kle deg i lag','<ul><li><b>Tre lag:</b> ull innerst, et løsere mellomlag, og et romslig vindtett og vannavvisende ytterlag. Luften mellom lagene isolerer.</li><li><b>Votter</b> holder varmere enn hansker.</li><li><b>Vindtett lue som dekker ørene</b>, og hals eller skjerf: hode, hals og ansikt taper mye varme.</li><li><b>Sko en til to størrelser større</b>, med plass til tykke ullsokker og en god såle.</li></ul>'],
       ['Unngå svette og fukt','<p>Fukt er en av de største fiendene i kulda. Ta av et lag før du blir svett, luft ut klærne, og skift til noe tørt når du stopper. Ha et tørt sett som bare brukes i teltet.</p>'],
       ['Hud, metall og nikotin','<ul><li>Unngå <b>fuktighetskrem og flytende sminke</b>: de inneholder vann og øker faren for frostskader. Bruk heller kuldekrem uten vann.</li><li>Unngå barbering og kraftig ansiktsvask før du går ut: hudens naturlige fett beskytter.</li><li>Ikke ta på <b>bart metall</b> med fingrene i sprengkulde; ved –10 °C kan det skade huden raskt. Tenk på ringer, øreringer og klokker.</li><li><b>Nikotin</b> trekker sammen blodårene i fingre og tær og øker faren for kuldeskader.</li></ul>'],
-      ['Mat og drikke','<p>Kroppen trenger omtrent <b>30 % mer energi</b> i kulde, så spis ofte. For lite væske gjør det vanskeligere for kroppen å holde varmen og øker faren for kuldeskader. Bær vannflasken innenfor jakka så den ikke fryser, og ha med termos med varm drikke.</p>'],
-      ['Faresignaler for kuldeskader','<ul><li>Fingre som blir klønete</li><li>Smerter i hender eller føtter</li><li>Rød hud, hevelse, stikking, prikking eller nummenhet</li><li>Hvite flekker eller blemmer, først på nese, kinn, ører og fingre</li></ul><p>Varm opp tidlig, sjekk ansiktene til hverandre, og søk legehjelp ved blemmer eller hud som forblir hvit og hard.</p><p>Vind gjør det kaldere på bar hud. <button class="btn small" data-nav data-act="openWind" data-from="guide">Vindkjøling ›</button></p>'],
-      ['Teltet en vinterkveld','<p>Pakk det som skal inn i teltet i egne pakkposer, så kommer du raskt inn. Ta inn: <b>de tørre teltklærne</b> (tykke ullsokker og ullundertøy, balaklava, dunsokker og dunvotter), maten du trenger for kvelden, termos og flaske, brenner, kjele og brensel, toalettsaker, hodelykt og teltlykt, <b>batterier i soveposen</b>, en snøbørste, og en stor pose ren snø til smelting. Ha kameraet i en zippose mot kondens, og førstehjelps- og reparasjonssettet i nærheten. Resten kan ligge i pulken.</p>'],
+      ['Mat og drikke','<p>Kroppen trenger omtrent <b>30 % mer energi</b> i kulde, så spis ofte. For lite væske gjør det vanskeligere for kroppen å holde varmen og øker faren for kuldeskader. Bær vannflasken innenfor jakka så den ikke fryser, og ha med termos med varm drikke.</p><p>Planlegg mat og energi til turen:</p><p>[[plan:food]]</p>'],
+      ['Faresignaler for kuldeskader','<ul><li>Fingre som blir klønete</li><li>Smerter i hender eller føtter</li><li>Rød hud, hevelse, stikking, prikking eller nummenhet</li><li>Hvite flekker eller blemmer, først på nese, kinn, ører og fingre</li></ul><p>Varm opp tidlig, sjekk ansiktene til hverandre, og søk legehjelp ved blemmer eller hud som forblir hvit og hard.</p><p>Vind gjør det kaldere på bar hud.</p><p>[[plan:wind]]</p>'],
+      ['Teltet en vinterkveld','<p>Pakk det som skal inn i teltet i egne pakkposer, så kommer du raskt inn. Ta inn: <b>de tørre teltklærne</b> (tykke ullsokker og ullundertøy, balaklava, dunsokker og dunvotter), maten du trenger for kvelden, termos og flaske, brenner, kjele og brensel, toalettsaker, hodelykt og teltlykt, <b>batterier i soveposen</b>, en snøbørste, og en stor pose ren snø til smelting. Ha kameraet i en zippose mot kondens, og førstehjelps- og reparasjonssettet i nærheten. Resten kan ligge i pulken.</p><p>Snøsmelting krever mye brensel:</p><p>[[plan:fuel]]</p>'],
       ['Varmeflaske i soveposen','<p>Fyll en tett flaske med omtrent 1 liter nykokt vann og pakk den inn i en tykk ullsokk. Den gir fortsatt varme om morgenen, og vannet er klart til å drikke. Sjekk lokket nøye.</p>'],
       ['Barn, eldre og hard trening','<p>Barn og eldre taper varme raskere og trenger ekstra oppfølging. Unngå harde intervaller når det er kaldere enn rundt –15 °C, og skift til tørre klær så snart turen er over.</p>']
     ],
@@ -946,7 +967,7 @@ function friluftsliv(L){
       ['Varm, lett jakke (til toppen og nedkjøringen)','Warm, light jacket (for the summit and the descent)'],
       ['Reparasjon av ski og binding (verktøy, ståltråd, tape)','Ski and binding repair (tools, wire, tape)'],['Ekstra batterier (hodelykt og skredsøker)','Spare batteries (head torch and transceiver)']],
       {mode:'topptur', note: note('Bruk sammen med Vinter, og Skredterreng når ruten går i skredterreng.','Use together with Winter, and Avalanche terrain when the route crosses avalanche terrain.')}),
-    C('m_bil','Camping og biltur','Camping and road trip',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Turdusj (pocket shower, 10 l)','Pocket shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
+    C('m_bil','Camping og biltur','Camping and road trip',[['Tripodstol','Tripod stool'],['Campingstol','Camping chair'],['Kikkert','Binoculars'],['Øks','Axe'],['Tursag','Folding saw'],['Tarp','Tarp'],['Tarpstenger','Tarp poles'],['Bålstenger','Campfire tripod'],['Turdusj (10 l)','Pocket shower (10 l)'],['Vanndunk (bil)','Water jerrycan (car)'],['Mobillader (vegg)','Phone charger (wall)'],['12V USB-lader (bil)','12V USB charger (car)']], {mode:'bil'}),
     C('m_fiske','Fiskeutstyr','Fishing gear',[['Stang','Rod'],['Snelle','Reel'],['Kroker','Hooks'],['Kniv','Knife'],['Fiskekort (ferskvann)','Fishing licence (freshwater)'],['Svivler / sene','Swivels / line'],['Pose','Bag']], {mode:'fiske'}),
     C('m_hund','Hund','Dog',[['Hundemat (porsjonert per dag) og godbiter','Dog food (portioned per day) and treats'],['Sammenleggbar vannskål','Collapsible water bowl'],['Bånd og sele (langline valgfritt)','Lead and harness (long line optional)'],['Bæsjeposer','Poo bags'],['Liggeunderlag eller pledd til hunden (for teltet)','Sleeping pad or blanket for the dog (for the tent)'],['Dekken (kulde og regn)','Dog coat (cold and rain)'],['Potesokker og potesalve (snø, skarp stein, skare)','Paw socks and paw balm (snow, sharp rock, crust)'],['Lys eller refleks på hunden','Light or reflector on the dog'],['Flåttang','Tick remover'],['Hundesekk (valgfritt, hunden bærer selv)','Dog pack (optional, the dog carries its own)'],['Halsbånd med navn og telefonnummer','Collar with name and phone number']],
       {mode:'hund', note: note('Båndtvang 1. april – 20. august i hele landet. Kommunen kan ha strengere regler.','In Norway, dogs must be kept on a lead from 1 April to 20 August. The municipality may have stricter rules.')}),
@@ -1043,7 +1064,7 @@ function migrate(){
     'Sukker':'Sukker (i liten plastboks)', 'Sugar':'Sukker (i liten plastboks)',
     'Kaffe':'Kaffe (i liten plastboks)', 'Coffee':'Kaffe (i liten plastboks)',
     'Chili':'Chili og krydder', 'Krydder':'Chili og krydder', 'Spices':'Chili og krydder',
-    'Vannbeholder / dusj (10 l)':'Turdusj (pocket shower, 10 l)', 'Water container / shower (10 l)':'Turdusj (pocket shower, 10 l)',
+    'Vannbeholder / dusj (10 l)':'Turdusj (10 l)', 'Water container / shower (10 l)':'Turdusj (10 l)',
     'Våtservietter (ca. 4x)':'Våtservietter (nedbrytbare)', 'Wet wipes (approx. 4x)':'Våtservietter (nedbrytbare)',
     'Teltlykt (USB, må lades i vanlig USB-port)':'Teltlykt (USB)', 'Tent lamp (USB, charge in a regular USB port)':'Teltlykt (USB)',
     'Ekstra batterier (til lykter som ikke kan lades)':'Ekstra batterier (ved behov, som reserve)', 'Spare batteries (for lamps that cannot be charged)':'Ekstra batterier (ved behov, som reserve)',
@@ -1075,6 +1096,9 @@ function migrate(){
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
 }
 if (state.v !== 2) migrate();
+/* v27: Turdusj line renamed; keep its tick */
+(function(){ const d = state.std && state.std.done, o = 'std:m_bil:turdusj (pocket shower, 10 l)';
+  if (d && o in d){ d['std:m_bil:turdusj (10 l)'] = d[o]; delete d[o]; save(); } })();
 (state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
 /* notes moved from lists into the notepad (v18), never wiped */
 if (!Array.isArray(state.notes)) state.notes = [];
@@ -1166,7 +1190,7 @@ function renderTabs(){
   $('tabbar').innerHTML = [['list', T.tabList], ['notes', T.tabNotes], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
     `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
-const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']} };
+const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#47759A','#FFF9E8','#BF4F33']} };
 function bodyClasses(){
   document.body.setAttribute('data-skin', SKINS[state.skin] ? state.skin : 'fjell');
   document.body.classList.toggle('notlist', tab !== 'list');
@@ -1307,6 +1331,8 @@ function render(){
       if (!editing && typeof i.id === 'string' && GUIDE_LINKS[i.id]){
         const gl = GUIDE_LINKS[i.id].split('#');
         html += `<button class="link-btn" data-nav data-act="openGuide" data-guide="${gl[0]}"${gl[1] ? ` data-sec="${gl[1]}"` : ''}>${T.guideLink}${CHEV_R}</button>`;
+      } else if (!editing && typeof i.id === 'string' && PLAN_LINKS[i.id]){
+        html += planLink(PLAN_LINKS[i.id], 'list');
       }
       if (editing){
         html += `<button class="icon" data-act="indentItem" aria-label="${esc(i.sub ? T.outdent : T.indent)}"><svg viewBox="0 0 24 24"><path d="${i.sub ? 'M19 12H7M11 6l-6 6 6 6' : 'M5 12h12M13 6l6 6-6 6'}"/></svg></button>
@@ -1385,18 +1411,18 @@ function renderLists(){
   shared.forEach(L => { html += listCard(L); });
   if (!state.field) html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>`;
   html += `
-    <div class="section-label">${T.appearance}</div>
-    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
+    <div class="appear"><div class="section-label">${T.appearance}</div>
+    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div></div>
     <div class="section-label">${T.language}</div>
     <div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
     <p class="tool-tip">${T.langNote}</p>
     <div class="section-label">${T.help}</div>
     <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>
-    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>
-    <div class="section-label">${T.privacy}</div>
-    <p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`;
+    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>`;
   if (!state.field) html += `<div class="section-label">${T.startOver}</div><p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`;
+  html += `<div class="section-label">${T.privacy}</div>
+    <p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`;
   main.innerHTML = html;
 }
 function renderIndex(){
@@ -1415,7 +1441,7 @@ function renderIndex(){
   const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
   main.innerHTML = `<p class="tool-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
-    `<h2 class="ix-group g-${gr.key}"><i aria-hidden="true"></i>${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
+    `<h2 class="ix-group g-${gr.key}">${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
 }
 /* Planlegg: each calculator has its own icon and colour (v26). The icon carries the meaning, never colour alone. */
 const PLAN_ICONS = {
@@ -1498,8 +1524,8 @@ const GUIDE_TXT = {
 };
 const GUIDE_GROUPS = [
   {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'fishing', 'fire']},
-  {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['winter', 'aval', 'sun']},
-  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['shell', 'boots', 'tent', 'stoveboard', 'phone']}
+  {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval']},
+  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'stoveboard', 'shell', 'boots', 'phone']}
 ];
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
@@ -1518,6 +1544,24 @@ const GUIDE_LINKS = {
   'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
   'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire', 'std:repair:tennbriketter (4x)':'fire'
 };
+/* Links to Planlegg (v27): standard list lines that open a calculator. Only on the standard list, never on a line with a guide link.
+   Changing the Norwegian text of a linked line changes its id, so update the map at the same time. */
+const PLAN_LINKS = {
+  'std:m_bil:turdusj (10 l)':'water',
+  'std:cook:brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)':'fuel',
+  'std:food:turmat (frysetørket eller hjemmelaget)':'food',
+  'std:general:sekk':'weight',
+  'std:m_hund:hundemat (porsjonert per dag) og godbiter':'food',
+  'std:m_hund:hundesekk (valgfritt, hunden bærer selv)':'weight'
+};
+function planName(k){ const T = t(); return {food:T.foodTool, fuel:T.fuelTool, weight:T.weightTool, water:T.water, wind:T.windTool}[k] || T.tabPlan; }
+/* One style for every link to a calculator: outline, the calculator's icon in its colour, its name. Navigation, so it works in Regnlås. */
+function planLink(k, from){
+  return `<button class="plan-link pc-${k}" data-nav data-act="openPlan" data-tool="${k}" data-from="${from}"><svg viewBox="0 0 24 24" aria-hidden="true">${PLAN_ICONS[k]}</svg><span>${esc(planName(k))}</span></button>`;
+}
+function planLinks(html){ return String(html).replace(/\[\[plan:(\w+)\]\]/g, (m, k) => PLAN_ICONS[k] ? planLink(k, 'guide') : ''); }
+let planFrom = null;
+function planBack(){ const T = t(); return planFrom === 'compass' ? T.tabCompass : planFrom === 'guide' ? T.tabGuide : planFrom === 'list' ? T.tabList : T.tabPlan; }
 let guideSec = null;
 function renderTextGuide(k){
   const T = t(), g = (GUIDE_TXT[state.lang] || GUIDE_TXT.en)[k];
@@ -1796,7 +1840,7 @@ function renderWinter(){
   document.title = T.winterTool + ' · ' + T.app;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${T.winterSub}</p>
-    <section class="manual guide">${T.winterAdv.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+    <section class="manual guide">${T.winterAdv.map(x => `<details><summary>${x[0]}</summary>${planLinks(x[1])}</details>`).join('')}</section>`;
 }
 function renderHowto(){
   const T = t();
@@ -2075,7 +2119,7 @@ function linksHtml(){
     h += `<div class="own-link">${a(l.u, esc(l.n))}${state.field ? '' : `<button class="icon del" data-act="delLink" data-n="${n}" aria-label="${esc(T.deleteX(l.n))}">${CROSS}</button>`}</div>`;
   });
   h += '</div>';
-  h += `<button class="wc-btn" data-nav data-act="openWind" data-from="compass"><svg viewBox="0 0 24 24" aria-hidden="true">${PLAN_ICONS.wind}</svg><span>${T.windTool}</span></button>`;
+  h += planLink('wind', 'compass');
   if (!rg) h += `<p class="calc-basis">${T.linksNoPos}</p>`;
   else if (rg === 'other') h += `<p class="calc-basis">${T.avalancheLocal}</p>`;
   if (!state.field) h += `<div class="row-btns"><button class="btn add-link" data-act="addLink"><span aria-hidden="true">+</span>${T.addLink}</button></div><p class="calc-basis">${T.addLinkHint}</p>`;
@@ -2091,7 +2135,6 @@ const fmt2 = n => (Math.round(n * 100) / 100).toLocaleString(state.lang === 'no'
 /* ---------- Vindkjøling / wind chill (v26) ---------- */
 // NWS and Environment Canada wind chill index (2001): T in °C, V in km/h at 10 m (forecast mean wind).
 // Valid at 10 °C or colder and from 4.8 km/h (about 1.3 m/s).
-let windFrom = null;
 function windState(){ return state.wind = Object.assign({t:-10, v:5}, state.wind || {}); }
 function windChill(T, vms){
   const V = vms * 3.6;
@@ -2112,7 +2155,7 @@ function renderWind(){
   const T = t(), w = windState();
   $('listName').textContent = T.windTool;
   document.title = T.windTool + ' · ' + T.app;
-  const back = windFrom === 'compass' ? T.tabCompass : windFrom === 'guide' ? T.tabGuide : T.tabPlan;
+  const back = planBack();
   const val = x => esc(fmt(x).replace(/\s/g, '').replace('−', '-'));
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${back}</button>
     <p class="tool-sub">${T.windSub}</p>
@@ -2160,7 +2203,7 @@ function renderWater(){
     $('listName').textContent = T.water;
   document.title = T.water + ' · ' + T.app;
   const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
-  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? planBack() : t().tabGuide}</button>
     <p class="tool-sub">${T.waterSub}</p>
     <div class="modes"><div class="chips">
       <button class="chip" data-calcmode="mix" aria-pressed="${c.mode === 'mix'}">${T.findMix}</button>
@@ -2222,7 +2265,7 @@ function renderFuel(){
   const field = (k, label, v, extra) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt2(v).replace(/\s/g,''))}">${extra || ''}</label>`;
   const custom = typeof f.perLc[f.fuel] === 'number';
   const day = f.mode === 'day';
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
     <p class="tool-sub">${T.fuelSub}</p>
     <section class="sum-card" id="fuelOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
@@ -2358,7 +2401,7 @@ function renderFood(){
   document.title = T.foodTool + ' · ' + T.app;
   const inp = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
   const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}<small class="m-kcal" data-mk="${kN}"></small></span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
     <p class="tool-sub">${T.foodSub}</p>
     <section class="sum-card">
       <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
@@ -2439,7 +2482,7 @@ function renderWeight(){
   $('listName').textContent = T.weightTool;
   document.title = T.weightTool + ' · ' + T.app;
   const chip = (u, label) => `<button class="chip" data-wunit="${u}" aria-pressed="${w.unit === u}">${label}</button>`;
-  let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabPlan}</button>
+  let h = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
     <p class="tool-sub">${T.weightSub}</p>
     <section class="sum-card" id="wOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.wUnit}</span><div class="chips">${chip('g', 'g')}${chip('kg', 'kg')}</div></div>
@@ -2750,7 +2793,7 @@ main.addEventListener('click', async e => {
   const lg = e.target.closest('[data-lang]');
   if (lg){ state.lang = lg.dataset.lang; stdCache = null; save(); render(); return; }
   const op = e.target.closest('[data-open]');
-  if (op){ windFrom = null; go(tab, 'tool:' + op.dataset.open); return; }
+  if (op){ planFrom = null; go(tab, 'tool:' + op.dataset.open); return; }
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const T = t(), act = b.dataset.act;
@@ -2772,7 +2815,7 @@ main.addEventListener('click', async e => {
   if (act === 'rainLock'){ lockRain(); return; }
   if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
   if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); if (all) modesOpen = false; save(); render(); return; }
-  if (act === 'openWind'){ windFrom = b.dataset.from || null; go('plan', 'tool:wind'); return; }
+  if (act === 'openPlan'){ planFrom = b.dataset.from || null; go('plan', 'tool:' + b.dataset.tool); return; }
   if (act === 'windStep'){ const w = windState(), k = b.dataset.k; w[k] = Math.round((w[k] + (+b.dataset.d)) * 10) / 10; if (k === 'v' && w.v < 0) w.v = 0; save(); renderWind(); return; }
   if (act === 'windSign'){ const w = windState(); w.t = -w.t; save(); renderWind(); return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
