@@ -261,12 +261,12 @@ header .list-switch.long .ls-lbl{display:none}
 header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
 header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
 header .list-switch.plain h1{font-size:1.9rem}
-.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:8px;border-radius:50%;border:1.5px solid currentColor;align-items:center;justify-content:center;pointer-events:none}
+.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:8px;border-radius:50%;border:2px solid var(--red);color:var(--red);align-items:center;justify-content:center;pointer-events:none}
 body.field .hdr-field{display:flex}
 .hdr-field svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
-.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:12px;padding:8px 14px;min-height:44px;border-radius:999px;border:1px solid var(--rain,#2B67A0);background:var(--rain,#2B67A0);color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
+.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:12px;padding:8px 14px;min-height:44px;border-radius:999px;border:2px solid var(--rain,#74B4EA);background:none;color:inherit;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
 body.field .hdr-rain{display:flex}
-.hdr-rain svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.hdr-rain svg{width:20px;height:20px;stroke:var(--rain,#74B4EA);fill:none;stroke-width:2;stroke-linecap:round}
 .lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
 body.locked main,body.locked main *,body.locked header.top button,body.locked .toolbar{pointer-events:none}
 body.locked .tabbar{pointer-events:none}
@@ -313,16 +313,16 @@ body[data-skin="eng"]{--bg:#F4EFF2;--surface:#FFFFFF;--ink:#2E2430;--muted:#6E60
 :root[data-theme="dark"] body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
 /* Berg / Rock (v27) and Lett bris / Soft breeze (v27, v28: cream page, light sky header with dark text, summer-blue accent). Berg has a faint stone grain, drawn in the app (offline), off in Nattlys. */
 body[data-skin="berg"]{--bg:#D3D0CA;--surface:#ECEAE6;--ink:#1E1F21;--muted:#55575A;--line:#BFBBB4;--line-strong:#8E8A83;--red:#A84A24;--lichen:#5F6E42;--hd:#26272A;--hdt:#E8E6E1;--chip:#3A3B3F;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-body[data-skin="bris"]{--bg:#FBF3D9;--surface:#FFFDF5;--ink:#23303A;--muted:#5E6A73;--line:#EDE3C6;--line-strong:#C9BC98;--red:#2E6FA3;--lichen:#5E8C4A;--hd:#A9D6F2;--hdt:#17324A;--chip:#3A75A6;--hd-btn:rgba(255,255,255,.5);--hd-track:rgba(23,50,74,.16);--gsafe:#B8652A}
+body[data-skin="bris"]{--rain:#1F5A8F;--bg:#FBF3D9;--surface:#FFFDF5;--ink:#23303A;--muted:#5E6A73;--line:#EDE3C6;--line-strong:#C9BC98;--red:#2E6FA3;--lichen:#5E8C4A;--hd:#A9D6F2;--hdt:#17324A;--chip:#3A75A6;--hd-btn:rgba(255,255,255,.5);--hd-track:rgba(23,50,74,.16);--gsafe:#B8652A}
 @media (prefers-color-scheme: dark){
 :root:not([data-theme="light"]) body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:root:not([data-theme="light"]) body[data-skin="bris"]{--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
+:root:not([data-theme="light"]) body[data-skin="bris"]{--rain:#74B4EA;--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 }
 :root[data-theme="dark"] body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:root[data-theme="dark"] body[data-skin="bris"]{--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
+:root[data-theme="dark"] body[data-skin="bris"]{--rain:#74B4EA;--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
 body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
-body.night .hdr-rain{background:var(--ink);border-color:var(--ink);color:#000}
+body.night .hdr-rain{--rain:var(--ink)}
 :root body.night.night{--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
 body.night .chip.field-on,body.night .btn.primary{color:#000}
 .compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
@@ -354,6 +354,9 @@ html,body{touch-action:manipulation}
 body.night .lt-btn{--lc:currentColor}
 .lt-btn .fill{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--ink)}
 .lt-btn.holding .fill{width:100%;transition:width 1s linear}
+.chip.pulse{outline:3px solid var(--red);animation:lockPulse 1s ease-out 3}
+@keyframes lockPulse{0%{outline-offset:0;outline-color:var(--red)}75%{outline-offset:7px;outline-color:transparent}100%{outline-offset:7px;outline-color:transparent}}
+@media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
 .slight{position:fixed;inset:0;z-index:60;background:#000;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .slight[hidden]{display:none}
@@ -567,7 +570,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v30';
+const APP_VERSION = 'varde-v31';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -670,7 +673,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the blue button at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -861,7 +864,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, den blå knappen øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -2919,7 +2922,8 @@ main.addEventListener('click', async e => {
     if (state.field){ state.lockPrev = !!state.listLock; state.listLock = true; }
     else { rainLocked = false; state.rainLocked = false; state.listLock = !!state.lockPrev; delete state.lockPrev; }
     editing = false; save(); render(); updateWake();
-    if (state.field && !state.lockPrev) showToast(T.lockedOn);
+    // v31: no toast; Lås listen pulses for about 3 s when Utemodus locked it
+    if (state.field && !state.lockPrev) pulseLock();
     return; }
   if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); if (all) modesOpen = false; save(); render(); return; }
   if (act === 'openPlan'){ planFrom = b.dataset.from || null; go('plan', 'tool:' + b.dataset.tool); return; }
@@ -3142,6 +3146,12 @@ function renderLock(){
    Tap Rødt / Grønt nattlys: colours the app (one at a time). Bål is a light only.
    Hold any of them 1 s: the whole screen becomes a light, locked; slide the handle to unlock.
    Bål flickers irregularly within 70–100 % brightness, no hard flashes; steady amber with reduced motion. */
+function pulseLock(){
+  const b = main.querySelector('.sub-tools [data-act="lockToggle"]');
+  if (!b) return;
+  b.classList.add('pulse');
+  setTimeout(() => b.classList.remove('pulse'), 3100);
+}
 let slMode = null, slRaf = null;
 const SL_COL = {red:'#ff0000', green:'#00ff00'};
 function tapLight(m){
