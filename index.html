@@ -297,8 +297,6 @@ body[data-skin="fjord"]{--bg:#E8EEF2;--surface:#FFFFFF;--ink:#17262F;--muted:#5A
 :root[data-theme="dark"] body[data-skin="mose"]{--bg:#1A1C15;--surface:#23261C;--ink:#ECE8DC;--muted:#A39F8C;--line:#343828;--line-strong:#555A43;--red:#D99A33;--lichen:#A9BD8A;--hd:#12140E;--hdt:#ECE8DC;--chip:#2C3122}
 :root[data-theme="dark"] body[data-skin="fjord"]{--bg:#111B23;--surface:#18252F;--ink:#E4ECF1;--muted:#8FA2AE;--line:#273744;--line-strong:#42596A;--red:#F07F3A;--lichen:#7FB6C6;--hd:#0B141B;--hdt:#E4ECF1;--chip:#1F3443}
 .cat-head .ci{width:22px;height:22px;flex:none;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;align-self:center}
-.appear{margin-top:18px;padding:2px 0 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.appear .section-label{margin-top:14px}
 .skins{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media (min-width:520px){.skins{grid-template-columns:1fr 1fr 1fr}}
 .skin-btn{width:100%;min-width:0;display:flex;align-items:center;gap:8px;padding:10px 12px;text-align:left;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:600}
@@ -392,6 +390,7 @@ body.listlock .items .mark{opacity:.55}
 .sun-big{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red);margin:12px 0 6px}
 .food-out .q.sm{font-size:1.1rem;color:var(--ink)}
 .links{display:flex;flex-direction:column;gap:8px}
+.links + .plan-link{margin-top:14px}
 .links .btn{display:block;text-align:left;white-space:normal;text-decoration:none;color:var(--ink)}
 .knot-img{--knot-line:var(--ink);--knot-fill:var(--line-strong);--knot-pole:var(--bg);display:flex;justify-content:center;margin:0 0 10px}
 .knot-img svg{height:220px;width:auto;display:block}
@@ -450,7 +449,32 @@ body.night{--moon:#ff4a3d;--sun:#ff4a3d}
 .sky-lbl svg{width:18px;height:18px;flex:none}
 .c-sky-note{color:var(--muted);font-size:.9rem;text-align:center;margin:8px 0 0}
 .own-link{display:flex;align-items:center;gap:4px}
-.own-link .btn{flex:1}
+/* v29: even page sections (Dine lister settings, Kompass): same label, same spacing, thin line between */
+.pg-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.pg-sec.first{margin-top:0;padding-top:0;border-top:0}
+.sec-lbl{margin:0 0 10px;font-family:var(--head);font-weight:600;font-size:1.3rem;line-height:1.2;color:var(--ink)}
+.pg-sec .tool-tip:last-child,.pg-sec .calc-basis:last-child{margin-bottom:0}
+.pg-sec .manual{margin-top:0}
+.pg-sec a{color:var(--link)}
+[data-sec]{scroll-margin-top:96px}
+.app-ver{margin:28px 0 0;text-align:center;color:var(--muted);font-size:.8rem}
+.sec-note{margin:-4px 0 12px;color:var(--muted);font-size:.9rem}
+.grp-lbl{margin:16px 0 8px;color:var(--muted);font-size:.85rem;font-weight:600}
+.grp-lbl:first-of-type{margin-top:4px}
+/* v29: web links look like links: name in the link colour, address below, an arrow that leaves the app */
+.wl{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:var(--ink)}
+.wl-txt{flex:1;min-width:0}
+.wl-t{display:block;color:var(--link);font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;overflow-wrap:anywhere}
+.wl-u{display:block;color:var(--muted);font-size:.82rem;overflow-wrap:anywhere}
+.wl svg{flex:none;width:18px;height:18px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body{--link:#1F5F99}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--link:#8CC0F0}}
+:root[data-theme="dark"] body{--link:#8CC0F0}
+body.night{--link:var(--ink)}
+.sug-row{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.sug-row .btn{align-self:flex-start}
+.c-idle{color:var(--muted);font-size:.95rem}
+
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
 input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
@@ -517,7 +541,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v28';
+const APP_VERSION = 'varde-v29';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -558,10 +582,18 @@ const UI = {
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
-    linksTitle:'Weather and warnings', linksNote:'Needs a connection.', yrLink:'yr.no: weather forecast (worldwide)', varsomLink:'varsom.no: avalanche, flood and landslide warnings',
+    secLinks:'Where you are', ownLinks:'Your links', cAbout:'About the compass', cIdle:'The compass is not started.', sugAdd:'Add to Your links', sugAdded:'In Your links',
+    fishRules:{title:'Fishing licences and rules', intro:'The rules vary between lakes, rivers and regions. Always check the local rules where you fish.', linksHd:'Useful links', secs:[
+      ['Fresh water','<p>You need a fishing licence or permission from whoever owns the fishing rights, usually the landowner. Licences are sold locally or online.</p>'],
+      ['Children under 16','<p>Children fish for free with rod and handline for freshwater fish from 1 January to 20 August, in lakes and rivers without salmon, sea trout and sea char. Where licences are sold, they are entitled to a free one.</p>'],
+      ['Salmon, sea trout and sea char in rivers','<p>You need a fishing licence and must also pay the national fishing fee from the age of 18. Under 18 you need a licence but pay no fee. Catches must be reported. Seasons vary, and some rivers may be closed in some years.</p>'],
+      ['The sea','<p>Fishing with rod and handline is free for everyone. Minimum sizes, protected species and closed areas apply. Release fish under the minimum size carefully. Just outside salmon and sea trout rivers, special strict rules apply.</p>'],
+      ['Do not spread disease','<p>Dry or disinfect fishing gear, waders and boat before using them in another watercourse. Gut and wash fish where you caught them. Never move fish between watercourses, and never use fish from one watercourse as bait in another.</p>']],
+      links:[['Buy a fishing licence','https://www.inatur.no'],['Recreational sea fishing','https://www.fiskeridir.no/Fritidsfiske'],['Fishing fee (salmon, sea trout, sea char)','https://www.miljodirektoratet.no/ansvarsomrader/arter-naturtyper/fiske/nar-kan-jeg-fiske-laks-sjoorret-og-sjoroye/betale-fiskeravgift/']]},
+    linksTitle:'Weather and warnings', linksNote:'Opens in the browser and needs a connection.', yrLink:'Weather forecast (worldwide)', varsomLink:'Avalanche, flood and landslide warnings',
     skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
-    dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'The links match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
+    dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'They match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
     addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:'Varde has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). The code is open, so anyone can check what the app does:', privacyLink:'Varde on GitHub', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
@@ -741,10 +773,18 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
-    linksTitle:'Vær og varsler', linksNote:'Krever nett.', yrLink:'yr.no: værmelding', varsomLink:'varsom.no: snøskred-, flom- og jordskredvarsel',
+    secLinks:'For der du er', ownLinks:'Dine lenker', cAbout:'Om kompasset', cIdle:'Kompasset er ikke startet.', sugAdd:'Legg til i Dine lenker', sugAdded:'I Dine lenker',
+    fishRules:{title:'Fiskekort og regler', intro:'Reglene varierer mellom vann, elver og landsdeler. Sjekk alltid de lokale reglene der du skal fiske.', linksHd:'Nyttige lenker', secs:[
+      ['Ferskvann','<p>Du trenger fiskekort eller tillatelse fra den som eier fiskeretten, oftest grunneieren. Fiskekort kjøpes lokalt eller på nett.</p>'],
+      ['Barn under 16 år','<p>Barn fisker gratis med stang og håndsnøre etter innlandsfisk fra 1. januar til og med 20. august, i vann og vassdrag uten laks, sjøørret og sjørøye. Der det selges fiskekort, har de rett på gratis kort.</p>'],
+      ['Laks, sjøørret og sjørøye i elv','<p>Du trenger fiskekort og må i tillegg betale statlig fiskeravgift fra du fyller 18 år. Under 18 år trenger du fiskekort, men ingen avgift. Fangsten skal rapporteres. Fisketidene varierer, og noen elver kan være stengt enkelte år.</p>'],
+      ['Sjøen','<p>Fiske med stang og håndsnøre er gratis for alle. Minstemål, fredede arter og fredningsområder gjelder. Fisk under minstemålet slippes forsiktig ut igjen. Like utenfor lakse- og sjøørretelver gjelder egne, strenge regler.</p>'],
+      ['Ikke spre smitte','<p>Tørk eller desinfiser fiskeutstyr, vadere og båt før du bruker dem i et annet vassdrag. Sløy og vask fisken der du fanget den. Flytt aldri fisk mellom vassdrag, og bruk ikke fisk fra ett vassdrag som agn i et annet.</p>']],
+      links:[['Kjøp fiskekort','https://www.inatur.no'],['Fritidsfiske i sjøen','https://www.fiskeridir.no/Fritidsfiske'],['Fiskeravgift (laks, sjøørret, sjørøye)','https://www.miljodirektoratet.no/ansvarsomrader/arter-naturtyper/fiske/nar-kan-jeg-fiske-laks-sjoorret-og-sjoroye/betale-fiskeravgift/']]},
+    linksTitle:'Vær og varsler', linksNote:'Åpnes i nettleseren og krever nett.', yrLink:'Værmelding', varsomLink:'Snøskred-, flom- og jordskredvarsel',
     skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
-    dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'Lenkene tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
+    dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'De tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
     addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:'Varde har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Koden er åpen, så alle kan sjekke hva appen gjør:', privacyLink:'Varde på GitHub', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
@@ -994,7 +1034,8 @@ function friluftsliv(L){
       ['Diverse','Miscellaneous'],['> Nål og tråd','> Needle and thread'],['> USB-C-kabel','> USB-C cable'],['> Stropper (2x)','> Straps (2x)'],['> Tau (kompakt)','> Rope (compact)'],['> Små karabinkroker (4x)','> Small carabiners (4x)'],['> Diverse plastposer','> Assorted plastic bags']],
       {bag:true, note: note('Liten drybag, ca. 3 liter','Small dry bag, about 3 litres')}),
     C('personal','Personlig pleie','Personal care',[
-      ['Tannbørste og tannkrem','Toothbrush and toothpaste'],['Dopapir (min. 2x)','Toilet paper (min. 2x)'],['Håndkle (kompakt)','Towel (compact)'],['Vaskeklut','Washcloth'],['Våtservietter (nedbrytbare)','Wet wipes (biodegradable)'],['Hånddesinfeksjon','Hand sanitiser'],['Reisesåpe','Travel soap'],['Papirlommetørkle','Tissues'],['Solkrem','Sunscreen'],['Leppepomade med UV','Lip balm with UV'],['Myggmiddel','Insect repellent'],['Myggnetting (hodenett)','Mosquito head net'],['Biopose (20 l)','Biodegradable bag (20 l)'],['Sovemaske','Sleep mask'],['Ørepropper','Earplugs']], {bag:true})
+      ['Tannbørste og tannkrem','Toothbrush and toothpaste'],['Deodorant (liten)','Deodorant (small)'],['Kam / hårbørste og hårstrikk','Comb / hairbrush and hair ties'],['Dopapir (min. 2x)','Toilet paper (min. 2x)'],['Håndkle (kompakt)','Towel (compact)'],['Vaskeklut','Washcloth'],['Våtservietter (nedbrytbare)','Wet wipes (biodegradable)'],['Mensprodukter (ved behov)','Period products (if needed)'],['Hånddesinfeksjon','Hand sanitiser'],['Reisesåpe','Travel soap'],['Papirlommetørkle','Tissues'],['Briller / kontaktlinser og linsevæske (ved behov)','Glasses / contact lenses and lens solution (if needed)'],['Solkrem','Sunscreen'],['Leppepomade med UV','Lip balm with UV'],['Kuldekrem uten vann (vinter, mot sprukken hud)','Water-free cold cream (winter, for chapped skin)'],['Myggmiddel','Insect repellent'],['Myggnetting (hodenett)','Mosquito head net'],['Biopose (20 l) til søppel, og en liten zip-pose til brukt dopapir','Biodegradable bag (20 l) for rubbish, and a small zip bag for used toilet paper'],['Sovemaske','Sleep mask'],['Ørepropper','Earplugs']],
+      {bag:true, note: note('Dette er en generell liste. Behovene varierer mye fra person til person, så lag gjerne din egen: Dine lister → Ny liste, og velg Legg til i turtype. Da slår du den på under Turtype når du pakker.','This is a general list. Needs vary a lot from person to person, so feel free to make your own: Your lists → New list, and choose Add as trip type. Then switch it on under Trip type when you pack.')})
   ]};
 }
 function buildTemplates(L){ return { friluftsliv: friluftsliv(L) }; }
@@ -1097,9 +1138,13 @@ function migrate(){
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
 }
 if (state.v !== 2) migrate();
-/* v27: Turdusj line renamed; keep its tick */
-(function(){ const d = state.std && state.std.done, o = 'std:m_bil:turdusj (pocket shower, 10 l)';
-  if (d && o in d){ d['std:m_bil:turdusj (10 l)'] = d[o]; delete d[o]; save(); } })();
+/* Renamed template lines keep their ticks (v27, v29) */
+(function(){ const d = state.std && state.std.done; if (!d) return;
+  const moved = {'std:m_bil:turdusj (pocket shower, 10 l)':'std:m_bil:turdusj (10 l)',
+    'std:personal:biopose (20 l)':'std:personal:biopose (20 l) til søppel, og en liten zip-pose til brukt dopapir'}; // v27, v29
+  let ch = false;
+  Object.keys(moved).forEach(o => { if (o in d){ d[moved[o]] = d[o]; delete d[o]; ch = true; } });
+  if (ch) save(); })();
 (state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
 /* notes moved from lists into the notepad (v18), never wiped */
 if (!Array.isArray(state.notes)) state.notes = [];
@@ -1411,19 +1456,16 @@ function renderLists(){
   if (!shared.length) html += `<p class="empty-own">${T.noShared}</p>`;
   shared.forEach(L => { html += listCard(L); });
   if (!state.field) html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>`;
-  html += `
-    <div class="appear"><div class="section-label">${T.appearance}</div>
-    <div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div></div>
-    <div class="section-label">${T.language}</div>
-    <div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
-    <p class="tool-tip">${T.langNote}</p>
-    <div class="section-label">${T.help}</div>
-    <div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button><button class="btn" data-la="intro">${T.showIntro}</button></div>
-    <p class="tool-tip">${T.versionLbl} ${APP_VERSION}</p>`;
-  if (!state.field) html += `<div class="section-label">${T.startOver}</div><p class="tool-tip">${T.startOverHint}</p>
-    <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`;
-  html += `<div class="section-label">${T.privacy}</div>
-    <p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`;
+  // settings (v29): even sections with a thin line between
+  const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
+  html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
+  html += sec(T.language, `<div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
+    <p class="tool-tip">${T.langNote}</p>`);
+  html += sec(T.help, `<div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button></div>`);
+  if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
+    <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
+  html += sec(T.privacy, `<p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`);
+  html += `<p class="app-ver">${T.versionLbl} ${APP_VERSION}</p>`;
   main.innerHTML = html;
 }
 function renderIndex(){
@@ -1537,7 +1579,8 @@ const GUIDE_LINKS = {
   'std:general:solbriller / snøbriller':'sun', 'std:m_vinter:goggles / alpinbriller (dårlig vær, også reserve for solbrillene)':'sun',
   'std:prep:mobil':'phone',
   'std:repair:tau / paracord (langt)':'knots',
-  'std:m_fiske:kroker':'fishing', 'std:m_fiske:svivler / sene':'fishing',
+  'std:m_fiske:kroker':'fishing', 'std:m_fiske:svivler / sene':'fishing', 'std:m_fiske:fiskekort (ferskvann)':'fishing#rules',
+  'std:personal:kuldekrem uten vann (vinter, mot sprukken hud)':'winter',
   'std:cook:brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)':'stoveboard',
   'std:m_bil:tarp':'tarp', 'std:m_bil:tarpstenger':'tarp', 'std:general:jervenduk':'tarp',
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
@@ -1636,7 +1679,7 @@ function renderCompass(){
   const dirs = T.cDirs;
   const labels = [0,2,4,6].map(i => `<text x="160" y="52" text-anchor="middle" font-family="var(--head)" font-weight="600" font-size="${i === 0 ? 30 : 24}" fill="${i === 0 ? 'var(--red)' : 'var(--ink)'}" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('')
     + [1,3,5,7].map(i => `<text x="160" y="58" text-anchor="middle" font-size="14" font-weight="600" fill="var(--muted)" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('');
-  main.innerHTML = `<div class="compass">
+  main.innerHTML = `<div class="compass pg-sec first">
       <svg class="rose" viewBox="0 0 320 320" aria-hidden="true">
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
         <g class="dial" id="dial">${ticks}${labels}${sunMarks()}<g id="skyNow">${skyNowMarks()}</g></g>
@@ -1644,7 +1687,7 @@ function renderCompass(){
         <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
         <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
       </svg>
-      <div class="c-read"><div class="c-deg" id="cDeg">–</div><div class="c-dir" id="cDir">&nbsp;</div><div class="c-mode" id="cMode"></div></div>
+      <div class="c-read"><div class="c-deg" id="cDeg">${cOn ? '–' : ''}</div>${cOn ? '' : `<div class="c-idle">${T.cIdle}</div>`}<div class="c-dir" id="cDir">${cOn ? '&nbsp;' : ''}</div><div class="c-mode" id="cMode"></div></div>
       <div class="c-btns">${cOn
         ? `<button class="chip" data-act="cHold" aria-pressed="${cHeld}">${cHeld ? T.cRelease : T.cHold}</button>`
         : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
@@ -1656,7 +1699,7 @@ function renderCompass(){
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${sunHtml()}${linksHtml()}
-    <section class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+    <section class="pg-sec"><h2 class="sec-lbl">${T.cAbout}</h2><div class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</div></section>`;
   paintCompass();
   clearInterval(skyTimer);
   skyTimer = setInterval(() => { const g = $('skyNow'); if (g){ g.innerHTML = skyNowMarks(); uprightMarks(); } else { clearInterval(skyTimer); skyTimer = null; } }, 60000);
@@ -2018,7 +2061,7 @@ function sunHtml(){
   const ph = moonIllum(isToday ? new Date() : new Date(date + 'T12:00:00')), pi = phaseIndex(ph.phase);
   const south = state.pos && state.pos.lat < 0;
   const phaseTxt = `${T.phases[pi]}, ${T.lit(Math.round(ph.fraction * 100))}`;
-  let h = `<section class="manual sky"><h2>${T.skyTitle}</h2>`;
+  let h = `<section class="pg-sec manual sky"><h2 class="sec-lbl">${T.skyTitle}</h2>`;
   if (!state.pos){
     h += `<div class="moon-row">${moonIcon(ph.phase, 44, false)}<div><b>${phaseTxt}</b></div></div>
       <p class="tool-sub">${T.posNote}</p><div class="row-btns"><button class="btn primary" data-act="getPos">${posBusy ? T.posWait : T.getPos}</button></div>`;
@@ -2038,6 +2081,7 @@ function sunHtml(){
   // 1. at a glance
   h += sunArc(sd, isToday);
   if (big) h += `<p class="sun-big">${big}</p>`;
+  h += `<p class="calc-basis">${T.sunCaveat}</p>`;
   h += `<div class="moon-row">${moonIcon(ph.phase, 44, south)}<div><b>${phaseTxt}</b>${up === null ? '' : `<span>${up ? T.moonUp : T.moonDown}</span>`}</div></div>`;
   // 2. details
   const dirOf = az => az === null ? '' : ` · ${T.cDirs[Math.round(az / 45) % 8]} ${Math.round(az)}°`;
@@ -2062,8 +2106,7 @@ function sunHtml(){
     <p class="calc-basis">${T.posFrom(coord, when)}</p><p class="calc-basis">${T.posNote}</p>`;
   if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
   h += '</div></details>';
-  // 4. note
-  h += `<p class="calc-basis">${T.sunCaveat}</p></section>`;
+  h += '</section>';
   return h;
 }
 /* fold-outs on Kompass (v25): open by default, state remembered; folding is navigation (summary) */
@@ -2110,22 +2153,30 @@ const AVALANCHE = {
   eu:[['https://www.avalanches.org', 'avalanches.org']], us:[['https://avalanche.org', 'avalanche.org']], ca:[['https://avalanche.ca', 'avalanche.ca']],
   other:[['https://www.avalanches.org', 'avalanches.org'], ['https://avalanche.org', 'avalanche.org']]
 };
+/* Web links (v29): rows that look like links (name, address, an arrow that leaves the app) */
+const ICO_EXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M19 5l-8 8M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4"/></svg>';
+function hostOf(u){ try { return new URL(u).hostname.replace(/^www\./, ''); } catch(e){ return u; } }
+function webLink(u, label){ return `<a class="wl" data-nav href="${esc(u)}" target="_blank" rel="noopener"><span class="wl-txt"><span class="wl-t">${label}</span><span class="wl-u">${esc(hostOf(u))}</span></span>${ICO_EXT}</a>`; }
 function linksHtml(){
-  const T = t(), rg = region(state.pos), a = (u, label) => `<a class="btn" data-nav href="${u}" target="_blank" rel="noopener">${label}</a>`;
-  let h = `<section class="manual"><h2>${T.linksTitle}</h2><div class="links">`;
-  h += rg === 'no' ? a('https://www.yr.no', T.yrLink) : a('https://www.yr.no/en', T.yrLink);
-  if (rg === 'no') h += a('https://www.varsom.no', T.varsomLink);
-  else if (rg) AVALANCHE[rg].forEach(x => { h += a(x[0], `${x[1]}: ${T.avalancheWord}`); });
-  (state.links || []).forEach((l, n) => {
-    h += `<div class="own-link">${a(l.u, esc(l.n))}${state.field ? '' : `<button class="icon del" data-act="delLink" data-n="${n}" aria-label="${esc(T.deleteX(l.n))}">${CROSS}</button>`}</div>`;
-  });
-  h += '</div>';
-  h += planLink('wind', 'compass');
-  if (!rg) h += `<p class="calc-basis">${T.linksNoPos}</p>`;
-  else if (rg === 'other') h += `<p class="calc-basis">${T.avalancheLocal}</p>`;
+  const T = t(), rg = region(state.pos);
+  let h = `<section class="pg-sec manual"><h2 class="sec-lbl">${T.linksTitle}</h2>`;
+  h += `<p class="sec-note">${T.linksNote} ${!rg ? T.linksNoPos : rg === 'other' ? T.avalancheLocal : ''}</p>`;
+  h += `<h3 class="grp-lbl">${T.secLinks}</h3><div class="links">`;
+  h += rg === 'no' ? webLink('https://www.yr.no', T.yrLink) : webLink('https://www.yr.no/en', T.yrLink);
+  if (rg === 'no') h += webLink('https://www.varsom.no', T.varsomLink);
+  else if (rg) AVALANCHE[rg].forEach(x => { h += webLink(x[0], `${x[1]}: ${T.avalancheWord}`); });
+  h += '</div>' + planLink('wind', 'compass');
+  const own = state.links || [];
+  if (own.length || !state.field) h += `<h3 class="grp-lbl">${T.ownLinks}</h3>`;
+  if (own.length){
+    h += '<div class="links">';
+    own.forEach((l, n) => {
+      h += `<div class="own-link">${webLink(l.u, esc(l.n))}${state.field ? '' : `<button class="icon del" data-act="delLink" data-n="${n}" aria-label="${esc(T.deleteX(l.n))}">${CROSS}</button>`}</div>`;
+    });
+    h += '</div>';
+  }
   if (!state.field) h += `<div class="row-btns"><button class="btn add-link" data-act="addLink"><span aria-hidden="true">+</span>${T.addLink}</button></div><p class="calc-basis">${T.addLinkHint}</p>`;
-  h += `<p class="calc-basis">${T.linksNote}</p></section>`;
-  return h;
+  return h + '</section>';
 }
 main.addEventListener('change', e => {
   if (e.target.matches && e.target.matches('[data-sundate]')){ sunDate = e.target.value || null; renderCompass(); }
@@ -2366,6 +2417,16 @@ function knotCredits(knots, credits){
       ? `${c.photo ? T.photoBy : T.illBy} <a href="${c.url}" target="_blank" rel="noopener">${esc(c.author)}</a>, Wikimedia Commons`
       : `${c.photo ? T.photoFrom : T.illFrom} <a href="${c.url}" target="_blank" rel="noopener">Wikimedia Commons</a> (${T.noAuthor})`}, <a href="${c.licUrl}" target="_blank" rel="noopener">${c.lic}</a>, ${T[c.chg || 'adapted']}.`).join(' ')}</p>` : '';
 }
+/* Fiskekort og regler (v29): checked against Miljødirektoratet, Statsforvalteren and Mattilsynet, Oct 2026. No fee amounts (they change). */
+function fishRulesHtml(){
+  const T = t(), F = T.fishRules, have = u => (state.links || []).some(l => l.u === u);
+  const links = F.links.map(([n, u]) => `<div class="sug-row">${webLink(u, esc(n))}${have(u)
+    ? `<span class="calc-basis">✓ ${T.sugAdded}</span>`
+    : `<button class="btn small" data-act="sugLink" data-n="${esc(n)}" data-u="${esc(u)}">+ ${T.sugAdd}</button>`}</div>`).join('');
+  return `<section class="manual guide" data-sec="rules"><h2>${F.title}</h2><p class="tool-sub">${F.intro}</p>
+    ${F.secs.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}
+    <details open><summary>${F.linksHd}</summary><div class="fold-in" style="padding:0 14px 14px">${links}</div></details></section>`;
+}
 function renderKnots(set){
   const T = t(), fish = set === 'fishing';
   const title = fish ? T.fishTool : T.knotTool;
@@ -2375,11 +2436,17 @@ function renderKnots(set){
   main.innerHTML = fish
     ? `${back}<p class="tool-sub">${T.fishSub}</p>
       <section class="manual"><h2>${T.fishHd}</h2>${knotCards(T.fishKnots, FISH_KNOT_FILES)}</section>
+      ${fishRulesHtml()}
       ${knotCredits(T.fishKnots, FISH_KNOT_CREDITS)}`
     : `${back}<p class="tool-sub">${T.knotSub}</p>
       <p class="calc-warn">${T.knotWarn}</p>
       ${knotCards(T.knots, KNOT_FILES)}
       ${knotCredits(T.knots, KNOT_CREDITS)}`;
+  if (guideSec){
+    const d = main.querySelector(`[data-sec="${guideSec}"]`);
+    guideSec = null;
+    if (d) requestAnimationFrame(() => d.scrollIntoView({block:'start'}));
+  }
   main.querySelectorAll('[data-knotsrc]').forEach(async el => {
     const src = el.dataset.knotsrc;
     if (!knotSvgCache[src]){
@@ -2801,11 +2868,14 @@ main.addEventListener('click', async e => {
   if (act === 'back'){ goBack(); return; }
   if (act === 'cStart'){ startCompass(); return; }
   if (act === 'getPos'){ getPos(); return; }
-  if (act === 'addLink'){
-    const name = await askText(T.linkName, '', T.add); if (!name) return;
-    const url = await askText(T.linkUrl, 'https://', T.add); if (!url) return;
+  if (act === 'addLink' || act === 'sugLink'){
+    // sugLink (v29): a suggested link from a guide, filled in; the user confirms or edits it
+    const sug = act === 'sugLink';
+    const name = await askText(T.linkName, sug ? b.dataset.n : '', T.add); if (!name) return;
+    const url = await askText(T.linkUrl, sug ? b.dataset.u : 'https://', T.add); if (!url) return;
     if (!/^https?:\/\/\S+\.\S+/.test(url)){ await confirmBox(T.addLink, T.linkBad, T.ok); return; }
-    state.links = (state.links || []).concat([{n:name, u:url}]); save(); renderCompass(); return;
+    if (!(state.links || []).some(l => l.u === url)) state.links = (state.links || []).concat([{n:name, u:url}]);
+    save(); if (sug) render(); else renderCompass(); return;
   }
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
