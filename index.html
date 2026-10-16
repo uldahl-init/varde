@@ -51,7 +51,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .list-switch svg{flex:none;width:20px;height:20px;stroke:var(--muted)}
 .list-switch svg{stroke:currentColor !important;opacity:.7}
 .progress{display:flex;align-items:center;gap:12px;margin-top:6px}
-.bar{flex:1;height:6px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
+.bar{flex:1;height:6px;background:var(--hd-track,rgba(255,255,255,.18));border-radius:3px;overflow:hidden}
 .bar span{display:block;height:100%;width:0;background:var(--red);transition:width .25s ease}
 .prog-text{font-size:.9rem;color:inherit;opacity:.8;white-space:nowrap;font-variant-numeric:tabular-nums}
 
@@ -204,9 +204,10 @@ body.notlist .list-switch svg{display:none}
 .w-pi input:disabled + span{color:var(--muted)}
 #panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
 .m-kcal{color:var(--muted);font-weight:600;font-size:.85rem;white-space:nowrap}
-/* Guider groups (v27): a header band per group, tinted in the group colour, same left stripe as its cards */
-.ix-group{margin:28px 0 -4px;padding:10px 14px;border-left:5px solid var(--gc);border-radius:10px;background:var(--surface);background:color-mix(in srgb,var(--gc) 13%,var(--surface));color:var(--ink);font-family:var(--head);font-weight:600;font-size:1.3rem;line-height:1.2}
-.tool-sub + .ix-group{margin-top:18px}
+/* Guider groups (v28): heading in the group colour with a thin line to the right; cards keep the left stripe */
+.ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.15rem;letter-spacing:.02em;color:var(--gc)}
+.ix-group::after{content:"";flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
+.tool-sub + .ix-group{margin-top:20px}
 .index button.g-gear,.index button.g-field,.index button.g-safety{border-left:5px solid var(--gc)}
 .g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}
 body{--gsafe:#3F7FA8}
@@ -249,7 +250,7 @@ body.field .item .plan-link{padding:10px 12px}
 .nav-time{height:4px;border-radius:2px;background:var(--line);overflow:hidden;max-width:520px;width:100%;margin:0 auto}
 .nav-time i{display:block;height:100%;background:var(--red);width:0}
 header .list-switch{gap:10px;color:inherit;border-radius:14px}
-header .list-switch:not(.plain){background:rgba(255,255,255,.13);padding:8px 12px;min-height:54px}
+header .list-switch:not(.plain){background:var(--hd-btn,rgba(255,255,255,.13));padding:8px 12px;min-height:54px}
 header .list-switch .ls-ic{flex:none;display:grid}
 header .list-switch .ls-ic svg,header .list-switch .ls-chev{width:22px;height:22px;stroke:currentColor !important;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
 header .list-switch .ls-chev{width:18px;height:18px;stroke-width:2.6}
@@ -309,18 +310,18 @@ body[data-skin="eng"]{--bg:#F4EFF2;--surface:#FFFFFF;--ink:#2E2430;--muted:#6E60
 :root:not([data-theme="light"]) body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
 }
 :root[data-theme="dark"] body[data-skin="eng"]{--bg:#1B1520;--surface:#251D2B;--ink:#F0E8F0;--muted:#AA9AAA;--line:#382C3F;--line-strong:#5A4862;--red:#EE6FA2;--lichen:#9CC07E;--hd:#120D16;--hdt:#F0E8F0;--chip:#2E2336}
-/* Berg / Rock and Lett bris / Soft breeze (v27). Berg has a faint stone grain, drawn in the app (offline), off in Nattlys. */
+/* Berg / Rock (v27) and Lett bris / Soft breeze (v27, v28: cream page, light sky header with dark text, summer-blue accent). Berg has a faint stone grain, drawn in the app (offline), off in Nattlys. */
 body[data-skin="berg"]{--bg:#D3D0CA;--surface:#ECEAE6;--ink:#1E1F21;--muted:#55575A;--line:#BFBBB4;--line-strong:#8E8A83;--red:#A84A24;--lichen:#5F6E42;--hd:#26272A;--hdt:#E8E6E1;--chip:#3A3B3F;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-body[data-skin="bris"]{--bg:#E6F0F7;--surface:#FFF9E8;--ink:#1E2A33;--muted:#56646E;--line:#D3DFE8;--line-strong:#A4B6C3;--red:#BF4F33;--lichen:#4F8A62;--hd:#47759A;--hdt:#FFF9E8;--chip:#3D6688}
+body[data-skin="bris"]{--bg:#FBF3D9;--surface:#FFFDF5;--ink:#23303A;--muted:#5E6A73;--line:#EDE3C6;--line-strong:#C9BC98;--red:#2E6FA3;--lichen:#5E8C4A;--hd:#A9D6F2;--hdt:#17324A;--chip:#3A75A6;--hd-btn:rgba(255,255,255,.5);--hd-track:rgba(23,50,74,.16);--gsafe:#B8652A}
 @media (prefers-color-scheme: dark){
 :root:not([data-theme="light"]) body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:root:not([data-theme="light"]) body[data-skin="bris"]{--bg:#101B24;--surface:#182733;--ink:#F2EEDF;--muted:#9DAAB3;--line:#263A48;--line-strong:#3F5A6C;--red:#F08A6C;--lichen:#8FC3A0;--hd:#0B151D;--hdt:#F2EEDF;--chip:#1E3342}
+:root:not([data-theme="light"]) body[data-skin="bris"]{--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 }
 :root[data-theme="dark"] body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-:root[data-theme="dark"] body[data-skin="bris"]{--bg:#101B24;--surface:#182733;--ink:#F2EEDF;--muted:#9DAAB3;--line:#263A48;--line-strong:#3F5A6C;--red:#F08A6C;--lichen:#8FC3A0;--hd:#0B151D;--hdt:#F2EEDF;--chip:#1E3342}
+:root[data-theme="dark"] body[data-skin="bris"]{--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
 body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
-:root body.night.night{--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
+:root body.night.night{--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
 body.night .chip.field-on,body.night .btn.primary{color:#000}
 .compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
 .rose{width:min(80vw,320px);height:min(80vw,320px)}
@@ -516,7 +517,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v27';
+const APP_VERSION = 'varde-v28';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -936,6 +937,12 @@ function friluftsliv(L){
       ['DNT-nøkkel (for medlemmer, nødly i ubetjente hytter)','DNT key (for members, emergency shelter in self-service cabins)'],
       ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']],
       {note: note('Ha ting du trenger ofte i topplokket eller hoftebeltelommen.','Keep things you need often in the lid or a hip-belt pocket.')}),
+    C('clothes','Tøy','Clothing',[
+      ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
+      ['Ullsokker (2–3 par)','Wool socks (2–3 pairs)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
+      ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],['Tynn vindjakke og lett vindbukse (valgfritt, erstatter ikke skalltøyet)','Thin wind jacket and light wind trousers (optional, not a replacement for the shell)'],
+      ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Pannebånd (kan også brukes som sovemaske)','Headband (can double as a sleep mask)'],['Hals / skjerf','Neck gaiter / scarf'],
+      ['Hansker (lette, hele året)','Gloves (light, all year)'],['Ullvotter (varme også når de er våte)','Wool mittens (warm even when wet)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters'],['Lette leirsko (valgfritt)','Light camp shoes (optional)']]),
     C('cook','Matlaging','Cooking',[
       ['Brenner / primus (vinter: 2 stk, eller reservedeler, for vann fra snø)','Stove (winter: 2, or spare parts, for melting snow)'],
       ['Brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)','Fuel (enough for the trip, winter approx. 0.3 l per day when melting snow)'],
@@ -945,12 +952,6 @@ function friluftsliv(L){
       ['Termos (liten på dagstur, større ved leir)','Thermos (small for day hikes, larger for camping)'],['Termokopp','Insulated mug'],['Vannflaske','Water bottle'],
       ['Nalgene-flaske (1–2x)','Nalgene bottle (1–2x)'],['Vannbeholder (4 l)','Water container (4 l)'],
       ['Vannfilter / rensetabletter (ved usikker vannkvalitet)','Water filter / purification tablets (if water quality is uncertain)']]),
-    C('clothes','Tøy','Clothing',[
-      ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
-      ['Ullsokker (2–3 par)','Wool socks (2–3 pairs)'],['Fleece / syntetisk (2x overdel)','Fleece / synthetic (2x top)'],['Ullgenser (varm)','Wool sweater (warm)'],['Dunjakke','Down jacket'],
-      ['Fjellbukse','Hiking trousers'],['Shorts','Shorts'],['Skalljakke','Shell jacket'],['Skallbukse','Shell trousers'],['Tynn vindjakke og lett vindbukse (valgfritt, erstatter ikke skalltøyet)','Thin wind jacket and light wind trousers (optional, not a replacement for the shell)'],
-      ['Lue (2 stk: én til tur, én tørr til teltet)','Hat (2: one for hiking, one kept dry for the tent)'],['Caps','Cap'],['Pannebånd (kan også brukes som sovemaske)','Headband (can double as a sleep mask)'],['Hals / skjerf','Neck gaiter / scarf'],
-      ['Hansker (lette, hele året)','Gloves (light, all year)'],['Ullvotter (varme også når de er våte)','Wool mittens (warm even when wet)'],['Fjellsko / lette tursko (etter tur og årstid)','Hiking boots / light hiking shoes (by trip and season)'],['Gamasjer','Gaiters'],['Lette leirsko (valgfritt)','Light camp shoes (optional)']]),
     C('food','Mat','Food',[
       ['Middag','Dinner'],['> Turmat (frysetørket eller hjemmelaget)','> Trail meals (freeze-dried or homemade)'],
       ['Frokost og lunsj','Breakfast and lunch'],['> Havregryn','> Oats'],['> Sukker (i liten plastboks)','> Sugar (in a small plastic box)'],['> Suppeposer','> Soup packets'],['> Havreknekkebrød','> Oat crispbread'],['> Lefser','> Lefse (flatbread)'],['> Kjeks / crackers','> Crackers'],['> Turmiks (nøtter og frø, energitett)','> Trail mix (nuts and seeds, energy dense)'],['> Sjokolade','> Chocolate'],
@@ -1190,7 +1191,7 @@ function renderTabs(){
   $('tabbar').innerHTML = [['list', T.tabList], ['notes', T.tabNotes], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
     `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
-const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#47759A','#FFF9E8','#BF4F33']} };
+const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#A9D6F2','#FBF3D9','#2E6FA3']} };
 function bodyClasses(){
   document.body.setAttribute('data-skin', SKINS[state.skin] ? state.skin : 'fjell');
   document.body.classList.toggle('notlist', tab !== 'list');
