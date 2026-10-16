@@ -261,7 +261,10 @@ header .list-switch.long .ls-lbl{display:none}
 header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
 header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
 header .list-switch.plain h1{font-size:1.9rem}
-.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:10px;padding:8px 12px;min-height:44px;border-radius:999px;border:1px solid currentColor;background:none;color:inherit;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
+.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:8px;border-radius:50%;border:1.5px solid currentColor;align-items:center;justify-content:center;pointer-events:none}
+body.field .hdr-field{display:flex}
+.hdr-field svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
+.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:12px;padding:8px 14px;min-height:44px;border-radius:999px;border:1px solid var(--rain,#2B67A0);background:var(--rain,#2B67A0);color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
 body.field .hdr-rain{display:flex}
 .hdr-rain svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 .lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
@@ -319,6 +322,7 @@ body[data-skin="bris"]{--bg:#FBF3D9;--surface:#FFFDF5;--ink:#23303A;--muted:#5E6
 :root[data-theme="dark"] body[data-skin="bris"]{--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
 body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
+body.night .hdr-rain{background:var(--ink);border-color:var(--ink);color:#000}
 :root body.night.night{--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
 body.night .chip.field-on,body.night .btn.primary{color:#000}
 .compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
@@ -343,7 +347,21 @@ html,body{touch-action:manipulation}
 .field-btn.on{background:var(--red);color:#fff}
 .field-btn.on svg{stroke:#fff}
 .field-btn.on small{color:rgba(255,255,255,.85)}
-.field-tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.field-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.field-tools .lt-btn{border-radius:16px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:68px;padding:10px 6px;text-align:center;line-height:1.15;white-space:normal;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.lt-btn svg{width:24px;height:24px;flex:none;stroke:var(--lc);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lt-red{--lc:#d92d20}.lt-green{--lc:#1e8a3c}.lt-fire{--lc:#e0780f}
+body.night .lt-btn{--lc:currentColor}
+.lt-btn .fill{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--ink)}
+.lt-btn.holding .fill{width:100%;transition:width 1s linear}
+.field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
+.slight{position:fixed;inset:0;z-index:60;background:#000;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.slight[hidden]{display:none}
+.sl-note{position:absolute;left:0;right:0;top:calc(18px + env(safe-area-inset-top,0px));margin:0;text-align:center;font-size:.85rem;color:rgba(0,0,0,.55)}
+.sl-track{position:absolute;left:20px;right:20px;bottom:calc(28px + env(safe-area-inset-bottom,0px));height:64px;border-radius:32px;background:rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.3)}
+.sl-track span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:56px;font-weight:600;color:rgba(0,0,0,.6)}
+.sl-knob{position:absolute;left:4px;top:4px;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;touch-action:none}
+.sl-knob svg{width:26px;height:26px;stroke:rgba(255,255,255,.75);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .sub-tools{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:12px}
 .sub-tools .chip{min-width:0;width:100%;text-align:center;line-height:1.25}
 body.listlock .items .mark{opacity:.55}
@@ -440,6 +458,12 @@ body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--moon:#E8DFC2;--sun:#F2B84B}}
 :root[data-theme="dark"]{--moon:#E8DFC2;--sun:#F2B84B}
 body.night{--moon:#ff4a3d;--sun:#ff4a3d}
+/* Grønt nattlys (v30): pure green only (no red or blue), so the screen uses its green subpixel */
+:root body.night.night.ngreen{--hd-btn:rgba(0,255,0,.13);--hd-track:rgba(0,255,0,.18);--hdt:#00d000;--chip:#001a00;--surface:#000f00;--ink:#00d000;--muted:#008a00;--line:#002800;--line-strong:#004000;--red:#00f000;--lichen:#00b000;--moon:#00f000;--sun:#00f000}
+body.night.ngreen .field-btn.on{color:#000}body.night.ngreen .field-btn.on svg{stroke:#000}body.night.ngreen .field-btn.on small{color:rgba(0,0,0,.7)}
+body.field .ls-lbl{display:none}
+body.night.ngreen .sb-fig{--sb-board:#002800;--sb-foam:#003300;--sb-strap:#006000;--sb-alu:#004000}
+body.night.ngreen .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-rotate(75deg) saturate(4)}
 .c-sky{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
 .c-sky .chip{display:inline-flex;align-items:center;gap:8px;padding:12px 16px}
 .c-sky .chip svg{width:22px;height:22px;flex:none}
@@ -517,6 +541,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
         <span class="ls-lbl" id="lsLbl"></span>
         <svg class="ls-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
+      <span class="hdr-field" id="hdrField" role="img"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></span>
       <button class="hdr-rain" id="hdrLock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 7.5a3.75 3.75 0 0 1 .5 7.47"/><path d="M9 18l-1 2.5M13 18l-1 2.5M17 18l-1 2.5"/></svg><span id="hdrRainTxt"></span></button>
     </div>
     <div class="progress">
@@ -531,6 +556,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <nav class="tabbar" id="tabbar"></nav>
 <div class="toast" id="toast" hidden></div>
 <div class="rainlock" id="rainlock" hidden></div>
+<div class="slight" id="slight" hidden><p class="sl-note" id="slNote"></p><div class="sl-track" id="slTrack"><span id="slTxt"></span><div class="sl-knob" id="slKnob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></div></div></div>
 <div class="intro" id="intro" hidden></div>
 
 <div class="overlay" id="overlay" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
@@ -541,7 +567,7 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v29';
+const APP_VERSION = 'varde-v30';
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -559,6 +585,9 @@ const FISH_KNOT_CREDITS = [
   {k:1, author:'Vaughan Pratt', file:'PalomarKnotSequence.jpg', url:'https://commons.wikimedia.org/wiki/File:PalomarKnotSequence.jpg', lic:'CC BY-SA 3.0', licUrl:'https://creativecommons.org/licenses/by-sa/3.0/', photo:true, chg:'adaptedCut'}
 ];
 const knotSvgCache = {};
+const ICON_MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+const ICON_EYE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const ICON_FLAME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1.2-3.7 2.3-4.8.3 1.6 1.2 2.6 2.2 2.8C11 8.5 11.2 5.5 12 3z"/></svg>';
 const ICON_FIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg>';
 const CHEV_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 const CHEV_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
@@ -573,7 +602,7 @@ const UI = {
     intro:[
       ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
-      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on and editing is locked. Rain lock lets you read without water on the screen ticking anything.'],
+      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Varde has no account and sends nothing from your phone. Notes, Plan, Guides and Compass are at the bottom.']
     ],
@@ -631,17 +660,17 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
-    field:'Outdoor mode', lockScreen:'Rain lock', nightLight:'Night light', undoLast:'Undo', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
     phone:[
       ['Rain','<p>Water on the screen can register as touches. Wipe the screen with a dry cloth or sleeve before use, it makes the biggest difference. A hydrophobic or matte screen protector makes water bead and run off, and a waterproof pouch keeps the screen itself dry. If your phone has a glove mode or increased touch sensitivity, turn it <b>off</b> in rain, as it makes the screen more sensitive to water too.</p><p>In this app: switch on <b>Outdoor mode</b> and use <b>Rain lock</b> to read your list without anything reacting.</p>'],
-      ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so <b>Night light</b> helps as well.</p>'],
+      ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything.</p><p><b>Rain lock</b> stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Night light</b> turns the app red so you keep your night vision, and <b>Undo</b> takes back the last tick.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the blue button at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -764,7 +793,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     intro:[
       ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
-      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på og redigering låses. Regnlås lar deg lese uten at vann på skjermen krysser av noe.'],
+      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Varde har ingen konto og sender ingenting fra mobilen din. Notater, Planlegg, Guider og Kompass finner du nederst.']
     ],
@@ -822,17 +851,17 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
-    field:'Utemodus', lockScreen:'Regnlås', nightLight:'Nattlys', undoLast:'Angre', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
     phone:[
       ['Regn','<p>Vann på skjermen kan registreres som berøring. Tørk skjermen med en tørr klut eller ermet før bruk, det utgjør den største forskjellen. En vannavstøtende eller matt skjermbeskytter får vannet til å perle seg og renne av, og et vanntett etui holder selve skjermen tørr. Har mobilen hanskemodus eller økt berøringsfølsomhet, slå det <b>av</b> i regn, for det gjør skjermen mer følsom for vann også.</p><p>I appen: slå på <b>Utemodus</b> og bruk <b>Regnlås</b> for å lese listen uten at noe reagerer.</p>'],
-      ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>Nattlys</b> hjelper også.</p>'],
+      ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe.</p><p><b>Regnlås</b> stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Nattlys</b> gjør appen rød, så du beholder nattsynet, og <b>Angre</b> tar tilbake siste avkrysning.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, den blå knappen øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -967,15 +996,15 @@ function friluftsliv(L){
     C('start','Før tur','Before you go',[['@prep Forberedelser','@prep Preparations']]),
     C('sleep','Overnatting','Sleeping',[['Telt','Tent'],['Teltlykt','Tent lamp'],['Sovepose (komforttemperatur etter årstid)','Sleeping bag (comfort temperature to suit the season)'],['Pute (kompakt)','Pillow (compact)'],['Lakenpose (ekstra)','Sleeping bag liner (extra)'],['Liggeunderlag (skum og/eller oppblåsbart)','Sleeping pad (foam and/or inflatable)']]),
     C('general','Generelt turutstyr','General gear',[
-      ['@firstaid Førstehjelpssett','@firstaid First aid kit'],['@repair Reparasjonssett','@repair Repair and spares kit'],['@personal Personlig pleie','@personal Personal care'],
+      ['Sekk','Backpack'],['@firstaid Førstehjelpssett','@firstaid First aid kit'],['@repair Reparasjonssett','@repair Repair and spares kit'],['@personal Personlig pleie','@personal Personal care'],
       ['Kart og kompass i vanntett kartmappe','Map and compass in a waterproof map case'],
       ['GPS / satellittkommunikator (nødsignal uten mobildekning)','GPS / satellite messenger (SOS without phone coverage)'],
       ['Powerbank (1 eller flere, etter turlengde og elektronikk)','Power bank (1 or more, depending on trip length and electronics)'],
       ['USB-C-kabel (lang)','USB-C cable (long)'],['Micro-USB-kabel (til eldre utstyr)','Micro-USB cable (for older gear)'],
       ['Hodelykt / lommelykt','Headlamp / torch'],['Solbriller / snøbriller','Sunglasses / snow goggles'],
-      ['Vindsekk','Bivy sack / emergency shelter'],['Jervenduk','Jerven bag (bivy, poncho, tarp)'],
+      ['Vindsekk eller Jervenduk (nødly, ta med én)','Bivy sack or Jerven bag (emergency shelter, bring one)'],
       ['DNT-nøkkel (for medlemmer, nødly i ubetjente hytter)','DNT key (for members, emergency shelter in self-service cabins)'],
-      ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Sekk','Backpack'],['Villmarkskniv','Outdoor knife']],
+      ['Lommebok / betalingskort og ID','Wallet / payment card and ID'],['Sitteunderlag','Sit pad'],['Pakkposer','Stuff sacks'],['Villmarkskniv','Outdoor knife']],
       {note: note('Ha ting du trenger ofte i topplokket eller hoftebeltelommen.','Keep things you need often in the lid or a hip-belt pocket.')}),
     C('clothes','Tøy','Clothing',[
       ['Undertøy (tur)','Underwear (hiking)'],['Ullundertøy (2 sett: ett til tur, ett tørt til teltet)','Wool base layer (2 sets: one for hiking, one kept dry for the tent)'],
@@ -1024,7 +1053,7 @@ function friluftsliv(L){
       ['Kompresser og bandasjer','Dressings and bandages'],['> Gaskompresser / tupfere','> Gauze swabs'],['> Sterile kompresser (dypere kutt)','> Sterile dressings (deeper cuts)'],['> Enkeltmannspakke (større blødninger)','> Field dressing (larger bleeding)'],['> Elastisk bomullsbandasje (overtråkk, skinner)','> Elastic cotton bandage (sprains, splints)'],['> Kompresjonsbandasje','> Compression bandage'],
       ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol)','> * Painkillers (paracetamol)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],['> Melatonin','> Melatonin'],
       ['Utstyr','Tools'],['> Pinsett (flått, fliser)','> Tweezers (ticks, splinters)'],['> Sikkerhetsnåler','> Safety pins'],['> Neglesaks','> Nail clippers'],['> Saks (bandasjer og tape)','> Scissors (bandages and tape)'],
-      ['Varme og nød','Warmth and emergency'],['> * Redningsfolie','> * Emergency foil blanket'],
+      ['Varme og nød','Warmth and emergency'],['> * Redningsfolie (i tillegg til vindsekken, ikke i stedet)','> * Emergency foil blanket (in addition to the bivy sack, not instead)'],
       ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag'],['> Førstehjelp til hund (bandasje og potesokk, på hundetur)','> Dog first aid (bandage and paw sock, on dog trips)']],
       {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
     C('repair','Reparasjonssett','Repair and spares kit',[
@@ -1138,12 +1167,15 @@ function migrate(){
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
 }
 if (state.v !== 2) migrate();
-/* Renamed template lines keep their ticks (v27, v29) */
+/* Renamed template lines keep their ticks (v27, v29, v30: the merged shelter line keeps a tick from either old line) */
 (function(){ const d = state.std && state.std.done; if (!d) return;
   const moved = {'std:m_bil:turdusj (pocket shower, 10 l)':'std:m_bil:turdusj (10 l)',
-    'std:personal:biopose (20 l)':'std:personal:biopose (20 l) til søppel, og en liten zip-pose til brukt dopapir'}; // v27, v29
+    'std:personal:biopose (20 l)':'std:personal:biopose (20 l) til søppel, og en liten zip-pose til brukt dopapir',
+    'std:general:vindsekk':'std:general:vindsekk eller jervenduk (nødly, ta med én)',
+    'std:general:jervenduk':'std:general:vindsekk eller jervenduk (nødly, ta med én)',
+    'std:firstaid:redningsfolie':'std:firstaid:redningsfolie (i tillegg til vindsekken, ikke i stedet)'}; // v27, v29, v30
   let ch = false;
-  Object.keys(moved).forEach(o => { if (o in d){ d[moved[o]] = d[o]; delete d[o]; ch = true; } });
+  Object.keys(moved).forEach(o => { if (o in d){ d[moved[o]] = !!(d[moved[o]] || d[o]); delete d[o]; ch = true; } });
   if (ch) save(); })();
 (state.lists || []).forEach(l => { if (l.tripType && state.main === l.id) l.tripType = false; });
 /* notes moved from lists into the notepad (v18), never wiped */
@@ -1158,7 +1190,6 @@ let view = (state.lastNav && typeof state.lastNav.view === 'string') ? state.las
 let tab = (state.lastNav && ['list', 'notes', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
 let modesOpen = false;
 let rainLocked = !!(state.field && state.rainLocked);
-let lastTick = null;
 const t = () => UI[state.lang] || UI.en;
 const modeName = k => { if (k.indexOf('L:') === 0){ const L = ownList(k.slice(2)); return L ? '+ ' + L.name : k; } return (MODES[k] && (MODES[k][state.lang] || MODES[k].en)) || k; };
 
@@ -1243,6 +1274,7 @@ function bodyClasses(){
   document.body.classList.toggle('field', !!state.field);
   document.body.classList.toggle('listlock', !!state.listLock);
   document.body.classList.toggle('night', !!(state.field && state.night));
+  document.body.classList.toggle('ngreen', !!(state.field && state.night && state.nightHue === 'green'));
   const night = state.field && state.night;
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', night ? '#000000' : getComputedStyle(document.body).getPropertyValue('--hd').trim() || '#1F3532');
@@ -1257,6 +1289,7 @@ function render(){
   $('listBtn').setAttribute('aria-label', T.yourLists);
   $('lsLbl').textContent = T.yourLists;
   $('hdrRainTxt').textContent = T.lockScreen;
+  $('hdrField').setAttribute('aria-label', T.fieldSign);
   const listHeader = tab === 'list' && view !== 'lists' && view !== 'howto' && !(view && view.indexOf('edit:') === 0);
   $('listBtn').classList.toggle('plain', !listHeader);
   $('rainlock').hidden = !rainLocked;
@@ -1314,10 +1347,9 @@ function render(){
   } else {
     html += `<button class="field-btn${state.field ? ' on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${ICON_FIELD}<span>${T.field}</span><small>${state.field ? T.fieldOn : T.fieldOff}</small></button>`;
     if (state.field){
-      html += `<div class="field-tools">
-        <button class="chip" data-act="rainLock">${T.lockScreen}</button>
-        <button class="chip" data-act="nightToggle" aria-pressed="${!!state.night}">${T.nightLight}</button>
-        <button class="chip" data-act="undoTick" ${lastTick ? '' : 'disabled'}>${T.undoLast}</button></div>`;
+      const hue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null;
+      const lb = (m, ic, lbl) => `<button class="chip lt-btn lt-${m}" data-light="${m}"${m === 'fire' ? '' : ` aria-pressed="${hue === m}"`}>${ic}<span>${lbl}</span><i class="fill"></i></button>`;
+      html += `<div class="field-tools">${lb('red', ICON_MOON, T.nightRed)}${lb('green', ICON_EYE, T.nightGreen)}${lb('fire', ICON_FLAME, T.campfire)}</div><p class="field-hint">${T.lampHint}</p>`;
     }
     const keys = [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))]
       .concat(state.lists.filter(L => L.tripType && L.id !== l.id).map(L => 'L:' + L.id));
@@ -1582,7 +1614,7 @@ const GUIDE_LINKS = {
   'std:m_fiske:kroker':'fishing', 'std:m_fiske:svivler / sene':'fishing', 'std:m_fiske:fiskekort (ferskvann)':'fishing#rules',
   'std:personal:kuldekrem uten vann (vinter, mot sprukken hud)':'winter',
   'std:cook:brennerplate (lett, brannsikkert underlag som tåler drivstoff og holder brenneren fast, viktig på snø)':'stoveboard',
-  'std:m_bil:tarp':'tarp', 'std:m_bil:tarpstenger':'tarp', 'std:general:jervenduk':'tarp',
+  'std:m_bil:tarp':'tarp', 'std:m_bil:tarpstenger':'tarp', 'std:general:vindsekk eller jervenduk (nødly, ta med én)':'tarp',
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
   'std:m_topptur:toppturski / randoneeski med feller':'aval', 'std:prep:sjekk skredvarselet (varsom.no) (skredterreng)':'aval',
   'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
@@ -2745,7 +2777,7 @@ async function listAction(a, id){
         state.lists.forEach(x => { x.modes = {}; x.cats.forEach(c => { delete c.open; c.items.forEach(i => i.done = false); }); });
         state.main = 'std'; selList = 'std';
         state.field = false; state.rainLocked = false; rainLocked = false;
-        state.hidePacked = false; state.listLock = false; editing = false;
+        state.hidePacked = false; state.listLock = false; delete state.lockPrev; editing = false;
         stdCache = null; tab = 'list'; view = null;
       });
       history.replaceState({tab:'list', view:null, depth:0}, '');
@@ -2881,10 +2913,14 @@ main.addEventListener('click', async e => {
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
-  if (act === 'fieldToggle'){ state.field = !state.field; if (!state.field){ rainLocked = false; state.rainLocked = false; } editing = false; save(); render(); updateWake(); return; }
-  if (act === 'nightToggle'){ state.night = !state.night; save(); render(); return; }
-  if (act === 'rainLock'){ lockRain(); return; }
-  if (act === 'undoTick'){ if (lastTick){ const c = findCat(lastTick.cat); const it = c && c.items.find(i => i.id === lastTick.item); if (it){ setDone(c, it, lastTick.prev); save(); } lastTick = null; render(); } return; }
+  if (act === 'fieldToggle'){
+    state.field = !state.field;
+    // v30: Lås listen is on in Utemodus and goes back to how it was afterwards
+    if (state.field){ state.lockPrev = !!state.listLock; state.listLock = true; }
+    else { rainLocked = false; state.rainLocked = false; state.listLock = !!state.lockPrev; delete state.lockPrev; }
+    editing = false; save(); render(); updateWake();
+    if (state.field && !state.lockPrev) showToast(T.lockedOn);
+    return; }
   if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); if (all) modesOpen = false; save(); render(); return; }
   if (act === 'openPlan'){ planFrom = b.dataset.from || null; go('plan', 'tool:' + b.dataset.tool); return; }
   if (act === 'windStep'){ const w = windState(), k = b.dataset.k; w[k] = Math.round((w[k] + (+b.dataset.d)) * 10) / 10; if (k === 'v' && w.v < 0) w.v = 0; save(); renderWind(); return; }
@@ -2925,7 +2961,6 @@ main.addEventListener('click', async e => {
   else if (act === 'toggleItem'){
     if (state.listLock && !editing){ showToast(T.lockedMsg); return; }
     if (state.field && !tapOk()) return;
-    lastTick = {cat:cat.id, item:item.id, prev:item.done};
     setDone(cat, item, !item.done); save(); render();
   }
   else if (act === 'indentItem'){ item.sub = !item.sub; save(); render(); }
@@ -3002,6 +3037,7 @@ function goBack(){
 history.replaceState({tab, view, depth:0}, '');
 window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
+  if (slMode){ history.pushState(Object.assign({}, history.state || {}, {light:true}), ''); return; }
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
   if (rainLocked && !navOpen()){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
@@ -3102,10 +3138,104 @@ function renderLock(){
   holdButton($('navBtn'), 1000, openNav);
   holdButton($('unlockBtn'), 1000, () => { rainLocked = false; state.rainLocked = false; save(); navUntil = 0; clearTimeout(navTimer); render(); });
 }
+/* ---------- night light and screen light (v30) ----------
+   Tap Rødt / Grønt nattlys: colours the app (one at a time). Bål is a light only.
+   Hold any of them 1 s: the whole screen becomes a light, locked; slide the handle to unlock.
+   Bål flickers irregularly within 70–100 % brightness, no hard flashes; steady amber with reduced motion. */
+let slMode = null, slRaf = null;
+const SL_COL = {red:'#ff0000', green:'#00ff00'};
+function tapLight(m){
+  if (m === 'fire'){ showToast(t().lampHoldMsg); return; }
+  const on = state.night && (state.nightHue === 'green' ? 'green' : 'red') === m;
+  if (on) state.night = false; else { state.night = true; state.nightHue = m; }
+  save(); render();
+}
+function slFs(){
+  const d = document.documentElement;
+  try { if (d.requestFullscreen && !document.fullscreenElement) d.requestFullscreen({navigationUI:'hide'}).catch(() => {}); } catch(e){}
+}
+function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; }
+function slFire(){
+  const el = $('slight'); let b = .85, tg = .85, nx = 0;
+  const step = now => {
+    if (now > nx){ tg = .7 + Math.random() * .3; nx = now + 150 + Math.random() * 250; }
+    b += (tg - b) * .05;
+    const s = .5 + .5 * Math.sin(now / 3200), k = b * (.92 + .08 * s);
+    const c = (r, g, bl) => `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(bl * k)})`;
+    el.style.background = `radial-gradient(130% 95% at 50% ${Math.round(104 - 30 * b)}%, ${c(255, 150 + 30 * s, 24)} 0%, ${c(215, 80, 0)} 55%, ${c(95, 28, 0)} 100%)`;
+    slRaf = requestAnimationFrame(step);
+  };
+  slRaf = requestAnimationFrame(step);
+}
+function openLight(m){
+  const T = t(), el = $('slight');
+  slStop(); slMode = m;
+  $('slNote').textContent = T.lampNote;
+  $('slTxt').textContent = T.lampSlide;
+  $('slKnob').style.transition = 'none'; $('slKnob').style.transform = '';
+  if (m === 'fire'){
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) el.style.background = '#f08a14';
+    else slFire();
+  } else el.style.background = SL_COL[m];
+  el.hidden = false;
+  history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
+  slFs(); updateWake();
+}
+function closeLight(){
+  slStop(); slMode = null; $('slight').hidden = true;
+  try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch(e){}
+  if (history.state && history.state.light){ ignorePop = true; history.back(); }
+}
+(function(){
+  const el = $('slight'), knob = $('slKnob'), track = $('slTrack');
+  let sx = null, pid = null;
+  const max = () => track.clientWidth - knob.offsetWidth - 8;
+  knob.addEventListener('pointerdown', e => { if (sx !== null) return; sx = e.clientX; pid = e.pointerId; knob.setPointerCapture(pid); knob.style.transition = 'none'; });
+  knob.addEventListener('pointermove', e => {
+    if (sx === null || e.pointerId !== pid) return;
+    const d = Math.max(0, Math.min(max(), e.clientX - sx));
+    knob.style.transform = `translateX(${d}px)`;
+    if (d >= max() * .95){ sx = null; closeLight(); }
+  });
+  const back = () => { if (sx === null) return; sx = null; knob.style.transition = 'transform .25s'; knob.style.transform = ''; };
+  knob.addEventListener('pointerup', back); knob.addEventListener('pointercancel', back);
+  el.addEventListener('touchstart', e => { if (!e.target.closest('#slKnob') && e.cancelable) e.preventDefault(); }, {passive:false});
+  el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); slFs(); });
+  el.addEventListener('contextmenu', e => e.preventDefault());
+})();
+/* tap or hold on the light buttons (delegated, since the row is redrawn with the page) */
+(function(){
+  let btn = null, timer = null, held = false, sx = 0, sy = 0;
+  const pt = e => e.touches ? e.touches[0] : e;
+  const cancel = () => { clearTimeout(timer); if (btn) btn.classList.remove('holding'); btn = null; };
+  const start = (b, e) => {
+    if (e.cancelable) e.preventDefault();
+    cancel(); btn = b; held = false;
+    const p = pt(e); sx = p.clientX; sy = p.clientY;
+    b.classList.add('holding');
+    timer = setTimeout(() => { const m = b.dataset.light; held = true; cancel(); openLight(m); }, 1000);
+  };
+  const move = e => { if (!btn) return; const p = pt(e); if (Math.hypot(p.clientX - sx, p.clientY - sy) > 12) cancel(); };
+  const end = () => {
+    if (held){ held = false; slFs(); return; }
+    if (!btn) return;
+    const m = btn.dataset.light, ok = !multi; cancel();
+    if (ok) tapLight(m);
+  };
+  main.addEventListener('touchstart', e => { const b = e.target.closest('.lt-btn'); if (b) start(b, e); }, {passive:false});
+  main.addEventListener('touchmove', move, {passive:true});
+  main.addEventListener('touchend', end);
+  main.addEventListener('touchcancel', cancel);
+  main.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') return; const b = e.target.closest('.lt-btn'); if (b) start(b, e); });
+  main.addEventListener('pointermove', e => { if (e.pointerType !== 'touch') move(e); });
+  main.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') end(); });
+  main.addEventListener('pointercancel', e => { if (e.pointerType !== 'touch') cancel(); });
+  main.addEventListener('contextmenu', e => { if (e.target.closest('.lt-btn')) e.preventDefault(); });
+})();
 let wakeLock = null;
 async function updateWake(){
   try {
-    if (state.field && document.visibilityState === 'visible'){
+    if ((state.field || slMode) && document.visibilityState === 'visible'){
       if (!wakeLock && navigator.wakeLock){ wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); }
     } else if (wakeLock){ await wakeLock.release(); wakeLock = null; }
   } catch(e){}
