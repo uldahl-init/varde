@@ -395,6 +395,18 @@ body.listlock .items .mark{opacity:.55}
 .lc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .empty-own{color:var(--muted);margin:4px 2px 0}
+.bk-status{color:var(--muted);font-size:.9rem;margin:10px 2px 0}
+.bk-status.warn{color:var(--ink);padding:8px 10px;border-left:3px solid var(--red);background:var(--bg)}
+.bk-banner{margin:12px 0 4px;padding:12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface)}
+.bk-banner p{margin:0}
+.bk-banner .row-btns{margin-top:10px}
+.bk-warn{padding:10px 12px;border-left:3px solid var(--red);background:var(--bg);border-radius:0 8px 8px 0}
+.bk-warn p{margin:0}
+.bk-warn .bk-how{margin-top:6px;color:var(--muted);font-size:.88rem}
+.bk-covers{color:var(--muted);font-size:.9rem;margin:0 0 8px}
+.bk-btns{margin-top:0}
+.bk-text{margin-top:10px}
+.bk-text summary{cursor:pointer;color:var(--muted);font-size:.9rem;padding:6px 0}
 .intro{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
 .intro[hidden]{display:none}
 .intro-card{width:100%;max-width:440px;text-align:center}
@@ -570,7 +582,9 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
-const APP_VERSION = 'varde-v31';
+const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
+const APP_VERSION = '0.1.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 32;         // raised on every commit, together with CACHE ('varde-b32') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -600,16 +614,16 @@ const CROSS = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 /* ---------- interface text ---------- */
 const UI = {
   en: {
-    shareText:n=>`Packing list "${n}" from Varde`, shareFallback:'Copy the link and send it to the people you want to share the list with.', copyLink:'Copy link', linkCopied:'Link copied.',
+    shareText:n=>`Packing list "${n}" from ${APP_NAME}`, shareFallback:'Copy the link and send it to the people you want to share the list with.', copyLink:'Copy link', linkCopied:'Link copied.',
     shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Shared lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
     intro:[
-      ['Welcome to Varde','A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
+      [`Welcome to ${APP_NAME}`,'A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
       ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
-      ['Offline and private','Add Varde to your home screen and it works without coverage. Your lists are stored only on your phone, so take a backup now and then. Varde has no account and sends nothing from your phone. Notes, Plan, Guides and Compass are at the bottom.']
+      ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
-    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:'How to use Varde', sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:'Could not get a position. Check that location is allowed for Varde, and try again outdoors.',
+    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:`How to use ${APP_NAME}`, sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:`Could not get a position. Check that location is allowed for ${APP_NAME}, and try again outdoors.`,
     posNote:'The position is fetched only when you tap Get position or Update position. It is stored only on your phone and sent nowhere. It is used for the sun and moon, the compass and to choose the right weather and avalanche links. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
@@ -626,7 +640,7 @@ const UI = {
     skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
     dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'They match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
-    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:'Varde has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). The code is open, so anyone can check what the app does:', privacyLink:'Varde on GitHub', linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
+    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:`${APP_NAME} has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). The code is open, so anyone can check what the app does:`, privacyLink:`${APP_NAME} on GitHub`, linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
@@ -634,7 +648,7 @@ const UI = {
     useTrip:'Add as trip type', useTripHint:'Its items are added to the main list when you switch the trip type on under Trip type.',
     makeCopy:'Make my own copy', share:'Share', listsSub:'Choose which list is on the front page, and manage your own lists.', stdList:'Standard list', ownLists:'Your own lists',
     noOwn:"You haven't made any lists yet. Make one from the standard list or start empty.", showIntro:'Show the introduction again', fromStd:'Start from the standard list',
-    app:'Varde', hide:'Hide packed', edit:'Edit list', doneEdit:'Done editing', reset:'Start over',
+    app:`${APP_NAME}`, hide:'Hide packed', edit:'Edit list', doneEdit:'Done editing', reset:'Start over',
     packed:(d,t)=>`${d} of ${t} packed`, noItems:'No items yet', allDone:'Everything is packed. Have a good trip!',
     empty:'This list is empty. Tap <strong>Edit list</strong> to add categories and items.',
     rename:'Rename', delCat:'Delete category', catPacked:'All packed in this category.', catEmpty:'No items yet.',
@@ -645,10 +659,18 @@ const UI = {
     delList:'Delete this list?', delListMsg:n=>`"${n}" and all its items will be removed from this phone.`, delListOk:'Delete list',
     newListMsg:'Start from the standard list and change it, or start with an empty list.', items:n=>`${n} items`,
     emptyList:'Empty list', emptySub:'Build your own', nameList:'Name your list', myList:'My list', create:'Create list',
-    bkMsg:'Your lists are stored only on this phone. Copy the backup below and keep it somewhere safe, or paste it on another phone to move or share your lists.',
-    bkCopy:'Copy backup', bkCopied:'Backup copied.', bkManual:'Select the text and copy it manually.', restore:'Restore',
-    bkPaste:'Paste a backup here', bkAdd:'Add lists from backup',
-    bkAdded:n=>`Added ${n} list${n>1?'s':''}. Find ${n>1?'them':'it'} under Your lists.`,
+    bkWarn:`Everything you make in ${APP_NAME} is stored only in the browser on this phone. If you clear the app's site data, uninstall it or change phones, your own lists, notes and Pack weight items are gone for good. Take a backup and keep it somewhere else.`,
+    bkWarnHow:'Clearing only the cache usually keeps your data. Clearing site data, cookies and site data, or storage deletes it.',
+    bkTake:'Take a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
+    bkShare:'Share', bkSave:'Save as file', bkShared:'Backup shared.', bkSaved:'File made. Look in your downloads.', bkShow:'Show the backup as text',
+    bkCopy:'Copy', bkCopied:'Backup copied.', bkManual:'Select the text and copy it manually.', restore:'Restore',
+    bkPaste:'Paste a backup here', bkFile:'Choose file', bkAdd:'Add from backup', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
+    bkAddedAll:a=>'Added: ' + [a.l && `${a.l} list${a.l>1?'s':''}`, a.n && `${a.n} note${a.n>1?'s':''}`, a.w && `${a.w} in Pack weight`, a.k && `${a.k} link${a.k>1?'s':''}`, a.p && 'the figures in Plan'].filter(Boolean).join(', ') + '.',
+    bkNothing:'Everything in this backup is already here.',
+    bkLast:d=>`Last backup: ${d}`, bkNever:'never', bkChanged:'You have changes that are not backed up.',
+    bkRemind:'It is a while since your last backup, and you have changes that exist only on this phone.', bkLater:'Later',
+    adviceTitle:'About the advice', adviceTxt:`${APP_NAME} gives general advice and checklists for planning trips. The advice does not replace courses, local knowledge or your own judgement of weather, conditions and avalanche danger. Always check official forecasts and rules before the trip, and carry a map, compass and emergency beacon, not just your phone. The figures in Plan are estimates. You are responsible for your own choices on a trip. In an emergency: call 113 or 112.`,
+    versionLine:(v,b)=>`Version ${v} (build ${b})`,
     bkBad:'That text is not a valid backup. Copy the whole backup and try again.',
     renameItem:'Rename item', renameCat:'Rename category', delCatQ:'Delete category?',
     delCatMsg:(n,c)=>`"${n}" and its ${c} items will be removed.`, newCat:'New category', category:'Category',
@@ -791,16 +813,16 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     langNote:'The standard list follows the language chosen here. Your own lists keep the language they were made in.'
   },
   no: {
-    shareText:n=>`Pakkliste «${n}» fra Varde`, shareFallback:'Kopier lenken og send den til dem du vil dele listen med.', copyLink:'Kopier lenke', linkCopied:'Lenken er kopiert.',
+    shareText:n=>`Pakkliste «${n}» fra ${APP_NAME}`, shareFallback:'Kopier lenken og send den til dem du vil dele listen med.', copyLink:'Kopier lenke', linkCopied:'Lenken er kopiert.',
     shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Delte lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
     intro:[
-      ['Velkommen til Varde','En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
+      [`Velkommen til ${APP_NAME}`,'En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
       ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
-      ['Uten nett og trygt','Legg Varde til på startskjermen, så virker den uten dekning. Listene lagres bare på mobilen din, så ta en sikkerhetskopi av og til. Varde har ingen konto og sender ingenting fra mobilen din. Notater, Planlegg, Guider og Kompass finner du nederst.']
+      ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
-    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:'Slik bruker du Varde', sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:'Fikk ikke posisjon. Sjekk at Varde har lov til å bruke posisjon, og prøv igjen ute.',
+    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:`Slik bruker du ${APP_NAME}`, sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:`Fikk ikke posisjon. Sjekk at ${APP_NAME} har lov til å bruke posisjon, og prøv igjen ute.`,
     posNote:'Posisjonen hentes bare når du trykker Hent posisjon eller Oppdater posisjon. Den lagres bare på mobilen og sendes ingen steder. Den brukes til sol og måne, kompasset og til å velge riktige vær- og skredlenker. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
@@ -817,7 +839,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
     dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'De tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
-    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:'Varde har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Koden er åpen, så alle kan sjekke hva appen gjør:', privacyLink:'Varde på GitHub', linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
+    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:`${APP_NAME} har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Koden er åpen, så alle kan sjekke hva appen gjør:`, privacyLink:`${APP_NAME} på GitHub`, linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
@@ -825,7 +847,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     useTrip:'Legg til i turtype', useTripHint:'Tingene i listen legges til i hovedlisten når du slår på turtypen under Turtype.',
     makeCopy:'Lag egen kopi', share:'Del', listsSub:'Velg hvilken liste som vises på forsiden, og administrer dine egne lister.', stdList:'Standardliste', ownLists:'Dine egne lister',
     noOwn:'Du har ikke laget noen lister ennå. Lag en fra standardlisten eller start med en tom liste.', showIntro:'Vis introduksjonen igjen', fromStd:'Start fra standardlisten',
-    app:'Varde', hide:'Skjul pakket', edit:'Rediger liste', doneEdit:'Ferdig', reset:'Nullstill',
+    app:`${APP_NAME}`, hide:'Skjul pakket', edit:'Rediger liste', doneEdit:'Ferdig', reset:'Nullstill',
     packed:(d,t)=>`${d} av ${t} pakket`, noItems:'Ingen ting ennå', allDone:'Alt er pakket. God tur!',
     empty:'Listen er tom. Trykk <strong>Rediger liste</strong> for å legge til kategorier og ting.',
     rename:'Gi nytt navn', delCat:'Slett kategori', catPacked:'Alt i denne kategorien er pakket.', catEmpty:'Ingen ting ennå.',
@@ -836,10 +858,18 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     delList:'Slette denne listen?', delListMsg:n=>`«${n}» og alt innholdet blir fjernet fra denne telefonen.`, delListOk:'Slett liste',
     newListMsg:'Start fra standardlisten og endre den, eller start med en tom liste.', items:n=>`${n} ting`,
     emptyList:'Tom liste', emptySub:'Lag din egen', nameList:'Gi listen et navn', myList:'Min liste', create:'Lag liste',
-    bkMsg:'Listene dine lagres bare på denne telefonen. Kopier sikkerhetskopien under og ta vare på den, eller lim den inn på en annen telefon for å flytte eller dele listene.',
-    bkCopy:'Kopier sikkerhetskopi', bkCopied:'Sikkerhetskopien er kopiert.', bkManual:'Merk teksten og kopier den manuelt.', restore:'Gjenopprett',
-    bkPaste:'Lim inn en sikkerhetskopi her', bkAdd:'Legg til lister fra kopi',
-    bkAdded:n=>`La til ${n} ${n>1?'lister':'liste'}. Du finner ${n>1?'dem':'den'} under Dine lister.`,
+    bkWarn:`Alt du lager i ${APP_NAME} ligger bare i nettleseren på denne mobilen. Sletter du nettstedsdata for appen, avinstallerer den eller bytter mobil, forsvinner egne lister, notater og Sekkvekt for godt. Ta en sikkerhetskopi og lagre den et annet sted.`,
+    bkWarnHow:'Å tømme bare bufferen sletter vanligvis ikke dataene. Det gjør «Nettstedsdata», «Informasjonskapsler og nettstedsdata» eller «Tøm lagring».',
+    bkTake:'Ta sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
+    bkShare:'Del', bkSave:'Lagre som fil', bkShared:'Sikkerhetskopien er delt.', bkSaved:'Filen er laget. Se i nedlastingene dine.', bkShow:'Vis sikkerhetskopien som tekst',
+    bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert.', bkManual:'Merk teksten og kopier den manuelt.', restore:'Gjenopprett',
+    bkPaste:'Lim inn en sikkerhetskopi her', bkFile:'Velg fil', bkAdd:'Legg til fra sikkerhetskopi', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
+    bkAddedAll:a=>'Lagt til: ' + [a.l && `${a.l} ${a.l>1?'lister':'liste'}`, a.n && `${a.n} ${a.n>1?'notater':'notat'}`, a.w && `${a.w} i Sekkvekt`, a.k && `${a.k} ${a.k>1?'lenker':'lenke'}`, a.p && 'tallene i Planlegg'].filter(Boolean).join(', ') + '.',
+    bkNothing:'Alt i denne sikkerhetskopien finnes her fra før.',
+    bkLast:d=>`Sist sikkerhetskopi: ${d}`, bkNever:'aldri', bkChanged:'Du har endringer som ikke er sikkerhetskopiert.',
+    bkRemind:'Det er en stund siden sist sikkerhetskopi, og du har endringer som bare finnes på denne mobilen.', bkLater:'Senere',
+    adviceTitle:'Om rådene', adviceTxt:`${APP_NAME} gir generelle råd og huskelister for å planlegge turer. Rådene erstatter ikke kurs, lokalkunnskap eller din egen vurdering av vær, føre og skredfare. Sjekk alltid offisielle varsler og regler før turen, og ha kart, kompass og nødsender, ikke bare mobilen. Utregningene i Planlegg er anslag. Du er selv ansvarlig for valgene dine på tur. I en nødsituasjon: ring 113 eller 112.`,
+    versionLine:(v,b)=>`Versjon ${v} (bygg ${b})`,
     bkBad:'Teksten er ikke en gyldig sikkerhetskopi. Kopier hele sikkerhetskopien og prøv igjen.',
     renameItem:'Gi tingen nytt navn', renameCat:'Gi kategorien nytt navn', delCatQ:'Slette kategorien?',
     delCatMsg:(n,c)=>`«${n}» og ${c} ting i den blir fjernet.`, newCat:'Ny kategori', category:'Kategori',
@@ -1103,7 +1133,76 @@ function load(){
   try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.lists)) return s; } catch(e){}
   return null;
 }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+function save(){ bkTrack(); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+/* ---------- backup bookkeeping (v32) ---------- */
+// Personal content, without ticks, folds and other state that changes on every trip.
+const BK_PLAN = ['calc', 'fuelCalc', 'foodCalc', 'wind'];
+const BK_REMIND_MS = 14 * 86400000, BK_SNOOZE_MS = 7 * 86400000;
+function listSig(L){ return [L.name, (L.cats || []).map(c => [c.name, c.note || '', (c.items || []).map(i => (i.sub ? '>' : '') + i.text)])]; }
+function strHash(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+function personalSig(){
+  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => [n.title, n.text]),
+    ((state.packW || {}).items || []).map(i => [i.name, i.g, i.cat, !!i.cons, !!i.dog]), (state.links || []).map(l => [l.n, l.u])]));
+}
+function hasOwnContent(){
+  return (state.lists || []).length > 0 || (state.notes || []).length > 0 || ((state.packW || {}).items || []).length > 0 || (state.links || []).length > 0;
+}
+function bkTrack(){
+  if (!state) return;
+  const sig = personalSig();
+  if (sig === state.bkSig) state.bkDirtyT = 0;
+  else if (!state.bkDirtyT) state.bkDirtyT = Date.now();
+}
+function bkDirty(){ return hasOwnContent() && personalSig() !== state.bkSig; }
+function bkMarkDone(){ state.bkLast = Date.now(); state.bkSig = personalSig(); state.bkDirtyT = 0; state.bkSnooze = 0; save(); }
+function bkRemindDue(){
+  if (state.field || !bkDirty() || !state.bkDirtyT) return false;
+  const now = Date.now();
+  return now - state.bkDirtyT > BK_REMIND_MS && !(state.bkSnooze > now);
+}
+function bkData(){
+  const plan = {};
+  BK_PLAN.forEach(k => { if (state[k]) plan[k] = state[k]; });
+  return JSON.stringify({app:'trip-checklist', version:3, t:Date.now(), lists:state.lists, notes:state.notes,
+    packW:{items:(state.packW || {}).items || []}, links:state.links || [], plan});
+}
+function bkFileName(){ return APP_NAME.toLowerCase() + '-' + (state.lang === 'no' ? 'sikkerhetskopi' : 'backup') + '-' + new Date().toISOString().slice(0, 10) + '.json'; }
+// Adds what is new; never overwrites. Returns counts, or null if the text is not a backup.
+function bkRestore(text){
+  let obj;
+  try { obj = JSON.parse(text); } catch(e){ return null; }
+  if (!obj || !Array.isArray(obj.lists)) return null;
+  const a = {l:0, n:0, w:0, k:0, p:0};
+  const have = new Set((state.lists || []).map(L => JSON.stringify(listSig(L))));
+  obj.lists.forEach(l => {
+    if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
+    const c = cloneList(l, true); c.tripType = !!l.tripType; c.sharedIn = !!l.sharedIn; notesFromList(c);
+    const sig = JSON.stringify(listSig(c));
+    if (have.has(sig)) return;
+    have.add(sig); state.lists.push(c); a.l++;
+  });
+  if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
+    if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id || (x.title === n.title && x.text === n.text))) return;
+    state.notes.push({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}); a.n++;
+  });
+  if (obj.packW && Array.isArray(obj.packW.items)){
+    const pw = packW();
+    obj.packW.items.forEach(i => {
+      if (!i || typeof i.name !== 'string' || !isFinite(+i.g) || pw.items.some(x => x.id === i.id)) return;
+      pw.items.push({id:typeof i.id === 'string' ? i.id : uid(), name:i.name, g:+i.g, cat:String(i.cat || ''), cons:!!i.cons, dog:!!i.dog}); a.w++;
+    });
+  }
+  if (Array.isArray(obj.links)) obj.links.forEach(l => {
+    if (!l || typeof l.u !== 'string' || !/^https?:\/\//.test(l.u) || (state.links || []).some(x => x.u === l.u)) return;
+    state.links = (state.links || []).concat([{n:String(l.n || hostOf(l.u)), u:l.u}]); a.k++;
+  });
+  // Planner figures only where this phone has none of its own.
+  if (obj.plan && typeof obj.plan === 'object') BK_PLAN.forEach(k => {
+    if (obj.plan[k] && typeof obj.plan[k] === 'object' && !state[k]){ state[k] = obj.plan[k]; a.p = 1; }
+  });
+  return a;
+}
 
 let state = load();
 if (!state) state = { lists:[], hidePacked:false, lang:detectLang() };
@@ -1481,7 +1580,7 @@ function renderLists(){
   document.title = T.yourLists + ' · ' + T.app;
   document.body.classList.add('notlist');
   let html = `<button class="back" data-nav data-act="back">${CHEV_L}${esc(mainList().name)}</button>
-    <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}
+    <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}${bkRemindDue() ? `<div class="bk-banner" role="status"><p>${T.bkRemind}</p><div class="row-btns"><button class="btn primary" data-la="backup">${T.bkTake}</button><button class="btn" data-la="bkLater">${T.bkLater}</button></div></div>` : ''}
     <div class="section-label">${T.stdList}</div>${listCard(stdList())}
     <div class="section-label">${T.ownLists}</div>`;
   const own = state.lists.filter(L => !L.sharedIn), shared = state.lists.filter(L => L.sharedIn);
@@ -1490,7 +1589,12 @@ function renderLists(){
   html += `<div class="section-label">${T.sharedLists}</div>`;
   if (!shared.length) html += `<p class="empty-own">${T.noShared}</p>`;
   shared.forEach(L => { html += listCard(L); });
-  if (!state.field) html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>`;
+  if (!state.field){
+    const dirty = bkDirty();
+    const last = state.bkLast ? new Date(state.bkLast).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}) : T.bkNever;
+    html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>
+      <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(last)}${dirty ? ` · ${T.bkChanged}` : ''}</p>`;
+  }
   // settings (v29): even sections with a thin line between
   const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
   html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
@@ -1500,7 +1604,8 @@ function renderLists(){
   if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
   html += sec(T.privacy, `<p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`);
-  html += `<p class="app-ver">${T.versionLbl} ${APP_VERSION}</p>`;
+  html += sec(T.adviceTitle, `<p class="tool-tip">${T.adviceTxt}</p>`);
+  html += `<p class="app-ver">${T.versionLine(APP_VERSION, APP_BUILD)}</p>`;
   main.innerHTML = html;
 }
 function renderIndex(){
@@ -1805,7 +1910,7 @@ function packList(L){
 function unpackList(p){
   if (!p || !Array.isArray(p.c)) throw new Error('bad');
   const ids = p.c.map(() => uid());
-  return {id:uid(), name:String(p.n || 'Varde'), notes:String(p.o || ''), modes:{}, tripType:false, cats:p.c.map((c, n) => ({
+  return {id:uid(), name:String(p.n || APP_NAME), notes:String(p.o || ''), modes:{}, tripType:false, cats:p.c.map((c, n) => ({
     id:ids[n], name:String(c[0] || ''), note:String(c[1] || ''), mode:MODES[c[2]] ? c[2] : null, bag:!!c[3], icon:c[4] || null, lightOnly:false, open:true,
     items:(Array.isArray(c[5]) ? c[5] : []).map(i => ({id:uid(), text:String(i[0] || ''), done:false, sub:!!(i[1] & 1), light:!!(i[1] & 2), link:(i[2] >= 0 && ids[i[2]]) ? ids[i[2]] : null}))
   }))};
@@ -1867,7 +1972,7 @@ function showIntro(step, then){
   if (step < 0 || step > T.intro.length){ el.hidden = true; return; }
   el.hidden = false;
   if (step === 0){
-    el.innerHTML = `<div class="intro-card"><div class="intro-ic">${INTRO_ICONS[0]}</div><h2>Varde</h2><p>${T.introLang}</p>
+    el.innerHTML = `<div class="intro-card"><div class="intro-ic">${INTRO_ICONS[0]}</div><h2>${esc(APP_NAME)}</h2><p>${T.introLang}</p>
       <div class="intro-lang"><button class="btn${state.lang === 'no' ? ' primary' : ''}" data-ilang="no">Norsk</button><button class="btn${state.lang === 'en' ? ' primary' : ''}" data-ilang="en">English</button></div>
       <div class="intro-nav"><button class="btn" data-intro="skip">${T.introSkip}</button><button class="btn primary" data-intro="next">${T.introNext}</button></div></div>`;
   } else {
@@ -2740,7 +2845,7 @@ function confirmBox(title, msg, ok){
 
 async function listAction(a, id){
   const T = t();
-  if (state.field && ['new', 'copy', 'edit', 'rename', 'dup', 'reset', 'delete', 'backup', 'startOver'].indexOf(a) >= 0) return;
+  if (state.field && ['new', 'copy', 'edit', 'rename', 'dup', 'reset', 'delete', 'backup', 'bkLater', 'startOver'].indexOf(a) >= 0) return;
   const L = id && id !== 'std' ? ownList(id) : null;
   if (a === 'new'){
     const choice = await new Promise(res => {
@@ -2805,6 +2910,8 @@ async function listAction(a, id){
     }
   } else if (a === 'backup'){
     backupSheet();
+  } else if (a === 'bkLater'){
+    state.bkSnooze = Date.now() + BK_SNOOZE_MS; save(); render();
   } else if (a === 'howto'){
     go('list', 'howto');
   } else if (a === 'intro'){
@@ -2814,40 +2921,66 @@ async function listAction(a, id){
 
 function backupSheet(){
   const T = t();
-  const data = JSON.stringify({app:'trip-checklist', version:2, lists:state.lists, notes:state.notes});
+  const data = bkData();
+  const canShare = !!navigator.share;
   openSheet(`<h3>${T.backup}</h3>
-    <p>${T.bkMsg}</p>
-    <textarea id="bkOut" readonly>${esc(data)}</textarea>
-    <div class="row" style="justify-content:flex-start"><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
-    <div class="status" id="bkStatus"></div>
+    <div class="bk-warn"><p>${T.bkWarn}</p><p class="bk-how">${T.bkWarnHow}</p></div>
+    <div class="section-label">${T.bkTake}</div>
+    <p class="bk-covers">${T.bkCovers}</p>
+    <div class="row-btns bk-btns">${canShare ? `<button class="btn primary" id="bkShare">${T.bkShare}</button>` : ''}<button class="btn${canShare ? '' : ' primary'}" id="bkSave">${T.bkSave}</button><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
+    <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="bkOut" readonly>${esc(data)}</textarea></details>
+    <div class="status" id="bkStatus" role="status"></div>
     <div class="section-label">${T.restore}</div>
+    <p class="bk-covers">${T.bkRestoreNote}</p>
     <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
-    <div class="row"><button class="btn" data-s="cancel">${T.close}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>`);
+    <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
+    <div class="row"><button class="btn" id="bkFile">${T.bkFile}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>
+    <div class="row"><button class="btn" data-s="cancel">${T.close}</button></div>`);
   const status = $('bkStatus');
-  panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  const done = msg => { bkMarkDone(); status.textContent = msg; };
+  panel.querySelector('[data-s=cancel]').onclick = () => { closeSheet(null); render(); };
+  if (canShare) $('bkShare').onclick = async () => {
+    const name = bkFileName();
+    try {
+      let file = null;
+      try { file = new File([data], name, {type:'application/json'}); } catch(e){}
+      if (file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:name});
+      else await navigator.share({title:name, text:data});
+      done(T.bkShared);
+    } catch(e){ if (e && e.name !== 'AbortError') status.textContent = T.bkManual; }
+  };
+  $('bkSave').onclick = () => {
+    try {
+      const url = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+      const a = document.createElement('a');
+      a.href = url; a.download = bkFileName(); document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      done(T.bkSaved);
+    } catch(e){ status.textContent = T.bkManual; }
+  };
   $('bkCopy').onclick = async () => {
     const ta = $('bkOut');
-    try { await navigator.clipboard.writeText(ta.value); status.textContent = T.bkCopied; }
-    catch(e){ ta.select(); try { document.execCommand('copy'); status.textContent = T.bkCopied; } catch(_){ status.textContent = T.bkManual; } }
+    try { await navigator.clipboard.writeText(ta.value); done(T.bkCopied); }
+    catch(e){ ta.closest('details').open = true; ta.select(); try { if (document.execCommand('copy')) done(T.bkCopied); else throw 0; } catch(_){ status.textContent = T.bkManual; } }
   };
-  $('bkRestore').onclick = () => {
-    try {
-      const obj = JSON.parse($('bkIn').value);
-      if (!obj || !Array.isArray(obj.lists)) throw 0;
-      let added = 0, notesIn = 0;
-      obj.lists.forEach(l => {
-        if (!l || typeof l.name !== 'string' || !Array.isArray(l.cats)) return;
-        const c = cloneList(l, true); c.tripType = !!l.tripType; c.sharedIn = !!l.sharedIn; notesFromList(c); state.lists.push(c); added++;
-      });
-      if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
-        if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id)) return;
-        state.notes.push({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}); notesIn++;
-      });
-      if (!added && !notesIn) throw 0;
-      save(); render();
-      status.textContent = T.bkAdded(added);
-      $('bkIn').value = '';
-    } catch(e){ status.textContent = T.bkBad; }
+  const restore = text => {
+    const a = bkRestore(text);
+    if (!a){ status.textContent = T.bkBad; return; }
+    if (!(a.l || a.n || a.w || a.k || a.p)){ status.textContent = T.bkNothing; return; }
+    save(); render();
+    status.textContent = T.bkAddedAll(a);
+    $('bkIn').value = '';
+  };
+  $('bkRestore').onclick = () => restore($('bkIn').value);
+  $('bkFile').onclick = () => $('bkFileIn').click();
+  $('bkFileIn').onchange = e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => restore(String(r.result || ''));
+    r.onerror = () => { status.textContent = T.bkBad; };
+    r.readAsText(f);
+    e.target.value = '';
   };
 }
 
@@ -3255,6 +3388,11 @@ document.addEventListener('visibilitychange', updateWake);
 render();
 updateWake();
 if (!state.introDone) showIntro(0, checkShared); else checkShared();
+// v32: ask the browser to keep the data when space runs low (installed app only; nothing is sent anywhere)
+try {
+  if (navigator.storage && navigator.storage.persist && (matchMedia('(display-mode: standalone)').matches || navigator.standalone))
+    navigator.storage.persisted().then(p => { if (!p) navigator.storage.persist(); }).catch(() => {});
+} catch(e){}
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
   const hadController = !!navigator.serviceWorker.controller;
   let reloading = false;
