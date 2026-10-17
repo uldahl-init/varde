@@ -1,22 +1,34 @@
-# Varde (arbeidsnavn)
+# Varde
 
-Pakkliste, planlegging og guider for friluftsliv. Fungerer uten nett når den er installert.
+An offline web app (PWA) for packing lists, trip planning and practical guides for hiking in Norway. The app itself is in Norwegian and English. "Varde" is a working name.
 
-## Publisere med GitHub Pages
+## Install
 
-1. Lag et nytt repository på GitHub, for eksempel `varde` (Public).
-2. Last opp alle filene i denne mappen (Add file → Upload files → Commit).
-3. Gå til Settings → Pages, velg "Deploy from a branch", branch `main`, mappe `/ (root)`, og lagre.
-4. Etter 1–2 minutter ligger appen på `https://<brukernavn>.github.io/varde/`.
+Open https://uldahl-init.github.io/varde/ on your phone.
 
-## Installere på mobilen
+- Android (Chrome): menu → Install app.
+- iPhone (Safari): Share → Add to Home Screen.
 
-- Android (Chrome): åpne adressen, trykk ⋮ → "Installer app" eller "Legg til på startskjermen".
-- iPhone (Safari): åpne adressen, trykk Del → "Legg til på Hjem-skjerm".
-- Åpne appen én gang med nett. Etter det virker den uten dekning.
+Open the app once with a connection; after that it works offline. On iPhone, adding it to the home screen is also what keeps your data safe.
 
-## Oppdatere
+## Your data
 
-Last opp ny `index.html`, og øk versjonen i `sw.js` (f.eks. `varde-v2`), så får mobilene oppdateringen neste gang de har nett.
+Everything is stored only in the browser on your phone. There is no account and no server. Use Sikkerhetskopi on Dine lister (share, save as file or copy) and keep the backup somewhere else.
 
-Listene lagres bare på hver enkelt mobil. Bruk Sikkerhetskopi i menyen for å flytte eller dele lister.
+## Privacy
+
+The app makes no requests to other sites. Your position is only fetched when you tap the button, and it is never sent anywhere.
+
+## Updates
+
+The app is published from `main` with GitHub Pages. Installed apps update the next time they open with a connection. The version and build number are shown under Hjelp on Dine lister.
+
+## Development
+
+See [CLAUDE.md](CLAUDE.md) for the structure and rules.
+
+## Licences
+
+- Fonts: SIL Open Font License ([fonts/OFL.txt](fonts/OFL.txt)).
+- Knot images: their own licences ([knots/LICENSE.md](knots/LICENSE.md)).
+- The project itself has no licence yet (all rights reserved). The code is public to read.
