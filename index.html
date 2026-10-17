@@ -404,7 +404,12 @@ body.listlock .items .mark{opacity:.55}
 .bk-warn p{margin:0}
 .bk-warn .bk-how{margin-top:6px;color:var(--muted);font-size:.88rem}
 .bk-covers{color:var(--muted);font-size:.9rem;margin:0 0 8px}
-.bk-btns{margin-top:0}
+.bk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.bk-btns .btn{min-height:48px;padding:10px 8px;white-space:normal;display:flex;align-items:center;justify-content:center;gap:6px}
+.bk-btns .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.bk-btns .btn.done:not(.primary){border-color:var(--lichen);border-width:2px;color:var(--ink)}
+.bk-msg{margin:10px 0 0;padding:10px 12px;border-radius:8px;border:1px solid var(--line-strong);font-size:.95rem}
+.bk-msg.ok{border:2px solid var(--lichen)}
 .bk-text{margin-top:10px}
 .bk-text summary{cursor:pointer;color:var(--muted);font-size:.9rem;padding:6px 0}
 .intro{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
@@ -584,7 +589,7 @@ const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
 const APP_VERSION = '0.1.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 32;         // raised on every commit, together with CACHE ('varde-b32') in sw.js
+const APP_BUILD = 33;         // raised on every commit, together with CACHE ('varde-b33') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -663,7 +668,7 @@ const UI = {
     bkWarnHow:'Clearing only the cache usually keeps your data. Clearing site data, cookies and site data, or storage deletes it.',
     bkTake:'Take a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
     bkShare:'Share', bkSave:'Save as file', bkShared:'Backup shared.', bkSaved:'File made. Look in your downloads.', bkShow:'Show the backup as text',
-    bkCopy:'Copy', bkCopied:'Backup copied.', bkManual:'Select the text and copy it manually.', restore:'Restore',
+    bkCopy:'Copy', bkCopied:'Backup copied. Paste it somewhere safe, for example in an e-mail to yourself.', bkManual:'Select the text and copy it manually.', bkShareFail:'Sharing did not work on this phone. Use Save as file or Copy instead.', bkDoneShare:'Shared', bkDoneSave:'Saved', bkDoneCopy:'Copied', restore:'Restore',
     bkPaste:'Paste a backup here', bkFile:'Choose file', bkAdd:'Add from backup', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
     bkAddedAll:a=>'Added: ' + [a.l && `${a.l} list${a.l>1?'s':''}`, a.n && `${a.n} note${a.n>1?'s':''}`, a.w && `${a.w} in Pack weight`, a.k && `${a.k} link${a.k>1?'s':''}`, a.p && 'the figures in Plan'].filter(Boolean).join(', ') + '.',
     bkNothing:'Everything in this backup is already here.',
@@ -862,7 +867,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     bkWarnHow:'Å tømme bare bufferen sletter vanligvis ikke dataene. Det gjør «Nettstedsdata», «Informasjonskapsler og nettstedsdata» eller «Tøm lagring».',
     bkTake:'Ta sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
     bkShare:'Del', bkSave:'Lagre som fil', bkShared:'Sikkerhetskopien er delt.', bkSaved:'Filen er laget. Se i nedlastingene dine.', bkShow:'Vis sikkerhetskopien som tekst',
-    bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert.', bkManual:'Merk teksten og kopier den manuelt.', restore:'Gjenopprett',
+    bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert. Lim den inn et trygt sted, for eksempel i en e-post til deg selv.', bkManual:'Merk teksten og kopier den manuelt.', bkShareFail:'Deling virket ikke på denne mobilen. Bruk Lagre som fil eller Kopier i stedet.', bkDoneShare:'Delt', bkDoneSave:'Lagret', bkDoneCopy:'Kopiert', restore:'Gjenopprett',
     bkPaste:'Lim inn en sikkerhetskopi her', bkFile:'Velg fil', bkAdd:'Legg til fra sikkerhetskopi', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
     bkAddedAll:a=>'Lagt til: ' + [a.l && `${a.l} ${a.l>1?'lister':'liste'}`, a.n && `${a.n} ${a.n>1?'notater':'notat'}`, a.w && `${a.w} i Sekkvekt`, a.k && `${a.k} ${a.k>1?'lenker':'lenke'}`, a.p && 'tallene i Planlegg'].filter(Boolean).join(', ') + '.',
     bkNothing:'Alt i denne sikkerhetskopien finnes her fra før.',
@@ -2927,27 +2932,38 @@ function backupSheet(){
     <div class="bk-warn"><p>${T.bkWarn}</p><p class="bk-how">${T.bkWarnHow}</p></div>
     <div class="section-label">${T.bkTake}</div>
     <p class="bk-covers">${T.bkCovers}</p>
-    <div class="row-btns bk-btns">${canShare ? `<button class="btn primary" id="bkShare">${T.bkShare}</button>` : ''}<button class="btn${canShare ? '' : ' primary'}" id="bkSave">${T.bkSave}</button><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
+    <div class="bk-btns">${canShare ? `<button class="btn primary" id="bkShare">${T.bkShare}</button>` : ''}<button class="btn${canShare ? '' : ' primary'}" id="bkSave">${T.bkSave}</button><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
+    <div class="bk-msg" id="bkStatus" role="status" hidden></div>
     <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="bkOut" readonly>${esc(data)}</textarea></details>
-    <div class="status" id="bkStatus" role="status"></div>
     <div class="section-label">${T.restore}</div>
     <p class="bk-covers">${T.bkRestoreNote}</p>
     <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
     <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
     <div class="row"><button class="btn" id="bkFile">${T.bkFile}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>
+    <div class="bk-msg" id="bkRStatus" role="status" hidden></div>
     <div class="row"><button class="btn" data-s="cancel">${T.close}</button></div>`);
   const status = $('bkStatus');
-  const done = msg => { bkMarkDone(); status.textContent = msg; };
+  const say = (msg, ok) => { status.textContent = msg; status.className = 'bk-msg' + (ok ? ' ok' : ''); status.hidden = !msg; };
+  const flash = (btn, label) => {
+    const was = btn.dataset.label || btn.textContent; btn.dataset.label = was;
+    btn.classList.add('done'); btn.innerHTML = T_MARK + esc(label);
+    clearTimeout(btn._t); btn._t = setTimeout(() => { btn.classList.remove('done'); btn.textContent = was; }, 3000);
+  };
+  const done = (msg, btn, label) => { bkMarkDone(); say(msg, true); if (btn) flash(btn, label); };
   panel.querySelector('[data-s=cancel]').onclick = () => { closeSheet(null); render(); };
   if (canShare) $('bkShare').onclick = async () => {
-    const name = bkFileName();
-    try {
-      let file = null;
-      try { file = new File([data], name, {type:'application/json'}); } catch(e){}
-      if (file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:name});
-      else await navigator.share({title:name, text:data});
-      done(T.bkShared);
-    } catch(e){ if (e && e.name !== 'AbortError') status.textContent = T.bkManual; }
+    // Android's share sheet takes plain text files, not .json, so the shared file is a .txt (restore reads both).
+    const name = bkFileName().replace(/\.json$/, '.txt');
+    let file = null;
+    try { file = new File([data], name, {type:'text/plain'}); } catch(e){}
+    const tries = [];
+    if (file && navigator.canShare && navigator.canShare({files:[file]})) tries.push({files:[file], title:name});
+    tries.push({title:name, text:data});
+    for (const d of tries){
+      try { await navigator.share(d); done(T.bkShared, $('bkShare'), T.bkDoneShare); return; }
+      catch(e){ if (e && e.name === 'AbortError') return; }
+    }
+    say(T.bkShareFail, false);
   };
   $('bkSave').onclick = () => {
     try {
@@ -2955,20 +2971,23 @@ function backupSheet(){
       const a = document.createElement('a');
       a.href = url; a.download = bkFileName(); document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      done(T.bkSaved);
-    } catch(e){ status.textContent = T.bkManual; }
+      done(T.bkSaved, $('bkSave'), T.bkDoneSave);
+    } catch(e){ say(T.bkManual, false); }
   };
   $('bkCopy').onclick = async () => {
     const ta = $('bkOut');
-    try { await navigator.clipboard.writeText(ta.value); done(T.bkCopied); }
-    catch(e){ ta.closest('details').open = true; ta.select(); try { if (document.execCommand('copy')) done(T.bkCopied); else throw 0; } catch(_){ status.textContent = T.bkManual; } }
+    const btn = $('bkCopy');
+    try { await navigator.clipboard.writeText(ta.value); done(T.bkCopied, btn, T.bkDoneCopy); }
+    catch(e){ ta.closest('details').open = true; ta.select(); try { if (document.execCommand('copy')) done(T.bkCopied, btn, T.bkDoneCopy); else throw 0; } catch(_){ say(T.bkManual, false); } }
   };
+  const rstatus = $('bkRStatus');
+  const sayR = (msg, ok) => { rstatus.textContent = msg; rstatus.className = 'bk-msg' + (ok ? ' ok' : ''); rstatus.hidden = !msg; };
   const restore = text => {
     const a = bkRestore(text);
-    if (!a){ status.textContent = T.bkBad; return; }
-    if (!(a.l || a.n || a.w || a.k || a.p)){ status.textContent = T.bkNothing; return; }
+    if (!a){ sayR(T.bkBad, false); return; }
+    if (!(a.l || a.n || a.w || a.k || a.p)){ sayR(T.bkNothing, true); return; }
     save(); render();
-    status.textContent = T.bkAddedAll(a);
+    sayR(T.bkAddedAll(a), true);
     $('bkIn').value = '';
   };
   $('bkRestore').onclick = () => restore($('bkIn').value);
@@ -2978,7 +2997,7 @@ function backupSheet(){
     if (!f) return;
     const r = new FileReader();
     r.onload = () => restore(String(r.result || ''));
-    r.onerror = () => { status.textContent = T.bkBad; };
+    r.onerror = () => sayR(T.bkBad, false);
     r.readAsText(f);
     e.target.value = '';
   };
