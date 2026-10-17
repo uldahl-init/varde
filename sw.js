@@ -1,5 +1,5 @@
 // Bump the build number (same as APP_BUILD in index.html) every time you upload a new index.html, so phones pick up the update.
-const CACHE = 'varde-b33';
+const CACHE = 'varde-b34';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './knots/bowline.svg', './knots/taut-line.webp', './knots/clove-hitch.svg', './knots/prusik.webp', './knots/sheet-bend.webp', './knots/timber-hitch.webp', './knots/figure-eight.svg', './knots/figure-eight-loop.webp', './knots/improved-uni-tie.svg', './knots/improved-uni.svg', './knots/palomar-tie.webp', './knots/palomar.webp', './guides/stove-board.svg', './guides/stove-board-strap.svg', './fonts/barlow-400.woff2', './fonts/barlow-600.woff2', './fonts/barlow-condensed-600.woff2'];
 
 self.addEventListener('install', e => {

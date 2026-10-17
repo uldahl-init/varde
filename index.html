@@ -175,6 +175,7 @@ body.notlist .list-switch svg{display:none}
 .modes-open{margin-top:-1px;padding:2px 14px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
 .subhead{padding:14px 14px 4px;font-weight:600;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
 .items > li.subhead:first-child{border-top:0}
+.subhead-note{padding:0 14px 8px;color:var(--lichen);font-size:.9rem}
 .index{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .index button{display:flex;align-items:center;gap:14px;width:100%;padding:18px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;cursor:pointer}
 .index .ix-t{display:block;font-family:var(--head);font-weight:600;font-size:1.35rem;line-height:1.2}
@@ -364,6 +365,9 @@ body.night .lt-btn{--lc:currentColor}
 .sl-track{position:absolute;left:20px;right:20px;bottom:calc(28px + env(safe-area-inset-bottom,0px));height:64px;border-radius:32px;background:rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.3)}
 .sl-track span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-left:56px;font-weight:600;color:rgba(0,0,0,.6)}
 .sl-knob{position:absolute;left:4px;top:4px;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;touch-action:none}
+.sl-note,.sl-track{transition:opacity 1s}
+.slight.calm .sl-note,.slight.calm .sl-track{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion: reduce){.sl-note,.sl-track{transition:none}}
 .sl-knob svg{width:26px;height:26px;stroke:rgba(255,255,255,.75);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .sub-tools{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:12px}
 .sub-tools .chip{min-width:0;width:100%;text-align:center;line-height:1.25}
@@ -587,9 +591,11 @@ const KEY = 'outdoor-lists-v1';
 try { localStorage.removeItem('trip-checklist-v1'); } catch(e){}
 const T_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>';
+// Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
+const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
 const APP_VERSION = '0.1.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 33;         // raised on every commit, together with CACHE ('varde-b33') in sw.js
+const APP_BUILD = 34;         // raised on every commit, together with CACHE ('varde-b34') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -682,7 +688,7 @@ const UI = {
     resetQ:'Start over?', resetMsg:n=>`All ticks in "${n}", including the bag lists, will be cleared so the list is ready for the next trip. Your items stay.`,
     resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
     catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
-    tripType:'Trip type', lightDay:'Light day hike',
+    medNote:'Read the package leaflet. Ask a doctor or pharmacist if you are unsure, take other medicines, are pregnant or have an illness.', tripType:'Trip type', lightDay:'Light day hike',
 appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
@@ -881,7 +887,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     resetQ:'Nullstille listen?', resetMsg:n=>`Alle avkrysninger i «${n}», også i pakkelistene, fjernes, så listen er klar til neste tur. Tingene blir værende.`,
     resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
     catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
-    tripType:'Turtype', lightDay:'Lett dagstur',
+    medNote:'Les pakningsvedlegget. Spør lege eller apotek hvis du er usikker, bruker andre medisiner, er gravid eller har en sykdom.', tripType:'Turtype', lightDay:'Lett dagstur',
 appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
@@ -1089,15 +1095,15 @@ function friluftsliv(L){
     C('firstaid','Førstehjelpssett','First aid kit',[
       ['Sår og plaster','Wounds and plasters'],['> * Sårvask-servietter (klorheksidin)','> * Wound cleansing wipes (chlorhexidine)'],['> Engangshansker (2 par)','> Disposable gloves (2 pairs)'],['> * Sportstape','> * Sports tape'],['> Elastisk heftebandasje','> Elastic adhesive bandage'],['> * Gnagsårplaster (min. 4x)','> * Blister plasters (min. 4x)'],['> * Plaster (vanlig)','> * Plasters (regular)'],['> Mikroporøs tape','> Microporous tape'],['> Tekstilplaster (rull)','> Fabric plaster (roll)'],['> Vanntett plaster','> Waterproof plasters'],['> * Sårstrips (lukking av kutt)','> * Wound closure strips (for cuts)'],
       ['Kompresser og bandasjer','Dressings and bandages'],['> Gaskompresser / tupfere','> Gauze swabs'],['> Sterile kompresser (dypere kutt)','> Sterile dressings (deeper cuts)'],['> Enkeltmannspakke (større blødninger)','> Field dressing (larger bleeding)'],['> Elastisk bomullsbandasje (overtråkk, skinner)','> Elastic cotton bandage (sprains, splints)'],['> Kompresjonsbandasje','> Compression bandage'],
-      ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol)','> * Painkillers (paracetamol)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],['> Melatonin','> Melatonin'],
+      ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol og/eller ibuprofen)','> * Painkillers (paracetamol and/or ibuprofen)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],
       ['Utstyr','Tools'],['> Pinsett (flått, fliser)','> Tweezers (ticks, splinters)'],['> Sikkerhetsnåler','> Safety pins'],['> Neglesaks','> Nail clippers'],['> Saks (bandasjer og tape)','> Scissors (bandages and tape)'],
       ['Varme og nød','Warmth and emergency'],['> * Redningsfolie (i tillegg til vindsekken, ikke i stedet)','> * Emergency foil blanket (in addition to the bivy sack, not instead)'],
       ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag'],['> Førstehjelp til hund (bandasje og potesokk, på hundetur)','> Dog first aid (bandage and paw sock, on dog trips)']],
       {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
     C('repair','Reparasjonssett','Repair and spares kit',[
       ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
-      ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Nylonsnor 2x','> Nylon cord 2x'],['> Diverse','> Miscellaneous'],
-      ['Ild','Fire'],['> Fyrstikker (vanntett pakket)','> Matches (waterproof packed)'],['> Tennstål','> Fire steel'],['> Tennbriketter (4x)','> Fire starters (4x)'],
+      ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Nylonsnor (forsterker lapping mot kant) 2x','> Nylon cord (reinforces patches at edges) 2x'],['> Diverse','> Miscellaneous'],
+      ['Ild','Fire'],['> Fyrstikker (vanntett pakket)','> Matches (waterproof packed)'],['> Tennstål','> Fire steel'],['> Tennposer (ca. 4)','> Firelighter pouches (about 4)'],
       ['Diverse','Miscellaneous'],['> Nål og tråd','> Needle and thread'],['> USB-C-kabel','> USB-C cable'],['> Stropper (2x)','> Straps (2x)'],['> Tau (kompakt)','> Rope (compact)'],['> Små karabinkroker (4x)','> Small carabiners (4x)'],['> Diverse plastposer','> Assorted plastic bags']],
       {bag:true, note: note('Liten drybag, ca. 3 liter','Small dry bag, about 3 litres')}),
     C('personal','Personlig pleie','Personal care',[
@@ -1280,7 +1286,10 @@ if (state.v !== 2) migrate();
     'std:personal:biopose (20 l)':'std:personal:biopose (20 l) til søppel, og en liten zip-pose til brukt dopapir',
     'std:general:vindsekk':'std:general:vindsekk eller jervenduk (nødly, ta med én)',
     'std:general:jervenduk':'std:general:vindsekk eller jervenduk (nødly, ta med én)',
-    'std:firstaid:redningsfolie':'std:firstaid:redningsfolie (i tillegg til vindsekken, ikke i stedet)'}; // v27, v29, v30
+    'std:firstaid:redningsfolie':'std:firstaid:redningsfolie (i tillegg til vindsekken, ikke i stedet)',
+    'std:firstaid:smertestillende (paracetamol)':'std:firstaid:smertestillende (paracetamol og/eller ibuprofen)',
+    'std:repair:tennbriketter (4x)':'std:repair:tennposer (ca. 4)',
+    'std:repair:nylonsnor 2x':'std:repair:nylonsnor (forsterker lapping mot kant) 2x'}; // v27, v29, v30, build 34
   let ch = false;
   Object.keys(moved).forEach(o => { if (o in d){ d[moved[o]] = !!(d[moved[o]] || d[o]); delete d[o]; ch = true; } });
   if (ch) save(); })();
@@ -1501,7 +1510,7 @@ function render(){
     list.forEach(i => {
       if (!editing && heads.has(i.id)){ pending = i; return; }
       if (state.hidePacked && i.done && !editing) return;
-      if (pending && i.sub){ html += `<li class="subhead">${esc(pending.text)}</li>`; }
+      if (pending && i.sub){ html += `<li class="subhead">${esc(pending.text)}</li>`; if (SUB_NOTES[pending.id] && T[SUB_NOTES[pending.id]]) html += `<li class="subhead-note">${T[SUB_NOTES[pending.id]]}</li>`; }
       pending = null;
       shown++;
       const target = i.link ? findCat(i.link) : null;
@@ -1672,7 +1681,7 @@ const GUIDE_TXT = {
     fire:{title:'Bål', short:'Godt bål og ild i en nødsituasjon', sub:'Det grunnleggende om bål på tur.', secs:[
       ['Før du tenner','<ul><li><b>Bålforbud:</b> det er forbudt å gjøre opp ild i eller nær skog og annen utmark fra 15. april til 15. september, med mindre det åpenbart ikke kan føre til brann. Kommunen kan ha strengere regler.</li><li>Bruk et eksisterende bålsted hvis det finnes. Unngå bart fjell, som sprekker og får merker, og hold avstand til teltet. Gnister smelter stoffet.</li><li>Sjekk vinden, og ha vann klart.</li></ul>'],
       ['Tenning','<ul><li>Samle alt før du tenner: never eller annet opptenningsmateriale, tynne kvister, tykkere pinner og ved.</li><li>Bjørkenever brenner også når den er våt. Døde kvister nederst på grantrær er som regel tørre.</li><li>Kløyv våt ved. Innsiden er ofte tørr.</li><li>Start smått og legg på gradvis. Et lite bål er lettere å holde i gang og gir bedre varme til matlaging.</li></ul>'],
-      ['I en nødsituasjon','<ul><li>Bålet skal gi varme og tørke klær. Hold det lite og i le for vinden.</li><li>Tennbriketter og tennstål ligger i Ild i reparasjonssettet.</li><li>I en reell nødsituasjon går liv og helse foran.</li></ul>'],
+      ['I en nødsituasjon','<ul><li>Bålet skal gi varme og tørke klær. Hold det lite og i le for vinden.</li><li>Tennposer og tennstål ligger i Ild i reparasjonssettet.</li><li>I en reell nødsituasjon går liv og helse foran.</li></ul>'],
       ['Etterpå','<ul><li>Slokk med vann til asken er kald å ta på.</li><li>Ikke brenn plast eller søppel, og forlat stedet slik du fant det.</li></ul>']]}
   },
   en:{
@@ -1706,7 +1715,7 @@ const GUIDE_TXT = {
     fire:{title:'Campfire', short:'A good fire, and fire in an emergency', sub:'The basics of making a fire on a trip.', secs:[
       ['Before you light it','<ul><li><b>Fire ban:</b> in Norway, lighting fires in or near forest and other open country is banned from 15 April to 15 September, unless there is clearly no chance of a fire spreading. The municipality may have stricter rules.</li><li>Use an existing fire pit if there is one. Avoid bare rock, which cracks and gets marked, and keep away from the tent. Sparks melt the fabric.</li><li>Check the wind, and have water ready.</li></ul>'],
       ['Lighting it','<ul><li>Gather everything before you strike a match: tinder, thin twigs, thicker sticks and firewood.</li><li>Birch bark burns even when wet. Dead twigs at the bottom of spruce trees are usually dry.</li><li>Split wet wood. The inside is often dry.</li><li>Start small and add fuel gradually. A small fire is easier to keep going and gives better heat for cooking.</li></ul>'],
-      ['In an emergency','<ul><li>The fire is for warmth and drying out. Keep it small and sheltered from the wind.</li><li>Fire starters and the fire steel are under Fire in the repair kit.</li><li>In a real emergency, life and health come first.</li></ul>'],
+      ['In an emergency','<ul><li>The fire is for warmth and drying out. Keep it small and sheltered from the wind.</li><li>Firelighter pouches and the fire steel are under Fire in the repair kit.</li><li>In a real emergency, life and health come first.</li></ul>'],
       ['Afterwards','<ul><li>Put it out with water until the ashes are cold to the touch.</li><li>Don\'t burn plastic or rubbish, and leave the place the way you found it.</li></ul>']]}
   }
 };
@@ -1731,7 +1740,7 @@ const GUIDE_LINKS = {
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
   'std:m_topptur:toppturski / randoneeski med feller':'aval', 'std:prep:sjekk skredvarselet (varsom.no) (skredterreng)':'aval',
   'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
-  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire', 'std:repair:tennbriketter (4x)':'fire'
+  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire', 'std:repair:tennposer (ca. 4)':'fire'
 };
 /* Links to Planlegg (v27): standard list lines that open a calculator. Only on the standard list, never on a line with a guide link.
    Changing the Norwegian text of a linked line changes its id, so update the map at the same time. */
@@ -3306,6 +3315,12 @@ function pulseLock(){
 }
 let slMode = null, slRaf = null;
 const SL_COL = {red:'#ff0000', green:'#00ff00'};
+let slHideT = null, slDragging = false;
+// build 34: the note and the slide track fade out after a few seconds and come back on a touch
+function slShow(ms){
+  const el = $('slight'); el.classList.remove('calm'); clearTimeout(slHideT);
+  slHideT = setTimeout(() => { if (!slDragging && slMode) el.classList.add('calm'); }, ms);
+}
 function tapLight(m){
   if (m === 'fire'){ showToast(t().lampHoldMsg); return; }
   const on = state.night && (state.nightHue === 'green' ? 'green' : 'red') === m;
@@ -3339,12 +3354,12 @@ function openLight(m){
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) el.style.background = '#f08a14';
     else slFire();
   } else el.style.background = SL_COL[m];
-  el.hidden = false;
+  el.hidden = false; slDragging = false; slShow(3000);
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
   slFs(); updateWake();
 }
 function closeLight(){
-  slStop(); slMode = null; $('slight').hidden = true;
+  slStop(); slMode = null; clearTimeout(slHideT); slDragging = false; $('slight').hidden = true; $('slight').classList.remove('calm');
   try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch(e){}
   if (history.state && history.state.light){ ignorePop = true; history.back(); }
 }
@@ -3352,17 +3367,17 @@ function closeLight(){
   const el = $('slight'), knob = $('slKnob'), track = $('slTrack');
   let sx = null, pid = null;
   const max = () => track.clientWidth - knob.offsetWidth - 8;
-  knob.addEventListener('pointerdown', e => { if (sx !== null) return; sx = e.clientX; pid = e.pointerId; knob.setPointerCapture(pid); knob.style.transition = 'none'; });
+  knob.addEventListener('pointerdown', e => { if (sx !== null || el.classList.contains('calm')) return; sx = e.clientX; pid = e.pointerId; knob.setPointerCapture(pid); knob.style.transition = 'none'; slDragging = true; clearTimeout(slHideT); });
   knob.addEventListener('pointermove', e => {
     if (sx === null || e.pointerId !== pid) return;
     const d = Math.max(0, Math.min(max(), e.clientX - sx));
     knob.style.transform = `translateX(${d}px)`;
-    if (d >= max() * .95){ sx = null; closeLight(); }
+    if (d >= max() * .95){ sx = null; slDragging = false; closeLight(); }
   });
-  const back = () => { if (sx === null) return; sx = null; knob.style.transition = 'transform .25s'; knob.style.transform = ''; };
+  const back = () => { if (sx === null) return; sx = null; slDragging = false; knob.style.transition = 'transform .25s'; knob.style.transform = ''; slShow(4000); };
   knob.addEventListener('pointerup', back); knob.addEventListener('pointercancel', back);
-  el.addEventListener('touchstart', e => { if (!e.target.closest('#slKnob') && e.cancelable) e.preventDefault(); }, {passive:false});
-  el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); slFs(); });
+  el.addEventListener('touchstart', e => { if (!e.target.closest('#slKnob')){ if (e.cancelable) e.preventDefault(); slShow(4000); } }, {passive:false});
+  el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); slFs(); if (!e.target.closest('#slKnob')) slShow(4000); });
   el.addEventListener('contextmenu', e => e.preventDefault());
 })();
 /* tap or hold on the light buttons (delegated, since the row is redrawn with the page) */
