@@ -224,8 +224,19 @@ body.notlist .list-switch svg{display:none}
 .ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.15rem;letter-spacing:.02em;color:var(--gc)}
 .ix-group::after{content:"";flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
 .tool-sub + .ix-group{margin-top:20px}
-.index button.g-gear,.index button.g-field,.index button.g-safety{border-left:5px solid var(--gc)}
-.g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}
+.index button.g-gear,.index button.g-field,.index button.g-safety,.index button.g-health{border-left:5px solid var(--gc)}
+.g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}.g-health{--gc:var(--ghealth)}
+/* 0.7.0: Helse og nød, own colour (indigo, clear of the other groups and the Planlegg colours) and a heart with a pulse line */
+.ix-group .gh-ic,.link-btn .gh-ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.link-btn.g-health{color:var(--gc);border-color:var(--gc)}
+/* Nattlys: group colours become shades of the night light (pure red or green); --gsafe was left blue before 0.7.0 */
+:root body.night.night{--gsafe:var(--ink);--ghealth:var(--muted)}
+.link-btn .gh-ic{width:16px;height:16px;margin-right:4px}
+.em-list{list-style:none;margin:0;padding:0}
+.em-list li{display:flex;align-items:baseline;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.em-list li:first-child{border-top:0}
+.em-num{min-width:6.2em;font-family:var(--head);font-weight:600;font-size:1.25rem;color:var(--ink);text-decoration:none;font-variant-numeric:tabular-nums}
+.em-note{color:var(--muted);font-size:.9rem}
 /* Søk i Guider (0.5.0): magnifier at the right of the intro line, the field takes the line when open */
 .gs-line{display:flex;align-items:center;gap:12px;margin-top:6px;min-height:48px}
 .gs-line .tool-sub{margin:0;flex:1}
@@ -247,9 +258,9 @@ body.notlist .list-switch svg{display:none}
 .gs-lang{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-strong);border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.04em;color:var(--muted);vertical-align:1px}
 .gs-hit mark{color:inherit;font-weight:700;background:var(--line);background:color-mix(in srgb,var(--red) 22%,transparent);border-radius:3px;padding:0 1px}
 body.locked .gs-btn,body.locked .gs-field{opacity:.45}
-body{--gsafe:#3F7FA8}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--gsafe:#7FB2D4}}
-:root[data-theme="dark"] body{--gsafe:#7FB2D4}
+body{--gsafe:#3F7FA8;--ghealth:#4F55A8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--gsafe:#7FB2D4;--ghealth:#A3A8EC}}
+:root[data-theme="dark"] body{--gsafe:#7FB2D4;--ghealth:#A3A8EC}
 .index svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2.5;stroke-linecap:round}
 /* Planlegg cards (v26): solid outline and icon in the calculator's own colour */
 body{--pc-food:#94700F;--pc-fuel:#BF5418;--pc-weight:#7352A6;--pc-water:#13807A;--pc-wind:#A23B7A}
@@ -630,8 +641,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.6.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 41;         // raised on every commit, together with CACHE ('varde-b41') in sw.js
+const APP_VERSION = '0.7.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 42;         // raised on every commit, together with CACHE ('varde-b42') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -676,6 +687,12 @@ const UI = {
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
     secLinks:'Where you are', ownLinks:'Your links', cAbout:'About the compass', cIdle:'The compass is not started.', sugAdd:'Add to Your links', sugAdded:'In Your links',
+    em:{med:'Medical emergency (ambulance)', gp:'Out-of-hours doctor (legevakt)', poison:'Poisons Information (Giftinformasjonen), open day and night', eu112:'Emergency number in the whole EU/EEA',
+      poisonNo:'Norwegian Poisons Information, open day and night', noteNo:'In Norway, 112 goes to the police. Outside Norway: 112 works in the whole EU/EEA. Find the local numbers before the trip.',
+      noteEu:'112 works in the whole EU/EEA and in many other countries in Europe. Find the local numbers before the trip and save them on your phone.',
+      noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number',
+      phone:'Most phones also have a built-in emergency function. Learn how it works on your phone at home.',
+      where:'The numbers follow the position you fetched on Compass. With no position, the Norwegian numbers are shown.'},
     fishRules:{title:'Fishing licences and rules', intro:'The rules vary between lakes, rivers and regions. Always check the local rules where you fish.', linksHd:'Useful links', secs:[
       ['Fresh water','<p>You need a fishing licence or permission from whoever owns the fishing rights, usually the landowner. Licences are sold locally or online.</p>'],
       ['Children under 16','<p>Children fish for free with rod and handline for freshwater fish from 1 January to 20 August, in lakes and rivers without salmon, sea trout and sea char. Where licences are sold, they are entitled to a free one. Waters where an exception has been made must be marked with signs.</p>'],
@@ -879,6 +896,12 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
     secLinks:'For der du er', ownLinks:'Dine lenker', cAbout:'Om kompasset', cIdle:'Kompasset er ikke startet.', sugAdd:'Legg til i Dine lenker', sugAdded:'I Dine lenker',
+    em:{med:'Medisinsk nødhjelp (ambulanse)', gp:'Legevakt', poison:'Giftinformasjonen, åpent hele døgnet', eu112:'Nødnummer i hele EU/EØS',
+      poisonNo:'Giftinformasjonen i Norge, åpent hele døgnet', noteNo:'I Norge går 112 til politiet. Utenfor Norge: 112 virker i hele EU/EØS. Finn de lokale numrene før turen.',
+      noteEu:'112 virker i hele EU/EØS og i mange andre land i Europa. Finn de lokale numrene før turen, og lagre dem på mobilen.',
+      noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret',
+      phone:'De fleste mobiler har også en innebygd nødfunksjon. Lær hvordan den virker på din mobil hjemme.',
+      where:'Numrene følger posisjonen du har hentet på Kompass. Uten posisjon vises de norske numrene.'},
     fishRules:{title:'Fiskekort og regler', intro:'Reglene varierer mellom vann, elver og landsdeler. Sjekk alltid de lokale reglene der du skal fiske.', linksHd:'Nyttige lenker', secs:[
       ['Ferskvann','<p>Du trenger fiskekort eller tillatelse fra den som eier fiskeretten, oftest grunneieren. Fiskekort kjøpes lokalt eller på nett.</p>'],
       ['Barn under 16 år','<p>Barn fisker gratis med stang og håndsnøre etter innlandsfisk fra 1. januar til og med 20. august, i vann og vassdrag uten laks, sjøørret og sjørøye. Der det selges fiskekort, har de rett på gratis kort. Vann der det er gjort unntak fra denne retten, skal være merket med skilt.</p>'],
@@ -1142,7 +1165,7 @@ function friluftsliv(L){
       ['Tabletter','Medicines'],['> * Personlige medisiner (astma, EpiPen o.l.)','> * Personal medicines (asthma, EpiPen etc.)'],['> * Smertestillende (paracetamol og/eller ibuprofen)','> * Painkillers (paracetamol and/or ibuprofen)'],['> Middel mot diaré','> Anti-diarrhoea medicine'],
       ['Utstyr','Tools'],['> Pinsett (flått, fliser)','> Tweezers (ticks, splinters)'],['> Sikkerhetsnåler','> Safety pins'],['> Neglesaks','> Nail clippers'],['> Saks (bandasjer og tape)','> Scissors (bandages and tape)'],
       ['Varme og nød','Warmth and emergency'],['> * Redningsfolie (i tillegg til vindsekken, ikke i stedet)','> * Emergency foil blanket (in addition to the bivy sack, not instead)'],
-      ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi, insektstikk)','> Antihistamine (allergy, insect stings)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag'],['> Førstehjelp til hund (bandasje og potesokk, på hundetur)','> Dog first aid (bandage and paw sock, on dog trips)']],
+      ['Valgfritt (etter tur)','Optional (by trip)'],['> Ikke-klebende kompresser','> Low-adherent dressings'],['> Plasterark','> Plaster sheets'],['> Elastisk gasbind','> Open weave bandage'],['> Trekantbandasje','> Triangular bandage'],['> Vaselinkompress (brannskader)','> Paraffin gauze (burns)'],['> Antihistamin (allergi)','> Antihistamine (allergy)'],['> Sinksalve','> Zinc ointment'],['> Kulltabletter','> Charcoal tablets'],['> Termometer','> Thermometer'],['> Munn-til-munn-maske','> CPR face shield'],['> Sprøytespiss (gnagsår)','> Syringe tip (blisters)'],['> Dampsperrepose','> Vapour barrier bag'],['> Førstehjelp til hund (bandasje og potesokk, på hundetur)','> Dog first aid (bandage and paw sock, on dog trips)']],
       {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
     C('repair','Reparasjonssett','Repair and spares kit',[
       ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
@@ -1340,7 +1363,8 @@ if (state.v !== 2) migrate();
     'std:firstaid:smertestillende (paracetamol)':'std:firstaid:smertestillende (paracetamol og/eller ibuprofen)',
     'std:repair:tennbriketter (4x)':'std:repair:tennposer (ca. 4)',
     'std:repair:nylonsnor 2x':'std:repair:nylonsnor (forsterker lapping mot kant) 2x',
-    'std:personal:kuldekrem uten vann (vinter, mot sprukken hud)':'std:personal:kuldekrem (mot tørr og sprukken hud, ikke mot frost)'}; // v27, v29, v30, builds 34–35
+    'std:personal:kuldekrem uten vann (vinter, mot sprukken hud)':'std:personal:kuldekrem (mot tørr og sprukken hud, ikke mot frost)',
+    'std:firstaid:antihistamin (allergi, insektstikk)':'std:firstaid:antihistamin (allergi)'}; // v27, v29, v30, builds 34–35, 42
   let ch = false;
   Object.keys(moved).forEach(o => { if (o in d){ d[moved[o]] = !!(d[moved[o]] || d[o]); delete d[o]; ch = true; } });
   if (ch) save(); })();
@@ -1577,7 +1601,8 @@ function render(){
       }
       if (!editing && typeof i.id === 'string' && GUIDE_LINKS[i.id]){
         const gl = GUIDE_LINKS[i.id].split('#');
-        html += `<button class="link-btn" data-nav data-act="openGuide" data-guide="${gl[0]}"${gl[1] ? ` data-sec="${gl[1]}"` : ''}>${T.guideLink}${CHEV_R}</button>`;
+        const hl = guideGroup(gl[0]) === 'health';
+        html += `<button class="link-btn${hl ? ' g-health' : ''}" data-nav data-act="openGuide" data-guide="${gl[0]}"${gl[1] ? ` data-sec="${gl[1]}"` : ''}>${hl ? ICO_HEALTH : ''}${T.guideLink}${CHEV_R}</button>`;
       } else if (!editing && typeof i.id === 'string' && PLAN_LINKS[i.id]){
         html += planLink(PLAN_LINKS[i.id], 'list');
       }
@@ -1691,7 +1716,7 @@ function renderIndex(){
   const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
   const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
-    `<h2 class="ix-group g-${gr.key}">${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
+    `<h2 class="ix-group g-${gr.key}">${gr.icon ? ICO_HEALTH : ''}${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
   // Søk i Guider (0.5.0): the magnifier sits at the right of the intro line; when open, the field takes that line
   main.innerHTML = gSearch.open
     ? `<div class="gs-line"><div class="gs-field">${ICO_SEARCH}<input type="search" id="gsInput" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(T.gsLabel)}" aria-label="${esc(T.gsLabel)}" value="${esc(gSearch.q)}"><button class="gs-x" data-act="gsClose" aria-label="${esc(T.gsClose)}">${ICO_CLOSE}</button></div></div><div id="gsBody"></div>`
@@ -1721,7 +1746,7 @@ let gSearch = {open:false, q:'', focus:false}, gsGroupsHtml = '', gsCache = null
 function gsReset(){ gSearch = {open:false, q:'', focus:false}; }
 function gsPlain(html){
   // guide HTML to plain text: markers out, block tags to spaces, inline tags removed, entities decoded (inert document, nothing loads)
-  let h = String(html || '').replace(/\[\[plan:\w+\]\]/g, ' ').replace(/\[\[web:[^|\]]+\|([^\]]+)\]\]/g, '$1');
+  let h = String(html || '').replace(/\[\[plan:\w+\]\]/g, ' ').replace(/\[\[em(ergency)?\]\]/g, ' ').replace(/\[\[web:[^|\]]+\|([^\]]+)\]\]/g, '$1');
   h = h.replace(/<\/?(b|i|em|strong|a|span|small|mark|sup|sub|abbr|code)\b[^>]*>/gi, '').replace(/<[^>]*>/g, ' ');
   if (!gsPlain.doc) gsPlain.doc = document.implementation.createHTMLDocument('');
   gsPlain.doc.body.innerHTML = h.replace(/</g, '&lt;');
@@ -1749,7 +1774,7 @@ function guideIndex(lang){
     const g = G[k] ? {title:G[k].title, short:G[k].short, intro:join([G[k].sub]), secs:G[k].secs} : old[k];
     if (!g) return;
     items.push({k, grp:gr.key, title:g.title, short:g.short, intro:g.intro,
-      secs:g.secs.map(x => ({t:gsPlain(x[0]), x:gsPlain(x[1])}))});
+      secs:g.secs.map(x => ({t:gsPlain(x[0]), x:gsPlain(emMarks(x[1], lang, null))}))});
   }));
   gsCache[lang] = items;
   return items;
@@ -1860,6 +1885,13 @@ const GUIDE_TXT = {
       ['Gå på kursen','<ul><li>Sikt på et punkt kurspila peker mot, et tre i skogen eller en knaus på fjellet. Gå dit og sikt på nytt.</li><li>Del turen i etapper mellom sikre punkter på kartet, som vann, veikryss eller bekkekryss, og ta ut ny kurs der.</li><li>Metall og kraftledninger kan dra i nåla. Selv en klokke eller kniv tett inntil kompasset kan gi feil kurs.</li></ul>'],
       ['Misvisning','<p>Kartets nord–sør-linjer peker ikke mot magnetisk nord. Forskjellen kalles misvisning, og den varierer med hvor du er i landet. Du finner den på turkartet du lager på norgeskart.no.</p><p>For en nøyaktig kurs: drei kompasshuset like mange grader som misvisningen etter steg 2, med klokka hvis den er østlig og mot klokka hvis den er vestlig.</p><p>Med 5 graders misvisning bommer du med om lag 90 meter på én kilometer.</p>', 'decl'],
       ['Kart','<p>Turkartet «Norge 1:50 000» kan skrives ut gratis fra norgeskart.no. Ha alltid med kart og kompass, ikke bare mobilen.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
+    meds:{title:'Medisiner på tur', short:'Hva tablettene er til, og når du skal la være', sub:'Ingen doser her. Les alltid pakningsvedlegget, og spør lege eller apotek hvis du er usikker.', secs:[
+      ['Før turen','<ul><li>Les pakningsvedlegget hjemme, mens du har nett. Pakningsvedleggene finnes også på felleskatalogen.no.</li><li><b>Personlige medisiner:</b> Ta med nok til hele turen, og litt ekstra i tilfelle turen blir lengre enn planlagt.</li><li><b>Adrenalinpenn:</b> Ha den lett tilgjengelig, ikke nederst i sekken, og fortell turfølget hvor den er.</li><li>Har du en sykdom, bruker andre medisiner, er gravid eller ammer: spør lege eller apotek før turen om hva du kan ta.</li></ul>[[web:https://www.felleskatalogen.no|Felleskatalogen (pakningsvedlegg)]]', 'prep'],
+      ['Smertestillende','<p>Paracetamol og ibuprofen brukes mot milde til moderate smerter og feber. De lindrer, men fjerner ikke årsaken.</p><ul><li><b>Paracetamol:</b> For mye kan gi alvorlig leverskade. Mange legemidler inneholder paracetamol, så ikke ta flere slike samtidig uten å spørre lege eller apotek. Vær forsiktig hvis du drikker mye alkohol.</li><li><b>Ibuprofen</b> (betennelsesdempende): Ikke bruk hvis du har hatt magesår eller mageblødning, hvis slike midler har gitt deg astma, utslett eller rennende nese, ved alvorlig hjerte-, lever- eller nyresvikt, eller hvis du er mer enn 6 måneder gravid. Snakk med lege eller apotek først hvis du har astma, nedsatt nyre- eller leverfunksjon, bruker blodfortynnende eller er gravid.</li><li><b>Ibuprofen og væske:</b> Sterkt væsketap øker faren for nyreskade. Drikk nok, og vær særlig varsom etter oppkast, diaré eller en dag med lite drikke.</li><li>Ikke ta ibuprofen sammen med andre betennelsesdempende midler. Alkohol øker faren for blødning. Ibuprofen kan skjule tegn på infeksjon, som feber og smerter.</li></ul><p>Blir du ikke bedre, eller verre, kontakt lege. Pakningsvedlegget sier når.</p>', 'pain'],
+      ['Diaré','<ul><li>Det viktigste er å drikke rikelig. Glukose-elektrolyttpulver i rent eller kokt vann erstatter salt og sukker.</li><li>Middel mot diaré gjør avføringen fastere, men fjerner ikke årsaken.</li><li>Ikke bruk det ved høy feber (over 39 °C) eller blod i avføringen. Kontakt lege.</li><li>Ikke til barn under 12 år uten at lege har sagt det.</li></ul>', 'diarrhea'],
+      ['Allergi og stikk','<ul><li>Reseptfrie allergitabletter (antihistamin) brukes mot øye- og neseplager ved allergi, og noen også mot elveblest. Les hva pakningsvedlegget til din sier.</li><li>De kan svekke årvåkenheten hos noen, særlig sammen med alkohol.</li><li><b>Alvorlig allergisk reaksjon</b> (pustevansker, hevelse i munn eller hals, svimmelhet, blekhet): ring [[em]] med en gang. Har personen adrenalinpenn, bruk den, og ring likevel.</li><li>Stikk i munnen eller halsen kan gi hevelse og pustevansker, også hos dem som ikke er allergiske.</li></ul>', 'allergy'],
+      ['Medisinsk kull','<ul><li>Medisinsk kull kan være nyttig ved noen forgiftninger, men det er ikke alltid riktig å gi det.</li><li>I Norge: ring alltid Giftinformasjonen før du gir kull, på 22 59 13 00, åpent hele døgnet. Ved alvorlige symptomer: ring [[em]].</li></ul>', 'charcoal'],
+      ['Når du trenger hjelp','[[emergency]]', 'help']]},
     sleep:{title:'Sove godt på tur', short:'Varm og tørr om natta', sub:'Varm, tørr og uthvilt.', secs:[
       ['Varm om natta','<ul><li><b>Tørre klær:</b> Skift til tørre klær for natta. Klær du har gått i hele dagen er fuktige og stjeler varme. Lue eller balaklava hjelper.</li><li><b>Tiss før du legger deg:</b> Da slipper du å stå opp, kle på deg og gå ut i kulda midt på natta. Våkner du og må tisse, gjør det heller enn å ligge våken. Er det svært kaldt: ha en egen tisseflaske i teltet, tydelig merket og helt tett.</li><li><b>Isolasjon under deg:</b> Mye av varmen går ned i bakken. Om vinteren: to liggeunderlag. Ligg slik at du ikke klemmer sammen fyllet i posen.</li><li><b>Varmeflaske:</b> En flaske varmt vann, pakket inn i et klesplagg, gir varme langt utover natta. Bruk en flaske som tåler varmt vann og er helt tett.</li></ul>'],
       ['Lyse netter','<p>Sovemaske og ørepropper.</p>'],
@@ -1916,6 +1948,13 @@ const GUIDE_TXT = {
       ['Following the bearing','<ul><li>Aim at a point the arrow points to, a tree in the forest or a crag in the mountains. Walk there and aim again.</li><li>Split the route into legs between points you are sure of on the map, such as lakes, road junctions or stream junctions, and take a new bearing there.</li><li>Metal and power lines can pull the needle. Even a watch or knife close to the compass can give a wrong bearing.</li></ul>'],
       ['Declination','<p>The map\'s north–south lines do not point to magnetic north. The difference is called declination, and it varies with where you are in the country. You find it on the hiking map you make at norgeskart.no.</p><p>For an accurate bearing, turn the housing by as many degrees as the declination after step 2: clockwise if it is east, anticlockwise if it is west.</p><p>With 5 degrees of declination you miss by about 90 metres over one kilometre.</p>', 'decl'],
       ['Maps','<p>The «Norge 1:50 000» hiking map can be printed free from norgeskart.no. Always bring a map and compass, not just your phone.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
+    meds:{title:'Medicines on the trip', short:'What the tablets are for, and when not to take them', sub:'No doses here. Always read the package leaflet, and ask a doctor or pharmacist if you are unsure.', secs:[
+      ['Before the trip','<ul><li>Read the package leaflet at home, while you have a connection. Norwegian package leaflets are also on felleskatalogen.no.</li><li><b>Personal medicines:</b> Bring enough for the whole trip, and a little extra in case it takes longer than planned.</li><li><b>Adrenaline pen:</b> Keep it within easy reach, not at the bottom of the pack, and tell the group where it is.</li><li>If you have an illness, take other medicines, are pregnant or breastfeeding: ask a doctor or pharmacist before the trip what you can take.</li></ul>[[web:https://www.felleskatalogen.no|Felleskatalogen (package leaflets)]]', 'prep'],
+      ['Painkillers','<p>Paracetamol (called acetaminophen in some countries) and ibuprofen are used for mild to moderate pain and fever. They relieve the symptoms but do not remove the cause.</p><ul><li><b>Paracetamol:</b> Too much can cause serious liver damage. Many medicines contain paracetamol, so do not take several at once without asking a doctor or pharmacist. Take care if you drink a lot of alcohol.</li><li><b>Ibuprofen</b> (anti-inflammatory): Do not use it if you have had a stomach ulcer or stomach bleeding, if such medicines have given you asthma, a rash or a runny nose, with severe heart, liver or kidney failure, or if you are more than 6 months pregnant. Talk to a doctor or pharmacist first if you have asthma, reduced kidney or liver function, take blood thinners or are pregnant.</li><li><b>Ibuprofen and fluids:</b> Losing a lot of fluid raises the risk of kidney damage. Drink enough, and take extra care after vomiting, diarrhoea or a day with little to drink.</li><li>Do not take ibuprofen together with other anti-inflammatory medicines. Alcohol raises the risk of bleeding. Ibuprofen can hide signs of infection, such as fever and pain.</li></ul><p>If you do not get better, or get worse, contact a doctor. The leaflet says when.</p>', 'pain'],
+      ['Diarrhoea','<ul><li>The most important thing is to drink plenty. Glucose-electrolyte powder in clean or boiled water replaces salt and sugar.</li><li>Diarrhoea medicine makes the stool firmer, but does not remove the cause.</li><li>Do not use it with a high fever (over 39 °C) or blood in the stool. Contact a doctor.</li><li>Not for children under 12 unless a doctor has said so.</li></ul>', 'diarrhea'],
+      ['Allergy and stings','<ul><li>Over-the-counter allergy tablets (antihistamines) are used for eye and nose symptoms from allergy, and some also for hives. Check what the leaflet for yours says.</li><li>They can reduce alertness in some people, especially with alcohol.</li><li><b>Severe allergic reaction</b> (difficulty breathing, swelling in the mouth or throat, dizziness, paleness): call [[em]] at once. If the person has an adrenaline pen, use it, and call anyway.</li><li>A sting in the mouth or throat can cause swelling and difficulty breathing, even in people who are not allergic.</li></ul>', 'allergy'],
+      ['Medical charcoal','<ul><li>Medical charcoal can be useful for some poisonings, but it is not always right to give it.</li><li>In Norway: always call Poisons Information (Giftinformasjonen) before giving charcoal, on 22 59 13 00, open day and night. With severe symptoms: call [[em]].</li></ul>', 'charcoal'],
+      ['When you need help','[[emergency]]', 'help']]},
     sleep:{title:'Sleeping well outdoors', short:'Warm and dry at night', sub:'Warm, dry and rested.', secs:[
       ['Warm at night','<ul><li><b>Dry clothes:</b> Change into dry clothes for the night. Clothes you have worn all day are damp and draw heat away. A hat or balaclava helps.</li><li><b>Pee before bed:</b> Then you don\'t have to get up, dress and go out into the cold in the middle of the night. If you wake up and need to pee, go rather than lie awake. When it is really cold: keep a pee bottle in the tent, clearly marked and fully sealed.</li><li><b>Insulation underneath:</b> Much of your heat goes into the ground. In winter: two sleeping pads. Lie so the filling of the bag is not squashed.</li><li><b>Hot water bottle:</b> A bottle of hot water wrapped in a piece of clothing gives warmth far into the night. Use a bottle that takes hot water and seals completely.</li></ul>'],
       ['Light nights','<p>Sleep mask and earplugs.</p>'],
@@ -1942,8 +1981,12 @@ const GUIDE_TXT = {
 const GUIDE_GROUPS = [
   {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'mapcompass', 'fishing', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval']},
-  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']}
+  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']},
+  // 0.7.0: starts with one guide, an agreed exception to the Guider order rule; Nødsituasjon joins it with Nødmodus
+  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['meds'], icon:true}
 ];
+const ICO_HEALTH = '<svg class="gh-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M6.5 12.5h3l1.3-2.5 2 4.5 1.4-2h3.3"/></svg>';
+const guideGroup = k => (GUIDE_GROUPS.find(g => g.items.indexOf(k) >= 0) || {}).key;
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
   'std:sleep:telt':'tent', 'std:general:kart og kompass i vanntett kartmappe':'mapcompass', 'std:general:sekk':'pack#zones',
@@ -1962,7 +2005,9 @@ const GUIDE_LINKS = {
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
   'std:m_topptur:toppturski / randoneeski med feller':'aval', 'std:prep:sjekk skredvarselet (varsom.no) (skredterreng)':'aval',
   'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
-  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire#steel', 'std:repair:tennposer (ca. 4)':'fire'
+  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire#steel', 'std:repair:tennposer (ca. 4)':'fire',
+  'std:firstaid:personlige medisiner (astma, epipen o.l.)':'meds#prep', 'std:firstaid:smertestillende (paracetamol og/eller ibuprofen)':'meds#pain',
+  'std:firstaid:middel mot diaré':'meds#diarrhea', 'std:firstaid:antihistamin (allergi)':'meds#allergy', 'std:firstaid:kulltabletter':'meds#charcoal'
 };
 /* Links to Planlegg (v27): standard list lines that open a calculator. Only on the standard list, never on a line with a guide link.
    Changing the Norwegian text of a linked line changes its id, so update the map at the same time. */
@@ -1979,7 +2024,32 @@ function planLink(k, from){
   return `<button class="plan-link pc-${k}" data-nav data-act="openPlan" data-tool="${k}" data-from="${from}"><svg viewBox="0 0 24 24" aria-hidden="true">${PLAN_ICONS[k]}</svg><span>${esc(planName(k))}</span></button>`;
 }
 /* [[web:<url>|<label>]] in guide text becomes a web link row (webLink), from build 38 */
-function webMarks(html){ return String(html).replace(/\[\[web:([^|\]]+)\|([^\]]+)\]\]/g, (m, u, l) => webLink(u, l)); }
+// 0.7.0: every web link in a guide also offers «Legg til i Dine lenker» (suggested link, the user confirms)
+function sugRow(u, label){
+  const T = t(), have = (state.links || []).some(l => l.u === u);
+  return `<div class="sug-row">${webLink(u, esc(label))}${have ? `<span class="calc-basis">✓ ${T.sugAdded}</span>`
+    : `<button class="btn small" data-act="sugLink" data-n="${esc(label)}" data-u="${esc(u)}">+ ${T.sugAdd}</button>`}</div>`;
+}
+function webMarks(html){ return String(html).replace(/\[\[web:([^|\]]+)\|([^\]]+)\]\]/g, (m, u, l) => sugRow(u, l)); }
+/* 0.7.0: emergency numbers follow the saved position (region()), never the language. No position = Norway.
+   [[em]] = the number for medical help where you are; [[emergency]] = the whole block. Shared later with Nødmodus. */
+function emPlace(rg){ return !rg || rg === 'no' ? 'no' : (rg === 'eu' || rg === 'se' || rg === 'is') ? 'eu' : 'far'; }
+function emMarks(html, lang, rg){
+  const E = (UI[lang] || UI.en).em, pl = emPlace(rg);
+  const num = (n, tel) => `<a class="em-num" data-nav href="tel:${tel}">${n}</a>`;
+  const block = () => {
+    let h = '<ul class="em-list">';
+    if (pl === 'no') h += `<li>${num('113', '113')}<span>${E.med}</span></li><li>${num('116 117', '116117')}<span>${E.gp}</span></li><li>${num('22 59 13 00', '22591300')}<span>${E.poison}</span></li>`;
+    else {
+      if (pl === 'eu') h += `<li>${num('112', '112')}<span>${E.eu112}</span></li>`;
+      h += `<li>${num('+47 22 59 13 00', '+4722591300')}<span>${E.poisonNo}</span></li>`;
+    }
+    h += '</ul>';
+    h += `<p>${pl === 'no' ? E.noteNo : pl === 'eu' ? E.noteEu : E.noteFar}</p><p>${E.phone}</p><p class="em-note">${E.where}</p>`;
+    return h + '[[web:https://www.helsenorge.no|Helsenorge]]';
+  };
+  return String(html).replace(/\[\[emergency\]\]/g, block).replace(/\[\[em\]\]/g, () => pl === 'no' ? '<b>113</b>' : pl === 'eu' ? '<b>112</b>' : E.local);
+}
 function planLinks(html){ return String(html).replace(/\[\[plan:(\w+)\]\]/g, (m, k) => PLAN_ICONS[k] ? planLink(k, 'guide') : ''); }
 let planFrom = null;
 function planBack(){ const T = t(); return planFrom === 'compass' ? T.tabCompass : planFrom === 'guide' ? T.tabGuide : planFrom === 'list' ? T.tabList : T.tabPlan; }
@@ -1990,7 +2060,7 @@ function renderTextGuide(k){
   document.title = g.title + ' · ' + T.app;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${g.sub}</p>
-    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(x[1]))}</details>`).join('')}</section>`;
+    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(emMarks(x[1], state.lang, region(state.pos))))}</details>`).join('')}</section>`;
   loadSvgs();
   if (guideSec){
     const d = main.querySelector(`details[data-sec="${guideSec}"]`);
