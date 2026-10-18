@@ -613,6 +613,10 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 .status{font-size:.9rem;color:var(--lichen);min-height:1.3em;margin-top:6px}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+/* 0.9.2: Nattlys always wins. Skins and dark mode set --gsafe and --link with selectors as strong as the night rules
+   (Lett bris in dark mode kept Vær og sikkerhet orange; web links stayed blue in dark mode). This rule is stronger and last.
+   Every colour that means something must be listed here or built from --ink, --muted, --red or --lichen. */
+:root body.night.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--link:var(--ink)}
 </style>
 </head>
 <body>
@@ -654,8 +658,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.9.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 45;         // raised on every commit, together with CACHE ('varde-b45') in sw.js
+const APP_VERSION = '0.9.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 46;         // raised on every commit, together with CACHE ('varde-b46') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
