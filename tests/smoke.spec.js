@@ -339,6 +339,34 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    // From build 42 (0.7.0): emergency numbers follow the saved position, and guide web links offer «Legg til i Dine lenker».
+    test('Medisiner på tur: emergency numbers by place, suggested links', async ({browser}) => {
+      const places = [
+        [null, '113', true], [{lat:59.91, lon:10.75}, '113', true],
+        [{lat:48.14, lon:11.58}, '112', false], [{lat:40.71, lon:-74.0}, null, false]
+      ];
+      for (const [pos, num, norway] of places){
+        const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}});
+        const p = await ctx.newPage();
+        const err = watchErrors(p);
+        await p.addInitScript(([key, pos]) => { try { localStorage.setItem(key, JSON.stringify(Object.assign({lists:[], hidePacked:false, introDone:true}, pos ? {pos} : {}))); } catch(e){} }, [KEY, pos]);
+        await p.goto('./');
+        await p.locator('#tabbar [data-tab="guide"]').click();
+        await p.locator('#main [data-open="meds"]').click();
+        await p.locator('#main details[data-sec="help"] summary').click();
+        const nums = p.locator('#main details[data-sec="help"] .em-num');
+        if (num) await expect(nums.first(), `first number at ${JSON.stringify(pos)}`).toHaveText(num);
+        await expect(p.locator('#main details[data-sec="help"] a[href="tel:113"]')).toHaveCount(norway ? 1 : 0);
+        await expect(p.locator('#main details[data-sec="help"] a[href="tel:112"]')).toHaveCount(num === '112' ? 1 : 0);
+        // every web link in the guide offers «Legg til i Dine lenker»
+        const rows = p.locator('#main .sug-row');
+        await expect(rows).toHaveCount(await p.locator('#main a.wl').count());
+        await p.waitForTimeout(200);
+        expect(err, `no errors at ${JSON.stringify(pos)}`).toEqual([]);
+        await ctx.close();
+      }
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
