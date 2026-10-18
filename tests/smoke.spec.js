@@ -137,6 +137,56 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    test('Søk i Guider: every guide is searchable and results open their section', async ({page}) => {
+      await goTab(page, 'guide');
+      const guider = await tabLabel(page, 'guide');
+      // the first section heading of every guide, read from the guide itself
+      const keys = await page.locator('#main [data-open]').evaluateAll(els => els.map(e => e.dataset.open));
+      expect(keys).toEqual(guideKeysFromSource());
+      const firstSec = {};
+      for (const k of keys){
+        await page.locator(`#main [data-open="${k}"]`).click();
+        const su = page.locator('#main details > summary').first();
+        firstSec[k] = (await su.innerText()).split('\n').map(x => x.trim()).filter(Boolean)[0];
+        expect(firstSec[k], `guide ${k} has a section`).toBeTruthy();
+        await page.locator('#main .back').click();
+      }
+      // closed: the magnifier; open: the field, with focus
+      await page.locator('#main .gs-btn').click();
+      const input = page.locator('#gsInput');
+      await expect(input).toBeFocused();
+      // one letter keeps the groups; a word with no match says so
+      await input.fill('e');
+      await expect(page.locator('#main [data-open]').first()).toBeVisible();
+      await input.fill('qqzzxx');
+      await expect(page.locator('#main .gs-count')).toBeVisible();
+      await expect(page.locator('#main .gs-hit')).toHaveCount(0);
+      // every guide: search for its first section heading, open the result, the section is unfolded, Back keeps the search
+      for (const k of keys){
+        const sec = firstSec[k];
+        await input.fill(sec);
+        const hit = page.locator(`#main .gs-hit[data-guide="${k}"]`).filter({has: page.locator('.gs-s', {hasText: sec})}).first();
+        await expect(hit, `result for ${k} / ${sec}`).toBeVisible();
+        await hit.click();
+        await expect(title(page)).not.toHaveText(guider);
+        const open = await page.locator('#main details[open] > summary').allInnerTexts();
+        expect(open.some(x => x.replace(/\s+/g, ' ').toLowerCase().includes(sec.toLowerCase())), `section ${sec} in ${k} is open`).toBe(true);
+        await page.locator('#main .back').click();
+        await expect(title(page)).toHaveText(guider);
+        await expect(input).toHaveValue(sec);
+      }
+      // × closes, and leaving Guider clears the search
+      await page.locator('#main .gs-x').click();
+      await expect(page.locator('#main .gs-btn')).toBeVisible();
+      await page.locator('#main .gs-btn').click();
+      await input.fill('telt');
+      await goTab(page, 'plan');
+      await goTab(page, 'guide');
+      await expect(page.locator('#main .gs-btn')).toBeVisible();
+      await expect(page.locator('#gsInput')).toHaveCount(0);
+      await settle(page, errors);
+    });
+
     test('every calculator in Planlegg opens', async ({page}) => {
       await goTab(page, 'plan');
       const plan = await tabLabel(page, 'plan');
