@@ -287,6 +287,58 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    // From build 41 (0.6.0): Notater edited in place, Fest øverst, Del with preview, and a received note.
+    test('Notater: edit in place, pin, share and receive', async ({page, browser}) => {
+      const sheetOk = page.locator('#overlay [data-s="ok"]');
+      await goTab(page, 'notes');
+      for (const [ti, tx] of [['Alpha', 'first text'], ['Beta', 'second text']]){
+        await page.locator('#main [data-act="newNote"]').click();
+        await page.locator('#noteTitle').fill(ti);
+        await page.locator('#noteText').fill(tx);
+        await sheetOk.click();
+        await expect(page.locator('#main .note-full h2')).toHaveText(ti);
+        await page.locator('#main [data-act="back"]').click();
+      }
+      const rows = page.locator('#main .notes-ix [data-act="openNote"] .ix-t');
+      await expect(rows.first()).toHaveText('Beta');
+      // Fest øverst: Alpha goes to the top with a pin
+      await page.locator('#main .notes-ix [data-act="openNote"]', {hasText: 'Alpha'}).click();
+      await page.locator('#main [data-act="notePin"]').click();
+      await page.locator('#main [data-act="back"]').click();
+      await expect(rows.first()).toHaveText('Alpha');
+      await expect(page.locator('#main .notes-ix .pin-ic')).toHaveCount(1);
+      // edit in place: tapping the text gives fields on the page, no sheet
+      await page.locator('#main .notes-ix [data-act="openNote"]', {hasText: 'Alpha'}).click();
+      await page.locator('#main .note-body').click();
+      await expect(page.locator('#overlay')).toBeHidden();
+      await page.locator('#neText').fill('changed text');
+      await page.locator('#main [data-act="noteSave"]').click();
+      await expect(page.locator('#main .note-body')).toHaveText('changed text');
+      // Del: preview first, then the link carries only title, text and the optional name
+      await page.evaluate(() => { window.__shared = null; navigator.share = async d => { window.__shared = d.url; }; });
+      await page.locator('#main [data-act="noteShare"]').click();
+      await expect(page.locator('#overlay .sh-prev')).toContainText('changed text');
+      await page.locator('#shName').fill('Kari');
+      await sheetOk.click();
+      await expect.poll(() => page.evaluate(() => window.__shared)).toContain('#note=');
+      const url = await page.evaluate(() => window.__shared);
+      await expect(page.locator('#main .note-tags')).not.toBeEmpty();
+      // another phone opens the link: preview, add, dashed outline and the name in the tag
+      const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}});
+      const p2 = await ctx.newPage();
+      const err2 = watchErrors(p2);
+      await p2.addInitScript(([key]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({lists:[], hidePacked:false, introDone:true})); } catch(e){} }, [KEY]);
+      await p2.goto(url);
+      await expect(p2.locator('#overlay .sh-prev')).toContainText('Alpha');
+      await p2.locator('#overlay [data-s="ok"]').click();
+      await expect(p2.locator('#main .note-full.rcv h2')).toHaveText('Alpha');
+      await expect(p2.locator('#main .note-tags')).toContainText('Kari');
+      await p2.waitForTimeout(300);
+      expect(err2, 'no errors on the receiving phone').toEqual([]);
+      await ctx.close();
+      await settle(page, errors);
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
