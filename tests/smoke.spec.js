@@ -469,3 +469,55 @@ for (const L of LANGS){
     });
   });
 }
+
+/* ---------- From build 46 (0.9.2): Nattlys stays pure red or pure green ----------
+   Every skin, in light and dark mode, with red and green light: every visible colour on the main pages must be grey/black
+   or a shade of the night light. Catches skins, dark-mode rules or new colours that override Nattlys. */
+const SKINS = (HTML.match(/data-skin="([a-z]+)"/g) || []).map(m => m.slice(11, -1)).filter((v, i, a) => a.indexOf(v) === i);
+test.describe('nattlys', () => {
+  test('every colour follows the night light in all skins, light and dark mode', async ({browser}) => {
+    test.setTimeout(240000);
+    expect(SKINS.length, 'skins found in index.html').toBeGreaterThan(3);
+    const audit = hue => {
+      const bad = [];
+      const parse = s => { const m = s && s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(parseFloat); return {r:p[0], g:p[1], b:p[2], a:p.length > 3 ? p[3] : 1}; };
+      const ok = c => { if (!c || c.a === 0) return true; const mx = Math.max(c.r, c.g, c.b), mn = Math.min(c.r, c.g, c.b);
+        if (mx - mn < 18) return true;
+        return hue === 'red' ? (c.r >= c.g && c.r >= c.b && Math.abs(c.g - c.b) < 60) : (c.g >= c.r && c.g >= c.b); };
+      document.querySelectorAll('#main *, header *, #tabbar *').forEach(el => {
+        const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden') return;
+        for (const p of ['color', 'backgroundColor', 'borderLeftColor', 'borderTopColor', 'fill', 'stroke']){
+          if (p.indexOf('border') === 0 && parseFloat(cs[p.replace('Color', 'Width')]) === 0) continue;
+          if (!ok(parse(cs[p]))){ const k = el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className; bad.push(`${p} ${cs[p]} ${String(k || el.tagName).slice(0, 40)}`); }
+        }
+      });
+      return [...new Set(bad)].slice(0, 8);
+    };
+    const notes = [{id:'a', title:'A', text:'x', t:1760000000000, rcv:{n:'Kari', t:1760000000000}}, {id:'b', title:'B', text:'y', t:1750000000000, pin:true}];
+    for (const skin of SKINS) for (const scheme of ['light', 'dark']) for (const hue of ['red', 'green']){
+      const ctx = await browser.newContext({colorScheme: scheme, serviceWorkers: 'block', viewport: {width: 390, height: 780}, locale: 'nb-NO'});
+      const p = await ctx.newPage();
+      const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes};
+      await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+      await p.goto('./');
+      const found = {};
+      const check = async name => { const r = await p.evaluate(audit, hue); if (r.length) found[name] = r; };
+      await check('list');
+      await p.locator('#tabbar [data-tab="notes"]').click(); await check('notes');
+      await p.locator('#main [data-act="openNote"][data-id="a"]').click(); await check('note');
+      await p.locator('#tabbar [data-tab="guide"]').click(); await check('guides');
+      for (const g of ['mapcompass', 'meds', 'animals']){
+        await p.locator('#tabbar [data-tab="guide"]').click();
+        const open = p.locator(`#main [data-open="${g}"]`);
+        if (!(await open.count())) continue;
+        await open.click();
+        const sums = p.locator('#main details summary');
+        for (let i = 0; i < await sums.count(); i++) await sums.nth(i).click();
+        await check(g);
+      }
+      await p.locator('#tabbar [data-tab="plan"]').click(); await check('plan');
+      expect(found, `${skin}, ${scheme} mode, ${hue} light`).toEqual({});
+      await ctx.close();
+    }
+  });
+});
