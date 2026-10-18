@@ -84,6 +84,17 @@ body.field main.wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom,0px)
 .item.sub .check{padding-left:50px;min-height:44px;font-size:.95rem}
 .item.sub .mark{width:22px;height:22px}
 .item.sub .mark svg{width:15px;height:15px}
+/* 0.9.0: sorting in Rediger. Grip at the left; a lifted row floats, the others slide aside */
+.grip{flex:none;width:40px;height:44px;margin-left:2px;background:none;border:0;color:var(--muted);border-radius:8px;cursor:grab;display:grid;place-items:center;touch-action:none}
+.grip svg{width:18px;height:18px;fill:currentColor}
+.item.sub .grip{margin-left:16px;width:34px}
+.item.sub:has(.grip) .check{padding-left:2px}
+.item:has(.grip) .check{padding-left:4px}
+main.editing .items .item{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.items.sorting{overflow:visible}
+.items.sorting .item{transition:transform .16s ease}
+.items.sorting .item.lifted{transition:none;position:relative;z-index:3;background:var(--surface);box-shadow:0 8px 22px rgba(0,0,0,.22);border-radius:10px;cursor:grabbing}
+body.sorting{cursor:grabbing}
 .cat-note{margin:0 2px 6px;color:var(--lichen);font-size:.9rem}
 textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .modes{margin-top:16px}
@@ -643,8 +654,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.8.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 43;         // raised on every commit, together with CACHE ('varde-b43') in sw.js
+const APP_VERSION = '0.9.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 44;         // raised on every commit, together with CACHE ('varde-b44') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -757,7 +768,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
-    resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
+    resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
     phone:[
@@ -966,7 +977,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
-    resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
+    resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
     phone:[
@@ -1494,6 +1505,7 @@ function render(){
   if (tab !== 'compass') stopCompass();
   if (tab !== 'guide' && gSearch.open) gsReset();
   if (tab !== 'notes') noteEdit = null;
+  if (tab !== 'list') main.classList.remove('editing');
   if (tab === 'compass') return renderCompass();
   if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
@@ -1518,6 +1530,7 @@ function render(){
   const editL = view && view.indexOf('edit:') === 0 && !state.field ? ownList(view.slice(5)) : null;
   if (view && view.indexOf('edit:') === 0 && (!editL || state.field)) view = null;
   editing = !!editL;
+  main.classList.toggle('editing', editing);
   const l = editL || mainList();
   const bag = (!editL && view) ? findCat(view) : null;
   if (view && !editL && !bag) view = null;
@@ -1593,7 +1606,7 @@ function render(){
       pending = null;
       shown++;
       const target = i.link ? findCat(i.link) : null;
-      html += `<li class="item${i.done ? ' done' : ''}${i.sub && (editing || !heads.size) ? ' sub' : ''}" data-item="${i.id}">
+      html += `<li class="item${i.done ? ' done' : ''}${i.sub && (editing || !heads.size) ? ' sub' : ''}" data-item="${i.id}">${editing ? `<button class="grip" data-grip aria-label="${esc(T.moveX(i.text))}" title="${esc(T.moveHint)}">${GRIP}</button>` : ''}
         <button class="check" data-act="toggleItem" role="checkbox" aria-checked="${i.done}">
           <span class="mark">${T_MARK}</span><span class="txt">${esc(i.text)}</span>
         </button>`;
@@ -3652,6 +3665,7 @@ function goBack(){
 history.replaceState({tab, view, depth:0}, '');
 window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
+  if (sortDrag){ sortCancel(); history.pushState({tab, view, depth:(history.state && history.state.depth || 0) + 1}, ''); return; }
   if (slMode){ history.pushState(Object.assign({}, history.state || {}, {light:true}), ''); return; }
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
@@ -3681,6 +3695,131 @@ function withUndo(msg, fn){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
 }
+
+/* ---------- 0.9.0: sorting in Rediger ----------
+   Grip (⠿) at the left of each row: drag starts as soon as the finger moves. Long press (400 ms, still) on the row: lifts it,
+   with a short vibration. Rows move within their own category. A main item moves with its sub-items and lands between
+   blocks; a sub-item moves alone and never lands first in the category. Near the header or the tab bar the page scrolls.
+   Letting go saves with Angre; the back button, Escape or pointercancel puts everything back. Only in Rediger. */
+const GRIP = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.7"/><circle cx="15" cy="6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18" r="1.7"/><circle cx="15" cy="18" r="1.7"/></svg>';
+const SORT_HOLD = 400, SORT_SLOP = 8, SORT_EDGE = 64;
+let sortDrag = null, sortPending = null, sortNoClick = 0;
+// units = what the dragged block can move between: whole blocks for a main item, single rows for a sub-item
+function sortUnits(items, start, end){
+  const rest = items.slice(0, start).concat(items.slice(end)), units = [];
+  if (items[start].sub) rest.forEach(i => units.push([i]));
+  else rest.forEach(i => { if (i.sub && units.length && !units[units.length - 1].mainless) units[units.length - 1].push(i); else { const u = [i]; if (i.sub) u.mainless = true; units.push(u); } });
+  return units;
+}
+function sortBlock(items, idx){
+  let e = idx + 1;
+  if (!items[idx].sub) while (e < items.length && items[e].sub) e++;
+  return [idx, e];
+}
+const sortMin = sub => sub ? 1 : 0;   // a sub-item never lands first in the category
+function sortApply(cat, start, end, pos){
+  const items = cat.items, block = items.slice(start, end), units = sortUnits(items, start, end);
+  const out = [];
+  units.forEach((u, n) => { if (n === pos) out.push(...block); out.push(...u); });
+  if (pos >= units.length) out.push(...block);
+  return out;
+}
+function sortStart(li, e){
+  const catEl = li.closest('[data-cat]'), cat = catEl && findCat(catEl.dataset.cat);
+  if (!cat || !editing) return;
+  const idx = cat.items.findIndex(i => i.id === li.dataset.item);
+  if (idx < 0) return;
+  const [start, end] = sortBlock(cat.items, idx);
+  const ul = li.parentNode, rows = [...ul.querySelectorAll(':scope > li.item')];
+  const byId = new Map(rows.map(r => [r.dataset.item, r]));
+  const blockEls = cat.items.slice(start, end).map(i => byId.get(i.id)).filter(Boolean);
+  const units = sortUnits(cat.items, start, end).map(u => u.map(i => byId.get(i.id)).filter(Boolean));
+  const sy = window.scrollY, rect = el => el.getBoundingClientRect();
+  const bTop = rect(blockEls[0]).top + sy, bBot = rect(blockEls[blockEls.length - 1]).bottom + sy;
+  const mids = units.map(u => { const a = rect(u[0]).top + sy, b = rect(u[u.length - 1]).bottom + sy; return (a + b) / 2; });
+  const p0 = units.findIndex(u => u.length && rect(u[0]).top + sy > bTop);
+  sortDrag = {cat, start, end, sub:!!cat.items[start].sub, ul, blockEls, units, mids, H:bBot - bTop, mid0:(bTop + bBot) / 2,
+    p0: p0 < 0 ? units.length : p0, pos: p0 < 0 ? units.length : p0, y0:e.clientY, sy0:sy, y:e.clientY, id:e.pointerId, raf:0};
+  ul.classList.add('sorting'); document.body.classList.add('sorting');
+  blockEls.forEach(el => el.classList.add('lifted'));
+  try { if (navigator.vibrate) navigator.vibrate(15); } catch(_){}
+  sortFrame();
+}
+function sortFrame(){
+  const d = sortDrag; if (!d) return;
+  // auto-scroll near the header and the tab bar
+  const hb = ($('appHeader') || document.querySelector('header') || {getBoundingClientRect:() => ({bottom:0})}).getBoundingClientRect().bottom;
+  const tb = ($('tabbar') || {getBoundingClientRect:() => ({top:innerHeight})}).getBoundingClientRect().top;
+  let v = 0;
+  if (d.y < hb + SORT_EDGE) v = -Math.ceil((hb + SORT_EDGE - d.y) / 6);
+  else if (d.y > tb - SORT_EDGE) v = Math.ceil((d.y - (tb - SORT_EDGE)) / 6);
+  if (v) window.scrollBy(0, Math.max(-18, Math.min(18, v)));
+  const dy = (d.y - d.y0) + (window.scrollY - d.sy0);
+  const c = d.mid0 + dy;
+  let pos = d.mids.filter(m => m < c).length;
+  pos = Math.max(sortMin(d.sub), Math.min(d.units.length, pos));
+  d.pos = pos;
+  // the dragged block can not leave its category: keep it inside the list box
+  const ulr = d.ul.getBoundingClientRect(), top0 = d.mid0 - d.H / 2 - window.scrollY;
+  const lim = Math.max(ulr.top - top0 - d.H / 2, Math.min(ulr.bottom - top0 - d.H / 2, dy));
+  d.blockEls.forEach(el => el.style.transform = `translateY(${lim}px)`);
+  d.units.forEach((u, n) => {
+    const sh = (n >= d.p0 && n < pos) ? -d.H : (n >= pos && n < d.p0) ? d.H : 0;
+    u.forEach(el => el.style.transform = sh ? `translateY(${sh}px)` : '');
+  });
+  d.raf = requestAnimationFrame(sortFrame);
+}
+function sortEnd(commit){
+  const d = sortDrag; if (!d) return;
+  sortDrag = null; cancelAnimationFrame(d.raf);
+  d.ul.classList.remove('sorting'); document.body.classList.remove('sorting');
+  d.ul.querySelectorAll('li.item').forEach(el => { el.style.transform = ''; el.classList.remove('lifted'); });
+  sortNoClick = Date.now();
+  if (!commit || d.pos === d.p0) return;
+  const text = d.cat.items[d.start].text, order = sortApply(d.cat, d.start, d.end, d.pos);
+  withUndo(t().movedX(text), () => { d.cat.items = order; });
+}
+function sortCancel(){ sortEnd(false); }
+function sortClearPending(){ if (sortPending){ clearTimeout(sortPending.timer); sortPending = null; } }
+document.addEventListener('pointerdown', e => {
+  if (!editing || sortDrag || e.button > 0) return;
+  const li = e.target.closest('main .items li.item[data-item]');
+  if (!li || e.target.closest('.icon, input, textarea')) return;
+  const grip = !!e.target.closest('.grip');
+  sortClearPending();
+  sortPending = {li, x:e.clientX, y:e.clientY, id:e.pointerId, grip,
+    timer: grip ? 0 : setTimeout(() => { const p = sortPending; sortPending = null; if (p) sortStart(p.li, {clientY:p.y, pointerId:p.id}); }, SORT_HOLD)};
+}, true);
+document.addEventListener('pointermove', e => {
+  if (sortDrag){ if (e.pointerId === sortDrag.id || e.pointerType === 'mouse') sortDrag.y = e.clientY; e.preventDefault(); return; }
+  const p = sortPending; if (!p || e.pointerId !== p.id) return;
+  const dist = Math.hypot(e.clientX - p.x, e.clientY - p.y);
+  if (p.grip){ if (dist > 3){ sortPending = null; sortStart(p.li, {clientY:p.y, pointerId:p.id}); sortDrag && (sortDrag.y = e.clientY); } }
+  else if (dist > SORT_SLOP) sortClearPending();   // it is a scroll, not a long press
+}, {capture:true, passive:false});
+document.addEventListener('pointerup', e => { sortClearPending(); if (sortDrag) sortEnd(true); }, true);
+document.addEventListener('pointercancel', e => { sortClearPending(); if (sortDrag) sortCancel(); }, true);
+// once a row is lifted, the page must not scroll under the finger, and the phone's long-press menu stays away
+document.addEventListener('touchmove', e => { if (sortDrag) e.preventDefault(); }, {passive:false});
+document.addEventListener('contextmenu', e => { if (sortDrag || (sortPending && !sortPending.grip) || (editing && e.target.closest('main .items li.item'))) e.preventDefault(); }, true);
+// the tap that ends a drag must not tick the row
+document.addEventListener('click', e => { if (sortNoClick && Date.now() - sortNoClick < 350 && !e.target.closest('#toast')){ sortNoClick = 0; e.stopPropagation(); e.preventDefault(); } }, true);
+document.addEventListener('keydown', e => {
+  if (sortDrag && e.key === 'Escape'){ sortCancel(); return; }
+  const g = e.target.closest && e.target.closest('.grip');
+  if (!g || !editing || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+  e.preventDefault();
+  const li = g.closest('li.item'), catEl = li.closest('[data-cat]'), cat = catEl && findCat(catEl.dataset.cat);
+  if (!cat) return;
+  const idx = cat.items.findIndex(i => i.id === li.dataset.item);
+  const [start, end] = sortBlock(cat.items, idx), units = sortUnits(cat.items, start, end);
+  let p0 = 0; for (let n = 0, k = 0; n < units.length; n++){ if (k >= start) break; k += units[n].length; p0 = n + 1; }
+  const pos = p0 + (e.key === 'ArrowUp' ? -1 : 1);
+  if (pos < sortMin(!!cat.items[start].sub) || pos > units.length) return;
+  const id = li.dataset.item, text = cat.items[start].text, order = sortApply(cat, start, end, pos);
+  withUndo(t().movedX(text), () => { cat.items = order; });
+  const ng = main.querySelector(`li.item[data-item="${CSS.escape(id)}"] .grip`); if (ng) ng.focus();
+});
 
 /* ---------- outdoor mode: strict taps, rain lock, wake lock ---------- */
 // Rain lock rule: anything that only changes what you see carries data-nav (fold-out sections count automatically).
@@ -3882,7 +4021,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   let reloading = false;
   // a new version takes over: reload once so it is in use straight away
   // 0.5.1: wait while a sheet, the introduction, the full-screen light or a text field is in use, then reload on the page you were on
-  const busy = () => !overlay.hidden || !$('intro').hidden || !!slMode || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+  const busy = () => !!sortDrag || !overlay.hidden || !$('intro').hidden || !!slMode || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
   const reloadWhenSafe = () => { if (document.visibilityState === 'visible' && busy()){ setTimeout(reloadWhenSafe, 1500); return; } location.reload(); };
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloading) return; reloading = true; reloadWhenSafe(); });
   let swReg = null, lastCheck = 0;
