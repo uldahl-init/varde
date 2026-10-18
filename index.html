@@ -229,6 +229,7 @@ body.notlist .list-switch svg{display:none}
 .gs-t{display:block;font-family:var(--head);font-weight:600;font-size:1.15rem;line-height:1.25}
 .gs-s{display:block;color:var(--muted);font-size:.95rem;font-weight:600}
 .gs-n{display:block;margin-top:4px;line-height:1.45}
+.gs-lang{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-strong);border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.04em;color:var(--muted);vertical-align:1px}
 .gs-hit mark{color:inherit;font-weight:700;background:var(--line);background:color-mix(in srgb,var(--red) 22%,transparent);border-radius:3px;padding:0 1px}
 body.locked .gs-btn,body.locked .gs-field{opacity:.45}
 body{--gsafe:#3F7FA8}
@@ -614,8 +615,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.5.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 39;         // raised on every commit, together with CACHE ('varde-b39') in sw.js
+const APP_VERSION = '0.5.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 40;         // raised on every commit, together with CACHE ('varde-b40') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1678,7 +1679,9 @@ function renderIndex(){
   }
 }
 /* ---------- Søk i Guider (0.5.0) ----------
-   Searches the guide text in the current language, offline. Case does not matter and parts of words match.
+   Searches the guide text in both languages, offline (from 0.5.1). Case does not matter and parts of words match.
+   Results show in the current language; a match found only in the other language shows that language's snippet with a NO / EN tag.
+   Sections are matched between the languages by position, so both languages must keep the same sections in the same order.
    Text guides in GUIDE_TXT are searched automatically; a guide with its own renderer must be listed in guideIndex(). */
 const ICO_SEARCH = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>';
 const ICO_CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
@@ -1693,9 +1696,11 @@ function gsPlain(html){
   gsPlain.doc.body.innerHTML = h.replace(/</g, '&lt;');
   return gsPlain.doc.body.textContent.replace(/\s+/g, ' ').trim();
 }
-function guideIndex(){
-  if (gsCache && gsCache.lang === state.lang) return gsCache.items;
-  const T = t(), G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
+function guideIndex(lang){
+  lang = lang || state.lang;
+  gsCache = gsCache || {};
+  if (gsCache[lang]) return gsCache[lang];
+  const T = UI[lang] || UI.en, G = GUIDE_TXT[lang] || GUIDE_TXT.en;
   // pieces joined into one text each end with a full stop, so snippets read as sentences
   const join = a => a.filter(Boolean).map(x => { const p = gsPlain(x); return /[.!?:…]$/.test(p) ? p : p + '.'; }).join(' ');
   const knotSecs = list => list.map(k => [k.n, join([k.u].concat(k.s, k.c))]);
@@ -1715,10 +1720,10 @@ function guideIndex(){
     items.push({k, grp:gr.key, title:g.title, short:g.short, intro:g.intro,
       secs:g.secs.map(x => ({t:gsPlain(x[0]), x:gsPlain(x[1])}))});
   }));
-  gsCache = {lang:state.lang, items};
+  gsCache[lang] = items;
   return items;
 }
-function gsLow(s){ return s.toLocaleLowerCase(state.lang === 'no' ? 'nb' : 'en'); }
+function gsLow(s){ return String(s).toLocaleLowerCase('nb'); }
 // a short piece of text round the first match, with every match in it marked
 function gsSnip(text, q){
   const low = gsLow(text), i = low.indexOf(q);
@@ -1739,12 +1744,21 @@ function gsMark(text, q){
 function guideSearch(raw){
   const q = gsLow(raw.trim().replace(/\s+/g, ' ')), hits = [];
   if (q.length < GS_MIN) return hits;
-  guideIndex().forEach(g => {
-    const inTitle = gsLow(g.title).includes(q) || gsLow(g.short).includes(q);
-    if (inTitle || gsLow(g.intro).includes(q))
-      hits.push({g, sec:null, snip: gsLow(g.intro).includes(q) ? gsSnip(g.intro, q) : gsMark(g.short, q)});
-    g.secs.forEach(s => {
-      if (gsLow(s.t).includes(q) || gsLow(s.x).includes(q)) hits.push({g, sec:s.t, snip:gsSnip(s.x, q)});
+  const other = state.lang === 'no' ? 'en' : 'no';
+  const cur = guideIndex(), alt = guideIndex(other);
+  const has = x => gsLow(x).includes(q);
+  cur.forEach((g, gi) => {
+    const o = alt.find(x => x.k === g.k);
+    // the guide itself: title, short line or intro
+    if (has(g.title) || has(g.short) || has(g.intro))
+      hits.push({g, sec:null, snip: has(g.intro) ? gsSnip(g.intro, q) : gsMark(g.short, q)});
+    else if (o && (has(o.title) || has(o.short) || has(o.intro)))
+      hits.push({g, sec:null, lang:other, snip: has(o.intro) ? gsSnip(o.intro, q) : gsMark(has(o.short) ? o.short : o.title, q)});
+    // each section; the other language's section at the same place
+    g.secs.forEach((s, i) => {
+      if (has(s.t) || has(s.x)){ hits.push({g, sec:s.t, snip:gsSnip(s.x, q)}); return; }
+      const os = o && o.secs[i];
+      if (os && (has(os.t) || has(os.x))) hits.push({g, sec:s.t, lang:other, snip: has(os.x) ? gsSnip(os.x, q) : gsMark(os.t, q)});
     });
   });
   return hits;
@@ -1757,7 +1771,7 @@ function gsShow(){
   const hits = guideSearch(q), ql = gsLow(q.replace(/\s+/g, ' '));
   if (!hits.length){ body.innerHTML = `<p class="gs-count" role="status">${T.gsNone}</p>`; return; }
   body.innerHTML = `<p class="gs-count" role="status">${T.gsCount(hits.length)}</p><div class="gs-res">` + hits.slice(0, GS_MAX).map(h =>
-    `<button class="gs-hit g-${h.g.grp}" data-nav data-act="gsHit" data-guide="${h.g.k}"${h.sec ? ` data-sec="${esc(h.sec)}"` : ''}><span class="gs-t">${gsMark(h.g.title, ql)}</span>${h.sec ? `<span class="gs-s">${gsMark(h.sec, ql)}</span>` : ''}<span class="gs-n">${h.snip}</span></button>`).join('') +
+    `<button class="gs-hit g-${h.g.grp}" data-nav data-act="gsHit" data-guide="${h.g.k}"${h.sec ? ` data-sec="${esc(h.sec)}"` : ''}><span class="gs-t">${gsMark(h.g.title, ql)}</span>${h.sec ? `<span class="gs-s">${gsMark(h.sec, ql)}</span>` : ''}<span class="gs-n">${h.lang ? `<span class="gs-lang" lang="${h.lang === 'no' ? 'nb' : 'en'}">${h.lang === 'no' ? 'NO' : 'EN'}</span>` : ''}${h.snip}</span></button>`).join('') +
     `</div>${hits.length > GS_MAX ? `<p class="gs-count">${T.gsMore(GS_MAX)}</p>` : ''}`;
 }
 // after a guide opens from a result: unfold the section with that heading and scroll it into view
@@ -3620,8 +3634,17 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   const hadController = !!navigator.serviceWorker.controller;
   let reloading = false;
   // a new version takes over: reload once so it is in use straight away
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloading) return; reloading = true; location.reload(); });
-  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(r => r.update()).catch(() => {}); });
+  // 0.5.1: wait while a sheet, the introduction, the full-screen light or a text field is in use, then reload on the page you were on
+  const busy = () => !overlay.hidden || !$('intro').hidden || !!slMode || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+  const reloadWhenSafe = () => { if (document.visibilityState === 'visible' && busy()){ setTimeout(reloadWhenSafe, 1500); return; } location.reload(); };
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloading) return; reloading = true; reloadWhenSafe(); });
+  let swReg = null, lastCheck = 0;
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(r => { swReg = r; lastCheck = Date.now(); return r.update(); }).catch(() => {}); });
+  // 0.5.1: Android often keeps the app in memory, so also look for a new version when it comes back to the front with a connection
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible' || !swReg || navigator.onLine === false || Date.now() - lastCheck < 30000) return;
+    lastCheck = Date.now(); swReg.update().catch(() => {});
+  });
 }
 })();
 </script>
