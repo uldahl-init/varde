@@ -189,6 +189,21 @@ body.notlist .list-switch svg{display:none}
 .notes-ix .note-date{margin:4px 0 0;font-size:.8rem}
 .notes-ix .ix-t{font-size:1.15rem}
 .note-area{min-height:40vh}
+/* 0.6.0: notes edited in place, pinned and shared */
+.note-tap{cursor:text}
+.note-body.note-tap:empty{min-height:3em}
+.note-edit .ne-title{display:block;width:100%;margin:0;font-family:var(--head);font-weight:600;font-size:1.35rem}
+.note-edit .ne-text{display:block;width:100%;min-height:8em;resize:none;overflow:hidden;line-height:1.55}
+.note-tags{margin:-6px 0 10px;color:var(--muted);font-size:.85rem}
+.notes-ix .note-tags{margin:2px 0 0;font-size:.8rem}
+.note-full.rcv,.notes-ix button.rcv{border:1.5px dashed var(--muted)}
+.pin-ic{display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-2px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.index .pin-ic{width:17px;height:17px;stroke:var(--muted);stroke-width:2}
+.sh-prev{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);max-height:38vh;overflow:auto}
+.sh-prev b{display:block;font-family:var(--head);font-weight:600;font-size:1.1rem;margin-bottom:4px}
+.sh-prev div{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.sh-lbl{display:block;margin:12px 0 4px;font-weight:600}
+.sh-hint{margin:4px 0 0;color:var(--muted);font-size:.88rem}
 #noteTitle,#noteText{display:block}
 #noteTitle{margin-bottom:12px;font-weight:600}
 .w-list{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:12px}
@@ -615,8 +630,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.5.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 40;         // raised on every commit, together with CACHE ('varde-b40') in sw.js
+const APP_VERSION = '0.6.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 41;         // raised on every commit, together with CACHE ('varde-b41') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -672,7 +687,7 @@ const UI = {
     skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
     dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'They match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
-    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:`${APP_NAME} has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). The code is open, so anyone can check what the app does:`, privacyLink:`${APP_NAME} on GitHub`, linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
+    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:`${APP_NAME} has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). Before a note is shared, you see exactly what is sent. The code is open, so anyone can check what the app does:`, privacyLink:`${APP_NAME} on GitHub`, linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
@@ -716,7 +731,11 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
+    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
+    noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
+    noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
+    noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
+    tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
@@ -871,7 +890,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
     dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'De tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
-    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:`${APP_NAME} har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Koden er åpen, så alle kan sjekke hva appen gjør:`, privacyLink:`${APP_NAME} på GitHub`, linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
+    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:`${APP_NAME} har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Før et notat deles, ser du nøyaktig hva som sendes. Koden er åpen, så alle kan sjekke hva appen gjør:`, privacyLink:`${APP_NAME} på GitHub`, linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
@@ -915,7 +934,11 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
+    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
+    noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
+    noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
+    noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
+    tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
@@ -1173,7 +1196,7 @@ const BK_REMIND_MS = 14 * 86400000, BK_SNOOZE_MS = 7 * 86400000;
 function listSig(L){ return [L.name, (L.cats || []).map(c => [c.name, c.note || '', (c.items || []).map(i => (i.sub ? '>' : '') + i.text)])]; }
 function strHash(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 function personalSig(){
-  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => [n.title, n.text]),
+  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => (n.pin || n.rcv) ? [n.title, n.text, !!n.pin, n.rcv ? (n.rcv.n || '-') : ''] : [n.title, n.text]),
     ((state.packW || {}).items || []).map(i => [i.name, i.g, i.cat, !!i.cons, !!i.dog]), (state.links || []).map(l => [l.n, l.u])]));
 }
 function hasOwnContent(){
@@ -1200,6 +1223,13 @@ function bkData(){
 }
 function bkFileName(){ return APP_NAME.toLowerCase() + '-' + (state.lang === 'no' ? 'sikkerhetskopi' : 'backup') + '-' + new Date().toISOString().slice(0, 10) + '.json'; }
 // Adds what is new; never overwrites. Returns counts, or null if the text is not a backup.
+/* 0.6.0: pinned state and share tags, copied from a backup; only known fields, cleaned */
+function noteMeta(nn, src){
+  if (src.pin) nn.pin = true;
+  if (src.rcv && typeof src.rcv === 'object') nn.rcv = {n:String(src.rcv.n || '').slice(0, 40), t:+src.rcv.t || nn.t};
+  if (+src.shT) nn.shT = +src.shT;
+  return nn;
+}
 function bkRestore(text){
   let obj;
   try { obj = JSON.parse(text); } catch(e){ return null; }
@@ -1215,7 +1245,7 @@ function bkRestore(text){
   });
   if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
     if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id || (x.title === n.title && x.text === n.text))) return;
-    state.notes.push({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}); a.n++;
+    state.notes.push(noteMeta({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}, n)); a.n++;
   });
   if (obj.packW && Array.isArray(obj.packW.items)){
     const pw = packW();
@@ -1437,6 +1467,7 @@ function render(){
   requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
   if (tab !== 'compass') stopCompass();
   if (tab !== 'guide' && gSearch.open) gsReset();
+  if (tab !== 'notes') noteEdit = null;
   if (tab === 'compass') return renderCompass();
   if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
@@ -1984,24 +2015,118 @@ function askNote(title, n){
   });
 }
 const noteDate = ms => { try { return new Date(ms).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}); } catch(e){ return ''; } };
+/* 0.6.0: edit in place (noteEdit, never stored), Fest øverst (n.pin), Del (n.shT = when you shared it; n.rcv = {n:name, t} on a received note) */
+let noteEdit = null;
+const PIN_IC = '<svg class="pin-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 7 4 3H6l4-3z"/><path d="M12 13v8"/></svg>';
+function noteTags(n){
+  const T = t(), tags = [];
+  if (n.rcv) tags.push(n.rcv.n ? T.tagFrom(esc(n.rcv.n), noteDate(n.rcv.t)) : T.tagRcv(noteDate(n.rcv.t)));
+  if (n.shT) tags.push(T.tagShared(noteDate(n.shT)));
+  return tags.join(' · ');
+}
+const notesSorted = () => state.notes.slice().sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (b.t || 0) - (a.t || 0));
+function growArea(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 function renderNotes(){
   const T = t();
   $('listName').textContent = T.tabNotes;
   document.title = T.tabNotes + ' · ' + T.app;
   const n = view && view.indexOf('note:') === 0 ? state.notes.find(x => x.id === view.slice(5)) : null;
   if (view && !n) view = null;
+  if (noteEdit && (!n || n.id !== noteEdit.id || state.field)) noteEdit = null;
   if (n){
-    main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>
-      <article class="note-full"><h2>${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p><div class="note-body">${esc(n.text)}</div></article>` +
-      (state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`);
+    const tags = noteTags(n), rcv = n.rcv ? ' rcv' : '', pin = n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '';
+    let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>`;
+    if (noteEdit){
+      h += `<article class="note-full note-edit${rcv}"><input type="text" id="neTitle" class="ne-title" placeholder="${esc(T.noteTitlePh)}" value="${esc(noteEdit.title)}">
+        <p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}
+        <textarea class="plain ne-text" id="neText" placeholder="${esc(T.noteTextPh)}">${esc(noteEdit.text)}</textarea></article>
+        <div class="row-btns"><button class="btn" data-act="noteCancel">${T.cancel}</button><button class="btn primary" data-act="noteSave">${T.save}</button></div>`;
+      main.innerHTML = h;
+      const ti = $('neTitle'), tx = $('neText');
+      ti.addEventListener('input', () => { noteEdit.title = ti.value; });
+      ti.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); tx.focus(); } });
+      tx.addEventListener('input', () => { noteEdit.text = tx.value; growArea(tx); });
+      growArea(tx);
+      if (noteEdit.focus){
+        const f = noteEdit.focus === 'title' ? ti : tx; noteEdit.focus = null;
+        // at once, inside the tap, so the phone also opens the keyboard
+        f.focus(); try { f.setSelectionRange(f.value.length, f.value.length); } catch(e){}
+      }
+      return;
+    }
+    const tap = f => state.field ? '' : ` class="note-tap" data-act="editNote" data-f="${f}" data-id="${n.id}"`;
+    h += `<article class="note-full${rcv}"><h2${tap('title')}>${pin}${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}<div class="note-body${state.field ? '' : ' note-tap'}"${state.field ? '' : ` data-act="editNote" data-f="text" data-id="${n.id}"`}>${esc(n.text)}</div></article>`;
+    h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn" data-act="notePin" data-id="${n.id}">${n.pin ? T.noteUnpin : T.notePin}</button><button class="btn" data-act="noteShare" data-id="${n.id}">${T.noteShare}</button><button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
+    main.innerHTML = h;
     return;
   }
-  const list = state.notes.slice().sort((a, b) => (b.t || 0) - (a.t || 0));
+  const list = notesSorted();
   let h = `<p class="tool-sub">${T.notesSub}</p>`;
   h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
-  else h += '<div class="index notes-ix">' + list.map(x => `<button data-act="openNote" data-id="${x.id}" data-nav><span class="ix-txt"><span class="ix-t">${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span></span>${CHEV_R}</button>`).join('') + '</div>';
+  else h += '<div class="index notes-ix">' + list.map(x => { const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}" data-act="openNote" data-id="${x.id}" data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
   main.innerHTML = h;
+}
+/* 0.6.0: share one note. Step 1 shows exactly what is sent (title, text and the optional name, empty by default);
+   step 2 is Rediger først or Del. Nothing else from the app goes into the link. */
+function askShareNote(n){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(T.noteShareTitle)}</h3><p>${T.noteShareIntro}</p>
+      <div class="sh-prev"><b>${esc(n.title || T.untitled)}</b><div>${esc(n.text)}</div></div>
+      <div class="bk-warn"><p>${T.noteShareWarn}</p></div>
+      <label class="sh-lbl" for="shName">${T.noteShareName}</label><input type="text" id="shName" maxlength="40" autocomplete="off" value="">
+      <p class="sh-hint">${T.noteShareNameHint}</p>
+      <div class="row"><button class="btn" data-s="edit">${T.noteShareEdit}</button><button class="btn primary" data-s="ok">${T.noteShare}</button></div>`, true);
+    panel.querySelector('[data-s=edit]').onclick = () => closeSheet('edit');
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet({name:$('shName').value.trim().slice(0, 40)});
+  });
+}
+async function shareNote(n){
+  const T = t();
+  const r = await askShareNote(n);
+  if (!r) return;
+  if (r === 'edit'){ noteEdit = {id:n.id, title:n.title, text:n.text, focus:'text'}; render(); return; }
+  const pk = {v:1, k:'note', ti:n.title || '', tx:n.text || ''};
+  if (r.name) pk.n = r.name;
+  const url = location.origin + location.pathname + '#note=' + await encodePacked(pk);
+  const done = () => { n.shT = Date.now(); save(); if (tab === 'notes') render(); };
+  if (navigator.share){
+    try { await navigator.share({title:n.title || T.untitled, text:T.noteShareText(n.title || T.untitled), url}); done(); return; }
+    catch(e){ if (e && e.name === 'AbortError') return; }
+  }
+  openSheet(`<h3>${T.noteShare}</h3><p>${T.noteShareFallback}</p><textarea id="shOut" readonly>${esc(url)}</textarea>
+    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="shCopy">${T.copyLink}</button></div><div class="status" id="shSt"></div>`, true);
+  $('shCopy').onclick = async () => {
+    try { await navigator.clipboard.writeText(url); $('shSt').textContent = T.linkCopied; done(); }
+    catch(e){ $('shOut').select(); try { document.execCommand('copy'); $('shSt').textContent = T.linkCopied; done(); } catch(_){} }
+  };
+}
+/* a received note: shown in full, then «Legg til i notatene dine?» */
+function askAddNote(p){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(T.noteImportQ)}</h3><p>${p.n ? esc(T.noteImportFrom(p.n)) : T.noteImportAnon}</p>
+      <div class="sh-prev"><b>${esc(p.ti || T.untitled)}</b><div>${esc(p.tx)}</div></div>
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.noteImportOk}</button></div>`, true);
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet(true);
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(false);
+  });
+}
+async function receiveNote(code){
+  const T = t();
+  let p;
+  try { p = await decodePacked(code); if (!p || p.k !== 'note' || typeof p.tx !== 'string') throw new Error('bad'); }
+  catch(e){ await confirmBox(T.share, T.noteBad, T.ok); return; }
+  p = {ti:String(p.ti || '').slice(0, 300), tx:p.tx, n:String(p.n || '').trim().slice(0, 40)};
+  if (!p.ti.trim() && !p.tx.trim()){ await confirmBox(T.share, T.noteBad, T.ok); return; }
+  if (!(await askAddNote(p))) return;
+  const old = state.notes.find(x => x.title === p.ti && x.text === p.tx);
+  if (old){ showToast(T.noteHave); go('notes', 'note:' + old.id); return; }
+  const now = Date.now(), nn = {id:uid(), title:p.ti, text:p.tx, t:now, rcv:{n:p.n, t:now}};
+  state.notes.push(nn); save(); go('notes', 'note:' + nn.id);
 }
 function renderPhone(){
   const T = t();
@@ -2125,17 +2250,20 @@ function unpackList(p){
 }
 function b64u(bytes){ let b = ''; for (let i = 0; i < bytes.length; i++) b += String.fromCharCode(bytes[i]); return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function unb64u(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '='; const bin = atob(str), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
-async function encodeList(L){
-  const json = new TextEncoder().encode(JSON.stringify(packList(L)));
+async function encodeList(L){ return encodePacked(packList(L)); }
+async function decodeList(code){ return unpackList(await decodePacked(code)); }
+// 0.6.0: the same compact link code for lists (#share=) and notes (#note=)
+async function encodePacked(obj){
+  const json = new TextEncoder().encode(JSON.stringify(obj));
   if (typeof CompressionStream !== 'undefined'){
     try { const st = new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw')); return 'z' + b64u(new Uint8Array(await new Response(st).arrayBuffer())); } catch(e){}
   }
   return 'j' + b64u(json);
 }
-async function decodeList(code){
+async function decodePacked(code){
   let bytes = unb64u(code.slice(1));
   if (code[0] === 'z'){ const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')); bytes = new Uint8Array(await new Response(st).arrayBuffer()); }
-  return unpackList(JSON.parse(new TextDecoder().decode(bytes)));
+  return JSON.parse(new TextDecoder().decode(bytes));
 }
 async function shareList(L){
   const T = t();
@@ -2153,6 +2281,7 @@ async function shareList(L){
 }
 async function checkShared(){
   const h = location.hash;
+  if (h.indexOf('#note=') === 0){ history.replaceState(history.state, '', location.pathname + location.search); return receiveNote(h.slice(6)); }
   if (h.indexOf('#share=') !== 0) return;
   history.replaceState(history.state, '', location.pathname + location.search);
   const T = t();
@@ -3008,7 +3137,7 @@ function scrollTopSmooth(){
 /* ---------- sheets ---------- */
 let sheetResolve = null;
 let sheetPushed = false, ignorePop = false;
-function openSheet(html){
+function openSheet(html, noFocus){
   const m = html.match(/^\s*<h3>([\s\S]*?)<\/h3>/);
   const title = m ? m[1] : '';
   const rest = m ? html.slice(m[0].length) : html;
@@ -3016,7 +3145,7 @@ function openSheet(html){
   panel.querySelector('[data-sheet-close]').onclick = () => closeSheet(null);
   overlay.hidden = false;
   if (!sheetPushed){ sheetPushed = true; history.pushState(Object.assign({}, history.state || {}, {sheet:true}), ''); }
-  const f = panel.querySelector('input,textarea');
+  const f = noFocus ? null : panel.querySelector('input,textarea');
   if (f) setTimeout(() => f.focus(), 30);
 }
 function closeSheet(val){
@@ -3297,14 +3426,38 @@ main.addEventListener('click', async e => {
   if (act === 'fuelDog'){ const f = fuelState(); f.dog = !f.dog; save(); render(); return; }
   if (act === 'openBag'){ go(tab, b.dataset.bag); return; }
   if (act === 'wAddList' || act === 'wAddOwn' || act === 'wEdit'){ weightAction(act, b.dataset.id); return; }
-  if (act === 'newNote' || act === 'editNote'){
+  if (act === 'newNote'){
     if (state.field) return;
-    const n = act === 'editNote' ? state.notes.find(x => x.id === b.dataset.id) : null;
-    const v = await askNote(n ? T.noteEdit : T.newNote, n);
+    const v = await askNote(T.newNote, null);
     if (!v) return;
-    if (n){ n.title = v.title; n.text = v.text; n.t = Date.now(); save(); render(); }
-    else { const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; state.notes.push(nn); save(); go('notes', 'note:' + nn.id); }
+    const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; state.notes.push(nn); save(); go('notes', 'note:' + nn.id);
     return;
+  }
+  // 0.6.0: Rediger, the title or the text turns the note into fields in place; the pop-up is only for Nytt notat
+  if (act === 'editNote'){
+    if (state.field) return;
+    const n = state.notes.find(x => x.id === b.dataset.id); if (!n) return;
+    if (window.getSelection && String(window.getSelection()).length) return;   // selecting text to copy is not a tap to edit
+    noteEdit = {id:n.id, title:n.title, text:n.text, focus:b.dataset.f === 'title' ? 'title' : 'text'}; render(); return;
+  }
+  if (act === 'noteSave' || act === 'noteCancel'){
+    const ed = noteEdit, n = ed && state.notes.find(x => x.id === ed.id);
+    noteEdit = null;
+    if (act === 'noteSave' && n && !state.field){
+      const ti = ed.title.trim(), tx = ed.text;
+      if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); save(); }
+    }
+    render(); return;
+  }
+  if (act === 'notePin'){
+    if (state.field) return;
+    const n = state.notes.find(x => x.id === b.dataset.id); if (!n) return;
+    if (n.pin) delete n.pin; else n.pin = true;
+    save(); render(); return;
+  }
+  if (act === 'noteShare'){
+    if (state.field) return;
+    const n = state.notes.find(x => x.id === b.dataset.id); if (n) shareNote(n); return;
   }
   if (act === 'delNote'){
     if (state.field) return;
