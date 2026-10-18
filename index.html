@@ -594,8 +594,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.1.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 35;         // raised on every commit, together with CACHE ('varde-b35') in sw.js
+const APP_VERSION = '0.2.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 36;         // raised on every commit, together with CACHE ('varde-b36') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -634,7 +634,7 @@ const UI = {
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
-    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', versionLbl:'Version', howTool:`How to use ${APP_NAME}`, sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:`Could not get a position. Check that location is allowed for ${APP_NAME}, and try again outdoors.`,
+    help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', howTool:`How to use ${APP_NAME}`, sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:`Could not get a position. Check that location is allowed for ${APP_NAME}, and try again outdoors.`,
     posNote:'The position is fetched only when you tap Get position or Update position. It is stored only on your phone and sent nowhere. It is used for the sun and moon, the compass and to choose the right weather and avalanche links. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
@@ -664,8 +664,8 @@ const UI = {
     empty:'This list is empty. Tap <strong>Edit list</strong> to add categories and items.',
     rename:'Rename', delCat:'Delete category', catPacked:'All packed in this category.', catEmpty:'No items yet.',
     addItemPh:'Add an item', add:'Add', addCat:'Add category', cancel:'Cancel', save:'Save', ok:'OK', close:'Close',
-    yourLists:'Your lists', duplicate:'Duplicate', del:'Delete', more:'More', newList:'New list',
-    backup:'Back up or restore', language:'Language', menu:'Lists and options',
+    yourLists:'Your lists', duplicate:'Duplicate', del:'Delete', newList:'New list',
+    backup:'Back up or restore', language:'Language',
     renameList:'Rename list', copyName:'Name of the copy', copySuffix:' (copy)',
     delList:'Delete this list?', delListMsg:n=>`"${n}" and all its items will be removed from this phone.`, delListOk:'Delete list',
     newListMsg:'Start from the standard list and change it, or start with an empty list.', items:n=>`${n} items`,
@@ -702,7 +702,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
     phone:[
-      ['Rain','<p>Water on the screen can register as touches. Wipe the screen with a dry cloth or sleeve before use, it makes the biggest difference. A hydrophobic or matte screen protector makes water bead and run off, and a waterproof pouch keeps the screen itself dry. If your phone has a glove mode or increased touch sensitivity, turn it <b>off</b> in rain, as it makes the screen more sensitive to water too.</p><p>In this app: switch on <b>Outdoor mode</b> and use <b>Rain lock</b> to read your list without anything reacting.</p>'],
+      ['Rain','<p>Water on the screen can register as touches. Wipe the screen with a dry cloth or sleeve before use, it makes the biggest difference. A hydrophobic or matte screen protector makes water bead and run off, and a waterproof pouch keeps the screen itself dry. If your phone has a glove mode or increased touch sensitivity, turn it <b>off</b> in rain, as it makes the screen more sensitive to water too.</p><p>In this app: switch on <b>Outdoor mode</b> and use <b>Rain lock</b>. You can still scroll and read, but taps do nothing. Hold <b>Navigate</b> to change page, and <b>Unlock</b> to switch it off.</p>'],
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
@@ -740,7 +740,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Food and drink','<p><b>Cold, snow and a heavy pack increase the energy you need</b>, so eat often, and have something small before you sleep. Cold dulls thirst, so drink more than you feel like. Too little fluid makes it harder for the body to keep warm and increases the risk of cold injuries. Carry the water bottle inside your jacket so it does not freeze, and bring a thermos with a hot drink.</p><p>Plan the food and energy for the trip:</p><p>[[plan:food]]</p>'],
       ['Warning signs of cold injury','<ul><li>Fingers that get clumsy</li><li>Pain in hands or feet</li><li>Red skin, swelling, stinging, tingling or numbness</li><li>White patches or blisters, first on the nose, cheeks, ears and fingers</li></ul><p>Warm up early, check each other\'s faces, and seek medical help for blisters or skin that stays white and hard.</p><p>Wind makes it colder on bare skin.</p><p>[[plan:wind]]</p>'],
       ['The tent on a winter evening','<p>Pack what goes into the tent in its own stuff sacks, so you get in quickly. Take in: the <b>dry tent clothes</b> (thick wool socks and underwear, balaclava, down booties and mittens), the food you need for the evening, thermos and bottle, stove, pot and fuel, toiletries, head torch and tent lamp, <b>batteries in the sleeping bag</b>, a snow brush, and a large bag of clean snow for melting. Keep the camera in a zip bag against condensation, and the first aid and repair kits close by. The rest can stay in the pulk.</p><p>Melting snow takes a lot of fuel:</p><p>[[plan:fuel]]</p>'],
-      ['A hot water bottle in the sleeping bag','<p>Fill a tight bottle with about 1 litre of freshly boiled water and wrap it in a thick wool sock. It still gives warmth in the morning, and the water is ready to drink. Check the lid carefully.</p>'],
+      ['A hot water bottle in the sleeping bag','<p>Fill a tight bottle with about 1 litre of freshly boiled water and wrap it in a thick wool sock. It still gives warmth in the morning, and the water is ready to drink. Check the lid carefully.</p><p>More on sleeping warm: <button class="btn small" data-nav data-act="openGuide" data-guide="sleep">Sleeping well outdoors ›</button></p>'],
       ['Children, older people and hard exercise','<p>Children and older people lose heat faster and need extra attention. Avoid hard intervals when it is colder than about –15 °C, and change into dry clothes as soon as the trip is over.</p>']
     ],
     fishTool:'Fishing', fishShort:'Knots for hook, swivel and lure', fishSub:'Knots and tips for the fishing trip. Practise the knots at home, with the line you fish with.', fishHd:'Knots',
@@ -796,9 +796,9 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     ],
     fuelTool:'Fuel planner', fuelShort:'How much fuel for the trip', fuelSub:'Built from what you heat in a day. The figures are rules of thumb: adjust them to your own stove and habits.',
     fuelType:'Fuel', fGas:'Gas', fPetrol:'Petrol / multifuel', fSpirit:'Methylated spirit',
-    days:'Days', people:'People', shared:'Shared stove', perDay:u=>`Per person per day (${u})`, margin:'Safety margin (%)', bottle:'Bottle size (litres)',
+    days:'Days', people:'People', margin:'Safety margin (%)', bottle:'Bottle size (litres)',
     resetRate:'Reset to rule of thumb', fuelNames:{gas:'gas', petrol:'petrol', spirit:'methylated spirit'},
-    basis:(r,u,d,f)=>`Based on ${r} ${u} per person per day × ${d} days × ${f} + margin`,
+   
     canisters:'Canisters', bottles:(n,b)=>`${n} bottle${n>1?'s':''} of ${b} l`,
     warnGasCold:'Ordinary gas canisters work poorly below freezing. Use a winter mix with propane, keep the canister warm (e.g. in your sleeping bag), or choose petrol / multifuel.',
     warnSpiritSnow:'Methylated spirit is slow in the cold and poorly suited for melting a lot of snow. Consider petrol / multifuel for winter trips.',
@@ -814,7 +814,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     windStrong:'In wind over about 14 m/s, frostbite can come faster than shown.', windBasis:(v, k) => `Wind ${v} m/s = ${k} km/h.`,
     windNote:'The figure uses the mean wind from the forecast. Gusts, wet clothes and tiredness make it colder in practice; sunshine makes it feel warmer. Calculated on the phone, works offline.',
     windSrc:'Wind chill index from Environment Canada and the US National Weather Service (2001).',
-    tools:'Tools', water:'Water mixing', waterShort:'Showering and washing', waterSub:'Mix boiling water with cold water from nature for showering or washing.',
+    water:'Water mixing', waterShort:'Showering and washing', waterSub:'Mix boiling water with cold water from nature for showering or washing.',
     findMix:'Find the mix', findTemp:'Find the temperature', target:'Final temperature (°C)', volume:'Final volume (litres)',
     coldT:'Cold water (°C)', hotT:'Hot water (°C)', pot:'Pot size (litres)', hotL:'Hot water (litres)', coldL:'Cold water (litres)',
     hotOut:'hot water', coldOut:'cold water', mixTemp:'mixed temperature', totalVol:'total volume',
@@ -833,7 +833,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
-    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', versionLbl:'Versjon', howTool:`Slik bruker du ${APP_NAME}`, sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:`Fikk ikke posisjon. Sjekk at ${APP_NAME} har lov til å bruke posisjon, og prøv igjen ute.`,
+    help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', howTool:`Slik bruker du ${APP_NAME}`, sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:`Fikk ikke posisjon. Sjekk at ${APP_NAME} har lov til å bruke posisjon, og prøv igjen ute.`,
     posNote:'Posisjonen hentes bare når du trykker Hent posisjon eller Oppdater posisjon. Den lagres bare på mobilen og sendes ingen steder. Den brukes til sol og måne, kompasset og til å velge riktige vær- og skredlenker. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
@@ -863,8 +863,8 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     empty:'Listen er tom. Trykk <strong>Rediger liste</strong> for å legge til kategorier og ting.',
     rename:'Gi nytt navn', delCat:'Slett kategori', catPacked:'Alt i denne kategorien er pakket.', catEmpty:'Ingen ting ennå.',
     addItemPh:'Legg til en ting', add:'Legg til', addCat:'Legg til kategori', cancel:'Avbryt', save:'Lagre', ok:'OK', close:'Lukk',
-    yourLists:'Dine lister', duplicate:'Dupliser', del:'Slett', more:'Mer', newList:'Ny liste',
-    backup:'Sikkerhetskopi', language:'Språk', menu:'Lister og valg',
+    yourLists:'Dine lister', duplicate:'Dupliser', del:'Slett', newList:'Ny liste',
+    backup:'Sikkerhetskopi', language:'Språk',
     renameList:'Gi listen nytt navn', copyName:'Navn på kopien', copySuffix:' (kopi)',
     delList:'Slette denne listen?', delListMsg:n=>`«${n}» og alt innholdet blir fjernet fra denne telefonen.`, delListOk:'Slett liste',
     newListMsg:'Start fra standardlisten og endre den, eller start med en tom liste.', items:n=>`${n} ting`,
@@ -901,7 +901,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
     phone:[
-      ['Regn','<p>Vann på skjermen kan registreres som berøring. Tørk skjermen med en tørr klut eller ermet før bruk, det utgjør den største forskjellen. En vannavstøtende eller matt skjermbeskytter får vannet til å perle seg og renne av, og et vanntett etui holder selve skjermen tørr. Har mobilen hanskemodus eller økt berøringsfølsomhet, slå det <b>av</b> i regn, for det gjør skjermen mer følsom for vann også.</p><p>I appen: slå på <b>Utemodus</b> og bruk <b>Regnlås</b> for å lese listen uten at noe reagerer.</p>'],
+      ['Regn','<p>Vann på skjermen kan registreres som berøring. Tørk skjermen med en tørr klut eller ermet før bruk, det utgjør den største forskjellen. En vannavstøtende eller matt skjermbeskytter får vannet til å perle seg og renne av, og et vanntett etui holder selve skjermen tørr. Har mobilen hanskemodus eller økt berøringsfølsomhet, slå det <b>av</b> i regn, for det gjør skjermen mer følsom for vann også.</p><p>I appen: slå på <b>Utemodus</b> og bruk <b>Regnlås</b>. Da kan du rulle og lese, men trykk gjør ingenting. Hold <b>Naviger</b> for å bytte side, og <b>Lås opp</b> for å slå den av.</p>'],
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
@@ -939,7 +939,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Mat og drikke','<p><b>Kulde, snø og tung sekk øker energibehovet</b>, så spis ofte, også litt før du sover. Kulde demper tørsten, så drikk mer enn tørsten tilsier. For lite væske gjør det vanskeligere for kroppen å holde varmen og øker faren for kuldeskader. Bær vannflasken innenfor jakka så den ikke fryser, og ha med termos med varm drikke.</p><p>Planlegg mat og energi til turen:</p><p>[[plan:food]]</p>'],
       ['Faresignaler for kuldeskader','<ul><li>Fingre som blir klønete</li><li>Smerter i hender eller føtter</li><li>Rød hud, hevelse, stikking, prikking eller nummenhet</li><li>Hvite flekker eller blemmer, først på nese, kinn, ører og fingre</li></ul><p>Varm opp tidlig, sjekk ansiktene til hverandre, og søk legehjelp ved blemmer eller hud som forblir hvit og hard.</p><p>Vind gjør det kaldere på bar hud.</p><p>[[plan:wind]]</p>'],
       ['Teltet en vinterkveld','<p>Pakk det som skal inn i teltet i egne pakkposer, så kommer du raskt inn. Ta inn: <b>de tørre teltklærne</b> (tykke ullsokker og ullundertøy, balaklava, dunsokker og dunvotter), maten du trenger for kvelden, termos og flaske, brenner, kjele og brensel, toalettsaker, hodelykt og teltlykt, <b>batterier i soveposen</b>, en snøbørste, og en stor pose ren snø til smelting. Ha kameraet i en zippose mot kondens, og førstehjelps- og reparasjonssettet i nærheten. Resten kan ligge i pulken.</p><p>Snøsmelting krever mye brensel:</p><p>[[plan:fuel]]</p>'],
-      ['Varmeflaske i soveposen','<p>Fyll en tett flaske med omtrent 1 liter nykokt vann og pakk den inn i en tykk ullsokk. Den gir fortsatt varme om morgenen, og vannet er klart til å drikke. Sjekk lokket nøye.</p>'],
+      ['Varmeflaske i soveposen','<p>Fyll en tett flaske med omtrent 1 liter nykokt vann og pakk den inn i en tykk ullsokk. Den gir fortsatt varme om morgenen, og vannet er klart til å drikke. Sjekk lokket nøye.</p><p>Mer om å sove varmt: <button class="btn small" data-nav data-act="openGuide" data-guide="sleep">Sove godt på tur ›</button></p>'],
       ['Barn, eldre og hard trening','<p>Barn og eldre taper varme raskere og trenger ekstra oppfølging. Unngå harde intervaller når det er kaldere enn rundt –15 °C, og skift til tørre klær så snart turen er over.</p>']
     ],
     fishTool:'Fiske', fishShort:'Knuter for krok, svivel og sluk', fishSub:'Knuter og råd til fisketuren. Øv på knutene hjemme, med snøret du fisker med.', fishHd:'Knuter',
@@ -995,9 +995,9 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     ],
     fuelTool:'Drivstoff', fuelShort:'Hvor mye drivstoff til turen', fuelSub:'Regnet ut fra hva du varmer i løpet av en dag. Tallene er tommelfingerregler: juster dem etter egen brenner og egne vaner.',
     fuelType:'Drivstoff', fGas:'Gass', fPetrol:'Bensin / multifuel', fSpirit:'Rødsprit',
-    days:'Døgn', people:'Personer', shared:'Felles kokeapparat', perDay:u=>`Per person per døgn (${u})`, margin:'Sikkerhetsmargin (%)', bottle:'Flaskestørrelse (liter)',
+    days:'Døgn', people:'Personer', margin:'Sikkerhetsmargin (%)', bottle:'Flaskestørrelse (liter)',
     resetRate:'Tilbake til tommelfingerregel', fuelNames:{gas:'gass', petrol:'bensin', spirit:'rødsprit'},
-    basis:(r,u,d,f)=>`Grunnlag: ${r} ${u} per person per døgn × ${d} døgn × ${f} + margin`,
+   
     canisters:'Gassbokser', bottles:(n,b)=>`${n} flaske${n>1?'r':''} à ${b} l`,
     warnGasCold:'Vanlige gassbokser fungerer dårlig under frysepunktet. Bruk vintergass med propan, hold boksen varm (f.eks. i soveposen), eller velg bensin / multifuel.',
     warnSpiritSnow:'Rødsprit er treg i kulde og lite egnet til å smelte mye snø. Vurder bensin / multifuel på vinterturer.',
@@ -1013,7 +1013,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     windStrong:'I vind over omtrent 14 m/s kan frostskader komme raskere enn vist.', windBasis:(v, k) => `Vind ${v} m/s = ${k} km/t.`,
     windNote:'Tallet bruker middelvinden fra værmeldingen. Vindkast, våte klær og slitenhet gjør det kaldere i praksis, og sol gjør at det føles varmere. Regnes ut på mobilen og virker uten nett.',
     windSrc:'Vindkjølingsindeksen fra Environment Canada og den amerikanske værtjenesten (NWS, 2001).',
-    tools:'Verktøy', water:'Vannblanding', waterShort:'Dusj og vask', waterSub:'Bland kokende vann med kaldt vann fra naturen til dusj eller vask.',
+    water:'Vannblanding', waterShort:'Dusj og vask', waterSub:'Bland kokende vann med kaldt vann fra naturen til dusj eller vask.',
     findMix:'Finn blandingen', findTemp:'Finn temperaturen', target:'Ønsket temperatur (°C)', volume:'Ferdig mengde (liter)',
     coldT:'Kaldt vann (°C)', hotT:'Varmt vann (°C)', pot:'Kjelestørrelse (liter)', hotL:'Varmt vann (liter)', coldL:'Kaldt vann (liter)',
     hotOut:'varmt vann', coldOut:'kaldt vann', mixTemp:'blandet temperatur', totalVol:'total mengde',
@@ -1111,7 +1111,6 @@ function friluftsliv(L){
       {bag:true, note: note('Dette er en generell liste. Behovene varierer mye fra person til person, så lag gjerne din egen: Dine lister → Ny liste, og velg Legg til i turtype. Da slår du den på under Turtype når du pakker.','This is a general list. Needs vary a lot from person to person, so feel free to make your own: Your lists → New list, and choose Add as trip type. Then switch it on under Trip type when you pack.')})
   ]};
 }
-function buildTemplates(L){ return { friluftsliv: friluftsliv(L) }; }
 
 const uid = () => Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1678,7 +1677,15 @@ const GUIDE_TXT = {
       ['Før turen','<ul><li>Sjekk skredvarselet på <a href="https://www.varsom.no" target="_blank" rel="noopener">varsom.no</a> samme dag: faregrad (1–5) og hvilket skredproblem det gjelder.</li><li>Se på bratthetskart og aktsomhetskart for snøskred når du planlegger ruten. De viser også hvor et skred kan gå.</li><li>Avtal på forhånd hvor dere snur.</li></ul>'],
       ['Terreng','<ul><li>Skred løsner som regel i heng brattere enn 30 grader. Du kan likevel bli tatt lenger ned, i utløpssonen, og et skred kan gå langt ut på flatt terreng.</li><li>Terrengfeller som renner, bekkedaler, stup og skog gjør konsekvensen av et lite skred mye verre.</li><li>Rygger er ofte tryggere enn flanker og renner, men hold god avstand til kanten. Skavler kan brekke langt inn, og ikke oppholde deg under dem.</li></ul>'],
       ['Faretegn underveis','<ul><li>Ferske skred, sprekker som skyter ut fra skiene, og drønn i snøen når den setter seg betyr ustabil snø. Snu eller velg slakere terreng.</li><li>Mye fersk snø, sterk vind som flytter snø, og rask oppvarming øker faren.</li></ul>'],
-      ['Utstyr og rutiner','<ul><li>Skredsøker, søkestang og spade til hver person, og øv på å bruke dem.</li><li>Test skredsøkerne i gruppen før dere går, som står i Forberedelser.</li><li>En skredsekk er et tillegg, ikke en erstatning for gode valg.</li><li>Kjør én og én i bratte heng, og stopp på trygge steder utenfor skredløpet.</li></ul><p><b>Ta et skredkurs før du går i skredterreng.</b></p>']]},
+      ['Utstyr og rutiner','<ul><li>Skredsøker, søkestang og spade til hver person, og øv på å bruke dem.</li><li>Test skredsøkerne i gruppen før dere går, som står i Forberedelser.</li><li>En skredsekk er et tillegg, ikke en erstatning for gode valg.</li><li>Kjør én og én i bratte heng, og stopp på trygge steder utenfor skredløpet.</li></ul><p><b>Ta et skredkurs før du går i skredterreng.</b></p><p>Feller og smøring: <button class="btn small" data-nav data-act="openGuide" data-guide="ski" data-sec="skins">Ski: smøring og feller ›</button></p>']]},
+    sleep:{title:'Sove godt på tur', short:'Varm og tørr om natta', sub:'Varm, tørr og uthvilt.', secs:[
+      ['Varm om natta','<ul><li><b>Tørre klær:</b> Skift til tørre klær for natta. Klær du har gått i hele dagen er fuktige og stjeler varme. Lue eller balaklava hjelper.</li><li><b>Tiss før du legger deg:</b> Da slipper du å stå opp, kle på deg og gå ut i kulda midt på natta. Våkner du og må tisse, gjør det heller enn å ligge våken. Er det svært kaldt: ha en egen tisseflaske i teltet, tydelig merket og helt tett.</li><li><b>Isolasjon under deg:</b> Mye av varmen går ned i bakken. Om vinteren: to liggeunderlag. Ligg slik at du ikke klemmer sammen fyllet i posen.</li><li><b>Varmeflaske:</b> En flaske varmt vann, pakket inn i et klesplagg, gir varme langt utover natta. Bruk en flaske som tåler varmt vann og er helt tett.</li></ul>'],
+      ['Lyse netter','<p>Sovemaske og ørepropper.</p>'],
+      ['Om morgenen','<p>Luft soveposen så fukten slipper ut, gjerne mens den ennå er varm. Om vinteren kan du frysetørke soveposen og annet utstyr, men bare i godt vær: heng det ut i tørr kulde og rist av rimet.</p>']]},
+    ski:{title:'Ski: smøring og feller', short:'Festesmøring, feller og glider', sub:'Feste i motbakkene, glid i utforkjøringene, feller som sitter.', secs:[
+      ['Festesmøring','<ul><li><b>Voks eller klister:</b> Festesmøring finnes som voks for tørr snø og klister for våt snø. Jo kaldere snø, jo hardere voks. Klister brukes når snøen er våt, gammel og grovkornet, eller sporet er isete. På nysnø er voks oftest best, også rundt null.</li><li><b>Les skiene:</b> For myk voks på kaldt føre gjør at snøen trenger inn: skiene kladder og iser. Skrap av og legg en hardere voks. Glipper skiene, legg en mykere voks.</li><li><b>Legg på:</b> Legg festesmøringen inne før turen, i tynne lag, og kork ut hvert lag. Klister legges i fiskebeinsmønster i festesonen og jevnes ut. På hardt eller kornete føre holder festet lenger med grunnvoks under. La skiene bli kalde ute før du går, ellers fester snøen seg i smøringen.</li><li><b>På tur:</b> Ta med både voks, klister og skrape, særlig når temperaturen skifter gjennom dagen.</li></ul>', 'wax'],
+      ['Feller','<ul><li><b>Kortfeller eller langfeller:</b> Kortfeller er vanlige på fjellski og sitter i et feste på ski som er laget for dem. Langfeller dekker hele sålen og brukes på topptur, og noen ganger på vanlige fjellski når det er bratt. Stell og oppbevaring er likt for begge.</li><li><b>Limsiden:</b> Hold limet rent og tørt: aldri mot snø, gulv, tepper eller klær. Har det kommet snø på limet, dra limsiden over stålkanten på skia.</li><li><b>Feller som iser:</b> Fellevoks på hårsiden hindrer kladding og ising. Ha den med i sekken.</li><li><b>I kulde:</b> Når fellene er av, bær dem inne i jakka, så limet ikke blir for kaldt.</li><li><b>Varme:</b> Hold fellene unna ovn og bål. Limet tåler ikke varme.</li><li><b>Etter turen:</b> Tørk fellene helt. Oppbevar dem lim mot lim eller på beskyttelsesduken de kom med. Begge deler fungerer; velg det som er mest praktisk for deg.</li></ul>', 'skins'],
+      ['Hjemme','<p>Rengjør sålen før du smører. Glider smeltes inn, kjøles, skrapes og børstes. Skrap og børst godt: rester av glider kan svekke limet på fellene. Bruk fluorfri glider. Gammel fluorsmøring leveres som farlig avfall.</p>']]},
     fire:{title:'Bål', short:'Godt bål og ild i en nødsituasjon', sub:'Det grunnleggende om bål på tur.', secs:[
       ['Før du tenner','<ul><li><b>Bålforbud:</b> det er forbudt å gjøre opp ild i eller nær skog og annen utmark fra 15. april til 15. september, med mindre det åpenbart ikke kan føre til brann. Kommunen kan ha strengere regler.</li><li>Bruk et eksisterende bålsted hvis det finnes. Unngå bart fjell, som sprekker og får merker, og hold avstand til teltet. Gnister smelter stoffet.</li><li>Sjekk vinden, og ha vann klart.</li></ul>'],
       ['Tenning','<ul><li>Samle alt før du tenner: never eller annet opptenningsmateriale, tynne kvister, tykkere pinner og ved.</li><li>Bjørkenever brenner også når den er våt. Døde kvister nederst på grantrær er som regel tørre.</li><li>Kløyv våt ved. Innsiden er ofte tørr.</li><li>Start smått og legg på gradvis. Et lite bål er lettere å holde i gang og gir bedre varme til matlaging.</li></ul>'],
@@ -1712,7 +1719,15 @@ const GUIDE_TXT = {
       ['Before the trip','<ul><li>Check the avalanche forecast on <a href="https://www.varsom.no" target="_blank" rel="noopener">varsom.no</a> the same day: the danger level (1–5) and which avalanche problem it is about.</li><li>Look at slope-angle maps and avalanche hazard maps when planning the route. They also show where an avalanche can run.</li><li>Agree in advance where you will turn back.</li></ul>'],
       ['Terrain','<ul><li>Avalanches usually release on slopes steeper than 30 degrees. You can still be caught further down, in the runout zone, and an avalanche can run far out onto flat ground.</li><li>Terrain traps such as gullies, stream beds, cliffs and forest make the consequences of even a small avalanche much worse.</li><li>Ridges are often safer than open faces and gullies, but keep well back from the edge. Cornices can break far back, and don\'t stay underneath them.</li></ul>'],
       ['Warning signs on the way','<ul><li>Fresh avalanches, cracks shooting out from your skis, and whumpf sounds as the snow settles mean unstable snow. Turn back or choose gentler terrain.</li><li>Lots of new snow, strong wind moving snow, and rapid warming increase the danger.</li></ul>'],
-      ['Gear and routines','<ul><li>Transceiver, probe and shovel for each person, and practise using them.</li><li>Test the transceivers in the group before you set off, as listed under Preparations.</li><li>An avalanche airbag is an addition, not a replacement for good choices.</li><li>Ski one at a time on steep slopes, and stop at safe spots out of the avalanche path.</li></ul><p><b>Take an avalanche course before you go into avalanche terrain.</b></p>']]},
+      ['Gear and routines','<ul><li>Transceiver, probe and shovel for each person, and practise using them.</li><li>Test the transceivers in the group before you set off, as listed under Preparations.</li><li>An avalanche airbag is an addition, not a replacement for good choices.</li><li>Ski one at a time on steep slopes, and stop at safe spots out of the avalanche path.</li></ul><p><b>Take an avalanche course before you go into avalanche terrain.</b></p><p>Skins and wax: <button class="btn small" data-nav data-act="openGuide" data-guide="ski" data-sec="skins">Skis: wax and skins ›</button></p>']]},
+    sleep:{title:'Sleeping well outdoors', short:'Warm and dry at night', sub:'Warm, dry and rested.', secs:[
+      ['Warm at night','<ul><li><b>Dry clothes:</b> Change into dry clothes for the night. Clothes you have worn all day are damp and draw heat away. A hat or balaclava helps.</li><li><b>Pee before bed:</b> Then you don\'t have to get up, dress and go out into the cold in the middle of the night. If you wake up and need to pee, go rather than lie awake. When it is really cold: keep a pee bottle in the tent, clearly marked and fully sealed.</li><li><b>Insulation underneath:</b> Much of your heat goes into the ground. In winter: two sleeping pads. Lie so the filling of the bag is not squashed.</li><li><b>Hot water bottle:</b> A bottle of hot water wrapped in a piece of clothing gives warmth far into the night. Use a bottle that takes hot water and seals completely.</li></ul>'],
+      ['Light nights','<p>Sleep mask and earplugs.</p>'],
+      ['In the morning','<p>Air the sleeping bag so the moisture escapes, preferably while it is still warm. In winter you can freeze-dry the sleeping bag and other gear, but only in good weather: hang it out in dry cold and shake off the frost.</p>']]},
+    ski:{title:'Skis: wax and skins', short:'Grip wax, skins and glide wax', sub:'Grip on the climbs, glide on the way down, skins that stay on.', secs:[
+      ['Grip wax','<ul><li><b>Wax or klister:</b> Grip wax comes as hard wax for dry snow and klister for wet snow. The colder the snow, the harder the wax. Klister is for wet, old, coarse-grained snow or icy tracks. On new snow, hard wax is usually best, even around zero.</li><li><b>Read your skis:</b> Wax that is too soft for cold snow lets the snow in: the skis clog and ice up. Scrape it off and use a harder wax. If the skis slip, use a softer wax.</li><li><b>Applying:</b> Wax indoors before the trip, in thin layers, corking each layer. Klister goes on in a herringbone pattern in the grip zone and is smoothed out. On hard or coarse snow, grip lasts longer with a base wax underneath. Let the skis cool outside before you set off, or snow will stick to the wax.</li><li><b>On the trip:</b> Bring hard wax, klister and a scraper, especially when the temperature changes during the day.</li></ul>', 'wax'],
+      ['Skins','<ul><li><b>Short or long skins:</b> Short skins are common on fjellski and sit in a fitting on skis made for them. Long skins cover the whole base and are used for topptur, and sometimes on ordinary fjellski when it is steep. Care and storage are the same for both.</li><li><b>The glue side:</b> Keep the glue clean and dry: never against snow, floors, carpets or clothing. If snow gets on the glue, pull the glue side across the steel edge of the ski.</li><li><b>Skins icing up:</b> Skin wax on the plush stops clogging and icing. Keep it in your pack.</li><li><b>In the cold:</b> When the skins are off, carry them inside your jacket so the glue does not get too cold.</li><li><b>Heat:</b> Keep skins away from stoves and fires. The glue does not tolerate heat.</li><li><b>After the trip:</b> Dry the skins completely. Store them glue to glue or on the saver sheet they came with. Both work; choose whichever is more practical for you.</li></ul>', 'skins'],
+      ['At home','<p>Clean the base before waxing. Glide wax is ironed in, left to cool, scraped and brushed. Scrape and brush well: glide wax residue can weaken skin glue. Use fluorine-free glide wax. Old fluoro wax is handed in as hazardous waste.</p>']]},
     fire:{title:'Campfire', short:'A good fire, and fire in an emergency', sub:'The basics of making a fire on a trip.', secs:[
       ['Before you light it','<ul><li><b>Fire ban:</b> in Norway, lighting fires in or near forest and other open country is banned from 15 April to 15 September, unless there is clearly no chance of a fire spreading. The municipality may have stricter rules.</li><li>Use an existing fire pit if there is one. Avoid bare rock, which cracks and gets marked, and keep away from the tent. Sparks melt the fabric.</li><li>Check the wind, and have water ready.</li></ul>'],
       ['Lighting it','<ul><li>Gather everything before you strike a match: tinder, thin twigs, thicker sticks and firewood.</li><li>Birch bark burns even when wet. Dead twigs at the bottom of spruce trees are usually dry.</li><li>Split wet wood. The inside is often dry.</li><li>Start small and add fuel gradually. A small fire is easier to keep going and gives better heat for cooking.</li></ul>'],
@@ -1721,16 +1736,16 @@ const GUIDE_TXT = {
   }
 };
 const GUIDE_GROUPS = [
-  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'fishing', 'fire']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'fishing', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval']},
-  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'stoveboard', 'shell', 'boots', 'phone']}
+  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'stoveboard', 'shell', 'boots', 'ski', 'phone']}
 ];
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
-  'std:sleep:telt':'tent',
+  'std:sleep:telt':'tent', 'std:sleep:sovepose (komforttemperatur etter årstid)':'sleep',
   'std:clothes:skalljakke':'shell', 'std:clothes:skallbukse':'shell',
   'std:clothes:fjellsko / lette tursko (etter tur og årstid)':'boots',
-  'std:m_vinter:skistøvler':'boots#ski',
+  'std:m_vinter:skistøvler':'boots#ski', 'std:m_vinter:smøring / feller':'ski',
   'std:general:solbriller / snøbriller':'sun', 'std:m_vinter:goggles / alpinbriller (dårlig vær, også reserve for solbrillene)':'sun',
   'std:prep:mobil':'phone',
   'std:repair:tau / paracord (langt)':'knots',
@@ -2806,6 +2821,11 @@ async function weightAction(act, id){
   }
 }
 function top(){ try { window.scrollTo(0,0); } catch(e){} }
+/* Tapping the tab of the page you are on (main view): back to the top. Smooth, instant with reduce motion. Navigation only. */
+function scrollTopSmooth(){
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try { window.scrollTo({top:0, behavior: still ? 'auto' : 'smooth'}); } catch(e){ top(); }
+}
 
 /* ---------- sheets ---------- */
 let sheetResolve = null;
@@ -3177,7 +3197,7 @@ $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
   if (state.field && !tapOk()) return;
-  if (b.dataset.tab === tab && !view) return;
+  if (b.dataset.tab === tab && !view){ if (rainLocked) extendNav(); scrollTopSmooth(); return; }
   go(b.dataset.tab, null);
 });
 
