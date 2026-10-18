@@ -211,6 +211,26 @@ body.notlist .list-switch svg{display:none}
 .tool-sub + .ix-group{margin-top:20px}
 .index button.g-gear,.index button.g-field,.index button.g-safety{border-left:5px solid var(--gc)}
 .g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}
+/* Søk i Guider (0.5.0): magnifier at the right of the intro line, the field takes the line when open */
+.gs-line{display:flex;align-items:center;gap:12px;margin-top:6px;min-height:48px}
+.gs-line .tool-sub{margin:0;flex:1}
+.gs-line + .ix-group{margin-top:20px}
+.gs-btn{flex:none;width:48px;height:48px;display:flex;align-items:center;justify-content:center;padding:0;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--muted);cursor:pointer}
+.gs-btn svg,.gs-field svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+.gs-field{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:48px;padding:0 2px 0 12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--muted)}
+.gs-field:focus-within{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.gs-field input{flex:1;min-width:0;height:100%;border:0;padding:0;background:none;font:inherit;font-size:1.05rem;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none}
+.gs-field input::placeholder{color:var(--muted);opacity:1}
+.gs-field input::-webkit-search-cancel-button,.gs-field input::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+.gs-x{flex:none;width:44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:none;color:var(--muted);cursor:pointer}
+.gs-count{color:var(--muted);margin:14px 0 0}
+.gs-res{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.gs-hit{display:block;width:100%;padding:12px 14px;border:1px solid var(--line);border-left:5px solid var(--gc);border-radius:14px;background:var(--surface);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.gs-t{display:block;font-family:var(--head);font-weight:600;font-size:1.15rem;line-height:1.25}
+.gs-s{display:block;color:var(--muted);font-size:.95rem;font-weight:600}
+.gs-n{display:block;margin-top:4px;line-height:1.45}
+.gs-hit mark{color:inherit;font-weight:700;background:var(--line);background:color-mix(in srgb,var(--red) 22%,transparent);border-radius:3px;padding:0 1px}
+body.locked .gs-btn,body.locked .gs-field{opacity:.45}
 body{--gsafe:#3F7FA8}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--gsafe:#7FB2D4}}
 :root[data-theme="dark"] body{--gsafe:#7FB2D4}
@@ -594,8 +614,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.4.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 38;         // raised on every commit, together with CACHE ('varde-b38') in sw.js
+const APP_VERSION = '0.5.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 39;         // raised on every commit, together with CACHE ('varde-b39') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -695,7 +715,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.',
+    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', listDeleted:'List deleted', undo:'Undo',
@@ -894,7 +914,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.',
+    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', listDeleted:'Liste slettet', undo:'Angre',
@@ -1415,6 +1435,7 @@ function render(){
   if (rainLocked) renderLock();
   requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
   if (tab !== 'compass') stopCompass();
+  if (tab !== 'guide' && gSearch.open) gsReset();
   if (tab === 'compass') return renderCompass();
   if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
@@ -1637,8 +1658,118 @@ function renderIndex(){
   const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
   const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
-  main.innerHTML = `<p class="tool-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
+  const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
     `<h2 class="ix-group g-${gr.key}">${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
+  // Søk i Guider (0.5.0): the magnifier sits at the right of the intro line; when open, the field takes that line
+  main.innerHTML = gSearch.open
+    ? `<div class="gs-line"><div class="gs-field">${ICO_SEARCH}<input type="search" id="gsInput" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(T.gsLabel)}" aria-label="${esc(T.gsLabel)}" value="${esc(gSearch.q)}"><button class="gs-x" data-act="gsClose" aria-label="${esc(T.gsClose)}">${ICO_CLOSE}</button></div></div><div id="gsBody"></div>`
+    : `<div class="gs-line">${groups.slice(0, groups.indexOf('</p>') + 4)}<button class="gs-btn" data-act="gsOpen" aria-label="${esc(T.gsLabel)}" title="${esc(T.gsLabel)}">${ICO_SEARCH}</button></div>` + groups.slice(groups.indexOf('</p>') + 4);
+  if (gSearch.open){
+    gsGroupsHtml = groups.slice(groups.indexOf('</p>') + 4);
+    gsShow();
+    const inp = $('gsInput');
+    inp.addEventListener('input', () => { gSearch.q = inp.value; gsShow(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
+    inp.addEventListener('blur', () => setTimeout(() => {
+      // an empty field closes by itself when you tap elsewhere
+      if (gSearch.open && !gSearch.q.trim() && document.activeElement !== inp && tab === 'guide' && !view){ gSearch.open = false; gSearch.q = ''; render(); }
+    }, 150));
+    if (gSearch.focus){ gSearch.focus = false; inp.focus(); }
+  }
+}
+/* ---------- Søk i Guider (0.5.0) ----------
+   Searches the guide text in the current language, offline. Case does not matter and parts of words match.
+   Text guides in GUIDE_TXT are searched automatically; a guide with its own renderer must be listed in guideIndex(). */
+const ICO_SEARCH = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>';
+const ICO_CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const GS_MIN = 2, GS_MAX = 50;
+let gSearch = {open:false, q:'', focus:false}, gsGroupsHtml = '', gsCache = null, guideHit = null;
+function gsReset(){ gSearch = {open:false, q:'', focus:false}; }
+function gsPlain(html){
+  // guide HTML to plain text: markers out, block tags to spaces, inline tags removed, entities decoded (inert document, nothing loads)
+  let h = String(html || '').replace(/\[\[plan:\w+\]\]/g, ' ').replace(/\[\[web:[^|\]]+\|([^\]]+)\]\]/g, '$1');
+  h = h.replace(/<\/?(b|i|em|strong|a|span|small|mark|sup|sub|abbr|code)\b[^>]*>/gi, '').replace(/<[^>]*>/g, ' ');
+  if (!gsPlain.doc) gsPlain.doc = document.implementation.createHTMLDocument('');
+  gsPlain.doc.body.innerHTML = h.replace(/</g, '&lt;');
+  return gsPlain.doc.body.textContent.replace(/\s+/g, ' ').trim();
+}
+function guideIndex(){
+  if (gsCache && gsCache.lang === state.lang) return gsCache.items;
+  const T = t(), G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
+  // pieces joined into one text each end with a full stop, so snippets read as sentences
+  const join = a => a.filter(Boolean).map(x => { const p = gsPlain(x); return /[.!?:…]$/.test(p) ? p : p + '.'; }).join(' ');
+  const knotSecs = list => list.map(k => [k.n, join([k.u].concat(k.s, k.c))]);
+  const F = T.fishRules;
+  const old = {
+    knots:{title:T.knotTool, short:T.knotShort, intro:join([T.knotSub, T.knotWarn]), secs:knotSecs(T.knots)},
+    fishing:{title:T.fishTool, short:T.fishShort, intro:join([T.fishSub, F.title, F.intro]), secs:knotSecs(T.fishKnots).concat(F.secs, [[F.linksHd, join(F.links.map(l => l[0]))]])},
+    sun:{title:T.sunTool, short:T.sunShort, intro:join([T.sunSub, T.sunKey]), secs:T.sun.map((x, i) => i === 1 ? [x[0], join([x[1], T.sunVlt])] : x)},
+    winter:{title:T.winterTool, short:T.winterShort, intro:join([T.winterSub]), secs:T.winterAdv},
+    stoveboard:{title:T.sbTool, short:T.sbShort, intro:join([T.sbSub].concat(T.sbFig1, T.sbFig2Title, T.sbFig2.map(x => x[1]))), secs:T.sb},
+    phone:{title:T.phoneTool, short:T.phoneShort, intro:join([T.phoneSub]), secs:T.phone}
+  };
+  const items = [];
+  GUIDE_GROUPS.forEach(gr => gr.items.forEach(k => {
+    const g = G[k] ? {title:G[k].title, short:G[k].short, intro:join([G[k].sub]), secs:G[k].secs} : old[k];
+    if (!g) return;
+    items.push({k, grp:gr.key, title:g.title, short:g.short, intro:g.intro,
+      secs:g.secs.map(x => ({t:gsPlain(x[0]), x:gsPlain(x[1])}))});
+  }));
+  gsCache = {lang:state.lang, items};
+  return items;
+}
+function gsLow(s){ return s.toLocaleLowerCase(state.lang === 'no' ? 'nb' : 'en'); }
+// a short piece of text round the first match, with every match in it marked
+function gsSnip(text, q){
+  const low = gsLow(text), i = low.indexOf(q);
+  let a = 0, b = text.length;
+  if (text.length > 110){
+    a = Math.max(0, i < 0 ? 0 : i - 40); b = Math.min(text.length, a + 110);
+    if (a > 0){ const sp = text.indexOf(' ', a); if (sp > 0 && sp < (i < 0 ? a + 20 : i)) a = sp + 1; }
+    if (b < text.length){ const sp = text.lastIndexOf(' ', b); if (sp > (i < 0 ? 0 : i + q.length)) b = sp; }
+  }
+  return (a > 0 ? '… ' : '') + gsMark(text.slice(a, b), q) + (b < text.length ? ' …' : '');
+}
+function gsMark(text, q){
+  const low = gsLow(text);
+  let out = '', from = 0, i;
+  while (q && (i = low.indexOf(q, from)) >= 0){ out += esc(text.slice(from, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>'; from = i + q.length; }
+  return out + esc(text.slice(from));
+}
+function guideSearch(raw){
+  const q = gsLow(raw.trim().replace(/\s+/g, ' ')), hits = [];
+  if (q.length < GS_MIN) return hits;
+  guideIndex().forEach(g => {
+    const inTitle = gsLow(g.title).includes(q) || gsLow(g.short).includes(q);
+    if (inTitle || gsLow(g.intro).includes(q))
+      hits.push({g, sec:null, snip: gsLow(g.intro).includes(q) ? gsSnip(g.intro, q) : gsMark(g.short, q)});
+    g.secs.forEach(s => {
+      if (gsLow(s.t).includes(q) || gsLow(s.x).includes(q)) hits.push({g, sec:s.t, snip:gsSnip(s.x, q)});
+    });
+  });
+  return hits;
+}
+function gsShow(){
+  const body = $('gsBody');
+  if (!body) return;
+  const T = t(), q = gSearch.q.trim();
+  if (q.length < GS_MIN){ body.innerHTML = gsGroupsHtml; return; }
+  const hits = guideSearch(q), ql = gsLow(q.replace(/\s+/g, ' '));
+  if (!hits.length){ body.innerHTML = `<p class="gs-count" role="status">${T.gsNone}</p>`; return; }
+  body.innerHTML = `<p class="gs-count" role="status">${T.gsCount(hits.length)}</p><div class="gs-res">` + hits.slice(0, GS_MAX).map(h =>
+    `<button class="gs-hit g-${h.g.grp}" data-nav data-act="gsHit" data-guide="${h.g.k}"${h.sec ? ` data-sec="${esc(h.sec)}"` : ''}><span class="gs-t">${gsMark(h.g.title, ql)}</span>${h.sec ? `<span class="gs-s">${gsMark(h.sec, ql)}</span>` : ''}<span class="gs-n">${h.snip}</span></button>`).join('') +
+    `</div>${hits.length > GS_MAX ? `<p class="gs-count">${T.gsMore(GS_MAX)}</p>` : ''}`;
+}
+// after a guide opens from a result: unfold the section with that heading and scroll it into view
+function openHit(){
+  const want = guideHit; guideHit = null;
+  if (!want) return;
+  const norm = s => gsLow(s.replace(/\s+/g, ' ').trim());
+  const d = [...main.querySelectorAll('details')].find(x => { const su = x.querySelector('summary'); return su && norm(su.textContent).includes(norm(want)); });
+  if (!d) return;
+  d.open = true;
+  for (let p = d.parentElement; p && p !== main; p = p.parentElement) if (p.tagName === 'DETAILS') p.open = true;
+  requestAnimationFrame(() => d.scrollIntoView({block:'start'}));
 }
 /* Planlegg: each calculator has its own icon and colour (v26). The icon carries the meaning, never colour alone. */
 const PLAN_ICONS = {
@@ -3169,6 +3300,9 @@ main.addEventListener('click', async e => {
     return;
   }
   if (act === 'openNote'){ go('notes', 'note:' + b.dataset.id); return; }
+  if (act === 'gsOpen'){ gSearch.open = true; gSearch.focus = true; render(); return; }
+  if (act === 'gsClose'){ gsReset(); render(); return; }
+  if (act === 'gsHit'){ guideHit = b.dataset.sec || null; guideSec = null; planFrom = null; go('guide', 'tool:' + b.dataset.guide); openHit(); return; }
   if (act === 'openGuide'){ guideSec = b.dataset.sec || null; go('guide', 'tool:' + b.dataset.guide); return; }
   if (act === 'lightToggle'){ if (state.listLock){ showToast(T.lockedMsg); return; } const bg = findCat(view); if (bg){ setLight(bg, !bg.lightOnly); save(); render(); } return; }
   const catEl = b.closest('[data-cat]');
@@ -3230,6 +3364,7 @@ $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
   if (state.field && !tapOk()) return;
+  if (b.dataset.tab === 'guide' && gSearch.open){ gsReset(); if (tab === 'guide' && !view){ render(); top(); return; } }
   if (b.dataset.tab === tab && !view){ if (rainLocked) extendNav(); scrollTopSmooth(); return; }
   go(b.dataset.tab, null);
 });
