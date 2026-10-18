@@ -380,6 +380,70 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    // From build 44 (0.9.0): sorting in Rediger. Grip drag, long press, sub-items follow, Angre, keyboard, auto-scroll.
+    test('Rediger: sorting rows', async ({browser}) => {
+      const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}, hasTouch: true});
+      const p = await ctx.newPage();
+      const err = watchErrors(p);
+      const it = (id, sub) => Object.assign({id, text:id.toUpperCase(), done:false}, sub ? {sub:true} : {});
+      const long = Array.from({length:30}, (_, k) => it('z' + k));
+      const st = {introDone:true, lang:L.lang, hidePacked:false, lists:[{id:'L1', name:'Test', notes:'', modes:{}, cats:[
+        {id:'k1', name:'K1', open:true, items:[it('a'), it('a1', 1), it('a2', 1), it('b'), it('c'), it('c1', 1)]},
+        {id:'k2', name:'K2', open:true, items:long}]}]};
+      await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+      await p.goto('./');
+      await p.locator('#listBtn').click();
+      await p.locator('#main [data-sel="L1"]').click();
+      await p.locator('#main [data-la="edit"][data-id="L1"]').click();
+      const order = c => p.locator(`#main [data-cat="${c}"] li.item .txt`).allTextContents();
+      const box = sel => p.locator('#main ' + sel).first().boundingBox();
+      // grip drag: A moves with its sub-items below B
+      let g = await box('li.item[data-item="a"] .grip'), b = await box('li.item[data-item="b"]');
+      await p.mouse.move(g.x + 20, g.y + 22); await p.mouse.down();
+      await p.mouse.move(g.x + 20, g.y + 12, {steps: 2});
+      await p.mouse.move(g.x + 20, b.y + b.height + 4, {steps: 12}); await p.waitForTimeout(150);
+      await p.mouse.up();
+      await expect.poll(() => order('k1')).toEqual(['B', 'A', 'A1', 'A2', 'C', 'C1']);
+      await p.locator('#toast button').click();
+      await expect.poll(() => order('k1')).toEqual(['A', 'A1', 'A2', 'B', 'C', 'C1']);
+      // keyboard: arrow up on B's grip swaps it with the A block
+      await p.locator('#main li.item[data-item="b"] .grip').focus(); await p.keyboard.press('ArrowUp');
+      await expect.poll(() => order('k1')).toEqual(['B', 'A', 'A1', 'A2', 'C', 'C1']);
+      // a sub-item dragged to the top never lands first
+      g = await box('li.item[data-item="c1"] .grip'); const top = await box('[data-cat="k1"] li.item');
+      await p.mouse.move(g.x + 20, g.y + 22); await p.mouse.down();
+      await p.mouse.move(g.x + 20, g.y + 12, {steps: 2});
+      await p.mouse.move(g.x + 20, top.y - 40, {steps: 12}); await p.waitForTimeout(150);
+      await p.mouse.up();
+      await expect.poll(() => order('k1')).toEqual(['B', 'C1', 'A', 'A1', 'A2', 'C']);
+      // touch: a swipe scrolls and moves nothing; a long press lifts the row, moves it and does not tick it
+      const cdp = await ctx.newCDPSession(p);
+      const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', {type, touchPoints: type === 'touchEnd' ? [] : [{x, y}]});
+      let r = await box('li.item[data-item="z2"] .txt');
+      await touch('touchStart', r.x + 10, r.y + 10);
+      for (let k = 1; k <= 8; k++){ await touch('touchMove', r.x + 10, r.y + 10 - k * 20); await p.waitForTimeout(16); }
+      await touch('touchEnd'); await p.waitForTimeout(300);
+      expect((await order('k2')).slice(0, 4)).toEqual(['Z0', 'Z1', 'Z2', 'Z3']);
+      await p.waitForTimeout(700); await p.evaluate(() => document.querySelector('#main li.item[data-item="z1"]').scrollIntoView({block:'center'})); await p.waitForTimeout(200);
+      r = await box('li.item[data-item="z1"] .txt');
+      await touch('touchStart', r.x + 10, r.y + 10); await p.waitForTimeout(550);
+      for (let k = 1; k <= 12; k++){ await touch('touchMove', r.x + 10, r.y + 10 + k * 14); await p.waitForTimeout(16); }
+      await touch('touchEnd');
+      await expect.poll(async () => (await order('k2')).indexOf('Z1')).toBeGreaterThan(2);
+      await expect(p.locator('#main li.item.done')).toHaveCount(0);
+      // auto-scroll: holding a row near the tab bar scrolls the page
+      await p.waitForTimeout(500);
+      g = await box('li.item[data-item="z5"] .grip');
+      const y0 = await p.evaluate(() => scrollY);
+      await p.mouse.move(g.x + 20, g.y + 22); await p.mouse.down();
+      await p.mouse.move(g.x + 20, g.y + 12, {steps: 2});
+      await p.mouse.move(g.x + 20, 700, {steps: 10}); await p.waitForTimeout(1200);
+      expect(await p.evaluate(() => scrollY)).toBeGreaterThan(y0 + 200);
+      await p.mouse.up(); await p.waitForTimeout(300);
+      expect(err, 'no errors while sorting').toEqual([]);
+      await ctx.close();
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
