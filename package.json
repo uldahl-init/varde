@@ -1,0 +1,11 @@
+{
+  "name": "varde-smoke-test",
+  "private": true,
+  "description": "Smoke test for Varde. Not part of the app: the app is index.html with no build step.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

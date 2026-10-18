@@ -106,6 +106,13 @@ Anything that only changes what you see (changing page, back, opening bags and g
 8. Keep commit summaries under 50 characters; put details in the extended description.
 9. Anything new that stores personal data must be included in the backup (`bkData`, `bkRestore`, and `personalSig` if it is content people would miss), and restore must add without overwriting.
 
+## Smoke test (from build 36)
+- A quick automated check that the app still loads and works, run by GitHub Actions (`.github/workflows/smoke.yml`) on every push to `main` and every pull request. Files: `package.json` (Playwright only, exact version), `playwright.config.js`, `tests/smoke.spec.js`, `tests/server.js` (a tiny static server for the repository root). None of it is part of the app: `index.html` stays self-contained with no build step, and nothing changes how the app is served or published.
+- What it checks: the inline script passes `node --check`; `APP_BUILD` matches the build in `CACHE` in `sw.js`; the storage `KEY` is still `outdoor-lists-v1`; every file in `ASSETS` in `sw.js` exists. Then in Chromium at phone size (390 × 780), service workers blocked, introduction marked done, in Norwegian (nb-NO) and English (en-GB): the app loads in the right language; all five tabs open; every guide in `GUIDE_GROUPS` opens from Guider, shows a title, and Back returns to Guider; every calculator in Planlegg opens; the standard list shows its main sections, turning on every trip type adds their sections, and every guide link on the list opens its guide; the version line on Dine lister shows `APP_VERSION` and `APP_BUILD`; tapping the current tab on its main view scrolls to the top. Any page error, console error or failed request fails the test (only files in `OPTIONAL` may be missing).
+- Run it locally: `npm ci`, `npx playwright install chromium`, `npm test`. (A machine with its own Chromium can set `CHROMIUM_PATH` instead of installing one.)
+- A failing test does not stop GitHub Pages from publishing: it is a warning, a red X on the commit. Look at the run (the Playwright report is uploaded as an artifact when a test fails) and fix the app.
+- Guide and calculator keys are read from the page, so a new guide or calculator needs no test changes. A new tab or a new kind of page does: add it to `tests/smoke.spec.js`.
+
 ## Workflow
 - Most changes are prepared in a Claude chat and uploaded as whole files through the GitHub web interface (the default when whole files were built and tested in the chat).
 - Claude Code is used only for smaller edits made directly in the repository, checks and documentation, where nothing needs to be handed over from a chat.
