@@ -93,6 +93,9 @@ body.field main.wrap{padding-bottom:calc(124px + env(safe-area-inset-bottom,0px)
 main.editing .items .item{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .items.sorting{overflow:visible}
 .items.sorting .item{transition:transform .16s ease}
+.sorting > button[data-id]{transition:transform .16s ease}
+.sorting > button.lifted{transition:none;position:relative;z-index:3;box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.notes-ix > button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .items.sorting .item.lifted{transition:none;position:relative;z-index:3;background:var(--surface);box-shadow:0 8px 22px rgba(0,0,0,.22);border-radius:10px;cursor:grabbing}
 body.sorting{cursor:grabbing}
 .cat-note{margin:0 2px 6px;color:var(--lichen);font-size:.9rem}
@@ -208,6 +211,21 @@ body.notlist .list-switch svg{display:none}
 .note-tags{margin:-6px 0 10px;color:var(--muted);font-size:.85rem}
 .notes-ix .note-tags{margin:2px 0 0;font-size:.8rem}
 .note-full.rcv,.notes-ix button.rcv{border:1.5px dashed var(--muted)}
+/* 0.9.3: note colours, a stripe at the left (the style rule: left stripe = group or category); names make them groups */
+body{--nc1:#2F6FB0;--nc2:#2E8B57;--nc3:#B8861B;--nc4:#7B4FB0;--nc5:#1E8C8C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--nc1:#7FB2E8;--nc2:#7CC48A;--nc3:#E2BD62;--nc4:#B795DD;--nc5:#6CC9C9}}
+:root[data-theme="dark"] body{--nc1:#7FB2E8;--nc2:#7CC48A;--nc3:#E2BD62;--nc4:#B795DD;--nc5:#6CC9C9}
+.nc-1{--ncc:var(--nc1)}.nc-2{--ncc:var(--nc2)}.nc-3{--ncc:var(--nc3)}.nc-4{--ncc:var(--nc4)}.nc-5{--ncc:var(--nc5)}
+.notes-ix button.has-nc,.note-full.has-nc{border-left:5px solid var(--ncc)}
+.nc-name{font-weight:600;color:var(--ncc)}
+.nc-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px}
+.nc-label{width:100%;font-weight:600;font-size:.9rem;color:var(--muted)}
+.nc-dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--line-strong);background:var(--ncc);cursor:pointer;padding:0}
+.nc-dot.nc-0{background:var(--surface);position:relative}
+.nc-dot.nc-0::after{content:"";position:absolute;left:6px;right:6px;top:50%;border-top:2px solid var(--muted);transform:rotate(-45deg)}
+.nc-dot[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
+.nc-names label{display:flex;align-items:center;gap:10px;margin:8px 0}
+.nc-names .nc-dot{flex:none;cursor:default}
 .pin-ic{display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-2px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .index .pin-ic{width:17px;height:17px;stroke:var(--muted);stroke-width:2}
 .sh-prev{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);max-height:38vh;overflow:auto}
@@ -616,7 +634,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 /* 0.9.2: Nattlys always wins. Skins and dark mode set --gsafe and --link with selectors as strong as the night rules
    (Lett bris in dark mode kept Vær og sikkerhet orange; web links stayed blue in dark mode). This rule is stronger and last.
    Every colour that means something must be listed here or built from --ink, --muted, --red or --lichen. */
-:root body.night.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--link:var(--ink)}
+:root body.night.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--link:var(--ink);--nc1:var(--ink);--nc2:var(--red);--nc3:var(--lichen);--nc4:var(--muted);--nc5:var(--line-strong)}
 </style>
 </head>
 <body>
@@ -658,8 +676,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.9.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 46;         // raised on every commit, together with CACHE ('varde-b46') in sw.js
+const APP_VERSION = '0.9.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 47;         // raised on every commit, together with CACHE ('varde-b47') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -765,7 +783,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
+    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
@@ -974,7 +992,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
+    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
@@ -1236,8 +1254,8 @@ const BK_REMIND_MS = 14 * 86400000, BK_SNOOZE_MS = 7 * 86400000;
 function listSig(L){ return [L.name, (L.cats || []).map(c => [c.name, c.note || '', (c.items || []).map(i => (i.sub ? '>' : '') + i.text)])]; }
 function strHash(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 function personalSig(){
-  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => (n.pin || n.rcv) ? [n.title, n.text, !!n.pin, n.rcv ? (n.rcv.n || '-') : ''] : [n.title, n.text]),
-    ((state.packW || {}).items || []).map(i => [i.name, i.g, i.cat, !!i.cons, !!i.dog]), (state.links || []).map(l => [l.n, l.u])]));
+  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => { const a = (n.pin || n.rcv) ? [n.title, n.text, !!n.pin, n.rcv ? (n.rcv.n || '-') : ''] : [n.title, n.text]; if (n.c) a.push('c' + n.c); return a; }),
+    ((state.packW || {}).items || []).map(i => [i.name, i.g, i.cat, !!i.cons, !!i.dog]), (state.links || []).map(l => [l.n, l.u])].concat((state.noteColors || []).some(Boolean) ? [state.noteColors] : [])));
 }
 function hasOwnContent(){
   return (state.lists || []).length > 0 || (state.notes || []).length > 0 || ((state.packW || {}).items || []).length > 0 || (state.links || []).length > 0;
@@ -1258,7 +1276,7 @@ function bkRemindDue(){
 function bkData(){
   const plan = {};
   BK_PLAN.forEach(k => { if (state[k]) plan[k] = state[k]; });
-  return JSON.stringify({app:'trip-checklist', version:3, t:Date.now(), lists:state.lists, notes:state.notes,
+  return JSON.stringify({app:'trip-checklist', version:3, t:Date.now(), lists:state.lists, notes:state.notes, noteColors:state.noteColors || [],
     packW:{items:(state.packW || {}).items || []}, links:state.links || [], plan});
 }
 function bkFileName(){ return APP_NAME.toLowerCase() + '-' + (state.lang === 'no' ? 'sikkerhetskopi' : 'backup') + '-' + new Date().toISOString().slice(0, 10) + '.json'; }
@@ -1268,6 +1286,7 @@ function noteMeta(nn, src){
   if (src.pin) nn.pin = true;
   if (src.rcv && typeof src.rcv === 'object') nn.rcv = {n:String(src.rcv.n || '').slice(0, 40), t:+src.rcv.t || nn.t};
   if (+src.shT) nn.shT = +src.shT;
+  if (+src.c >= 1 && +src.c <= 5) nn.c = +src.c;
   return nn;
 }
 function bkRestore(text){
@@ -1287,6 +1306,8 @@ function bkRestore(text){
     if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id || (x.title === n.title && x.text === n.text))) return;
     state.notes.push(noteMeta({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}, n)); a.n++;
   });
+  // colour names: only fill names that are empty here, never overwrite
+  if (Array.isArray(obj.noteColors)) obj.noteColors.slice(0, 5).forEach((nm, k) => { if (typeof nm === 'string' && nm.trim() && !state.noteColors[k]) state.noteColors[k] = nm.trim().slice(0, 20); });
   if (obj.packW && Array.isArray(obj.packW.items)){
     const pw = packW();
     obj.packW.items.forEach(i => {
@@ -1393,6 +1414,14 @@ function notesFromList(l){
   if (l) l.notes = '';
 }
 if (!state.notesMoved){ (state.lists || []).forEach(notesFromList); state.notesMoved = true; save(); }
+/* 0.9.3: the notes overview keeps your order (array order; pinned first). Once: store the order it was shown in.
+   A backup that was up to date stays up to date. */
+if (!state.noteOrder){
+  const clean = state.bkSig && state.bkSig === personalSig();
+  state.notes.sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (b.t || 0) - (a.t || 0));
+  state.noteOrder = 1; if (clean) state.bkSig = personalSig(); save();
+}
+if (!Array.isArray(state.noteColors) || state.noteColors.length !== 5) state.noteColors = ['', '', '', '', ''];
 let editing = false;
 let view = (state.lastNav && typeof state.lastNav.view === 'string') ? state.lastNav.view : null;
 let tab = (state.lastNav && ['list', 'notes', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
@@ -2143,11 +2172,25 @@ let noteEdit = null;
 const PIN_IC = '<svg class="pin-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 7 4 3H6l4-3z"/><path d="M12 13v8"/></svg>';
 function noteTags(n){
   const T = t(), tags = [];
+  if (n.c && ncName(n.c)) tags.push(`<span class="nc-name">${esc(ncName(n.c))}</span>`);
   if (n.rcv) tags.push(n.rcv.n ? T.tagFrom(esc(n.rcv.n), noteDate(n.rcv.t)) : T.tagRcv(noteDate(n.rcv.t)));
   if (n.shT) tags.push(T.tagShared(noteDate(n.shT)));
   return tags.join(' · ');
 }
-const notesSorted = () => state.notes.slice().sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (b.t || 0) - (a.t || 0));
+// 0.9.3: your order. Pinned notes first (in array order), then the rest; editing never moves a note.
+const notesSorted = () => state.notes.filter(n => n.pin).concat(state.notes.filter(n => !n.pin));
+function noteAddTop(nn){ state.notes.unshift(nn); }
+const ncName = k => (state.noteColors || [])[k - 1] || '';
+function askColorNames(){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${T.nameColorsTitle}</h3><p class="sh-hint">${T.nameColorsHint}</p><div class="nc-names">${[1, 2, 3, 4, 5].map(k => `<label><span class="nc-dot nc-${k}" aria-hidden="true"></span><input type="text" maxlength="20" data-nc="${k}" placeholder="${esc(T.colorN(k))}" value="${esc(ncName(k))}" aria-label="${esc(T.colorN(k))}"></label>`).join('')}</div>
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`, true);
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet([...panel.querySelectorAll('[data-nc]')].map(i => i.value.trim().slice(0, 20)));
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+  });
+}
 function growArea(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 function renderNotes(){
   const T = t();
@@ -2157,12 +2200,13 @@ function renderNotes(){
   if (view && !n) view = null;
   if (noteEdit && (!n || n.id !== noteEdit.id || state.field)) noteEdit = null;
   if (n){
-    const tags = noteTags(n), rcv = n.rcv ? ' rcv' : '', pin = n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '';
+    const tags = noteTags(n), rcv = (n.rcv ? ' rcv' : '') + (n.c ? ` has-nc nc-${n.c}` : ''), pin = n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '';
     let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>`;
     if (noteEdit){
       h += `<article class="note-full note-edit${rcv}"><input type="text" id="neTitle" class="ne-title" placeholder="${esc(T.noteTitlePh)}" value="${esc(noteEdit.title)}">
         <p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}
-        <textarea class="plain ne-text" id="neText" placeholder="${esc(T.noteTextPh)}">${esc(noteEdit.text)}</textarea></article>
+        <textarea class="plain ne-text" id="neText" placeholder="${esc(T.noteTextPh)}">${esc(noteEdit.text)}</textarea>
+        <div class="nc-row" role="group" aria-label="${esc(T.noteColor)}"><span class="nc-label">${T.noteColor}</span>${[0, 1, 2, 3, 4, 5].map(k => `<button class="nc-dot nc-${k}" data-act="noteC" data-c="${k}" aria-pressed="${(noteEdit.c || 0) === k}" aria-label="${esc(k ? (ncName(k) || T.colorN(k)) : T.noColor)}" title="${esc(k ? (ncName(k) || T.colorN(k)) : T.noColor)}"></button>`).join('')}<button class="btn small" data-act="noteCNames">${T.nameColors}</button></div></article>
         <div class="row-btns"><button class="btn" data-act="noteCancel">${T.cancel}</button><button class="btn primary" data-act="noteSave">${T.save}</button></div>`;
       main.innerHTML = h;
       const ti = $('neTitle'), tx = $('neText');
@@ -2187,7 +2231,7 @@ function renderNotes(){
   let h = `<p class="tool-sub">${T.notesSub}</p>`;
   h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
-  else h += '<div class="index notes-ix">' + list.map(x => { const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}" data-act="openNote" data-id="${x.id}" data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
+  else h += '<div class="index notes-ix">' + list.map(x => { const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
   main.innerHTML = h;
 }
 /* 0.6.0: share one note. Step 1 shows exactly what is sent (title, text and the optional name, empty by default);
@@ -2210,7 +2254,7 @@ async function shareNote(n){
   const T = t();
   const r = await askShareNote(n);
   if (!r) return;
-  if (r === 'edit'){ noteEdit = {id:n.id, title:n.title, text:n.text, focus:'text'}; render(); return; }
+  if (r === 'edit'){ noteEdit = {id:n.id, title:n.title, text:n.text, c:n.c || 0, focus:'text'}; render(); return; }
   const pk = {v:1, k:'note', ti:n.title || '', tx:n.text || ''};
   if (r.name) pk.n = r.name;
   const url = location.origin + location.pathname + '#note=' + await encodePacked(pk);
@@ -2249,7 +2293,7 @@ async function receiveNote(code){
   const old = state.notes.find(x => x.title === p.ti && x.text === p.tx);
   if (old){ showToast(T.noteHave); go('notes', 'note:' + old.id); return; }
   const now = Date.now(), nn = {id:uid(), title:p.ti, text:p.tx, t:now, rcv:{n:p.n, t:now}};
-  state.notes.push(nn); save(); go('notes', 'note:' + nn.id);
+  noteAddTop(nn); save(); go('notes', 'note:' + nn.id);
 }
 function renderPhone(){
   const T = t();
@@ -3553,7 +3597,7 @@ main.addEventListener('click', async e => {
     if (state.field) return;
     const v = await askNote(T.newNote, null);
     if (!v) return;
-    const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; state.notes.push(nn); save(); go('notes', 'note:' + nn.id);
+    const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; noteAddTop(nn); save(); go('notes', 'note:' + nn.id);
     return;
   }
   // 0.6.0: Rediger, the title or the text turns the note into fields in place; the pop-up is only for Nytt notat
@@ -3561,16 +3605,24 @@ main.addEventListener('click', async e => {
     if (state.field) return;
     const n = state.notes.find(x => x.id === b.dataset.id); if (!n) return;
     if (window.getSelection && String(window.getSelection()).length) return;   // selecting text to copy is not a tap to edit
-    noteEdit = {id:n.id, title:n.title, text:n.text, focus:b.dataset.f === 'title' ? 'title' : 'text'}; render(); return;
+    noteEdit = {id:n.id, title:n.title, text:n.text, c:n.c || 0, focus:b.dataset.f === 'title' ? 'title' : 'text'}; render(); return;
   }
   if (act === 'noteSave' || act === 'noteCancel'){
     const ed = noteEdit, n = ed && state.notes.find(x => x.id === ed.id);
     noteEdit = null;
     if (act === 'noteSave' && n && !state.field){
       const ti = ed.title.trim(), tx = ed.text;
-      if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); save(); }
+      if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); }
+      if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; }
+      save();
     }
     render(); return;
+  }
+  if (act === 'noteC'){ if (noteEdit){ noteEdit.c = +b.dataset.c || 0; render(); } return; }
+  if (act === 'noteCNames'){
+    const v = await askColorNames();
+    if (v){ state.noteColors = v; save(); render(); }
+    return;
   }
   if (act === 'notePin'){
     if (state.field) return;
@@ -3754,10 +3806,33 @@ function sortStart(li, e){
   const bTop = rect(blockEls[0]).top + sy, bBot = rect(blockEls[blockEls.length - 1]).bottom + sy;
   const mids = units.map(u => { const a = rect(u[0]).top + sy, b = rect(u[u.length - 1]).bottom + sy; return (a + b) / 2; });
   const p0 = units.findIndex(u => u.length && rect(u[0]).top + sy > bTop);
-  sortDrag = {cat, start, end, sub:!!cat.items[start].sub, ul, blockEls, units, mids, H:bBot - bTop, mid0:(bTop + bBot) / 2,
-    p0: p0 < 0 ? units.length : p0, pos: p0 < 0 ? units.length : p0, y0:e.clientY, sy0:sy, y:e.clientY, id:e.pointerId, raf:0};
-  ul.classList.add('sorting'); document.body.classList.add('sorting');
-  blockEls.forEach(el => el.classList.add('lifted'));
+  sortLift({ul, rows, blockEls, units, mids, sy, bTop, bBot, p0, min:sortMin(!!cat.items[start].sub),
+    commit: pos => { const text = cat.items[start].text, order = sortApply(cat, start, end, pos); withUndo(t().movedX(text), () => { cat.items = order; }); }}, e);
+}
+// 0.9.3: the same engine moves notes in the overview. Pinned notes stay where they are and are not counted.
+function notesSortStart(btn, e){
+  if (tab !== 'notes' || view || state.field) return;
+  const ix = btn.parentNode, rows = [...ix.querySelectorAll(':scope > button[data-id]')];
+  const free = rows.filter(r => !r.dataset.pin), units = free.filter(r => r !== btn).map(r => [r]);
+  const sy = window.scrollY, rect = el => el.getBoundingClientRect();
+  const bTop = rect(btn).top + sy, bBot = rect(btn).bottom + sy;
+  const mids = units.map(u => (rect(u[0]).top + rect(u[0]).bottom) / 2 + sy);
+  const p0 = units.findIndex(u => rect(u[0]).top + sy > bTop);
+  const top = free.length ? () => free[0].getBoundingClientRect().top : null;
+  sortLift({ul:ix, rows, blockEls:[btn], units, mids, sy, bTop, bBot, p0, min:0, top,
+    commit: pos => {
+      const id = btn.dataset.id, order = free.map(r => r.dataset.id).filter(x => x !== id);
+      order.splice(pos, 0, id);
+      const n = state.notes.find(x => x.id === id), title = n ? (n.title || t().untitled) : '';
+      withUndo(t().movedX(title), () => { state.notes = state.notes.filter(x => x.pin).concat(order.map(x => state.notes.find(y => y.id === x)).filter(Boolean)); });
+    }}, e);
+}
+function sortLift(c, e){
+  const p0 = c.p0 < 0 ? c.units.length : c.p0;
+  sortDrag = {ul:c.ul, rows:c.rows, blockEls:c.blockEls, units:c.units, mids:c.mids, min:c.min, commit:c.commit, top:c.top || null,
+    H:c.bBot - c.bTop, mid0:(c.bTop + c.bBot) / 2, p0, pos:p0, y0:e.clientY, sy0:c.sy, y:e.clientY, id:e.pointerId, raf:0};
+  c.ul.classList.add('sorting'); document.body.classList.add('sorting');
+  c.blockEls.forEach(el => el.classList.add('lifted'));
   try { if (navigator.vibrate) navigator.vibrate(15); } catch(_){}
   sortFrame();
 }
@@ -3773,11 +3848,11 @@ function sortFrame(){
   const dy = (d.y - d.y0) + (window.scrollY - d.sy0);
   const c = d.mid0 + dy;
   let pos = d.mids.filter(m => m < c).length;
-  pos = Math.max(sortMin(d.sub), Math.min(d.units.length, pos));
+  pos = Math.max(d.min, Math.min(d.units.length, pos));
   d.pos = pos;
   // the dragged block can not leave its category: keep it inside the list box
   const ulr = d.ul.getBoundingClientRect(), top0 = d.mid0 - d.H / 2 - window.scrollY;
-  const lim = Math.max(ulr.top - top0 - d.H / 2, Math.min(ulr.bottom - top0 - d.H / 2, dy));
+  const lim = Math.max((d.top ? d.top() : ulr.top) - top0 - d.H / 2, Math.min(ulr.bottom - top0 - d.H / 2, dy));
   d.blockEls.forEach(el => el.style.transform = `translateY(${lim}px)`);
   d.units.forEach((u, n) => {
     const sh = (n >= d.p0 && n < pos) ? -d.H : (n >= pos && n < d.p0) ? d.H : 0;
@@ -3789,35 +3864,36 @@ function sortEnd(commit){
   const d = sortDrag; if (!d) return;
   sortDrag = null; cancelAnimationFrame(d.raf);
   d.ul.classList.remove('sorting'); document.body.classList.remove('sorting');
-  d.ul.querySelectorAll('li.item').forEach(el => { el.style.transform = ''; el.classList.remove('lifted'); });
+  d.rows.forEach(el => { el.style.transform = ''; el.classList.remove('lifted'); });
   sortNoClick = Date.now();
   if (!commit || d.pos === d.p0) return;
-  const text = d.cat.items[d.start].text, order = sortApply(d.cat, d.start, d.end, d.pos);
-  withUndo(t().movedX(text), () => { d.cat.items = order; });
+  d.commit(d.pos);
 }
 function sortCancel(){ sortEnd(false); }
 function sortClearPending(){ if (sortPending){ clearTimeout(sortPending.timer); sortPending = null; } }
 document.addEventListener('pointerdown', e => {
-  if (!editing || sortDrag || e.button > 0) return;
-  const li = e.target.closest('main .items li.item[data-item]');
-  if (!li || e.target.closest('.icon, input, textarea')) return;
+  if (sortDrag || e.button > 0) return;
+  let li = null, start = null;
+  if (editing){ li = e.target.closest('main .items li.item[data-item]'); if (li && !e.target.closest('.icon, input, textarea')) start = sortStart; else li = null; }
+  else if (tab === 'notes' && !view && !state.field){ li = e.target.closest('main .notes-ix > button[data-id]:not([data-pin])'); if (li) start = notesSortStart; }
+  if (!li) return;
   const grip = !!e.target.closest('.grip');
   sortClearPending();
-  sortPending = {li, x:e.clientX, y:e.clientY, id:e.pointerId, grip,
-    timer: grip ? 0 : setTimeout(() => { const p = sortPending; sortPending = null; if (p) sortStart(p.li, {clientY:p.y, pointerId:p.id}); }, SORT_HOLD)};
+  sortPending = {li, start, x:e.clientX, y:e.clientY, id:e.pointerId, grip,
+    timer: grip ? 0 : setTimeout(() => { const p = sortPending; sortPending = null; if (p) p.start(p.li, {clientY:p.y, pointerId:p.id}); }, SORT_HOLD)};
 }, true);
 document.addEventListener('pointermove', e => {
   if (sortDrag){ if (e.pointerId === sortDrag.id || e.pointerType === 'mouse') sortDrag.y = e.clientY; e.preventDefault(); return; }
   const p = sortPending; if (!p || e.pointerId !== p.id) return;
   const dist = Math.hypot(e.clientX - p.x, e.clientY - p.y);
-  if (p.grip){ if (dist > 3){ sortPending = null; sortStart(p.li, {clientY:p.y, pointerId:p.id}); sortDrag && (sortDrag.y = e.clientY); } }
+  if (p.grip){ if (dist > 3){ sortPending = null; p.start(p.li, {clientY:p.y, pointerId:p.id}); sortDrag && (sortDrag.y = e.clientY); } }
   else if (dist > SORT_SLOP) sortClearPending();   // it is a scroll, not a long press
 }, {capture:true, passive:false});
 document.addEventListener('pointerup', e => { sortClearPending(); if (sortDrag) sortEnd(true); }, true);
 document.addEventListener('pointercancel', e => { sortClearPending(); if (sortDrag) sortCancel(); }, true);
 // once a row is lifted, the page must not scroll under the finger, and the phone's long-press menu stays away
 document.addEventListener('touchmove', e => { if (sortDrag) e.preventDefault(); }, {passive:false});
-document.addEventListener('contextmenu', e => { if (sortDrag || (sortPending && !sortPending.grip) || (editing && e.target.closest('main .items li.item'))) e.preventDefault(); }, true);
+document.addEventListener('contextmenu', e => { if (sortDrag || (sortPending && !sortPending.grip) || (editing && e.target.closest('main .items li.item')) || (tab === 'notes' && e.target.closest('main .notes-ix > button'))) e.preventDefault(); }, true);
 // the tap that ends a drag must not tick the row
 document.addEventListener('click', e => { if (sortNoClick && Date.now() - sortNoClick < 350 && !e.target.closest('#toast')){ sortNoClick = 0; e.stopPropagation(); e.preventDefault(); } }, true);
 document.addEventListener('keydown', e => {
