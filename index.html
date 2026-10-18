@@ -594,8 +594,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.3.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 37;         // raised on every commit, together with CACHE ('varde-b37') in sw.js
+const APP_VERSION = '0.4.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 38;         // raised on every commit, together with CACHE ('varde-b38') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1678,6 +1678,12 @@ const GUIDE_TXT = {
       ['Terreng','<ul><li>Skred løsner som regel i heng brattere enn 30 grader. Du kan likevel bli tatt lenger ned, i utløpssonen, og et skred kan gå langt ut på flatt terreng.</li><li>Terrengfeller som renner, bekkedaler, stup og skog gjør konsekvensen av et lite skred mye verre.</li><li>Rygger er ofte tryggere enn flanker og renner, men hold god avstand til kanten. Skavler kan brekke langt inn, og ikke oppholde deg under dem.</li></ul>'],
       ['Faretegn underveis','<ul><li>Ferske skred, sprekker som skyter ut fra skiene, og drønn i snøen når den setter seg betyr ustabil snø. Snu eller velg slakere terreng.</li><li>Mye fersk snø, sterk vind som flytter snø, og rask oppvarming øker faren.</li></ul>'],
       ['Utstyr og rutiner','<ul><li>Skredsøker, søkestang og spade til hver person, og øv på å bruke dem.</li><li>Test skredsøkerne i gruppen før dere går, som står i Forberedelser.</li><li>En skredsekk er et tillegg, ikke en erstatning for gode valg.</li><li>Kjør én og én i bratte heng, og stopp på trygge steder utenfor skredløpet.</li></ul><p><b>Ta et skredkurs før du går i skredterreng.</b></p><p>Feller og smøring: <button class="btn small" data-nav data-act="openGuide" data-guide="ski" data-sec="skins">Ski: smøring og feller ›</button></p>']]},
+    mapcompass:{title:'Kart og kompass', short:'Ta ut kursen og hold den', sub:'Ta ut kursen i tre steg, og hold den.', secs:[
+      ['Kompasset','<figure class="sb-fig"><div data-svgsrc="guides/compass-parts.svg"></div><ul class="fig-legend"><li><b class="fig-num">1</b><span>Kurspil: viser retningen du skal gå.</span></li><li><b class="fig-num">2</b><span>Kanten: legges langs streken på kartet.</span></li><li><b class="fig-num">3</b><span>Kompasshuset med gradskive: kan dreies.</span></li><li><b class="fig-num">4</b><span>Nordlinjene og N-merket (kompasshuspila) i bunnen av kompasshuset.</span></li><li><b class="fig-num">5</b><span>Kompassnåla: den røde enden peker mot magnetisk nord.</span></li></ul></figure>', 'parts'],
+      ['Ta ut kursen','<figure class="sb-fig"><div data-svgsrc="guides/compass-steps.svg"></div></figure><ol><li>Legg kanten av kompasset langs streken fra der du står til dit du skal. Kurspila, ikke kompassnåla, skal peke dit du skal.</li><li>Vri kompasshuset til linjene i bunnen er parallelle med kartets nord–sør-linjer, og N-merket peker opp på kartet.</li><li>Ta kompasset bort fra kartet og hold det flatt. Drei deg til den røde nåla ligger i kompasshuspila. Nå viser kurspila retningen du skal gå.</li></ol>', 'steps'],
+      ['Gå på kursen','<ul><li>Sikt på et punkt kurspila peker mot, et tre i skogen eller en knaus på fjellet. Gå dit og sikt på nytt.</li><li>Del turen i etapper mellom sikre punkter på kartet, som vann, veikryss eller bekkekryss, og ta ut ny kurs der.</li><li>Metall og kraftledninger kan dra i nåla. Selv en klokke eller kniv tett inntil kompasset kan gi feil kurs.</li></ul>'],
+      ['Misvisning','<p>Kartets nord–sør-linjer peker ikke mot magnetisk nord. Forskjellen kalles misvisning, og den varierer med hvor du er i landet. Du finner den på turkartet du lager på norgeskart.no.</p><p>For en nøyaktig kurs: drei kompasshuset like mange grader som misvisningen etter steg 2, med klokka hvis den er østlig og mot klokka hvis den er vestlig.</p><p>Med 5 graders misvisning bommer du med om lag 90 meter på én kilometer.</p>', 'decl'],
+      ['Kart','<p>Turkartet «Norge 1:50 000» kan skrives ut gratis fra norgeskart.no. Ha alltid med kart og kompass, ikke bare mobilen.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
     sleep:{title:'Sove godt på tur', short:'Varm og tørr om natta', sub:'Varm, tørr og uthvilt.', secs:[
       ['Varm om natta','<ul><li><b>Tørre klær:</b> Skift til tørre klær for natta. Klær du har gått i hele dagen er fuktige og stjeler varme. Lue eller balaklava hjelper.</li><li><b>Tiss før du legger deg:</b> Da slipper du å stå opp, kle på deg og gå ut i kulda midt på natta. Våkner du og må tisse, gjør det heller enn å ligge våken. Er det svært kaldt: ha en egen tisseflaske i teltet, tydelig merket og helt tett.</li><li><b>Isolasjon under deg:</b> Mye av varmen går ned i bakken. Om vinteren: to liggeunderlag. Ligg slik at du ikke klemmer sammen fyllet i posen.</li><li><b>Varmeflaske:</b> En flaske varmt vann, pakket inn i et klesplagg, gir varme langt utover natta. Bruk en flaske som tåler varmt vann og er helt tett.</li></ul>'],
       ['Lyse netter','<p>Sovemaske og ørepropper.</p>'],
@@ -1728,6 +1734,12 @@ const GUIDE_TXT = {
       ['Terrain','<ul><li>Avalanches usually release on slopes steeper than 30 degrees. You can still be caught further down, in the runout zone, and an avalanche can run far out onto flat ground.</li><li>Terrain traps such as gullies, stream beds, cliffs and forest make the consequences of even a small avalanche much worse.</li><li>Ridges are often safer than open faces and gullies, but keep well back from the edge. Cornices can break far back, and don\'t stay underneath them.</li></ul>'],
       ['Warning signs on the way','<ul><li>Fresh avalanches, cracks shooting out from your skis, and whumpf sounds as the snow settles mean unstable snow. Turn back or choose gentler terrain.</li><li>Lots of new snow, strong wind moving snow, and rapid warming increase the danger.</li></ul>'],
       ['Gear and routines','<ul><li>Transceiver, probe and shovel for each person, and practise using them.</li><li>Test the transceivers in the group before you set off, as listed under Preparations.</li><li>An avalanche airbag is an addition, not a replacement for good choices.</li><li>Ski one at a time on steep slopes, and stop at safe spots out of the avalanche path.</li></ul><p><b>Take an avalanche course before you go into avalanche terrain.</b></p><p>Skins and wax: <button class="btn small" data-nav data-act="openGuide" data-guide="ski" data-sec="skins">Skis: wax and skins ›</button></p>']]},
+    mapcompass:{title:'Map and compass', short:'Take a bearing and keep to it', sub:'Take a bearing in three steps, and keep to it.', secs:[
+      ['The compass','<figure class="sb-fig"><div data-svgsrc="guides/compass-parts.svg"></div><ul class="fig-legend"><li><b class="fig-num">1</b><span>Direction-of-travel arrow: shows the way to go.</span></li><li><b class="fig-num">2</b><span>The edge: laid along the line on the map.</span></li><li><b class="fig-num">3</b><span>The compass housing with its degree ring, which turns.</span></li><li><b class="fig-num">4</b><span>The north lines and the N mark (orienting arrow) in the bottom of the housing.</span></li><li><b class="fig-num">5</b><span>The needle: the red end points to magnetic north.</span></li></ul></figure>', 'parts'],
+      ['Taking a bearing','<figure class="sb-fig"><div data-svgsrc="guides/compass-steps.svg"></div></figure><ol><li>Lay the edge of the compass along the line from where you are to where you are going. The direction-of-travel arrow, not the needle, must point where you are going.</li><li>Turn the housing until the lines in its bottom are parallel with the map\'s north–south lines, with the N mark pointing up the map.</li><li>Take the compass off the map and hold it flat. Turn yourself until the red needle lies in the orienting arrow. The direction-of-travel arrow now shows the way to go.</li></ol>', 'steps'],
+      ['Following the bearing','<ul><li>Aim at a point the arrow points to, a tree in the forest or a crag in the mountains. Walk there and aim again.</li><li>Split the route into legs between points you are sure of on the map, such as lakes, road junctions or stream junctions, and take a new bearing there.</li><li>Metal and power lines can pull the needle. Even a watch or knife close to the compass can give a wrong bearing.</li></ul>'],
+      ['Declination','<p>The map\'s north–south lines do not point to magnetic north. The difference is called declination, and it varies with where you are in the country. You find it on the hiking map you make at norgeskart.no.</p><p>For an accurate bearing, turn the housing by as many degrees as the declination after step 2: clockwise if it is east, anticlockwise if it is west.</p><p>With 5 degrees of declination you miss by about 90 metres over one kilometre.</p>', 'decl'],
+      ['Maps','<p>The «Norge 1:50 000» hiking map can be printed free from norgeskart.no. Always bring a map and compass, not just your phone.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
     sleep:{title:'Sleeping well outdoors', short:'Warm and dry at night', sub:'Warm, dry and rested.', secs:[
       ['Warm at night','<ul><li><b>Dry clothes:</b> Change into dry clothes for the night. Clothes you have worn all day are damp and draw heat away. A hat or balaclava helps.</li><li><b>Pee before bed:</b> Then you don\'t have to get up, dress and go out into the cold in the middle of the night. If you wake up and need to pee, go rather than lie awake. When it is really cold: keep a pee bottle in the tent, clearly marked and fully sealed.</li><li><b>Insulation underneath:</b> Much of your heat goes into the ground. In winter: two sleeping pads. Lie so the filling of the bag is not squashed.</li><li><b>Hot water bottle:</b> A bottle of hot water wrapped in a piece of clothing gives warmth far into the night. Use a bottle that takes hot water and seals completely.</li></ul>'],
       ['Light nights','<p>Sleep mask and earplugs.</p>'],
@@ -1752,13 +1764,13 @@ const GUIDE_TXT = {
   }
 };
 const GUIDE_GROUPS = [
-  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'fishing', 'fire']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'mapcompass', 'fishing', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']}
 ];
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
-  'std:sleep:telt':'tent', 'std:general:sekk':'pack#zones',
+  'std:sleep:telt':'tent', 'std:general:kart og kompass i vanntett kartmappe':'mapcompass', 'std:general:sekk':'pack#zones',
   'std:repair:lappesett for telt og tøy':'repair#patch', 'std:repair:nylonsnor (forsterker lapping mot kant) 2x':'repair#patch',
   'std:repair:reparasjonssett for liggeunderlag (lapper og lim)':'repair#pad', 'std:repair:reparasjonshylse til teltstenger':'repair#pole', 'std:sleep:sovepose (komforttemperatur etter årstid)':'sleep',
   'std:clothes:skalljakke':'shell', 'std:clothes:skallbukse':'shell',
@@ -1790,6 +1802,8 @@ function planName(k){ const T = t(); return {food:T.foodTool, fuel:T.fuelTool, w
 function planLink(k, from){
   return `<button class="plan-link pc-${k}" data-nav data-act="openPlan" data-tool="${k}" data-from="${from}"><svg viewBox="0 0 24 24" aria-hidden="true">${PLAN_ICONS[k]}</svg><span>${esc(planName(k))}</span></button>`;
 }
+/* [[web:<url>|<label>]] in guide text becomes a web link row (webLink), from build 38 */
+function webMarks(html){ return String(html).replace(/\[\[web:([^|\]]+)\|([^\]]+)\]\]/g, (m, u, l) => webLink(u, l)); }
 function planLinks(html){ return String(html).replace(/\[\[plan:(\w+)\]\]/g, (m, k) => PLAN_ICONS[k] ? planLink(k, 'guide') : ''); }
 let planFrom = null;
 function planBack(){ const T = t(); return planFrom === 'compass' ? T.tabCompass : planFrom === 'guide' ? T.tabGuide : planFrom === 'list' ? T.tabList : T.tabPlan; }
@@ -1800,7 +1814,7 @@ function renderTextGuide(k){
   document.title = g.title + ' · ' + T.app;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${g.sub}</p>
-    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${planLinks(x[1])}</details>`).join('')}</section>`;
+    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(x[1]))}</details>`).join('')}</section>`;
   loadSvgs();
   if (guideSec){
     const d = main.querySelector(`details[data-sec="${guideSec}"]`);
@@ -1887,7 +1901,8 @@ function renderCompass(){
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${sunHtml()}${linksHtml()}
-    <section class="pg-sec"><h2 class="sec-lbl">${T.cAbout}</h2><div class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</div></section>`;
+    <section class="pg-sec"><h2 class="sec-lbl">${T.cAbout}</h2><div class="manual guide">${T.cInfo.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</div>
+      <div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="mapcompass">${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).mapcompass.title} ›</button></div></section>`;
   paintCompass();
   clearInterval(skyTimer);
   skyTimer = setInterval(() => { const g = $('skyNow'); if (g){ g.innerHTML = skyNowMarks(); uprightMarks(); } else { clearInterval(skyTimer); skyTimer = null; } }, 60000);
