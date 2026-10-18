@@ -444,6 +444,17 @@ for (const L of LANGS){
       await ctx.close();
     });
 
+    // From build 45 (0.9.1): Møte med dyr, reached from the tick lines in the list, with the emergency number in Hoggorm.
+    test('Møte med dyr: list links and emergency number', async ({page}) => {
+      await page.locator('#main [data-bag="std:firstaid"]').click();
+      await page.locator('#main li.item[data-item="std:firstaid:pinsett (flått, fliser)"] [data-act="openGuide"]').click();
+      await expect(page.locator('#main details[data-sec="ticks"]')).toHaveAttribute('open', '');
+      await page.locator('#main details[data-sec="adder"] summary').click();
+      await expect(page.locator('#main details[data-sec="adder"]')).toContainText('113');
+      await expect(page.locator('#main details[data-sec="bear"]')).toHaveCount(1);
+      await settle(page, errors);
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
