@@ -463,16 +463,16 @@ h3.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25r
 .zone-text.yellow{color:#A87500}
 .zone-text.green{color:#2F7D44}
 body.night .zone-text{color:var(--ink)}
-.sb-fig{margin:16px 0 0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);--sb-ink:var(--ink);--sb-surface:var(--surface);--sb-muted:var(--muted);--sb-accent:var(--red);--sb-alu:var(--line-strong);--sb-board:#E3D3B5;--sb-foam:#9DB58A;--sb-strap:#3F7A8C}
+.sb-fig{margin:16px 0 0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);--sb-heavy:#4F5A58;--sb-ink:var(--ink);--sb-surface:var(--surface);--sb-muted:var(--muted);--sb-accent:var(--red);--sb-alu:var(--line-strong);--sb-board:#E3D3B5;--sb-foam:#9DB58A;--sb-strap:#3F7A8C}
 .sb-fig figcaption{font-weight:600;margin:0 0 8px}
 .sb-fig [data-svgsrc]{max-width:340px;margin:0 auto}
 .sb-fig svg{display:block;width:100%;height:auto}
 .fig-legend{list-style:none;margin:10px 0 0;padding:0;line-height:1.45;font-size:.95rem}
 .fig-legend li{display:flex;gap:8px;margin-bottom:6px}
 .fig-num{flex:none;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-size:.75rem}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}}
-:root[data-theme="dark"] .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340}
-body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-alu:#5c1712}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340;--sb-heavy:#121817}}
+:root[data-theme="dark"] .sb-fig{--sb-board:#5A4B33;--sb-foam:#4E6340;--sb-heavy:#121817}
+body.night .sb-fig{--sb-board:#2a0806;--sb-foam:#3a0d0a;--sb-strap:#7a1d16;--sb-alu:#5c1712;--sb-heavy:#150302}
 .sun-arc{display:block;width:100%;max-width:420px;margin:6px auto 0}
 .moon-row{display:flex;align-items:center;gap:12px;margin-top:10px}
 .moon-row b{display:block}
@@ -486,7 +486,7 @@ body.night{--moon:#ff4a3d;--sun:#ff4a3d}
 :root body.night.night.ngreen{--hd-btn:rgba(0,255,0,.13);--hd-track:rgba(0,255,0,.18);--hdt:#00d000;--chip:#001a00;--surface:#000f00;--ink:#00d000;--muted:#008a00;--line:#002800;--line-strong:#004000;--red:#00f000;--lichen:#00b000;--moon:#00f000;--sun:#00f000}
 body.night.ngreen .field-btn.on{color:#000}body.night.ngreen .field-btn.on svg{stroke:#000}body.night.ngreen .field-btn.on small{color:rgba(0,0,0,.7)}
 body.field .ls-lbl{display:none}
-body.night.ngreen .sb-fig{--sb-board:#002800;--sb-foam:#003300;--sb-strap:#006000;--sb-alu:#004000}
+body.night.ngreen .sb-fig{--sb-board:#002800;--sb-foam:#003300;--sb-strap:#006000;--sb-alu:#004000;--sb-heavy:#001000}
 body.night.ngreen .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-rotate(75deg) saturate(4)}
 .c-sky{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
 .c-sky .chip{display:inline-flex;align-items:center;gap:8px;padding:12px 16px}
@@ -594,8 +594,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.2.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 36;         // raised on every commit, together with CACHE ('varde-b36') in sw.js
+const APP_VERSION = '0.3.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 37;         // raised on every commit, together with CACHE ('varde-b37') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1102,7 +1102,7 @@ function friluftsliv(L){
       {bag:true, note: note('Vanntett pose, gjerne i en farge som er lett å finne','Waterproof bag, ideally in a colour that is easy to find')}),
     C('repair','Reparasjonssett','Repair and spares kit',[
       ['Multiverktøy og/eller lett kniv','Multitool and/or light knife'],['Tau / paracord (langt)','Rope / paracord (long)'],['Gaffatape (kan vikles rundt stav eller flaske)','Duct tape (can be wrapped around a pole or bottle)'],['Fløyte','Whistle'],['Reservedeler / vedlikeholdssett til brenner','Stove spare parts / maintenance kit'],
-      ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Nylonsnor (forsterker lapping mot kant) 2x','> Nylon cord (reinforces patches at edges) 2x'],['> Diverse','> Miscellaneous'],
+      ['Lapping','Patching'],['> Lappesett for telt og tøy','> Patch kit for tent and clothing'],['> Spritservietter (rens før lapping)','> Alcohol wipes (clean before patching)'],['> Reparasjonssett for liggeunderlag (lapper og lim)','> Sleeping pad repair kit (patches and glue)'],['> Reparasjonshylse til teltstenger','> Tent pole repair sleeve'],['> Nylonsnor (forsterker lapping mot kant) 2x','> Nylon cord (reinforces patches at edges) 2x'],['> Diverse','> Miscellaneous'],
       ['Ild','Fire'],['> Fyrstikker (vanntett pakket)','> Matches (waterproof packed)'],['> Tennstål','> Fire steel'],['> Tennposer (ca. 4)','> Firelighter pouches (about 4)'],
       ['Diverse','Miscellaneous'],['> Nål og tråd','> Needle and thread'],['> USB-C-kabel','> USB-C cable'],['> Stropper (2x)','> Straps (2x)'],['> Tau (kompakt)','> Rope (compact)'],['> Små karabinkroker (4x)','> Small carabiners (4x)'],['> Diverse plastposer','> Assorted plastic bags']],
       {bag:true, note: note('Liten drybag, ca. 3 liter','Small dry bag, about 3 litres')}),
@@ -1686,9 +1686,17 @@ const GUIDE_TXT = {
       ['Festesmøring','<ul><li><b>Voks eller klister:</b> Festesmøring finnes som voks for tørr snø og klister for våt snø. Jo kaldere snø, jo hardere voks. Klister brukes når snøen er våt, gammel og grovkornet, eller sporet er isete. På nysnø er voks oftest best, også rundt null.</li><li><b>Les skiene:</b> For myk voks på kaldt føre gjør at snøen trenger inn: skiene kladder og iser. Skrap av og legg en hardere voks. Glipper skiene, legg en mykere voks.</li><li><b>Legg på:</b> Legg festesmøringen inne før turen, i tynne lag, og kork ut hvert lag. Klister legges i fiskebeinsmønster i festesonen og jevnes ut. På hardt eller kornete føre holder festet lenger med grunnvoks under. La skiene bli kalde ute før du går, ellers fester snøen seg i smøringen.</li><li><b>På tur:</b> Ta med både voks, klister og skrape, særlig når temperaturen skifter gjennom dagen.</li></ul>', 'wax'],
       ['Feller','<ul><li><b>Kortfeller eller langfeller:</b> Kortfeller er vanlige på fjellski og sitter i et feste på ski som er laget for dem. Langfeller dekker hele sålen og brukes på topptur, og noen ganger på vanlige fjellski når det er bratt. Stell og oppbevaring er likt for begge.</li><li><b>Limsiden:</b> Hold limet rent og tørt: aldri mot snø, gulv, tepper eller klær. Har det kommet snø på limet, dra limsiden over stålkanten på skia.</li><li><b>Feller som iser:</b> Fellevoks på hårsiden hindrer kladding og ising. Ha den med i sekken.</li><li><b>I kulde:</b> Når fellene er av, bær dem inne i jakka, så limet ikke blir for kaldt.</li><li><b>Varme:</b> Hold fellene unna ovn og bål. Limet tåler ikke varme.</li><li><b>Etter turen:</b> Tørk fellene helt. Oppbevar dem lim mot lim eller på beskyttelsesduken de kom med. Begge deler fungerer; velg det som er mest praktisk for deg.</li></ul>', 'skins'],
       ['Hjemme','<p>Rengjør sålen før du smører. Glider smeltes inn, kjøles, skrapes og børstes. Skrap og børst godt: rester av glider kan svekke limet på fellene. Bruk fluorfri glider. Gammel fluorsmøring leveres som farlig avfall.</p>']]},
+    pack:{title:'Pakk sekken', short:'Soner, tørt og riktig justert', sub:'Tungt inntil ryggen, det du trenger øverst.', secs:[
+      ['Slik pakker du','<figure class="sb-fig"><div data-svgsrc="guides/pack-zones.svg"></div></figure><ul><li><b>Tungt inntil ryggen:</b> Mat, brensel, kjele og vann midt i sekken, tett inntil ryggen og omtrent mellom skulderbladene.</li><li><b>Lett og stort nederst:</b> Soveposen og annet du ikke trenger før kvelden.</li><li><b>Øverst og i lokket:</b> Det du trenger underveis: ekstra lag, regntøy, matpakke, kart, hodelykt og førstehjelpssett. Snacks og solkrem i hoftebelte- eller sidelommer.</li><li><b>Utenpå:</b> Så lite som mulig. Det henger seg fast, blir vått og vipper sekken.</li><li><b>Tørt:</b> Pakk i pakkposer, eller bruk en stor pose som innerfôr, og ha regntrekk klart.</li></ul>', 'zones'],
+      ['Juster sekken','<p>Stram hoftebeltet først, så det bærer det meste av vekten. Så skulderstroppene, og til slutt lastløfterne.</p><p>[[plan:weight]]</p>']]},
+    repair:{title:'Reparasjoner på tur', short:'Fiks det på tur', sub:'Lapping, liggeunderlag og teltstenger.', secs:[
+      ['Lapp på stoff','<ul><li><b>Lapp på stoff:</b> Rens med spritserviett og la det tørke. Klipp lappen med runde hjørner og god margin rundt hullet. Lapp begge sider når du kan.</li><li><b>Rift mot en kant:</b> Legg nylonsnoren langs kanten, brett lappen over den, og legg en lapp også på baksiden. Da river det ikke opp igjen når stoffet strammes.</li></ul><figure class="sb-fig"><div data-svgsrc="guides/edge-repair.svg"></div></figure>', 'patch'],
+      ['Lekk i liggeunderlaget','<p>Blås det opp og lytt, eller smør på vann med litt såpe og se etter bobler. Merk stedet, tørk det, og lim og lapp etter anvisningen i reparasjonssettet. La limet tørke før du blåser opp igjen.</p>', 'pad'],
+      ['Brukket teltstang','<p>Tre reparasjonshylsen over bruddet og tape den fast i begge ender med gaffatape. Har du ingen hylse, skinne med en plugg eller en rett pinne og tape godt.</p>', 'pole']]},
     fire:{title:'Bål', short:'Godt bål og ild i en nødsituasjon', sub:'Det grunnleggende om bål på tur.', secs:[
       ['Før du tenner','<ul><li><b>Bålforbud:</b> det er forbudt å gjøre opp ild i eller nær skog og annen utmark fra 15. april til 15. september, med mindre det åpenbart ikke kan føre til brann. Kommunen kan ha strengere regler.</li><li>Bruk et eksisterende bålsted hvis det finnes. Unngå bart fjell, som sprekker og får merker, og hold avstand til teltet. Gnister smelter stoffet.</li><li>Sjekk vinden, og ha vann klart.</li></ul>'],
       ['Tenning','<ul><li>Samle alt før du tenner: never eller annet opptenningsmateriale, tynne kvister, tykkere pinner og ved.</li><li>Bjørkenever brenner også når den er våt. Døde kvister nederst på grantrær er som regel tørre.</li><li>Kløyv våt ved. Innsiden er ofte tørr.</li><li>Start smått og legg på gradvis. Et lite bål er lettere å holde i gang og gir bedre varme til matlaging.</li></ul>'],
+      ['Tennstål','<figure class="sb-fig"><div data-svgsrc="guides/firesteel.svg"></div></figure><ul><li><b>Slik slår du:</b> Hold skrapen eller en skarp knivrygg stille, tett inntil tennmaterialet, og trekk staven bakover mot deg. Da slår du ikke tennmaterialet bort.</li><li><b>Tennmateriale:</b> Bjørkenever, tennposer eller annet som tar fyr av en gnist. Ha alt klart før du slår.</li></ul>', 'steel'],
       ['I en nødsituasjon','<ul><li>Bålet skal gi varme og tørke klær. Hold det lite og i le for vinden.</li><li>Tennposer og tennstål ligger i Ild i reparasjonssettet.</li><li>I en reell nødsituasjon går liv og helse foran.</li></ul>'],
       ['Etterpå','<ul><li>Slokk med vann til asken er kald å ta på.</li><li>Ikke brenn plast eller søppel, og forlat stedet slik du fant det.</li></ul>']]}
   },
@@ -1728,21 +1736,31 @@ const GUIDE_TXT = {
       ['Grip wax','<ul><li><b>Wax or klister:</b> Grip wax comes as hard wax for dry snow and klister for wet snow. The colder the snow, the harder the wax. Klister is for wet, old, coarse-grained snow or icy tracks. On new snow, hard wax is usually best, even around zero.</li><li><b>Read your skis:</b> Wax that is too soft for cold snow lets the snow in: the skis clog and ice up. Scrape it off and use a harder wax. If the skis slip, use a softer wax.</li><li><b>Applying:</b> Wax indoors before the trip, in thin layers, corking each layer. Klister goes on in a herringbone pattern in the grip zone and is smoothed out. On hard or coarse snow, grip lasts longer with a base wax underneath. Let the skis cool outside before you set off, or snow will stick to the wax.</li><li><b>On the trip:</b> Bring hard wax, klister and a scraper, especially when the temperature changes during the day.</li></ul>', 'wax'],
       ['Skins','<ul><li><b>Short or long skins:</b> Short skins are common on fjellski and sit in a fitting on skis made for them. Long skins cover the whole base and are used for topptur, and sometimes on ordinary fjellski when it is steep. Care and storage are the same for both.</li><li><b>The glue side:</b> Keep the glue clean and dry: never against snow, floors, carpets or clothing. If snow gets on the glue, pull the glue side across the steel edge of the ski.</li><li><b>Skins icing up:</b> Skin wax on the plush stops clogging and icing. Keep it in your pack.</li><li><b>In the cold:</b> When the skins are off, carry them inside your jacket so the glue does not get too cold.</li><li><b>Heat:</b> Keep skins away from stoves and fires. The glue does not tolerate heat.</li><li><b>After the trip:</b> Dry the skins completely. Store them glue to glue or on the saver sheet they came with. Both work; choose whichever is more practical for you.</li></ul>', 'skins'],
       ['At home','<p>Clean the base before waxing. Glide wax is ironed in, left to cool, scraped and brushed. Scrape and brush well: glide wax residue can weaken skin glue. Use fluorine-free glide wax. Old fluoro wax is handed in as hazardous waste.</p>']]},
+    pack:{title:'Packing your backpack', short:'Zones, keeping dry and adjusting', sub:'Heavy against your back, what you need on top.', secs:[
+      ['How to pack','<figure class="sb-fig"><div data-svgsrc="guides/pack-zones.svg"></div></figure><ul><li><b>Heavy against your back:</b> Food, fuel, pot and water in the middle of the pack, close to your back and roughly between your shoulder blades.</li><li><b>Light and bulky at the bottom:</b> The sleeping bag and anything else you won\'t need before the evening.</li><li><b>On top and in the lid:</b> What you need on the way: an extra layer, rain gear, lunch, map, head torch and first aid kit. Snacks and sunscreen in the hip-belt or side pockets.</li><li><b>Outside:</b> As little as possible. It snags, gets wet and makes the pack sway.</li><li><b>Dry:</b> Pack in dry bags, or use a large bag as a liner, and keep the rain cover handy.</li></ul>', 'zones'],
+      ['Adjusting the pack','<p>Tighten the hip belt first, so it carries most of the weight. Then the shoulder straps, and the load lifters last.</p><p>[[plan:weight]]</p>']]},
+    repair:{title:'Repairs on the trip', short:'Fix it on the trip', sub:'Patching, sleeping pads and tent poles.', secs:[
+      ['Patching fabric','<ul><li><b>Patching fabric:</b> Clean with an alcohol wipe and let it dry. Cut the patch with round corners and a good margin around the hole. Patch both sides when you can.</li><li><b>A tear at an edge:</b> Lay the nylon cord along the edge, fold the patch over it, and put a patch on the back too. That way it doesn\'t tear again when the fabric is under strain.</li></ul><figure class="sb-fig"><div data-svgsrc="guides/edge-repair.svg"></div></figure>', 'patch'],
+      ['A leak in the sleeping pad','<p>Inflate it and listen, or spread on water with a little soap and look for bubbles. Mark the spot, dry it, and glue and patch as the repair kit describes. Let the glue dry before you inflate it again.</p>', 'pad'],
+      ['A broken tent pole','<p>Slide the repair sleeve over the break and tape it at both ends with duct tape. Without a sleeve, splint it with a peg or a straight stick and tape it well.</p>', 'pole']]},
     fire:{title:'Campfire', short:'A good fire, and fire in an emergency', sub:'The basics of making a fire on a trip.', secs:[
       ['Before you light it','<ul><li><b>Fire ban:</b> in Norway, lighting fires in or near forest and other open country is banned from 15 April to 15 September, unless there is clearly no chance of a fire spreading. The municipality may have stricter rules.</li><li>Use an existing fire pit if there is one. Avoid bare rock, which cracks and gets marked, and keep away from the tent. Sparks melt the fabric.</li><li>Check the wind, and have water ready.</li></ul>'],
       ['Lighting it','<ul><li>Gather everything before you strike a match: tinder, thin twigs, thicker sticks and firewood.</li><li>Birch bark burns even when wet. Dead twigs at the bottom of spruce trees are usually dry.</li><li>Split wet wood. The inside is often dry.</li><li>Start small and add fuel gradually. A small fire is easier to keep going and gives better heat for cooking.</li></ul>'],
+      ['Fire steel','<figure class="sb-fig"><div data-svgsrc="guides/firesteel.svg"></div></figure><ul><li><b>How to strike:</b> Hold the striker or a sharp knife spine still, close to the tinder, and pull the rod back towards you. That way you don\'t knock the tinder away.</li><li><b>Tinder:</b> Birch bark, firelighter pouches or anything else that catches from a spark. Have everything ready before you strike.</li></ul>', 'steel'],
       ['In an emergency','<ul><li>The fire is for warmth and drying out. Keep it small and sheltered from the wind.</li><li>Firelighter pouches and the fire steel are under Fire in the repair kit.</li><li>In a real emergency, life and health come first.</li></ul>'],
       ['Afterwards','<ul><li>Put it out with water until the ashes are cold to the touch.</li><li>Don\'t burn plastic or rubbish, and leave the place the way you found it.</li></ul>']]}
   }
 };
 const GUIDE_GROUPS = [
-  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'fishing', 'fire']},
+  {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'fishing', 'fire']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval']},
-  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'stoveboard', 'shell', 'boots', 'ski', 'phone']}
+  {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']}
 ];
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
-  'std:sleep:telt':'tent', 'std:sleep:sovepose (komforttemperatur etter årstid)':'sleep',
+  'std:sleep:telt':'tent', 'std:general:sekk':'pack#zones',
+  'std:repair:lappesett for telt og tøy':'repair#patch', 'std:repair:nylonsnor (forsterker lapping mot kant) 2x':'repair#patch',
+  'std:repair:reparasjonssett for liggeunderlag (lapper og lim)':'repair#pad', 'std:repair:reparasjonshylse til teltstenger':'repair#pole', 'std:sleep:sovepose (komforttemperatur etter årstid)':'sleep',
   'std:clothes:skalljakke':'shell', 'std:clothes:skallbukse':'shell',
   'std:clothes:fjellsko / lette tursko (etter tur og årstid)':'boots',
   'std:m_vinter:skistøvler':'boots#ski', 'std:m_vinter:smøring / feller':'ski',
@@ -1756,7 +1774,7 @@ const GUIDE_LINKS = {
   'std:m_skred:skredsøker':'aval', 'std:m_skred:søkestang':'aval', 'std:m_skred:skredspade':'aval', 'std:m_skred:skredsekk (hvis du bruker det)':'aval',
   'std:m_topptur:toppturski / randoneeski med feller':'aval', 'std:prep:sjekk skredvarselet (varsom.no) (skredterreng)':'aval',
   'std:m_bil:bålstenger':'fire', 'std:m_bil:øks':'fire', 'std:m_bil:tursag':'fire',
-  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire', 'std:repair:tennposer (ca. 4)':'fire'
+  'std:repair:fyrstikker (vanntett pakket)':'fire', 'std:repair:tennstål':'fire#steel', 'std:repair:tennposer (ca. 4)':'fire'
 };
 /* Links to Planlegg (v27): standard list lines that open a calculator. Only on the standard list, never on a line with a guide link.
    Changing the Norwegian text of a linked line changes its id, so update the map at the same time. */
@@ -1764,7 +1782,6 @@ const PLAN_LINKS = {
   'std:m_bil:turdusj (10 l)':'water',
   'std:cook:brensel (nok for turens lengde, vinter ca. 0,3 l per døgn med snøsmelting)':'fuel',
   'std:food:turmat (frysetørket eller hjemmelaget)':'food',
-  'std:general:sekk':'weight',
   'std:m_hund:hundemat (porsjonert per dag) og godbiter':'food',
   'std:m_hund:hundesekk (valgfritt, hunden bærer selv)':'weight'
 };
@@ -1783,7 +1800,8 @@ function renderTextGuide(k){
   document.title = g.title + ' · ' + T.app;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${g.sub}</p>
-    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+    <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${planLinks(x[1])}</details>`).join('')}</section>`;
+  loadSvgs();
   if (guideSec){
     const d = main.querySelector(`details[data-sec="${guideSec}"]`);
     guideSec = null;
