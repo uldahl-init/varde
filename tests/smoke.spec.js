@@ -187,6 +187,49 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    test('Søk i Guider finds text in the other language', async ({page}) => {
+      // first section heading and section count of every guide, read from the guides themselves
+      const readGuides = async () => {
+        await goTab(page, 'guide');
+        const keys = await page.locator('#main [data-open]').evaluateAll(els => els.map(e => e.dataset.open));
+        const out = {};
+        for (const k of keys){
+          await page.locator(`#main [data-open="${k}"]`).click();
+          const heads = (await page.locator('#main details > summary').allInnerTexts()).map(x => x.split('\n').map(y => y.trim()).filter(Boolean)[0]);
+          out[k] = {first:heads[0], n:heads.length};
+          await page.locator('#main .back').click();
+        }
+        return out;
+      };
+      const before = await readGuides();
+      // switch to the other language on Dine lister
+      const other = L.lang === 'no' ? 'en' : 'no';
+      await goTab(page, 'list');
+      await page.locator('#listBtn').click();
+      await page.locator(`#main [data-lang="${other}"]`).click();
+      const after = await readGuides();
+      for (const k of Object.keys(before)) expect(after[k].n, `guide ${k} has the same sections in both languages`).toBe(before[k].n);
+      // search for each guide's first heading in the language just left: a result opens that section in the language now shown
+      const guider = await tabLabel(page, 'guide');
+      await page.locator('#main .gs-btn').click();
+      const input = page.locator('#gsInput');
+      let tagged = 0;
+      for (const k of Object.keys(before)){
+        await input.fill(before[k].first);
+        tagged += await page.locator(`#main .gs-lang`).filter({hasText: L.lang === 'no' ? 'NO' : 'EN'}).count();
+        const hit = page.locator(`#main .gs-hit[data-guide="${k}"]`).filter({has: page.locator('.gs-s', {hasText: after[k].first})}).first();
+        await expect(hit, `result for ${k} / ${before[k].first}`).toBeVisible();
+        await hit.click();
+        const open = await page.locator('#main details[open] > summary').allInnerTexts();
+        expect(open.some(x => x.replace(/\s+/g, ' ').toLowerCase().includes(after[k].first.toLowerCase())), `section ${after[k].first} in ${k} is open`).toBe(true);
+        await page.locator('#main .back').click();
+        await expect(title(page)).toHaveText(guider);
+      }
+      // some of those results came from the other language only and carry its tag
+      expect(tagged, 'results tagged with the other language').toBeGreaterThan(0);
+      await settle(page, errors);
+    });
+
     test('every calculator in Planlegg opens', async ({page}) => {
       await goTab(page, 'plan');
       const plan = await tabLabel(page, 'plan');
