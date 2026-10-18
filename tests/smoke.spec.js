@@ -367,6 +367,19 @@ for (const L of LANGS){
       }
     });
 
+    // From build 43 (0.8.0): Dyrespor loads all ten drawings, and they are sized by real size.
+    test('Dyrespor: drawings load at proportional sizes', async ({page}) => {
+      await goTab(page, 'guide');
+      await page.locator('#main [data-open="tracks"]').click();
+      const secs = page.locator('#main details[data-sec]');
+      const n = await secs.count();
+      for (let i = 0; i < n; i++) await secs.nth(i).locator('summary').click();
+      await expect(page.locator('#main .sb-fig.trk svg')).toHaveCount(10);
+      const w = async k => (await page.locator(`#main [data-svgsrc="guides/track-${k}.svg"]`).boundingBox()).width;
+      expect(await w('bear'), 'bear drawing wider than ptarmigan').toBeGreaterThan((await w('grouse')) * 2);
+      await settle(page, errors);
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
