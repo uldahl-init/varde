@@ -455,6 +455,55 @@ for (const L of LANGS){
       await settle(page, errors);
     });
 
+    // From build 47 (0.9.3): notes keep your order, move by long press (not pinned ones), and get a colour with a name.
+    test('Notater: move by long press, colour and colour names', async ({browser}) => {
+      const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}, hasTouch: true});
+      const p = await ctx.newPage();
+      const err = watchErrors(p);
+      const n = (id, t, extra) => Object.assign({id, title:id.toUpperCase(), text:'text ' + id, t}, extra || {});
+      const st = {introDone:true, lang:L.lang, lists:[], noteOrder:1, notes:[n('p', 1, {pin:true}), n('a', 4), n('b', 3), n('c', 2), n('d', 1)]};
+      await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+      await p.goto('./');
+      await p.locator('#tabbar [data-tab="notes"]').click();
+      const order = async () => (await p.locator('#main .notes-ix .ix-t').allTextContents()).map(x => x.trim());
+      await expect.poll(order).toEqual(['P', 'A', 'B', 'C', 'D']);
+      const cdp = await ctx.newCDPSession(p);
+      const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', {type, touchPoints: type === 'touchEnd' ? [] : [{x, y}]});
+      // long press A and drag it below C
+      let r = await p.locator('#main .notes-ix button[data-id="a"]').boundingBox();
+      const c = await p.locator('#main .notes-ix button[data-id="c"]').boundingBox();
+      await touch('touchStart', r.x + 30, r.y + 20); await p.waitForTimeout(550);
+      const steps = 12, dy = (c.y + c.height - 10) - (r.y + 20);
+      for (let k = 1; k <= steps; k++){ await touch('touchMove', r.x + 30, r.y + 20 + dy * k / steps); await p.waitForTimeout(16); }
+      await touch('touchEnd');
+      await expect.poll(order).toEqual(['P', 'B', 'C', 'A', 'D']);
+      await expect(p.locator('#main .note-full')).toHaveCount(0);
+      // the pinned note does not lift
+      r = await p.locator('#main .notes-ix button[data-id="p"]').boundingBox();
+      await touch('touchStart', r.x + 30, r.y + 20); await p.waitForTimeout(550);
+      for (let k = 1; k <= 8; k++){ await touch('touchMove', r.x + 30, r.y + 20 + k * 20); await p.waitForTimeout(16); }
+      await touch('touchEnd'); await p.waitForTimeout(400);
+      expect((await order())[0]).toBe('P');
+      // colour: open B, edit, pick colour 2, name it, save; editing does not move it
+      await p.waitForTimeout(500);
+      await p.locator('#main .notes-ix button[data-id="b"]').click();
+      await p.locator('#main [data-act="editNote"]').first().click();
+      await p.locator('#main .nc-dot.nc-2').click();
+      await p.locator('#main [data-act="noteCNames"]').click();
+      await p.locator('#overlay [data-nc="2"]').fill('Fiske');
+      await p.locator('#overlay [data-s="ok"]').click();
+      await p.locator('#neText').fill('changed');
+      await p.locator('#main [data-act="noteSave"]').click();
+      await expect(p.locator('#main .note-full.has-nc.nc-2')).toHaveCount(1);
+      await expect(p.locator('#main .note-full .nc-name')).toHaveText('Fiske');
+      await p.locator('#main [data-act="back"]').click();
+      await expect.poll(order).toEqual(['P', 'B', 'C', 'A', 'D']);
+      await expect(p.locator('#main .notes-ix button[data-id="b"].has-nc.nc-2 .nc-name')).toHaveText('Fiske');
+      await p.waitForTimeout(200);
+      expect(err, 'no errors in notes').toEqual([]);
+      await ctx.close();
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
@@ -493,11 +542,12 @@ test.describe('nattlys', () => {
       });
       return [...new Set(bad)].slice(0, 8);
     };
-    const notes = [{id:'a', title:'A', text:'x', t:1760000000000, rcv:{n:'Kari', t:1760000000000}}, {id:'b', title:'B', text:'y', t:1750000000000, pin:true}];
+    const notes = [{id:'a', title:'A', text:'x', t:1760000000000, rcv:{n:'Kari', t:1760000000000}, c:2}, {id:'b', title:'B', text:'y', t:1750000000000, pin:true, c:4},
+      {id:'c', title:'C', text:'z', t:1740000000000, c:1}, {id:'d', title:'D', text:'w', t:1730000000000, c:3}, {id:'e', title:'E', text:'v', t:1720000000000, c:5}];
     for (const skin of SKINS) for (const scheme of ['light', 'dark']) for (const hue of ['red', 'green']){
       const ctx = await browser.newContext({colorScheme: scheme, serviceWorkers: 'block', viewport: {width: 390, height: 780}, locale: 'nb-NO'});
       const p = await ctx.newPage();
-      const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes};
+      const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes, noteOrder:1, noteColors:['Fiske', 'Turer', '', 'Ideer', '']};
       await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
       await p.goto('./');
       const found = {};
