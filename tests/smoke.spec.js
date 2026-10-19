@@ -539,8 +539,10 @@ for (const L of LANGS){
       await expect(p.locator('#main [data-act="foldAll"]')).toBeVisible();
       await expect(p.locator('#main [data-act="modesToggle"]')).toHaveCount(0);
       // a new window is a fresh start: Utemodus stays on, the list row and categories are folded again
+      // (the app went to the background more than 15 minutes ago, so it is not a return; from build 49)
       const p2 = await ctx.newPage();
       const err2 = watchErrors(p2);
+      await p2.addInitScript(k => { try { const s = JSON.parse(localStorage.getItem(k)); s.hiddenAt = Date.now() - 16 * 60000; localStorage.setItem(k, JSON.stringify(s)); } catch(e){} }, KEY);
       await p2.goto('./');
       await expect(p2.locator('#main [data-act="fieldList"]')).toHaveAttribute('aria-expanded', 'false');
       await p2.locator('#main [data-act="fieldList"]').click();
@@ -558,6 +560,23 @@ for (const L of LANGS){
       await p2.waitForTimeout(200);
       expect(err.concat(err2), 'no errors in the start state test').toEqual([]);
       await ctx.close();
+    });
+
+    // From build 49 (0.10.1): Android may close the app in the background, which clears the session marker. Within
+    // 15 minutes of going to the background the app returns to the page you were on; after that it is a fresh start.
+    test('start state: return within 15 minutes', async ({browser}) => {
+      for (const [ago, back] of [[5, true], [16, false]]){
+        const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}});
+        const p = await ctx.newPage();
+        const err = watchErrors(p);
+        const st = {lists:[], hidePacked:false, introDone:true, lastNav:{tab:'guide', view:null}, hiddenAt: Date.now() - ago * 60000};
+        await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+        await p.goto('./');
+        await expect(p.locator(`#tabbar [data-tab="${back ? 'guide' : 'list'}"]`), `${ago} minutes`).toHaveAttribute('aria-current', 'page');
+        await p.waitForTimeout(200);
+        expect(err, `no errors after ${ago} minutes`).toEqual([]);
+        await ctx.close();
+      }
     });
 
     // From build 48 (0.10.0): Om rådene uses the same place rules as every other emergency number.

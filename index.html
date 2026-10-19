@@ -677,8 +677,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.10.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 48;         // raised on every commit, together with CACHE ('varde-b48') in sw.js
+const APP_VERSION = '0.10.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 49;         // raised on every commit, together with CACHE ('varde-b49') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1428,8 +1428,17 @@ if (!Array.isArray(state.noteColors) || state.noteColors.length !== 5) state.not
    A marker in sessionStorage tells it apart from coming back: the browser keeps it through a reload (the update
    reload) and when the app returns from the background, and clears it when the window is closed. */
 const SESSION_MARK = 'varde-open';
+/* 0.10.1: Android may close the app in the background, and that clears the marker too. So within RETURN_MS of the
+   app going to the background (state.hiddenAt), a start without the marker still returns to the page you were on. */
+const RETURN_MS = 15 * 60000;
 let freshStart = true;
 try { freshStart = !sessionStorage.getItem(SESSION_MARK); sessionStorage.setItem(SESSION_MARK, '1'); } catch(e){}
+if (freshStart && state.hiddenAt && Date.now() - state.hiddenAt < RETURN_MS) freshStart = false;
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'hidden') return;
+  state.hiddenAt = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+});
 function foldStart(){
   state.std = state.std || {done:{}, modes:{}, light:{}, open:{}};
   state.std.open = {};
