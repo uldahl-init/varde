@@ -186,6 +186,7 @@ body.notlist .list-switch svg{display:none}
 .modes-toggle .chev{flex:none}
 .modes-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .modes-toggle[aria-expanded="true"]{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.list-toggle[aria-expanded="true"]{border-radius:12px;border-bottom-color:var(--line)}
 .modes-open{margin-top:-1px;padding:2px 14px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
 .subhead{padding:14px 14px 4px;font-weight:600;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line)}
 .items > li.subhead:first-child{border-top:0}
@@ -676,8 +677,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.9.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 47;         // raised on every commit, together with CACHE ('varde-b47') in sw.js
+const APP_VERSION = '0.10.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 48;         // raised on every commit, together with CACHE ('varde-b48') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -711,8 +712,8 @@ const UI = {
     shareBad:'This share link could not be read. Ask for a new link.', importQ:n=>`Add "${n}" to your lists?`, importMsg:n=>`Someone has shared a list with ${n} items with you. It is added under Shared lists, where you can use it as your main list or add it as a trip type.`, importOk:'Add list', introSkip:'Skip', introNext:'Next', introStart:'Get started', introLang:'Choose language',
     intro:[
       [`Welcome to ${APP_NAME}`,'A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
-      ['The main list','The front page shows your main list. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
-      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light.'],
+      ['The main list','The app opens on your main list with every category folded, so you see the whole list at a glance: tap a category to open it, or tap Expand all. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
+      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. The list is then one row you tap to open; trip types are set before the trip, with Outdoor mode off. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
@@ -725,7 +726,7 @@ const UI = {
     em:{med:'Medical emergency (ambulance)', gp:'Out-of-hours doctor (legevakt)', poison:'Poisons Information (Giftinformasjonen), open day and night', eu112:'Emergency number in the whole EU/EEA',
       poisonNo:'Norwegian Poisons Information, open day and night', noteNo:'In Norway, 112 goes to the police. Outside Norway: 112 works in the whole EU/EEA. Find the local numbers before the trip.',
       noteEu:'112 works in the whole EU/EEA and in many other countries in Europe. Find the local numbers before the trip and save them on your phone.',
-      noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number',
+      noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number', callNo:'In an emergency: call <b>113</b> for injury or illness, or <b>112</b> (police), who also lead rescue on land.', callEu:'In an emergency: call <b>112</b>.', callFar:'In an emergency: call the local emergency number, and find it before the trip.',
       phone:'Most phones also have a built-in emergency function. Learn how it works on your phone at home.',
       where:'The numbers follow the position you fetched on Compass. With no position, the Norwegian numbers are shown.'},
     fishRules:{title:'Fishing licences and rules', intro:'The rules vary between lakes, rivers and regions. Always check the local rules where you fish.', linksHd:'Useful links', secs:[
@@ -768,7 +769,7 @@ const UI = {
     bkNothing:'Everything in this backup is already here.',
     bkLast:d=>`Last backup: ${d}`, bkNever:'never', bkChanged:'You have changes that are not backed up.',
     bkRemind:'It is a while since your last backup, and you have changes that exist only on this phone.', bkLater:'Later',
-    adviceTitle:'About the advice', adviceTxt:`${APP_NAME} gives general advice and checklists for planning trips. The advice does not replace courses, local knowledge or your own judgement of weather, conditions and avalanche danger. Always check official forecasts and rules before the trip, and carry a map, compass and emergency beacon, not just your phone. The figures in Plan are estimates. You are responsible for your own choices on a trip. In an emergency: call 113 or 112.`,
+    adviceTitle:'About the advice', adviceTxt:`${APP_NAME} gives general advice and checklists for planning trips. The advice does not replace courses, local knowledge or your own judgement of weather, conditions and avalanche danger. Always check official forecasts and rules before the trip, and carry a map, compass and emergency beacon, not just your phone. The figures in Plan are estimates. You are responsible for your own choices on a trip.`,
     versionLine:(v,b)=>`Version ${v} (build ${b})`,
     bkBad:'That text is not a valid backup. Copy the whole backup and try again.',
     renameItem:'Rename item', renameCat:'Rename category', delCatQ:'Delete category?',
@@ -783,13 +784,13 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    tabList:'Packing', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
+    tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
     tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
-    startOver:'Start over', startOverHint:'Clears all ticks and trip types and opens the standard list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types are switched off and the standard list becomes the main list. Outdoor mode, Rain lock and Hide packed are turned off. Nothing is deleted: lists, notes, pack weight, planner figures and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
+    startOver:'Start over', startOverHint:'Clears all ticks and trip types and makes the standard list the main list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types and Light day hike are switched off, the standard list becomes the main list and all categories are folded. Outdoor mode, Rain lock, Night light and Hide packed are turned off. Nothing is deleted: lists, notes, links, pack weight, planner figures, your position and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
@@ -798,7 +799,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -920,8 +921,8 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     shareBad:'Denne delingslenken kunne ikke leses. Be om en ny lenke.', importQ:n=>`Legge til «${n}» i dine lister?`, importMsg:n=>`Noen har delt en liste med ${n} ting med deg. Den legges under Delte lister, der du kan bruke den som hovedliste eller legge den til i turtype.`, importOk:'Legg til liste', introSkip:'Hopp over', introNext:'Neste', introStart:'Kom i gang', introLang:'Velg språk',
     intro:[
       [`Velkommen til ${APP_NAME}`,'En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
-      ['Hovedlisten','Forsiden viser hovedlisten. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
-      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys.'],
+      ['Hovedlisten','Appen åpner på hovedlisten med alle kategorier lukket, så du ser hele listen på én gang: trykk på en kategori for å åpne den, eller på Åpne alle. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
+      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Listen er da én linje du trykker på for å åpne; turtypene velger du før turen, med Utemodus av. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
@@ -934,7 +935,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     em:{med:'Medisinsk nødhjelp (ambulanse)', gp:'Legevakt', poison:'Giftinformasjonen, åpent hele døgnet', eu112:'Nødnummer i hele EU/EØS',
       poisonNo:'Giftinformasjonen i Norge, åpent hele døgnet', noteNo:'I Norge går 112 til politiet. Utenfor Norge: 112 virker i hele EU/EØS. Finn de lokale numrene før turen.',
       noteEu:'112 virker i hele EU/EØS og i mange andre land i Europa. Finn de lokale numrene før turen, og lagre dem på mobilen.',
-      noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret',
+      noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret', callNo:'I en nødsituasjon: ring <b>113</b> ved skade eller sykdom, eller <b>112</b> (politiet), som også leder redningsaksjoner på land.', callEu:'I en nødsituasjon: ring <b>112</b>.', callFar:'I en nødsituasjon: ring det lokale nødnummeret, og finn det før turen.',
       phone:'De fleste mobiler har også en innebygd nødfunksjon. Lær hvordan den virker på din mobil hjemme.',
       where:'Numrene følger posisjonen du har hentet på Kompass. Uten posisjon vises de norske numrene.'},
     fishRules:{title:'Fiskekort og regler', intro:'Reglene varierer mellom vann, elver og landsdeler. Sjekk alltid de lokale reglene der du skal fiske.', linksHd:'Nyttige lenker', secs:[
@@ -977,7 +978,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     bkNothing:'Alt i denne sikkerhetskopien finnes her fra før.',
     bkLast:d=>`Sist sikkerhetskopi: ${d}`, bkNever:'aldri', bkChanged:'Du har endringer som ikke er sikkerhetskopiert.',
     bkRemind:'Det er en stund siden sist sikkerhetskopi, og du har endringer som bare finnes på denne mobilen.', bkLater:'Senere',
-    adviceTitle:'Om rådene', adviceTxt:`${APP_NAME} gir generelle råd og huskelister for å planlegge turer. Rådene erstatter ikke kurs, lokalkunnskap eller din egen vurdering av vær, føre og skredfare. Sjekk alltid offisielle varsler og regler før turen, og ha kart, kompass og nødsender, ikke bare mobilen. Utregningene i Planlegg er anslag. Du er selv ansvarlig for valgene dine på tur. I en nødsituasjon: ring 113 eller 112.`,
+    adviceTitle:'Om rådene', adviceTxt:`${APP_NAME} gir generelle råd og huskelister for å planlegge turer. Rådene erstatter ikke kurs, lokalkunnskap eller din egen vurdering av vær, føre og skredfare. Sjekk alltid offisielle varsler og regler før turen, og ha kart, kompass og nødsender, ikke bare mobilen. Utregningene i Planlegg er anslag. Du er selv ansvarlig for valgene dine på tur.`,
     versionLine:(v,b)=>`Versjon ${v} (bygg ${b})`,
     bkBad:'Teksten er ikke en gyldig sikkerhetskopi. Kopier hele sikkerhetskopien og prøv igjen.',
     renameItem:'Gi tingen nytt navn', renameCat:'Gi kategorien nytt navn', delCatQ:'Slette kategorien?',
@@ -992,13 +993,13 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    tabList:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
+    tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
     tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
-    startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og åpner standardlisten, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene slås av og standardlisten blir hovedliste. Utemodus, Regnlås og Skjul pakket slås av. Ingenting slettes: lister, notater, sekkvekt, tall i planleggerne og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
+    startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og gjør standardlisten til hovedliste, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene og Lett dagstur slås av, standardlisten blir hovedliste og alle kategorier lukkes. Utemodus, Regnlås, nattlys og Skjul pakket slås av. Ingenting slettes: lister, notater, lenker, sekkvekt, tall i planleggerne, posisjonen din og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
@@ -1007,7 +1008,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -1422,6 +1423,22 @@ if (!state.noteOrder){
   state.noteOrder = 1; if (clean) state.bkSig = personalSig(); save();
 }
 if (!Array.isArray(state.noteColors) || state.noteColors.length !== 5) state.noteColors = ['', '', '', '', ''];
+/* 0.10.0: the start state. A fresh start (first use, or the window was closed: swiped away or the phone restarted)
+   opens Pakkliste with every category folded and the Utemodus list row folded. Ticks, trip types and modes stay.
+   A marker in sessionStorage tells it apart from coming back: the browser keeps it through a reload (the update
+   reload) and when the app returns from the background, and clears it when the window is closed. */
+const SESSION_MARK = 'varde-open';
+let freshStart = true;
+try { freshStart = !sessionStorage.getItem(SESSION_MARK); sessionStorage.setItem(SESSION_MARK, '1'); } catch(e){}
+function foldStart(){
+  state.std = state.std || {done:{}, modes:{}, light:{}, open:{}};
+  state.std.open = {};
+  friluftsliv('no').cats.forEach(c => { state.std.open['std:' + c.key] = false; });
+  (state.lists || []).forEach(L => (L.cats || []).forEach(c => { c.open = false; }));
+  state.fieldList = false;
+  stdCache = null;
+}
+if (freshStart){ state.lastNav = {tab:'list', view:null}; foldStart(); save(); }
 let editing = false;
 let view = (state.lastNav && typeof state.lastNav.view === 'string') ? state.lastNav.view : null;
 let tab = (state.lastNav && ['list', 'notes', 'plan', 'guide', 'compass'].indexOf(state.lastNav.tab) >= 0) ? state.lastNav.tab : 'list';
@@ -1592,7 +1609,12 @@ function render(){
       const lb = (m, ic, lbl) => `<button class="chip lt-btn lt-${m}" data-light="${m}"${m === 'fire' ? '' : ` aria-pressed="${hue === m}"`}>${ic}<span>${lbl}</span><i class="fill"></i></button>`;
       html += `<div class="field-tools">${lb('red', ICON_MOON, T.nightRed)}${lb('green', ICON_EYE, T.nightGreen)}${lb('fire', ICON_FLAME, T.campfire)}</div><p class="field-hint">${T.lampHint}</p>`;
     }
-    const keys = [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))]
+    // 0.10.0: in Utemodus the list is ready, so Turtype is left out and the list sits under one fold-out row
+    if (state.field){
+      html += `<button class="modes-toggle list-toggle" data-nav data-act="fieldList" aria-expanded="${!!state.fieldList}"><span>${T.listRow}</span><span class="mt-val">${tot ? T.packed(d, tot) : T.noItems}</span>${CHEV}</button>`;
+      if (!state.fieldList){ main.innerHTML = html; return; }
+    }
+    const keys = state.field ? [] : [...new Set(l.cats.filter(c => c.mode && MODES[c.mode]).map(c => c.mode))]
       .concat(state.lists.filter(L => L.tripType && L.id !== l.id).map(L => 'L:' + L.id));
     if (keys.length){
       const on = keys.filter(k => l.modes && l.modes[k]).map(modeName);
@@ -1744,7 +1766,8 @@ function renderLists(){
   if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
   html += sec(T.privacy, `<p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`);
-  html += sec(T.adviceTitle, `<p class="tool-tip">${T.adviceTxt}</p>`);
+  html += sec(T.adviceTitle, `<p class="tool-tip">${T.adviceTxt}</p><p class="tool-tip em-call">${emMarks('[[call]]', state.lang, region(state.pos))}</p>
+    <button class="link-btn g-health" data-nav data-act="openGuide" data-guide="meds" data-sec="help">${ICO_HEALTH}${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).meds.secs.find(x => x[2] === 'help')[0]}${CHEV_R}</button>`);
   html += `<p class="app-ver">${T.versionLine(APP_VERSION, APP_BUILD)}</p>`;
   main.innerHTML = html;
 }
@@ -2130,7 +2153,9 @@ function emMarks(html, lang, rg){
     h += `<p>${pl === 'no' ? E.noteNo : pl === 'eu' ? E.noteEu : E.noteFar}</p><p>${E.phone}</p><p class="em-note">${E.where}</p>`;
     return h + '[[web:https://www.helsenorge.no|Helsenorge]]';
   };
-  return String(html).replace(/\[\[emergency\]\]/g, block).replace(/\[\[em\]\]/g, () => pl === 'no' ? '<b>113</b>' : pl === 'eu' ? '<b>112</b>' : E.local);
+  // 0.10.0: [[call]] = the general emergency line (Om rådene), by the same place rules
+  return String(html).replace(/\[\[emergency\]\]/g, block).replace(/\[\[em\]\]/g, () => pl === 'no' ? '<b>113</b>' : pl === 'eu' ? '<b>112</b>' : E.local)
+    .replace(/\[\[call\]\]/g, () => pl === 'no' ? E.callNo : pl === 'eu' ? E.callEu : E.callFar);
 }
 function planLinks(html){ return String(html).replace(/\[\[plan:(\w+)\]\]/g, (m, k) => PLAN_ICONS[k] ? planLink(k, 'guide') : ''); }
 let planFrom = null;
@@ -3390,10 +3415,11 @@ async function listAction(a, id){
   } else if (a === 'startOver'){
     if (await confirmBox(T.startOverQ, T.startOverMsg, T.startOverOk)){
       withUndo(T.startOverDone, () => {
-        state.std.done = {}; state.std.modes = {}; state.std.open = {}; state.folds = {}; modesOpen = false;
-        state.lists.forEach(x => { x.modes = {}; x.cats.forEach(c => { delete c.open; c.items.forEach(i => i.done = false); }); });
+        state.std.done = {}; state.std.modes = {}; state.std.light = {}; state.folds = {}; modesOpen = false;
+        state.lists.forEach(x => { x.modes = {}; x.cats.forEach(c => { c.lightOnly = false; c.items.forEach(i => i.done = false); }); });
+        foldStart(); // 0.10.0: the start state, every category folded
         state.main = 'std'; selList = 'std';
-        state.field = false; state.rainLocked = false; rainLocked = false;
+        state.field = false; state.night = false; state.rainLocked = false; rainLocked = false;
         state.hidePacked = false; state.listLock = false; delete state.lockPrev; editing = false;
         stdCache = null; tab = 'list'; view = null;
       });
@@ -3588,6 +3614,7 @@ main.addEventListener('click', async e => {
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
+  if (act === 'fieldList'){ state.fieldList = !state.fieldList; save(); render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'fuelDog'){ const f = fuelState(); f.dog = !f.dog; save(); render(); return; }
