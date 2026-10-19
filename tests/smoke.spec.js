@@ -715,6 +715,11 @@ test.describe('nødmodus', () => {
     await expect(p.locator('#main [data-act="sosReturn"]')).toHaveCount(1);
     await p.locator('#main [data-act="sosReturn"]').click();
     await expect(p.locator('#sos')).toBeVisible();
+    // from build 51: the phone's Back from such a guide also returns to Nødmodus
+    await p.locator('#sos [data-sg="emergency"]').first().click();
+    await expect(p.locator('#sos')).toBeHidden();
+    await p.goBack();
+    await expect(p.locator('#sos')).toBeVisible();
     // a reload while it is open opens it again
     await p.reload();
     await expect(p.locator('#sos')).toBeVisible();
@@ -749,8 +754,13 @@ test.describe('nødmodus', () => {
     await expect(p.locator('#sos .sos-pos + .s-mut')).toContainText('±12 m');
     const href = await p.locator('#sos a[href^="sms:"]').getAttribute('href');
     expect(decodeURIComponent(href)).toContain('59.91000° N, 10.75000° Ø');
-    // switch to red
-    await p.locator('#sos [data-sa="hue"]').click();
+    // switch to red, and back to normal (from build 52: Vanlig, Rødt, Grønt)
+    await p.locator('#sos [data-sa="hue"][data-h="red"]').click();
+    await expect(p.locator('#sos')).toHaveClass(/h-red/);
+    await p.locator('#sos [data-sa="hue"][data-h=""]').click();
+    await expect(p.locator('#sos')).not.toHaveClass(/h-(red|green)/);
+    await expect(p.locator('#sos [data-sa="hue"][data-h=""]')).toHaveAttribute('aria-pressed', 'true');
+    await p.locator('#sos [data-sa="hue"][data-h="red"]').click();
     await expect(p.locator('#sos')).toHaveClass(/h-red/);
     // white screen light, then SOS flashes white and black
     await p.locator('#sos [data-sa="white"]').click();
@@ -764,6 +774,29 @@ test.describe('nødmodus', () => {
     await p.mouse.click(10, 10); // the slide track shows again on a touch
     await slideOff(p);
     await expect(p.locator('#sos')).toBeVisible();
+    // from build 51: 6 a minute starts with a white flash and is dark after it
+    await p.locator('#sos [data-sa="six"]').click();
+    expect(await p.locator('#slight').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
+    await p.waitForTimeout(1300);
+    expect(await p.locator('#slight').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(0, 0, 0)');
+    await p.mouse.click(10, 10);
+    await slideOff(p);
+
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  // From build 51: the Notater overview has no Utemodus line (each note still says it)
+  test('Notater overview in Utemodus has no Utemodus line', async ({browser}) => {
+    const ctx = await ctxFor(browser);
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true, noteOrder:1, notes:[{id:'a', title:'A', text:'x', t:1}]});
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await expect(p.locator('#main')).not.toContainText('Utemodus er på');
+    await p.locator('#main [data-act="openNote"][data-id="a"]').click();
+    await expect(p.locator('#main')).toContainText('Utemodus er på');
     await p.waitForTimeout(200);
     expect(err).toEqual([]);
     await ctx.close();

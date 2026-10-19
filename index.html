@@ -436,16 +436,20 @@ body.night .lt-btn{--lc:currentColor}
 @keyframes lockPulse{0%{outline-offset:0;outline-color:var(--red)}75%{outline-offset:7px;outline-color:transparent}100%{outline-offset:7px;outline-color:transparent}}
 @media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
-.sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#e5322b;--s-line:#3a3a3a;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
-.sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#b00000;--s-sig:#ff0000;--s-line:#500000}
-.sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000}
+.sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#e5322b;--s-line:#3a3a3a;--s-calm:#2e2e2e;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#b00000;--s-sig:#ff0000;--s-line:#500000;--s-calm:#2a0000}
+.sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000;--s-calm:#002a00}
 .sos-in{max-width:640px;margin:0 auto}
 .sos-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .sos-top h1{flex:1;display:flex;align-items:center;gap:10px;margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;color:var(--s-fg)}
 .sos svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--s-sig);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sos button,.sos a.sos-call,.sos a.sos-act{color:var(--s-fg);background:transparent;border:2px solid var(--s-sig);border-radius:14px;font:inherit;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.sos-hue{min-height:48px;padding:0 14px;font-size:.95rem;border-width:1px!important;border-color:var(--s-line)!important}
-.sos-x{width:100%;min-height:52px;margin-bottom:6px}
+.sos-hues{display:flex;align-items:center;gap:8px;margin:4px 0 10px}
+.sos-hues span{flex:none;color:var(--s-mut);font-size:.95rem;margin-right:2px}
+.sos .sos-hues button{flex:1;min-height:44px;padding:0 8px;font-size:.95rem;font-weight:400;border-width:1px;border-color:var(--s-line)}
+.sos .sos-hues button[aria-pressed="true"]{border-width:2px;border-color:var(--s-sig);font-weight:600}
+.sos .sos-x{width:100%;min-height:56px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--s-calm);border-color:var(--s-calm);font-size:1.1rem}
+.sos-x small{font-weight:400;font-size:.85rem;color:var(--s-mut)}
 .sos-sec{border-top:1px solid var(--s-line);padding:14px 0 12px}
 .sos-sec h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem;color:var(--s-sig)}
 .sos p{margin:6px 0;line-height:1.45;color:var(--s-fg)}
@@ -459,12 +463,12 @@ body.night .lt-btn{--lc:currentColor}
 .sos-row > *{flex:1 1 150px;min-height:56px;padding:8px 12px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
 .sos .sos-glink{display:block;width:100%;margin:8px 0 0;min-height:48px;padding:8px 14px;text-align:left;font-weight:400;border-width:1px;border-color:var(--s-line)}
 body.sosopen{overflow:hidden}
-.sos-btn{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;min-height:60px;margin:0 0 12px;padding:8px 14px;border-radius:16px;border:2px solid #c62828;background:#161616;color:#fff;font:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.sos-btn{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;min-height:60px;margin:8px 0 12px;padding:8px 14px;border-radius:16px;border:2px solid #c62828;background:#161616;color:#fff;font:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .sos-btn svg{width:24px;height:24px;flex:none;fill:none;stroke:#ff5a52;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sos-btn small{font-weight:400;font-size:.85rem;opacity:.85}
 .sos-btn .fill{position:absolute;left:0;bottom:0;height:5px;width:0;background:#ff5a52}
 .sos-btn.holding .fill{width:100%;transition:width 1s linear}
-.sos-btn.small{min-height:48px;font-size:1rem;margin:0 0 10px}
+.sos-btn.small{min-height:48px;font-size:1rem;margin:8px 0 10px}
 body.locked .sos-btn,body.locked .sos-btn *{pointer-events:auto}
 body.night .sos-btn{background:#000;border-color:var(--ink);color:var(--ink)}
 body.night .sos-btn svg{stroke:currentColor}
@@ -711,8 +715,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.11.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 50;         // raised on every commit, together with CACHE ('varde-b50') in sw.js
+const APP_VERSION = '0.11.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 52;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -823,11 +827,11 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
     tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
-    sos:{title:'Emergency mode', exit:'Exit emergency mode', hueG:'Green light', hueR:'Red light', holdMsg:'Hold Emergency mode for 1 second to open it.',
+    sos:{title:'Emergency mode', exit:'Exit emergency mode', tap:'tap', six:'6 a minute', hueG:'Green', hueR:'Red', hueN:'Normal', hueLbl:'Colours', holdMsg:'Hold Emergency mode for 1 second to open it.',
       call:'Call for help', aml:'Most newer phones send your position automatically when you call.',
       pos:'Position', posNone:'No position saved. Tap Get position, or find the coordinates in your phone’s map app.', sms:'Send position by SMS',
       smsNote:'Your messages app opens with the text written. It is sent only when you press send.', smsText:c => `My position: ${c} (WGS84)`,
-      light:'Light', white:'Screen light', sosL:'SOS flashes', lightNote:'Set the brightness on the phone. Slide the handle at the bottom to turn the light off.',
+      light:'Light', white:'Screen light', sosL:'SOS flashes', lightNote:'6 a minute is the alpine distress signal: a flash every ten seconds, then a minute’s pause. SOS is the signal from the sea. Set the brightness on the phone, and slide the handle at the bottom to turn the light off.',
       sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
       bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
@@ -1041,11 +1045,11 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
     tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
-    sos:{title:'Nødmodus', exit:'Avslutt nødmodus', hueG:'Grønt lys', hueR:'Rødt lys', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.',
+    sos:{title:'Nødmodus', exit:'Avslutt nødmodus', tap:'trykk', six:'6 i minuttet', hueG:'Grønt', hueR:'Rødt', hueN:'Vanlig', hueLbl:'Farger', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.',
       call:'Ring etter hjelp', aml:'De fleste nyere mobiler sender posisjonen din automatisk når du ringer.',
       pos:'Posisjon', posNone:'Ingen posisjon lagret. Trykk Hent posisjon, eller finn koordinatene i kartappen på mobilen.', sms:'Send posisjon på SMS',
       smsNote:'Meldingsappen åpnes med teksten skrevet. Den sendes bare når du selv trykker send.', smsText:c => `Min posisjon: ${c} (WGS84)`,
-      light:'Lys', white:'Skjermlys', sosL:'SOS-blink', lightNote:'Lysstyrken stiller du på mobilen. Dra håndtaket nederst for å slå av lyset.',
+      light:'Lys', white:'Skjermlys', sosL:'SOS-blink', lightNote:'6 i minuttet er det alpine nødsignalet: et blink hvert tiende sekund, så ett minutt pause. SOS er signalet fra sjøen. Lysstyrken stiller du på mobilen, og du drar håndtaket nederst for å slå av lyset.',
       sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
       bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
@@ -2023,7 +2027,7 @@ const GUIDE_TXT = {
     emergency:{title:'Nødsituasjon', short:'Når du trenger hjelp', sub:'Når du trenger hjelp på tur.', secs:[
       ['Ring etter hjelp','[[calls]]<p>Du kan ringe 112 selv om ditt eget mobilselskap ikke har dekning der du er, så lenge et annet nett har det. De fleste nyere mobiler sender posisjonen din automatisk når du ringer et nødnummer.</p>', 'call'],
       ['Hva du sier','<p>Operatøren leder deg gjennom faste spørsmål: hva som har skjedd, hvor, og om noen er skadet. Svar kort og rolig.</p><p>Vær klar til å si hvor du er: koordinatene fra kartappen eller Nødmodus, stedsnavn, terrenget rundt deg og hvordan dere kom dit. Følg rådene du får mens du venter på hjelp.</p>', 'say'],
-      ['Signaler','<p>Gi seks signaler i minuttet med fløyte, lys eller rop, vent ett minutt, og gjenta. Svaret er tre signaler i minuttet. Dette er det alpine nødsignalet, som brukes i fjellet.</p><p>SOS (tre korte, tre lange, tre korte: • • • — — — • • •) er nødsignalet fra sjøen og er lett å kjenne igjen; Skjermlys i Nødmodus kan blinke det. I en nødsituasjon er ethvert signal som tiltrekker oppmerksomhet godt nok, så bruk det du kan.</p><p>Mot helikopter: begge armene rett opp betyr «ja, vi trenger hjelp». Én arm opp og én ned betyr «nei».</p>', 'signals'],
+      ['Signaler','<p>Gi seks signaler i minuttet med fløyte, lys eller rop, vent ett minutt, og gjenta. Svaret er tre signaler i minuttet. Dette er det alpine nødsignalet, som brukes i fjellet.</p><p>SOS (tre korte, tre lange, tre korte: • • • — — — • • •) er nødsignalet fra sjøen og er lett å kjenne igjen. Lys i Nødmodus kan blinke begge. I en nødsituasjon er ethvert signal som tiltrekker oppmerksomhet godt nok, så bruk det du kan.</p><p>Mot helikopter: begge armene rett opp betyr «ja, vi trenger hjelp». Én arm opp og én ned betyr «nei».</p>', 'signals'],
       ['Hold varmen og vent','<p>Spar på kreftene og søk ly i tide: bruk vindsekken, eller grav deg ned i snøen. Isoler mot bakken, og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem, så du er lettere å finne.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="kantgrop">Kantgrop ›</button> <button class="btn small" data-nav data-act="openGuide" data-guide="winter">Vinterråd ›</button></p>', 'wait'],
       ['Spar batteri','<p>Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="phone" data-sec="battery">Mobilen på tur ›</button></p>', 'battery'],
       ['Førstehjelp','<p>Førstehjelp lærer du best på et kurs, helst før turen. Mens du venter på hjelp, følg rådene fra nødsentralen. Har førstehjelpssettet en veiledning eller plakat, ta den fram.</p>[[web:https://www.helsenorge.no|Helsenorge]][[web:https://nrr.org|Norsk Resuscitasjonsråd: retningslinjer for hjerte-lunge-redning]]', 'firstaid']]},
@@ -2118,7 +2122,7 @@ const GUIDE_TXT = {
     emergency:{title:'Emergency', short:'When you need help', sub:'When you need help on a trip.', secs:[
       ['Call for help','[[calls]]<p>You can call 112 even if your own mobile operator has no coverage where you are, as long as another network has. Most newer phones send your position automatically when you call an emergency number.</p>', 'call'],
       ['What to say','<p>The operator takes you through set questions: what has happened, where, and whether anyone is injured. Answer briefly and calmly.</p><p>Be ready to say where you are: the coordinates from the map app or Emergency mode, place names, the terrain around you and how you got there. Follow the advice you are given while you wait for help.</p>', 'say'],
-      ['Signals','<p>Give six signals a minute with a whistle, light or shouts, wait one minute, and repeat. The answer is three signals a minute. This is the alpine distress signal, used in the mountains.</p><p>SOS (three short, three long, three short: • • • — — — • • •) is the distress signal from the sea and is easy to recognise; the Screen light in Emergency mode can flash it. In an emergency any signal that draws attention is good enough, so use what you can.</p><p>To a helicopter: both arms straight up means «yes, we need help». One arm up and one down means «no».</p>', 'signals'],
+      ['Signals','<p>Give six signals a minute with a whistle, light or shouts, wait one minute, and repeat. The answer is three signals a minute. This is the alpine distress signal, used in the mountains.</p><p>SOS (three short, three long, three short: • • • — — — • • •) is the distress signal from the sea and is easy to recognise. Light in Emergency mode can flash both. In an emergency any signal that draws attention is good enough, so use what you can.</p><p>To a helicopter: both arms straight up means «yes, we need help». One arm up and one down means «no».</p>', 'signals'],
       ['Keep warm and wait','<p>Save your strength and find shelter in time: use the bivy sack, or dig yourself into the snow. Insulate yourself from the ground, and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them, so you are easier to find.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="kantgrop">Snow trench shelter ›</button> <button class="btn small" data-nav data-act="openGuide" data-guide="winter">Winter advice ›</button></p>', 'wait'],
       ['Save battery','<p>Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="phone" data-sec="battery">Your phone outdoors ›</button></p>', 'battery'],
       ['First aid','<p>First aid is best learned on a course, ideally before the trip. While you wait for help, follow the advice from the emergency centre. If the first aid kit has a guide or poster, take it out.</p>[[web:https://www.helsenorge.no|Helsenorge (Norwegian health service)]][[web:https://nrr.org|Norwegian Resuscitation Council: CPR guidelines]]', 'firstaid']]},
@@ -2352,7 +2356,7 @@ function renderNotes(){
   }
   const list = notesSorted();
   let h = `<p class="tool-sub">${T.notesSub}</p>`;
-  h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
+  h += state.field ? '' : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
   else h += '<div class="index notes-ix">' + list.map(x => { const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
   main.innerHTML = h;
@@ -3717,7 +3721,7 @@ main.addEventListener('click', async e => {
   if (act === 'windSign'){ const w = windState(); w.t = -w.t; save(); renderWind(); return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
-  if (act === 'sosReturn'){ sosBack = false; openSos(); return; }
+  if (act === 'sosReturn'){ sosBack = false; history.back(); return; } // 0.11.1: the Nødmodus entry is right below the guide
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
   if (act === 'fieldList'){ state.fieldList = !state.fieldList; save(); render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
@@ -3868,6 +3872,7 @@ window.addEventListener('popstate', e => {
   if (sortDrag){ sortCancel(); history.pushState({tab, view, depth:(history.state && history.state.depth || 0) + 1}, ''); return; }
   if (slMode){ history.pushState(Object.assign({}, history.state || {}, {light:true}), ''); return; }
   if (!sosEl.hidden){ closeSos(true); return; } // 0.11.0: back leaves Nødmodus
+  if (e.state && e.state.sos && sosEl.hidden){ openSos(true); return; } // 0.11.1: back from a guide opened in Nødmodus
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
   if (rainLocked && !navOpen()){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
@@ -4150,6 +4155,16 @@ function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; clearTi
 /* 0.11.0: SOS on the screen, white: • • • — — — • • • (short 1 unit, long 3, gap 1, between letters 3, before repeating 7).
    One unit is 300 ms, so it never flashes more than about twice a second. */
 const SOS_SEQ = [1, 1, 1, 1, 1, 3, 3, 1, 3, 1, 3, 3, 1, 1, 1, 1, 1, 7];
+/* 0.11.1: the alpine distress signal on the screen: six 1-second flashes a minute (one every 10 s), then 60 s dark */
+function slSix(){
+  const el = $('slight'); let n = 0;
+  const tick = () => {
+    if (slMode !== 'six') return;
+    if (n < 6){ el.style.background = '#ffffff'; slTimer = setTimeout(() => { if (slMode !== 'six') return; el.style.background = '#000000'; n++; slTimer = setTimeout(tick, n < 6 ? 9000 : 60000); }, 1000); }
+    else { n = 0; tick(); }
+  };
+  tick();
+}
 function slSos(){
   const el = $('slight'); let i = 0;
   const tick = () => {
@@ -4182,6 +4197,7 @@ function openLight(m){
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) el.style.background = '#f08a14';
     else slFire();
   } else if (m === 'sos') slSos();
+  else if (m === 'six') slSix();
   else el.style.background = SL_COL[m];
   el.hidden = false; slDragging = false; slShow(3000);
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
@@ -4276,23 +4292,24 @@ function renderSos(){
   } else pos = `<p>${S.posNone}</p><div class="sos-row"><button data-sa="pos">${T.getPos}</button></div>`;
   if (sosPosMsg) pos += `<p class="s-mut">${sosPosMsg}</p>`;
   sosEl.innerHTML = `<div class="sos-in">
-    <div class="sos-top"><h1>${ICO_SOS}${S.title}</h1><button class="sos-hue" data-sa="hue">${state.sosHue === 'green' ? S.hueR : S.hueG}</button></div>
-    <button class="sos-x" data-sa="exit">${S.exit}</button>
+    <div class="sos-top"><h1>${ICO_SOS}${S.title}</h1></div>
+    <button class="sos-x" data-sa="exit">${S.exit}<small>${S.tap}</small></button>
+    <div class="sos-hues" role="group" aria-label="${esc(S.hueLbl)}"><span>${S.hueLbl}</span>${[['', S.hueN], ['red', S.hueR], ['green', S.hueG]].map(([h, l]) => `<button data-sa="hue" data-h="${h}" aria-pressed="${(state.sosHue || '') === h}">${l}</button>`).join('')}</div>
     <section class="sos-sec"><h2>${S.call}</h2>${calls}<p class="s-mut">${S.aml}</p></section>
     <section class="sos-sec"><h2>${S.pos}</h2>${pos}</section>
-    <section class="sos-sec"><h2>${S.light}</h2><div class="sos-row"><button data-sa="white">${S.white}</button><button data-sa="sosl">${S.sosL}</button></div><p class="s-mut">${S.lightNote}</p></section>
+    <section class="sos-sec"><h2>${S.light}</h2><div class="sos-row"><button data-sa="white">${S.white}</button><button data-sa="six">${S.six}</button><button data-sa="sosl">${S.sosL}</button></div><p class="s-mut">${S.lightNote}</p></section>
     <section class="sos-sec"><h2>${S.sig}</h2><p>${S.sigTxt}</p>${gl('emergency', 'signals', G.emergency.title)}</section>
     <section class="sos-sec"><h2>${S.warm}</h2><p>${S.warmTxt}</p>${gl('emergency', 'wait', G.emergency.title)}${gl('kantgrop', '', G.kantgrop.title)}</section>
     <section class="sos-sec"><h2>${S.bat}</h2><p class="s-mut" id="sosBat"></p><p>${S.batTxt}</p>${gl('emergency', 'battery', G.emergency.title)}</section>
   </div>`;
   sosBattery();
 }
-function openSos(){
+function openSos(here){
   if (!sosEl.hidden) return;
   if (!state.sosOpen){ state.sosOpen = true; state.sosHue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null; save(); }
   sosPosMsg = ''; renderSos(); sosEl.hidden = false; sosEl.scrollTop = 0;
   document.body.classList.add('sosopen');
-  history.pushState(Object.assign({}, history.state || {}, {sos:true}), '');
+  if (!here) history.pushState(Object.assign({}, history.state || {}, {sos:true}), '');
 }
 function closeSos(fromPop){
   state.sosOpen = false; save();
@@ -4321,9 +4338,10 @@ sosEl.addEventListener('click', e => {
   if (!a) return;
   const k = a.dataset.sa;
   if (k === 'exit') closeSos();
-  else if (k === 'hue'){ state.sosHue = state.sosHue === 'green' ? 'red' : 'green'; save(); renderSos(); }
+  else if (k === 'hue'){ state.sosHue = a.dataset.h || null; save(); renderSos(); } // 0.11.2: Vanlig, Rødt or Grønt, any time
   else if (k === 'pos') sosGetPos();
   else if (k === 'white') openLight('white');
+  else if (k === 'six') openLight('six');
   else if (k === 'sosl') openLight('sos');
 });
 /* hold a Nødmodus button 1 s (delegated, the buttons are redrawn with the page; works in Regnlås) */
