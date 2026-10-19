@@ -802,6 +802,55 @@ test.describe('nødmodus', () => {
     await ctx.close();
   });
 
+  // From build 53 (0.11.3): Nødmodus fetches a fresh position when it opens, and says plainly how fresh it is
+  test('fresh position on open, old position marked, time in the SMS', async ({browser}) => {
+    // with location allowed: an old saved position is replaced straight away
+    let ctx = await ctxFor(browser, {permissions:['geolocation'], geolocation:{latitude:60.39, longitude:5.32, accuracy:9}});
+    let p = await ctx.newPage();
+    let err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', pos:{lat:59.91, lon:10.75, t:Date.now() - 3 * 3600000, acc:12}});
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos .sos-pos')).toContainText('60.39000° N, 5.32000° Ø');
+    await expect(p.locator('#sos .sos-st.sos-ok')).toContainText('Posisjon funnet');
+    await expect(p.locator('#sos .sos-warn')).toHaveCount(0);
+    const href = await p.locator('#sos a[href^="sms:"]').getAttribute('href');
+    expect(decodeURIComponent(href)).toContain('60.39000° N, 5.32000° Ø');
+    expect(decodeURIComponent(href)).toContain('målt');
+    const saved = await p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+    expect(saved.pos.lat, 'the fresh position is kept after Nødmodus').toBeCloseTo(60.39, 5);
+    await p.locator('#sos [data-sa="exit"]').click();
+    const kept = await p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+    expect(kept.pos.lat).toBeCloseTo(60.39, 5);
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+    // without location: the old position stays, clearly marked old, and the error is shown
+    ctx = await ctxFor(browser);
+    p = await ctx.newPage();
+    err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', pos:{lat:59.91, lon:10.75, t:Date.now() - 3 * 3600000, acc:12}});
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos .sos-pos')).toContainText('59.91000° N, 10.75000° Ø');
+    await expect(p.locator('#sos .sos-warn').filter({hasText:'Gammel posisjon'})).toContainText('3 t');
+    await expect(p.locator('#sos .sos-st.sos-ok')).toHaveCount(0);
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+    // poor accuracy is flagged
+    ctx = await ctxFor(browser, {permissions:['geolocation'], geolocation:{latitude:60.39, longitude:5.32, accuracy:850}});
+    p = await ctx.newPage();
+    err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'en'});
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos .sos-warn')).toContainText('Uncertain position (±850 m)');
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
   test('numbers follow the place', async ({browser}) => {
     for (const [pos, nums] of [[{lat:48.14, lon:11.58, t:1}, [/112/]], [{lat:40.71, lon:-74.0, t:1}, []]]){
       const ctx = await ctxFor(browser);
