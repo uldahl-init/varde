@@ -458,6 +458,9 @@ body.night .lt-btn{--lc:currentColor}
 .sos a.sos-call{display:flex;align-items:center;gap:16px;min-height:64px;margin:8px 0;padding:8px 16px;text-decoration:none}
 .sos-call b{font-size:2rem;min-width:3.1ch;font-variant-numeric:tabular-nums}
 .sos-call span{font-weight:400;line-height:1.3}
+.sos .sos-st{margin:4px 0 8px;font-weight:600;font-size:1.1rem}
+.sos .sos-st.sos-ok{color:var(--s-fg)}
+.sos .sos-st.sos-warn{color:var(--s-fg);border:2px solid var(--s-sig);border-radius:12px;padding:8px 12px}
 .sos-pos{font-size:1.55rem!important;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.25!important}
 .sos-row{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
 .sos-row > *{flex:1 1 150px;min-height:56px;padding:8px 12px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
@@ -715,8 +718,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.11.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 52;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.11.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 53;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -756,7 +759,7 @@ const UI = {
       ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
     help:'Help', sharedLists:'Shared lists', noShared:'Lists others share with you end up here.', howTool:`How to use ${APP_NAME}`, sunTitle:'Sun', getPos:'Get position (GPS)', updPos:'Update position', posFrom:(p,w)=>`Position ${p}, from ${w}`, posWait:'Getting position…', posErr:`Could not get a position. Check that location is allowed for ${APP_NAME}, and try again outdoors.`,
-    posNote:'The position is fetched only when you tap Get position or Update position. It is stored only on your phone and sent nowhere. It is used for the sun and moon, the compass and to choose the right weather and avalanche links. GPS works without mobile coverage.',
+    posNote:'The position is fetched when you tap Get position or Update position, and automatically when you open Emergency mode. It is stored only on your phone and sent nowhere. It is used for the sun and moon, the compass and to choose the right weather and avalanche links. GPS works without mobile coverage.',
     sunrise:'Sunrise', sunset:'Sunset', twilight:'Twilight', daylight:'Daylight', dusk:'Light until', golden:'Golden hour',
     untilSet:d=>`Sunset in ${d}`, untilRise:d=>`Sunrise in ${d}`, sunDown:'The sun has set', midnightSun:'Midnight sun: the sun does not set this day.', polarNight:'Polar night: the sun does not rise this day.',
     sunCaveat:'Calculated for a flat horizon. In mountains and valleys the sun disappears behind the terrain earlier.', date:'Date',
@@ -766,7 +769,7 @@ const UI = {
       noteEu:'112 works in the whole EU/EEA and in many other countries in Europe. Find the local numbers before the trip and save them on your phone.',
       noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number', police:'Police, who also lead rescue on land', fire:'Fire', callNo:'In an emergency: call <b>113</b> for injury or illness, or <b>112</b> (police), who also lead rescue on land.', callEu:'In an emergency: call <b>112</b>.', callFar:'In an emergency: call the local emergency number, and find it before the trip.',
       phone:'Most phones also have a built-in emergency function. Learn how it works on your phone at home.',
-      where:'The numbers follow the position you fetched on Compass. With no position, the Norwegian numbers are shown.'},
+      where:'The numbers follow the last position fetched, on Compass or in Emergency mode. With no position, the Norwegian numbers are shown.'},
     fishRules:{title:'Fishing licences and rules', intro:'The rules vary between lakes, rivers and regions. Always check the local rules where you fish.', linksHd:'Useful links', secs:[
       ['Fresh water','<p>You need a fishing licence or permission from whoever owns the fishing rights, usually the landowner. Licences are sold locally or online.</p>'],
       ['Children under 16','<p>Children fish for free with rod and handline for freshwater fish from 1 January to 20 August, in lakes and rivers without salmon, sea trout and sea char. Where licences are sold, they are entitled to a free one. Waters where an exception has been made must be marked with signs.</p>'],
@@ -830,7 +833,10 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     sos:{title:'Emergency mode', exit:'Exit emergency mode', tap:'tap', six:'6 a minute', hueG:'Green', hueR:'Red', hueN:'Normal', hueLbl:'Colours', holdMsg:'Hold Emergency mode for 1 second to open it.',
       call:'Call for help', aml:'Most newer phones send your position automatically when you call.',
       pos:'Position', posNone:'No position saved. Tap Get position, or find the coordinates in your phone’s map app.', sms:'Send position by SMS',
-      smsNote:'Your messages app opens with the text written. It is sent only when you press send.', smsText:c => `My position: ${c} (WGS84)`,
+      smsNote:'Your messages app opens with the text written. It is sent only when you press send.', smsText:(c, w) => `My position: ${c} (WGS84), measured ${w}`,
+      posFind:'Getting position…', posFound:w => `Position found at ${w}`, posOld:a => `Old position, measured ${a} ago. Tap Update position, preferably in the open.`,
+      posRough:m => `Uncertain position (±${m} m). Tap Update position, preferably in the open.`,
+      ago:{min:n => `${n} min`, h:n => `${n} h`, d:n => n === 1 ? '1 day' : `${n} days`},
       light:'Light', white:'Screen light', sosL:'SOS flashes', lightNote:'6 a minute is the alpine distress signal: a flash every ten seconds, then a minute’s pause. SOS is the signal from the sea. Set the brightness on the phone, and slide the handle at the bottom to turn the light off.',
       sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
@@ -846,7 +852,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
       ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>'],
-      ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
+      ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -974,7 +980,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
     help:'Hjelp', sharedLists:'Delte lister', noShared:'Lister andre deler med deg havner her.', howTool:`Slik bruker du ${APP_NAME}`, sunTitle:'Sol', getPos:'Hent posisjon (GPS)', updPos:'Oppdater posisjon', posFrom:(p,w)=>`Posisjon ${p}, hentet ${w}`, posWait:'Henter posisjon…', posErr:`Fikk ikke posisjon. Sjekk at ${APP_NAME} har lov til å bruke posisjon, og prøv igjen ute.`,
-    posNote:'Posisjonen hentes bare når du trykker Hent posisjon eller Oppdater posisjon. Den lagres bare på mobilen og sendes ingen steder. Den brukes til sol og måne, kompasset og til å velge riktige vær- og skredlenker. GPS virker uten mobildekning.',
+    posNote:'Posisjonen hentes når du trykker Hent posisjon eller Oppdater posisjon, og automatisk når du åpner Nødmodus. Den lagres bare på mobilen og sendes ingen steder. Den brukes til sol og måne, kompasset og til å velge riktige vær- og skredlenker. GPS virker uten mobildekning.',
     sunrise:'Soloppgang', sunset:'Solnedgang', twilight:'Skumringslys', daylight:'Dagslys', dusk:'Lyst til', golden:'Gyllen time',
     untilSet:d=>`Solnedgang om ${d}`, untilRise:d=>`Soloppgang om ${d}`, sunDown:'Solen har gått ned', midnightSun:'Midnattssol: solen går ikke ned denne dagen.', polarNight:'Mørketid: solen står ikke opp denne dagen.',
     sunCaveat:'Regnet ut for flat horisont. I fjell og daler forsvinner solen bak terrenget tidligere.', date:'Dato',
@@ -984,7 +990,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       noteEu:'112 virker i hele EU/EØS og i mange andre land i Europa. Finn de lokale numrene før turen, og lagre dem på mobilen.',
       noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret', police:'Politiet, som også leder redningsaksjoner på land', fire:'Brann', callNo:'I en nødsituasjon: ring <b>113</b> ved skade eller sykdom, eller <b>112</b> (politiet), som også leder redningsaksjoner på land.', callEu:'I en nødsituasjon: ring <b>112</b>.', callFar:'I en nødsituasjon: ring det lokale nødnummeret, og finn det før turen.',
       phone:'De fleste mobiler har også en innebygd nødfunksjon. Lær hvordan den virker på din mobil hjemme.',
-      where:'Numrene følger posisjonen du har hentet på Kompass. Uten posisjon vises de norske numrene.'},
+      where:'Numrene følger den sist hentede posisjonen, fra Kompass eller Nødmodus. Uten posisjon vises de norske numrene.'},
     fishRules:{title:'Fiskekort og regler', intro:'Reglene varierer mellom vann, elver og landsdeler. Sjekk alltid de lokale reglene der du skal fiske.', linksHd:'Nyttige lenker', secs:[
       ['Ferskvann','<p>Du trenger fiskekort eller tillatelse fra den som eier fiskeretten, oftest grunneieren. Fiskekort kjøpes lokalt eller på nett.</p>'],
       ['Barn under 16 år','<p>Barn fisker gratis med stang og håndsnøre etter innlandsfisk fra 1. januar til og med 20. august, i vann og vassdrag uten laks, sjøørret og sjørøye. Der det selges fiskekort, har de rett på gratis kort. Vann der det er gjort unntak fra denne retten, skal være merket med skilt.</p>'],
@@ -1048,7 +1054,10 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     sos:{title:'Nødmodus', exit:'Avslutt nødmodus', tap:'trykk', six:'6 i minuttet', hueG:'Grønt', hueR:'Rødt', hueN:'Vanlig', hueLbl:'Farger', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.',
       call:'Ring etter hjelp', aml:'De fleste nyere mobiler sender posisjonen din automatisk når du ringer.',
       pos:'Posisjon', posNone:'Ingen posisjon lagret. Trykk Hent posisjon, eller finn koordinatene i kartappen på mobilen.', sms:'Send posisjon på SMS',
-      smsNote:'Meldingsappen åpnes med teksten skrevet. Den sendes bare når du selv trykker send.', smsText:c => `Min posisjon: ${c} (WGS84)`,
+      smsNote:'Meldingsappen åpnes med teksten skrevet. Den sendes bare når du selv trykker send.', smsText:(c, w) => `Min posisjon: ${c} (WGS84), målt ${w}`,
+      posFind:'Henter posisjon…', posFound:w => `Posisjon funnet kl. ${w}`, posOld:a => `Gammel posisjon, målt for ${a} siden. Trykk Oppdater posisjon, gjerne i åpent lende.`,
+      posRough:m => `Usikker posisjon (±${m} m). Trykk Oppdater posisjon, gjerne i åpent lende.`,
+      ago:{min:n => `${n} min`, h:n => `${n} t`, d:n => n === 1 ? '1 døgn' : `${n} døgn`},
       light:'Lys', white:'Skjermlys', sosL:'SOS-blink', lightNote:'6 i minuttet er det alpine nødsignalet: et blink hvert tiende sekund, så ett minutt pause. SOS er signalet fra sjøen. Lysstyrken stiller du på mobilen, og du drar håndtaket nederst for å slå av lyset.',
       sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
@@ -1064,7 +1073,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
       ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>'],
-      ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
+      ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -4262,7 +4271,8 @@ function closeLight(){
    Numbers come from emPlace() like everywhere else. Calls and SMS go through the phone's own apps, only when you press. */
 const ICO_SOS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/></svg>';
 const sosEl = $('sos');
-let sosBack = false, sosPosMsg = '';
+let sosBack = false, sosBusy = false, sosFailed = false, sosTick = null;
+const SOS_OLD_MS = 15 * 60000, SOS_ROUGH_M = 100; // 0.11.3: older than 15 min = old; worse than ±100 m = uncertain
 function sosBtn(small){
   const T = t();
   return `<button class="sos-btn${small ? ' small' : ''}" data-sos-hold aria-label="${esc(T.sos.title + ', ' + T.holdShort)}">${ICO_SOS}<span>${T.sos.title}</span><small>${T.holdShort}</small><i class="fill"></i></button>`;
@@ -4277,6 +4287,23 @@ function sosBattery(){
     navigator.getBattery().then(b => { const e = $('sosBat'); if (e) e.textContent = t().sos.batLvl(Math.round(b.level * 100)); }).catch(() => {});
   } catch(e){}
 }
+/* 0.11.3: Nødmodus says plainly how fresh the position is: getting it, found (with time), old (with age) or uncertain */
+function sosWhen(p){ return new Date(p.t || Date.now()).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); }
+function sosAge(ms){
+  const A = t().sos.ago, m = Math.max(1, Math.round(ms / 60000));
+  return m < 60 ? A.min(m) : m < 48 * 60 ? A.h(Math.round(m / 60)) : A.d(Math.round(m / 1440));
+}
+function sosStat(){
+  const T = t(), S = T.sos, p = state.pos;
+  let h = sosBusy ? `<p class="sos-st">${S.posFind}</p>` : sosFailed ? `<p class="sos-st sos-warn">${T.posErr}</p>` : '';
+  if (!p || typeof p.lat !== 'number') return h;
+  const age = Date.now() - (p.t || 0);
+  if (age > SOS_OLD_MS) return h + `<p class="sos-st sos-warn">${S.posOld(sosAge(age))}</p>`;
+  if (!sosBusy && !sosFailed) h += `<p class="sos-st sos-ok">${S.posFound(new Date(p.t).toLocaleTimeString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {hour:'2-digit', minute:'2-digit'}))}</p>`;
+  if (p.acc && p.acc > SOS_ROUGH_M) h += `<p class="sos-st sos-warn">${S.posRough(Math.round(p.acc))}</p>`;
+  return h;
+}
+function sosStatTick(){ const e = $('sosStat'); if (e && !sosEl.hidden) e.innerHTML = sosStat(); }
 function renderSos(){
   const T = t(), S = T.sos, E = T.em, pl = emPlace(region(state.pos)), p = state.pos, G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
   sosEl.className = 'sos' + (state.sosHue === 'red' ? ' h-red' : state.sosHue === 'green' ? ' h-green' : '');
@@ -4285,12 +4312,11 @@ function renderSos(){
   const gl = (k, sec, lbl) => `<button class="sos-glink" data-sg="${k}"${sec ? ` data-ss="${sec}"` : ''}>${lbl} ›</button>`;
   let pos;
   if (p && typeof p.lat === 'number'){
-    const when = new Date(p.t || Date.now()).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-    pos = `<p class="sos-pos">${sosCoord(p)}</p><p class="s-mut">${p.acc ? '±' + Math.round(p.acc) + ' m · ' : ''}${when}</p>
-      <div class="sos-row"><a class="sos-act" href="sms:?body=${encodeURIComponent(S.smsText(sosCoord(p)))}">${S.sms}</a><button data-sa="pos">${T.updPos}</button></div>
+    const when = sosWhen(p);
+    pos = `<div id="sosStat">${sosStat()}</div><p class="sos-pos">${sosCoord(p)}</p><p class="s-mut">${p.acc ? '±' + Math.round(p.acc) + ' m · ' : ''}${when}</p>
+      <div class="sos-row"><a class="sos-act" href="sms:?body=${encodeURIComponent(S.smsText(sosCoord(p), when))}">${S.sms}</a><button data-sa="pos">${T.updPos}</button></div>
       <p class="s-mut">${S.smsNote}</p>`;
-  } else pos = `<p>${S.posNone}</p><div class="sos-row"><button data-sa="pos">${T.getPos}</button></div>`;
-  if (sosPosMsg) pos += `<p class="s-mut">${sosPosMsg}</p>`;
+  } else pos = `<div id="sosStat">${sosStat()}</div>` + (sosBusy ? '' : `<p>${S.posNone}</p><div class="sos-row"><button data-sa="pos">${T.getPos}</button></div>`);
   sosEl.innerHTML = `<div class="sos-in">
     <div class="sos-top"><h1>${ICO_SOS}${S.title}</h1></div>
     <button class="sos-x" data-sa="exit">${S.exit}<small>${S.tap}</small></button>
@@ -4307,23 +4333,28 @@ function renderSos(){
 function openSos(here){
   if (!sosEl.hidden) return;
   if (!state.sosOpen){ state.sosOpen = true; state.sosHue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null; save(); }
-  sosPosMsg = ''; renderSos(); sosEl.hidden = false; sosEl.scrollTop = 0;
+  sosFailed = false; renderSos(); sosEl.hidden = false; sosEl.scrollTop = 0;
   document.body.classList.add('sosopen');
+  sosGetPos(); // 0.11.3: a fresh position straight away, so a stressed user never reads an old one as current
+  clearInterval(sosTick); sosTick = setInterval(sosStatTick, 30000);
   if (!here) history.pushState(Object.assign({}, history.state || {}, {sos:true}), '');
 }
 function closeSos(fromPop){
-  state.sosOpen = false; save();
+  state.sosOpen = false; save(); clearInterval(sosTick);
   sosEl.hidden = true; document.body.classList.remove('sosopen');
   if (!fromPop && history.state && history.state.sos){ ignorePop = true; history.back(); }
 }
 function sosGetPos(){
   const T = t();
-  if (!navigator.geolocation){ sosPosMsg = T.posErr; renderSos(); return; }
-  sosPosMsg = T.posWait; renderSos();
+  if (!navigator.geolocation){ sosFailed = true; if (!sosEl.hidden) renderSos(); return; }
+  if (sosBusy) return;
+  sosBusy = true; sosFailed = false;
+  if (!sosEl.hidden) renderSos(); // shows «Henter posisjon…»; an old position stays below it, marked old
   navigator.geolocation.getCurrentPosition(p => {
+    sosBusy = false;
     state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now(), acc:Math.round(p.coords.accuracy || 0) || undefined};
-    save(); sosPosMsg = ''; if (!sosEl.hidden) renderSos();
-  }, () => { sosPosMsg = T.posErr; if (!sosEl.hidden) renderSos(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:60000});
+    save(); if (!sosEl.hidden) renderSos();
+  }, () => { sosBusy = false; sosFailed = true; if (!sosEl.hidden) renderSos(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:60000});
 }
 sosEl.addEventListener('click', e => {
   const g = e.target.closest('[data-sg]');
