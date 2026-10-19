@@ -446,6 +446,7 @@ for (const L of LANGS){
 
     // From build 45 (0.9.1): Møte med dyr, reached from the tick lines in the list, with the emergency number in Hoggorm.
     test('Møte med dyr: list links and emergency number', async ({page}) => {
+      await page.locator('#main [data-act="foldAll"]').click(); // from build 48 the list starts folded
       await page.locator('#main [data-bag="std:firstaid"]').click();
       await page.locator('#main li.item[data-item="std:firstaid:pinsett (flått, fliser)"] [data-act="openGuide"]').click();
       await expect(page.locator('#main details[data-sec="ticks"]')).toHaveAttribute('open', '');
@@ -504,6 +505,80 @@ for (const L of LANGS){
       await ctx.close();
     });
 
+    // From build 48 (0.10.0): the start state. A fresh start opens Pakkliste folded; a reload (the update reload, or the app
+    // coming back) keeps the page; Utemodus shows the list as one row and no Turtype; Start på nytt also resets Lett dagstur and Nattlys.
+    test('start state: fresh start, reload, Utemodus page and Start på nytt', async ({browser}) => {
+      const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}});
+      const p = await ctx.newPage();
+      const err = watchErrors(p);
+      const st = {lists:[], hidePacked:false, introDone:true, lastNav:{tab:'guide', view:null},
+        std:{done:{}, modes:{}, light:{'std:firstaid':true}, open:{'std:start':true}}, v:2, night:true, nightHue:'red'};
+      await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+      await p.goto('./');
+      // fresh start: Pakkliste, every category folded, even though the last page was Guider
+      await expect(p.locator('#tabbar [data-tab="list"]')).toHaveAttribute('aria-current', 'page');
+      await expect(p.locator('#main section.cat').first()).toBeVisible();
+      await expect(p.locator('#main section.cat:not(.closed)')).toHaveCount(0);
+      // a reload keeps the page and the folds
+      await p.locator('#main section.cat .cat-head').first().click();
+      await expect(p.locator('#main section.cat:not(.closed)')).toHaveCount(1);
+      await p.locator('#tabbar [data-tab="compass"]').click();
+      await p.reload();
+      await expect(p.locator('#tabbar [data-tab="compass"]')).toHaveAttribute('aria-current', 'page');
+      await p.locator('#tabbar [data-tab="list"]').click();
+      await expect(p.locator('#main section.cat:not(.closed)')).toHaveCount(1);
+      // Utemodus: one list row, folded; no Turtype; opening it shows the tools and the folded categories
+      await p.locator('#main [data-act="fieldToggle"]').click();
+      const row = p.locator('#main [data-act="fieldList"]');
+      await expect(row).toHaveAttribute('aria-expanded', 'false');
+      await expect(p.locator('#main section.cat')).toHaveCount(0);
+      await expect(p.locator('#main [data-act="modesToggle"]')).toHaveCount(0);
+      await row.click();
+      await expect(row).toHaveAttribute('aria-expanded', 'true');
+      await expect(p.locator('#main section.cat').first()).toBeVisible();
+      await expect(p.locator('#main [data-act="foldAll"]')).toBeVisible();
+      await expect(p.locator('#main [data-act="modesToggle"]')).toHaveCount(0);
+      // a new window is a fresh start: Utemodus stays on, the list row and categories are folded again
+      const p2 = await ctx.newPage();
+      const err2 = watchErrors(p2);
+      await p2.goto('./');
+      await expect(p2.locator('#main [data-act="fieldList"]')).toHaveAttribute('aria-expanded', 'false');
+      await p2.locator('#main [data-act="fieldList"]').click();
+      await expect(p2.locator('#main section.cat:not(.closed)')).toHaveCount(0);
+      // Start på nytt (Utemodus off): Lett dagstur and Nattlys are reset, every category folded
+      await p2.locator('#main [data-act="fieldToggle"]').click();
+      await p2.locator('#listBtn').click();
+      await p2.locator('#main [data-la="startOver"]').click();
+      await p2.locator('#panel [data-s="ok"]').click();
+      await expect(p2.locator('#main section.cat').first()).toBeVisible();
+      await expect(p2.locator('#main section.cat:not(.closed)')).toHaveCount(0);
+      const saved = await p2.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+      expect(saved.std.light, 'Lett dagstur reset').toEqual({});
+      expect(saved.night, 'Nattlys off').toBe(false);
+      await p2.waitForTimeout(200);
+      expect(err.concat(err2), 'no errors in the start state test').toEqual([]);
+      await ctx.close();
+    });
+
+    // From build 48 (0.10.0): Om rådene uses the same place rules as every other emergency number.
+    test('Om rådene: emergency line by place', async ({browser}) => {
+      const places = [[null, ['113', '112']], [{lat:59.91, lon:10.75}, ['113', '112']], [{lat:48.14, lon:11.58}, ['112']], [{lat:40.71, lon:-74.0}, []]];
+      for (const [pos, nums] of places){
+        const ctx = await browser.newContext({locale: L.locale, serviceWorkers: 'block', viewport: {width: 390, height: 780}});
+        const p = await ctx.newPage();
+        const err = watchErrors(p);
+        await p.addInitScript(([key, pos]) => { try { localStorage.setItem(key, JSON.stringify(Object.assign({lists:[], hidePacked:false, introDone:true}, pos ? {pos} : {}))); } catch(e){} }, [KEY, pos]);
+        await p.goto('./');
+        await p.locator('#listBtn').click();
+        await expect(p.locator('#main .em-call b'), `numbers at ${JSON.stringify(pos)}`).toHaveText(nums);
+        await p.locator('#main [data-act="openGuide"][data-guide="meds"][data-sec="help"]').click();
+        await expect(p.locator('#main details[data-sec="help"]')).toHaveAttribute('open', '');
+        await p.waitForTimeout(200);
+        expect(err, `no errors at ${JSON.stringify(pos)}`).toEqual([]);
+        await ctx.close();
+      }
+    });
+
     test('tapping the current tab scrolls to the top', async ({page}) => {
       const all = page.locator('#main [data-act="foldAll"]');
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
@@ -552,6 +627,9 @@ test.describe('nattlys', () => {
       await p.goto('./');
       const found = {};
       const check = async name => { const r = await p.evaluate(audit, hue); if (r.length) found[name] = r; };
+      // 0.10.0: in Utemodus the list is one row; open it and every category before checking
+      await p.locator('#main [data-act="fieldList"]').click();
+      await p.locator('#main [data-act="foldAll"]').click();
       await check('list');
       await p.locator('#tabbar [data-tab="notes"]').click(); await check('notes');
       await p.locator('#main [data-act="openNote"][data-id="a"]').click(); await check('note');
