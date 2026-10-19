@@ -668,3 +668,119 @@ test.describe('nattlys', () => {
     }
   });
 });
+
+/* ---------- From build 50 (0.11.0): Nødmodus ----------
+   Opened by holding a Nødmodus button 1 s (also in Regnlås); numbers by place; position and SMS; lights; guide links lead back;
+   Avslutt and Back close it; a reload while it is open opens it again. */
+test.describe('nødmodus', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+  };
+  const slideOff = async p => {
+    const k = await p.locator('#slKnob').boundingBox(), tr = await p.locator('#slTrack').boundingBox();
+    await p.mouse.move(k.x + k.width / 2, k.y + k.height / 2); await p.mouse.down();
+    for (let i = 1; i <= 10; i++) await p.mouse.move(k.x + k.width / 2 + (tr.width - k.width) * i / 10, k.y + k.height / 2);
+    await p.mouse.up();
+    await expect(p.locator('#slight')).toBeHidden();
+  };
+  const hold = async (p, sel, ms) => {
+    const b = await p.locator(sel).first().boundingBox();
+    await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await p.mouse.down(); await p.waitForTimeout(ms); await p.mouse.up();
+  };
+
+  test('buttons, hold to open, numbers, exit, Back and reopening', async ({browser}) => {
+    const ctx = await ctxFor(browser);
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no'});
+    // Pakkliste: no button outside Utemodus; Guider: always; Nødsituasjon: at the top
+    await expect(p.locator('#main [data-sos-hold]')).toHaveCount(0);
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await expect(p.locator('#main [data-sos-hold]')).toHaveCount(1);
+    await p.locator('#main [data-open="emergency"]').click();
+    await expect(p.locator('#main [data-sos-hold]')).toHaveCount(1);
+    // a short tap does not open it
+    await hold(p, '#main [data-sos-hold]', 150);
+    await expect(p.locator('#sos')).toBeHidden();
+    // holding 1 s opens it; no position = Norway: 113, 112, 110
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos')).toBeVisible();
+    await expect(p.locator('#sos a.sos-call')).toHaveText([/113/, /112/, /110/]);
+    // a guide link opens the guide, and its back button leads back to Nødmodus
+    await p.locator('#sos [data-sg="kantgrop"]').click();
+    await expect(p.locator('#sos')).toBeHidden();
+    await expect(p.locator('#main [data-act="sosReturn"]')).toHaveCount(1);
+    await p.locator('#main [data-act="sosReturn"]').click();
+    await expect(p.locator('#sos')).toBeVisible();
+    // a reload while it is open opens it again
+    await p.reload();
+    await expect(p.locator('#sos')).toBeVisible();
+    // Avslutt closes it; Back closes it too
+    await p.locator('#sos [data-sa="exit"]').click();
+    await expect(p.locator('#sos')).toBeHidden();
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos')).toBeVisible();
+    await p.goBack();
+    await expect(p.locator('#sos')).toBeHidden();
+    const saved = await p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+    expect(saved.sosOpen, 'closed is saved').toBe(false);
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('Utemodus and Regnlås, position, SMS, lights and night colours', async ({browser}) => {
+    const ctx = await ctxFor(browser);
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true, rainLocked:true, night:true, nightHue:'green',
+      pos:{lat:59.91, lon:10.75, t:Date.now(), acc:12}});
+    // the button sits above the Utemodus button and works in Regnlås
+    const order = await p.locator('#main > .sos-btn, #main > .field-btn').evaluateAll(els => els.map(e => e.className.split(' ')[0]));
+    expect(order.slice(0, 2)).toEqual(['sos-btn', 'field-btn']);
+    await hold(p, '#main [data-sos-hold]', 1200);
+    await expect(p.locator('#sos')).toBeVisible();
+    await expect(p.locator('#sos')).toHaveClass(/h-green/);
+    await expect(p.locator('#sos .sos-pos')).toContainText('59.91000° N, 10.75000° Ø');
+    await expect(p.locator('#sos .sos-pos + .s-mut')).toContainText('±12 m');
+    const href = await p.locator('#sos a[href^="sms:"]').getAttribute('href');
+    expect(decodeURIComponent(href)).toContain('59.91000° N, 10.75000° Ø');
+    // switch to red
+    await p.locator('#sos [data-sa="hue"]').click();
+    await expect(p.locator('#sos')).toHaveClass(/h-red/);
+    // white screen light, then SOS flashes white and black
+    await p.locator('#sos [data-sa="white"]').click();
+    await expect(p.locator('#slight')).toBeVisible();
+    expect(await p.locator('#slight').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
+    await slideOff(p);
+    await p.locator('#sos [data-sa="sosl"]').click();
+    const seen = new Set();
+    for (let i = 0; i < 12; i++){ seen.add(await p.locator('#slight').evaluate(el => getComputedStyle(el).backgroundColor)); await p.waitForTimeout(150); }
+    expect([...seen].sort()).toEqual(['rgb(0, 0, 0)', 'rgb(255, 255, 255)']);
+    await p.mouse.click(10, 10); // the slide track shows again on a touch
+    await slideOff(p);
+    await expect(p.locator('#sos')).toBeVisible();
+    await p.waitForTimeout(200);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('numbers follow the place', async ({browser}) => {
+    for (const [pos, nums] of [[{lat:48.14, lon:11.58, t:1}, [/112/]], [{lat:40.71, lon:-74.0, t:1}, []]]){
+      const ctx = await ctxFor(browser);
+      const p = await ctx.newPage();
+      const err = watchErrors(p);
+      await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', pos});
+      await p.locator('#tabbar [data-tab="guide"]').click();
+      await hold(p, '#main [data-sos-hold]', 1200);
+      await expect(p.locator('#sos a.sos-call'), JSON.stringify(pos)).toHaveText(nums);
+      await p.waitForTimeout(200);
+      expect(err).toEqual([]);
+      await ctx.close();
+    }
+  });
+});

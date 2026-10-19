@@ -436,6 +436,39 @@ body.night .lt-btn{--lc:currentColor}
 @keyframes lockPulse{0%{outline-offset:0;outline-color:var(--red)}75%{outline-offset:7px;outline-color:transparent}100%{outline-offset:7px;outline-color:transparent}}
 @media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
+.sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#e5322b;--s-line:#3a3a3a;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#b00000;--s-sig:#ff0000;--s-line:#500000}
+.sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000}
+.sos-in{max-width:640px;margin:0 auto}
+.sos-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sos-top h1{flex:1;display:flex;align-items:center;gap:10px;margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;color:var(--s-fg)}
+.sos svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--s-sig);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sos button,.sos a.sos-call,.sos a.sos-act{color:var(--s-fg);background:transparent;border:2px solid var(--s-sig);border-radius:14px;font:inherit;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sos-hue{min-height:48px;padding:0 14px;font-size:.95rem;border-width:1px!important;border-color:var(--s-line)!important}
+.sos-x{width:100%;min-height:52px;margin-bottom:6px}
+.sos-sec{border-top:1px solid var(--s-line);padding:14px 0 12px}
+.sos-sec h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem;color:var(--s-sig)}
+.sos p{margin:6px 0;line-height:1.45;color:var(--s-fg)}
+.sos .s-mut{color:var(--s-mut);font-size:.95rem}
+.sos .s-mut:empty{display:none}
+.sos a.sos-call{display:flex;align-items:center;gap:16px;min-height:64px;margin:8px 0;padding:8px 16px;text-decoration:none}
+.sos-call b{font-size:2rem;min-width:3.1ch;font-variant-numeric:tabular-nums}
+.sos-call span{font-weight:400;line-height:1.3}
+.sos-pos{font-size:1.55rem!important;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.25!important}
+.sos-row{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.sos-row > *{flex:1 1 150px;min-height:56px;padding:8px 12px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none}
+.sos .sos-glink{display:block;width:100%;margin:8px 0 0;min-height:48px;padding:8px 14px;text-align:left;font-weight:400;border-width:1px;border-color:var(--s-line)}
+body.sosopen{overflow:hidden}
+.sos-btn{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;min-height:60px;margin:0 0 12px;padding:8px 14px;border-radius:16px;border:2px solid #c62828;background:#161616;color:#fff;font:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.sos-btn svg{width:24px;height:24px;flex:none;fill:none;stroke:#ff5a52;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sos-btn small{font-weight:400;font-size:.85rem;opacity:.85}
+.sos-btn .fill{position:absolute;left:0;bottom:0;height:5px;width:0;background:#ff5a52}
+.sos-btn.holding .fill{width:100%;transition:width 1s linear}
+.sos-btn.small{min-height:48px;font-size:1rem;margin:0 0 10px}
+body.locked .sos-btn,body.locked .sos-btn *{pointer-events:auto}
+body.night .sos-btn{background:#000;border-color:var(--ink);color:var(--ink)}
+body.night .sos-btn svg{stroke:currentColor}
+body.night .sos-btn .fill{background:currentColor}
 .slight{position:fixed;inset:0;z-index:60;background:#000;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .slight[hidden]{display:none}
 .sl-note{position:absolute;left:0;right:0;top:calc(18px + env(safe-area-inset-top,0px));margin:0;text-align:center;font-size:.85rem;color:rgba(0,0,0,.55)}
@@ -663,6 +696,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <nav class="tabbar" id="tabbar"></nav>
 <div class="toast" id="toast" hidden></div>
 <div class="rainlock" id="rainlock" hidden></div>
+<div class="sos" id="sos" hidden></div>
 <div class="slight" id="slight" hidden><p class="sl-note" id="slNote"></p><div class="sl-track" id="slTrack"><span id="slTxt"></span><div class="sl-knob" id="slKnob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></div></div></div>
 <div class="intro" id="intro" hidden></div>
 
@@ -677,8 +711,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.10.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 49;         // raised on every commit, together with CACHE ('varde-b49') in sw.js
+const APP_VERSION = '0.11.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 50;         // raised on every commit, together with CACHE ('varde-b50') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -726,7 +760,7 @@ const UI = {
     em:{med:'Medical emergency (ambulance)', gp:'Out-of-hours doctor (legevakt)', poison:'Poisons Information (Giftinformasjonen), open day and night', eu112:'Emergency number in the whole EU/EEA',
       poisonNo:'Norwegian Poisons Information, open day and night', noteNo:'In Norway, 112 goes to the police. Outside Norway: 112 works in the whole EU/EEA. Find the local numbers before the trip.',
       noteEu:'112 works in the whole EU/EEA and in many other countries in Europe. Find the local numbers before the trip and save them on your phone.',
-      noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number', callNo:'In an emergency: call <b>113</b> for injury or illness, or <b>112</b> (police), who also lead rescue on land.', callEu:'In an emergency: call <b>112</b>.', callFar:'In an emergency: call the local emergency number, and find it before the trip.',
+      noteFar:'Find the local emergency number before the trip and save it on your phone.', local:'the local emergency number', police:'Police, who also lead rescue on land', fire:'Fire', callNo:'In an emergency: call <b>113</b> for injury or illness, or <b>112</b> (police), who also lead rescue on land.', callEu:'In an emergency: call <b>112</b>.', callFar:'In an emergency: call the local emergency number, and find it before the trip.',
       phone:'Most phones also have a built-in emergency function. Learn how it works on your phone at home.',
       where:'The numbers follow the position you fetched on Compass. With no position, the Norwegian numbers are shown.'},
     fishRules:{title:'Fishing licences and rules', intro:'The rules vary between lakes, rivers and regions. Always check the local rules where you fish.', linksHd:'Useful links', secs:[
@@ -789,6 +823,14 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
     tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
+    sos:{title:'Emergency mode', exit:'Exit emergency mode', hueG:'Green light', hueR:'Red light', holdMsg:'Hold Emergency mode for 1 second to open it.',
+      call:'Call for help', aml:'Most newer phones send your position automatically when you call.',
+      pos:'Position', posNone:'No position saved. Tap Get position, or find the coordinates in your phone’s map app.', sms:'Send position by SMS',
+      smsNote:'Your messages app opens with the text written. It is sent only when you press send.', smsText:c => `My position: ${c} (WGS84)`,
+      light:'Light', white:'Screen light', sosL:'SOS flashes', lightNote:'Set the brightness on the phone. Slide the handle at the bottom to turn the light off.',
+      sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
+      warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
+      bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and makes the standard list the main list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types and Light day hike are switched off, the standard list becomes the main list and all categories are folded. Outdoor mode, Rain lock, Night light and Hide packed are turned off. Nothing is deleted: lists, notes, links, pack weight, planner figures, your position and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
@@ -796,10 +838,11 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     phoneSub:'Make the phone work for you in bad weather, without depending on it for safety.',
     phone:[
       ['Rain','<p>Water on the screen can register as touches. Wipe the screen with a dry cloth or sleeve before use, it makes the biggest difference. A hydrophobic or matte screen protector makes water bead and run off, and a waterproof pouch keeps the screen itself dry. If your phone has a glove mode or increased touch sensitivity, turn it <b>off</b> in rain, as it makes the screen more sensitive to water too.</p><p>In this app: switch on <b>Outdoor mode</b> and use <b>Rain lock</b>. You can still scroll and read, but taps do nothing. Hold <b>Navigate</b> to change page, and <b>Unlock</b> to switch it off.</p>'],
-      ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>'],
+      ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>']
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>'],
+      ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
     sunTool:'Sunglasses', sunShort:'Choose the right glasses', sunSub:'Wrong glasses can cost you your sight for days, or make it hard to read the terrain. Choose for protection, not for looks.',
@@ -935,7 +978,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     em:{med:'Medisinsk nødhjelp (ambulanse)', gp:'Legevakt', poison:'Giftinformasjonen, åpent hele døgnet', eu112:'Nødnummer i hele EU/EØS',
       poisonNo:'Giftinformasjonen i Norge, åpent hele døgnet', noteNo:'I Norge går 112 til politiet. Utenfor Norge: 112 virker i hele EU/EØS. Finn de lokale numrene før turen.',
       noteEu:'112 virker i hele EU/EØS og i mange andre land i Europa. Finn de lokale numrene før turen, og lagre dem på mobilen.',
-      noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret', callNo:'I en nødsituasjon: ring <b>113</b> ved skade eller sykdom, eller <b>112</b> (politiet), som også leder redningsaksjoner på land.', callEu:'I en nødsituasjon: ring <b>112</b>.', callFar:'I en nødsituasjon: ring det lokale nødnummeret, og finn det før turen.',
+      noteFar:'Finn det lokale nødnummeret før turen, og lagre det på mobilen.', local:'det lokale nødnummeret', police:'Politiet, som også leder redningsaksjoner på land', fire:'Brann', callNo:'I en nødsituasjon: ring <b>113</b> ved skade eller sykdom, eller <b>112</b> (politiet), som også leder redningsaksjoner på land.', callEu:'I en nødsituasjon: ring <b>112</b>.', callFar:'I en nødsituasjon: ring det lokale nødnummeret, og finn det før turen.',
       phone:'De fleste mobiler har også en innebygd nødfunksjon. Lær hvordan den virker på din mobil hjemme.',
       where:'Numrene følger posisjonen du har hentet på Kompass. Uten posisjon vises de norske numrene.'},
     fishRules:{title:'Fiskekort og regler', intro:'Reglene varierer mellom vann, elver og landsdeler. Sjekk alltid de lokale reglene der du skal fiske.', linksHd:'Nyttige lenker', secs:[
@@ -998,6 +1041,14 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
     tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
+    sos:{title:'Nødmodus', exit:'Avslutt nødmodus', hueG:'Grønt lys', hueR:'Rødt lys', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.',
+      call:'Ring etter hjelp', aml:'De fleste nyere mobiler sender posisjonen din automatisk når du ringer.',
+      pos:'Posisjon', posNone:'Ingen posisjon lagret. Trykk Hent posisjon, eller finn koordinatene i kartappen på mobilen.', sms:'Send posisjon på SMS',
+      smsNote:'Meldingsappen åpnes med teksten skrevet. Den sendes bare når du selv trykker send.', smsText:c => `Min posisjon: ${c} (WGS84)`,
+      light:'Lys', white:'Skjermlys', sosL:'SOS-blink', lightNote:'Lysstyrken stiller du på mobilen. Dra håndtaket nederst for å slå av lyset.',
+      sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
+      warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
+      bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og gjør standardlisten til hovedliste, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene og Lett dagstur slås av, standardlisten blir hovedliste og alle kategorier lukkes. Utemodus, Regnlås, nattlys og Skjul pakket slås av. Ingenting slettes: lister, notater, lenker, sekkvekt, tall i planleggerne, posisjonen din og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
@@ -1005,10 +1056,11 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     phoneSub:'Få mobilen til å fungere i dårlig vær, uten å være avhengig av den for sikkerheten.',
     phone:[
       ['Regn','<p>Vann på skjermen kan registreres som berøring. Tørk skjermen med en tørr klut eller ermet før bruk, det utgjør den største forskjellen. En vannavstøtende eller matt skjermbeskytter får vannet til å perle seg og renne av, og et vanntett etui holder selve skjermen tørr. Har mobilen hanskemodus eller økt berøringsfølsomhet, slå det <b>av</b> i regn, for det gjør skjermen mer følsom for vann også.</p><p>I appen: slå på <b>Utemodus</b> og bruk <b>Regnlås</b>. Da kan du rulle og lese, men trykk gjør ingenting. Hold <b>Naviger</b> for å bytte side, og <b>Lås opp</b> for å slå den av.</p>'],
-      ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>'],
+      ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>']
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>'],
+      ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
     sunTool:'Solbriller', sunShort:'Velg riktige briller', sunSub:'Feil briller kan koste deg synet i flere dager, eller gjøre det vanskelig å lese terrenget. Velg for beskyttelse, ikke for utseende.',
@@ -1194,7 +1246,7 @@ function friluftsliv(L){
       ['Før hver tur','Before every trip'],['> Sjekk værmeldingen','> Check the weather forecast'],['> Fortell noen hvor du går og når du er tilbake','> Tell someone your route and when you will be back'],['> Last ned offline kart','> Download offline maps'],
       ['Lading av utstyr','Charging'],['> Mobil','> Phone'],['> GPS','> GPS'],['> Teltlykt (USB)','> Tent lamp (USB)'],['> Hodelykt / håndlykt','> Headlamp / torch'],['> Powerbank(er)','> Power bank(s)'],['> Ekstra batterier (ved behov, som reserve)','> Spare batteries (if needed, as reserve)'],
       ['Komfort (valgfritt)','Comfort (optional)'],['> Bluetooth-høyttaler','> Bluetooth speaker'],['> Headsett','> Headset'],['> Laptop / nettbrett','> Laptop / tablet'],['> Last ned musikk og film for offline bruk','> Download music and films for offline use'],['> Mobilholder','> Phone holder'],
-      ['Sjekk','Checks'],['> Test brenneren','> Test the stove'],['> Sjekk teltet','> Check the tent'],['> Sjekk skredvarselet (varsom.no) (skredterreng)','> Check the avalanche forecast (varsom.no) (avalanche terrain)'],['> Test skredsøkere i gruppen (skredterreng)','> Test transceivers in the group (avalanche terrain)']], {bag:true}),
+      ['Sjekk','Checks'],['> Test brenneren','> Test the stove'],['> Sjekk teltet','> Check the tent'],['> Lær nødfunksjonene på mobilen','> Learn the emergency functions on your phone'],['> Sjekk skredvarselet (varsom.no) (skredterreng)','> Check the avalanche forecast (varsom.no) (avalanche terrain)'],['> Test skredsøkere i gruppen (skredterreng)','> Test transceivers in the group (avalanche terrain)']], {bag:true}),
     C('firstaid','Førstehjelpssett','First aid kit',[
       ['Sår og plaster','Wounds and plasters'],['> * Sårvask-servietter (klorheksidin)','> * Wound cleansing wipes (chlorhexidine)'],['> Engangshansker (2 par)','> Disposable gloves (2 pairs)'],['> * Sportstape','> * Sports tape'],['> Elastisk heftebandasje','> Elastic adhesive bandage'],['> * Gnagsårplaster (min. 4x)','> * Blister plasters (min. 4x)'],['> * Plaster (vanlig)','> * Plasters (regular)'],['> Mikroporøs tape','> Microporous tape'],['> Tekstilplaster (rull)','> Fabric plaster (roll)'],['> Vanntett plaster','> Waterproof plasters'],['> * Sårstrips (lukking av kutt)','> * Wound closure strips (for cuts)'],
       ['Kompresser og bandasjer','Dressings and bandages'],['> Gaskompresser / tupfere','> Gauze swabs'],['> Sterile kompresser (dypere kutt)','> Sterile dressings (deeper cuts)'],['> Enkeltmannspakke (større blødninger)','> Field dressing (larger bleeding)'],['> Elastisk bomullsbandasje (overtråkk, skinner)','> Elastic cotton bandage (sprains, splints)'],['> Kompresjonsbandasje','> Compression bandage'],
@@ -1545,6 +1597,7 @@ function bodyClasses(){
 function render(){
   const T = t();
   state.lastNav = {tab, view};
+  if (!(tab === 'guide' && view && view.indexOf('tool:') === 0)) sosBack = false;
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
   document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
   bodyClasses();
@@ -1612,6 +1665,7 @@ function render(){
     if (hasLight(bag)) html += `<button class="chip${state.listLock ? ' lk' : ''}" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
     html += `<button class="chip" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
   } else {
+    if (state.field) html += sosBtn(false); // 0.11.0: directly above the Utemodus button, only while Utemodus is on
     html += `<button class="field-btn${state.field ? ' on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${ICON_FIELD}<span>${T.field}</span><small>${state.field ? T.fieldOn : T.fieldOff}</small></button>`;
     if (state.field){
       const hue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null;
@@ -1798,9 +1852,10 @@ function renderIndex(){
   const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
     `<h2 class="ix-group g-${gr.key}">${gr.icon ? ICO_HEALTH : ''}${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
   // Søk i Guider (0.5.0): the magnifier sits at the right of the intro line; when open, the field takes that line
-  main.innerHTML = gSearch.open
+  // 0.11.0: the Nødmodus button sits at the top of Guider, always
+  main.innerHTML = sosBtn(true) + (gSearch.open
     ? `<div class="gs-line"><div class="gs-field">${ICO_SEARCH}<input type="search" id="gsInput" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(T.gsLabel)}" aria-label="${esc(T.gsLabel)}" value="${esc(gSearch.q)}"><button class="gs-x" data-act="gsClose" aria-label="${esc(T.gsClose)}">${ICO_CLOSE}</button></div></div><div id="gsBody"></div>`
-    : `<div class="gs-line">${groups.slice(0, groups.indexOf('</p>') + 4)}<button class="gs-btn" data-act="gsOpen" aria-label="${esc(T.gsLabel)}" title="${esc(T.gsLabel)}">${ICO_SEARCH}</button></div>` + groups.slice(groups.indexOf('</p>') + 4);
+    : `<div class="gs-line">${groups.slice(0, groups.indexOf('</p>') + 4)}<button class="gs-btn" data-act="gsOpen" aria-label="${esc(T.gsLabel)}" title="${esc(T.gsLabel)}">${ICO_SEARCH}</button></div>` + groups.slice(groups.indexOf('</p>') + 4));
   if (gSearch.open){
     gsGroupsHtml = groups.slice(groups.indexOf('</p>') + 4);
     gsShow();
@@ -1826,7 +1881,7 @@ let gSearch = {open:false, q:'', focus:false}, gsGroupsHtml = '', gsCache = null
 function gsReset(){ gSearch = {open:false, q:'', focus:false}; }
 function gsPlain(html){
   // guide HTML to plain text: markers out, block tags to spaces, inline tags removed, entities decoded (inert document, nothing loads)
-  let h = String(html || '').replace(/\[\[plan:\w+\]\]/g, ' ').replace(/\[\[em(ergency)?\]\]/g, ' ').replace(/\[\[web:[^|\]]+\|([^\]]+)\]\]/g, '$1');
+  let h = String(html || '').replace(/\[\[plan:\w+\]\]/g, ' ').replace(/\[\[(em|emergency|call|calls)\]\]/g, ' ').replace(/\[\[web:[^|\]]+\|([^\]]+)\]\]/g, '$1');
   h = h.replace(/<\/?(b|i|em|strong|a|span|small|mark|sup|sub|abbr|code)\b[^>]*>/gi, '').replace(/<[^>]*>/g, ' ');
   if (!gsPlain.doc) gsPlain.doc = document.implementation.createHTMLDocument('');
   gsPlain.doc.body.innerHTML = h.replace(/</g, '&lt;');
@@ -1965,6 +2020,21 @@ const GUIDE_TXT = {
       ['Gå på kursen','<ul><li>Sikt på et punkt kurspila peker mot, et tre i skogen eller en knaus på fjellet. Gå dit og sikt på nytt.</li><li>Del turen i etapper mellom sikre punkter på kartet, som vann, veikryss eller bekkekryss, og ta ut ny kurs der.</li><li>Metall og kraftledninger kan dra i nåla. Selv en klokke eller kniv tett inntil kompasset kan gi feil kurs.</li></ul>'],
       ['Misvisning','<p>Kartets nord–sør-linjer peker ikke mot magnetisk nord. Forskjellen kalles misvisning, og den varierer med hvor du er i landet. Du finner den på turkartet du lager på norgeskart.no.</p><p>For en nøyaktig kurs: drei kompasshuset like mange grader som misvisningen etter steg 2, med klokka hvis den er østlig og mot klokka hvis den er vestlig.</p><p>Med 5 graders misvisning bommer du med om lag 90 meter på én kilometer.</p>', 'decl'],
       ['Kart','<p>Turkartet «Norge 1:50 000» kan skrives ut gratis fra norgeskart.no. Ha alltid med kart og kompass, ikke bare mobilen.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
+    emergency:{title:'Nødsituasjon', short:'Når du trenger hjelp', sub:'Når du trenger hjelp på tur.', secs:[
+      ['Ring etter hjelp','[[calls]]<p>Du kan ringe 112 selv om ditt eget mobilselskap ikke har dekning der du er, så lenge et annet nett har det. De fleste nyere mobiler sender posisjonen din automatisk når du ringer et nødnummer.</p>', 'call'],
+      ['Hva du sier','<p>Operatøren leder deg gjennom faste spørsmål: hva som har skjedd, hvor, og om noen er skadet. Svar kort og rolig.</p><p>Vær klar til å si hvor du er: koordinatene fra kartappen eller Nødmodus, stedsnavn, terrenget rundt deg og hvordan dere kom dit. Følg rådene du får mens du venter på hjelp.</p>', 'say'],
+      ['Signaler','<p>Gi seks signaler i minuttet med fløyte, lys eller rop, vent ett minutt, og gjenta. Svaret er tre signaler i minuttet. Dette er det alpine nødsignalet, som brukes i fjellet.</p><p>SOS (tre korte, tre lange, tre korte: • • • — — — • • •) er nødsignalet fra sjøen og er lett å kjenne igjen; Skjermlys i Nødmodus kan blinke det. I en nødsituasjon er ethvert signal som tiltrekker oppmerksomhet godt nok, så bruk det du kan.</p><p>Mot helikopter: begge armene rett opp betyr «ja, vi trenger hjelp». Én arm opp og én ned betyr «nei».</p>', 'signals'],
+      ['Hold varmen og vent','<p>Spar på kreftene og søk ly i tide: bruk vindsekken, eller grav deg ned i snøen. Isoler mot bakken, og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem, så du er lettere å finne.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="kantgrop">Kantgrop ›</button> <button class="btn small" data-nav data-act="openGuide" data-guide="winter">Vinterråd ›</button></p>', 'wait'],
+      ['Spar batteri','<p>Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="phone" data-sec="battery">Mobilen på tur ›</button></p>', 'battery'],
+      ['Førstehjelp','<p>Førstehjelp lærer du best på et kurs, helst før turen. Mens du venter på hjelp, følg rådene fra nødsentralen. Har førstehjelpssettet en veiledning eller plakat, ta den fram.</p>[[web:https://www.helsenorge.no|Helsenorge]][[web:https://nrr.org|Norsk Resuscitasjonsråd: retningslinjer for hjerte-lunge-redning]]', 'firstaid']]},
+    kantgrop:{title:'Kantgrop', short:'Raskt ly i snøen', sub:'Et raskt ly i snøen, for en planlagt natt eller i en nødsituasjon. Blant annet etter Norges idrettshøgskole.', secs:[
+      ['Hvorfor kantgrop','<p>Den er raskere å lage enn en snøhule, rundt en time mot flere timer. Den trenger bare en lav snøkant, ikke en dyp fonn. Den lages i små kanter der skredfaren er lav. Vær to per grop, så begge kan jobbe hele tiden.</p>', 'why'],
+      ['Velg stedet','<p>En snøkant eller fonn på rundt to meter. Sjekk at det er dypt nok med søkestang eller stav. Ikke under bratte heng, i renner eller nær en skavl. Lager dere flere groper, hold minst to meter mellom dem.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="aval">Topptur og skred ›</button></p>', 'site'],
+      ['Slik bygger du den','<p>Grav en grøft rett inn i kanten, rundt 2,5 meter lang, skulderbred og ikke dypere enn til halsen; kast snøen ut og ned. Grav litt inn til sidene nederst, så det blir plass til å ligge.</p><p>Skjær ut snøblokker og legg dem skrått mot hverandre over grøfta, som et saltak; tett fugene med snø og klapp lett.</p><p>Lag inngangen lavere enn liggeflaten, med trinn ned: den kalde luften blir liggende i den lave delen (kuldelåsen). Stikk et lufthull i taket med staven. Merk inngangen med staven eller søkestanga.</p>', 'build'],
+      ['Inne','<p>Ta spaden og utstyret inn, i tilfelle det snør igjen i løpet av natten. Ligg på underlag. Hold lufthullet åpent, og sett staven i det så det ikke blåser tett. Bruk hodelykt til lys. Sjekk inngangen om morgenen etter snøfall.</p>', 'inside'],
+      ['Brenner og kullos','<p>Bruk brenner eller levende lys i gropa bare i en nødsituasjon, for eksempel for å smelte snø til drikke. Kullos er en giftig gass uten lukt og farge, og dannes når noe brenner ufullstendig; i et lite rom kan også oksygenet bli for lite.</p><p>Sørg for rikelig lufting: hold lufthullet og inngangen åpne mens brenneren er i bruk, og kok aldri med inngangen tettet. Sett brenneren på et stødig underlag, som brennerplata, en spade eller en flat stein, så den ikke synker ned i snøen. Det er trangt: hold flammen godt unna tak, vegger, sovepose og klær.</p><p>Følg med på flammen: en gul, urolig flamme på brenneren er et tegn på dårlig forbrenning. En blå flamme betyr likevel ikke at det er trygt, særlig ikke med en gryte over. Slukk brenneren før dere legger dere.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="stoveboard">Brennerplate ›</button></p>', 'stove'],
+      ['Andre ly i snøen','<ul><li><b>Snøhule:</b> gravd vannrett inn i en dyp fonn; varm, men tar lang tid og trenger mye snø. Lages med kuldelås og lufthull, som kantgropa.</li><li><b>Snøgrop:</b> grøft rett ned i flat snø med tak av ski, staver eller snøblokker, når det ikke finnes noen kant.</li><li><b>Vindsekk:</b> ingen graving, det raskeste lyet når det haster.</li></ul>', 'other'],
+      ['Øv først','<p>Grav en kantgrop på en fin dag før du må gjøre det i dårlig vær.</p>', 'practice']]},
     meds:{title:'Medisiner på tur', short:'Hva tablettene er til, og når du skal la være', sub:'Ingen doser her. Les alltid pakningsvedlegget, og spør lege eller apotek hvis du er usikker.', secs:[
       ['Før turen','<ul><li>Les pakningsvedlegget hjemme, mens du har nett. Pakningsvedleggene finnes også på felleskatalogen.no.</li><li><b>Personlige medisiner:</b> Ta med nok til hele turen, og litt ekstra i tilfelle turen blir lengre enn planlagt.</li><li><b>Adrenalinpenn:</b> Ha den lett tilgjengelig, ikke nederst i sekken, og fortell turfølget hvor den er.</li><li>Har du en sykdom, bruker andre medisiner, er gravid eller ammer: spør lege eller apotek før turen om hva du kan ta.</li></ul>[[web:https://www.felleskatalogen.no|Felleskatalogen (pakningsvedlegg)]]', 'prep'],
       ['Smertestillende','<p>Paracetamol og ibuprofen brukes mot milde til moderate smerter og feber. De lindrer, men fjerner ikke årsaken.</p><ul><li><b>Paracetamol:</b> For mye kan gi alvorlig leverskade. Mange legemidler inneholder paracetamol, så ikke ta flere slike samtidig uten å spørre lege eller apotek. Vær forsiktig hvis du drikker mye alkohol.</li><li><b>Ibuprofen</b> (betennelsesdempende): Ikke bruk hvis du har hatt magesår eller mageblødning, hvis slike midler har gitt deg astma, utslett eller rennende nese, ved alvorlig hjerte-, lever- eller nyresvikt, eller hvis du er mer enn 6 måneder gravid. Snakk med lege eller apotek først hvis du har astma, nedsatt nyre- eller leverfunksjon, bruker blodfortynnende eller er gravid.</li><li><b>Ibuprofen og væske:</b> Sterkt væsketap øker faren for nyreskade. Drikk nok, og vær særlig varsom etter oppkast, diaré eller en dag med lite drikke.</li><li>Ikke ta ibuprofen sammen med andre betennelsesdempende midler. Alkohol øker faren for blødning. Ibuprofen kan skjule tegn på infeksjon, som feber og smerter.</li></ul><p>Blir du ikke bedre, eller verre, kontakt lege. Pakningsvedlegget sier når.</p>', 'pain'],
@@ -2045,6 +2115,21 @@ const GUIDE_TXT = {
       ['Following the bearing','<ul><li>Aim at a point the arrow points to, a tree in the forest or a crag in the mountains. Walk there and aim again.</li><li>Split the route into legs between points you are sure of on the map, such as lakes, road junctions or stream junctions, and take a new bearing there.</li><li>Metal and power lines can pull the needle. Even a watch or knife close to the compass can give a wrong bearing.</li></ul>'],
       ['Declination','<p>The map\'s north–south lines do not point to magnetic north. The difference is called declination, and it varies with where you are in the country. You find it on the hiking map you make at norgeskart.no.</p><p>For an accurate bearing, turn the housing by as many degrees as the declination after step 2: clockwise if it is east, anticlockwise if it is west.</p><p>With 5 degrees of declination you miss by about 90 metres over one kilometre.</p>', 'decl'],
       ['Maps','<p>The «Norge 1:50 000» hiking map can be printed free from norgeskart.no. Always bring a map and compass, not just your phone.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
+    emergency:{title:'Emergency', short:'When you need help', sub:'When you need help on a trip.', secs:[
+      ['Call for help','[[calls]]<p>You can call 112 even if your own mobile operator has no coverage where you are, as long as another network has. Most newer phones send your position automatically when you call an emergency number.</p>', 'call'],
+      ['What to say','<p>The operator takes you through set questions: what has happened, where, and whether anyone is injured. Answer briefly and calmly.</p><p>Be ready to say where you are: the coordinates from the map app or Emergency mode, place names, the terrain around you and how you got there. Follow the advice you are given while you wait for help.</p>', 'say'],
+      ['Signals','<p>Give six signals a minute with a whistle, light or shouts, wait one minute, and repeat. The answer is three signals a minute. This is the alpine distress signal, used in the mountains.</p><p>SOS (three short, three long, three short: • • • — — — • • •) is the distress signal from the sea and is easy to recognise; the Screen light in Emergency mode can flash it. In an emergency any signal that draws attention is good enough, so use what you can.</p><p>To a helicopter: both arms straight up means «yes, we need help». One arm up and one down means «no».</p>', 'signals'],
+      ['Keep warm and wait','<p>Save your strength and find shelter in time: use the bivy sack, or dig yourself into the snow. Insulate yourself from the ground, and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them, so you are easier to find.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="kantgrop">Snow trench shelter ›</button> <button class="btn small" data-nav data-act="openGuide" data-guide="winter">Winter advice ›</button></p>', 'wait'],
+      ['Save battery','<p>Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="phone" data-sec="battery">Your phone outdoors ›</button></p>', 'battery'],
+      ['First aid','<p>First aid is best learned on a course, ideally before the trip. While you wait for help, follow the advice from the emergency centre. If the first aid kit has a guide or poster, take it out.</p>[[web:https://www.helsenorge.no|Helsenorge (Norwegian health service)]][[web:https://nrr.org|Norwegian Resuscitation Council: CPR guidelines]]', 'firstaid']]},
+    kantgrop:{title:'Snow trench shelter', short:'A quick shelter in the snow', sub:'A quick shelter in the snow (kantgrop), for a planned night or an emergency. Partly after the Norwegian School of Sport Sciences.', secs:[
+      ['Why a snow trench','<p>It is quicker to make than a snow cave, about an hour against several hours. It only needs a low snow bank, not a deep snowdrift (fonn). It is made in small banks where the avalanche danger is low. Be two to a trench, so both can work all the time.</p>', 'why'],
+      ['Choose the place','<p>A snow bank or drift of about two metres. Check that it is deep enough with a probe or pole. Not below steep slopes, in gullies or near a cornice. If you make several trenches, keep at least two metres between them.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="aval">Ski touring and avalanches ›</button></p>', 'site'],
+      ['How to build it','<p>Dig a trench straight into the bank, about 2.5 metres long, shoulder wide and no deeper than your neck; throw the snow out and down. Dig a little into the sides at the bottom, so there is room to lie.</p><p>Cut snow blocks and lean them against each other over the trench, like a pitched roof; fill the joints with snow and pat lightly.</p><p>Make the entrance lower than the sleeping platform, with steps down: the cold air stays in the low part (the cold trap, kuldelås). Push an air vent through the roof with the pole. Mark the entrance with the pole or the probe.</p>', 'build'],
+      ['Inside','<p>Take the shovel and your gear inside, in case it snows in during the night. Lie on a sleeping pad. Keep the air vent open, and leave the pole in it so it does not blow shut. Use a headlamp for light. Check the entrance in the morning after snowfall.</p>', 'inside'],
+      ['Stove and carbon monoxide','<p>Use a stove or a candle in the trench only in an emergency, for example to melt snow for drinking. Carbon monoxide is a poisonous gas with no smell or colour, formed when something burns incompletely; in a small space the oxygen can also run low.</p><p>Make sure there is plenty of air: keep the air vent and the entrance open while the stove is in use, and never cook with the entrance closed. Put the stove on a steady base, such as the stove board, a shovel or a flat stone, so it does not sink into the snow. It is cramped: keep the flame well away from the roof, walls, sleeping bag and clothes.</p><p>Watch the flame: a yellow, flickering flame on the stove is a sign of poor burning. A blue flame still does not mean it is safe, especially with a pot over it. Turn the stove off before you go to sleep.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="stoveboard">Stove board ›</button></p>', 'stove'],
+      ['Other snow shelters','<ul><li><b>Snow cave:</b> dug sideways into a deep snowdrift; warm, but takes a long time and needs a lot of snow. Made with a cold trap and an air vent, like the trench.</li><li><b>Snow pit:</b> a trench straight down into flat snow with a roof of skis, poles or snow blocks, when there is no bank.</li><li><b>Bivy sack:</b> no digging, the quickest shelter when time is short.</li></ul>', 'other'],
+      ['Practise first','<p>Dig a snow trench on a fine day before you have to do it in bad weather.</p>', 'practice']]},
     meds:{title:'Medicines on the trip', short:'What the tablets are for, and when not to take them', sub:'No doses here. Always read the package leaflet, and ask a doctor or pharmacist if you are unsure.', secs:[
       ['Before the trip','<ul><li>Read the package leaflet at home, while you have a connection. Norwegian package leaflets are also on felleskatalogen.no.</li><li><b>Personal medicines:</b> Bring enough for the whole trip, and a little extra in case it takes longer than planned.</li><li><b>Adrenaline pen:</b> Keep it within easy reach, not at the bottom of the pack, and tell the group where it is.</li><li>If you have an illness, take other medicines, are pregnant or breastfeeding: ask a doctor or pharmacist before the trip what you can take.</li></ul>[[web:https://www.felleskatalogen.no|Felleskatalogen (package leaflets)]]', 'prep'],
       ['Painkillers','<p>Paracetamol (called acetaminophen in some countries) and ibuprofen are used for mild to moderate pain and fever. They relieve the symptoms but do not remove the cause.</p><ul><li><b>Paracetamol:</b> Too much can cause serious liver damage. Many medicines contain paracetamol, so do not take several at once without asking a doctor or pharmacist. Take care if you drink a lot of alcohol.</li><li><b>Ibuprofen</b> (anti-inflammatory): Do not use it if you have had a stomach ulcer or stomach bleeding, if such medicines have given you asthma, a rash or a runny nose, with severe heart, liver or kidney failure, or if you are more than 6 months pregnant. Talk to a doctor or pharmacist first if you have asthma, reduced kidney or liver function, take blood thinners or are pregnant.</li><li><b>Ibuprofen and fluids:</b> Losing a lot of fluid raises the risk of kidney damage. Drink enough, and take extra care after vomiting, diarrhoea or a day with little to drink.</li><li>Do not take ibuprofen together with other anti-inflammatory medicines. Alcohol raises the risk of bleeding. Ibuprofen can hide signs of infection, such as fever and pain.</li></ul><p>If you do not get better, or get worse, contact a doctor. The leaflet says when.</p>', 'pain'],
@@ -2094,10 +2179,10 @@ const GUIDE_TXT = {
 };
 const GUIDE_GROUPS = [
   {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'mapcompass', 'fishing', 'fire', 'tracks']},
-  {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'aval', 'animals']},
+  {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'kantgrop', 'aval', 'animals']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']},
-  // 0.7.0: starts with one guide, an agreed exception to the Guider order rule; Nødsituasjon joins it with Nødmodus
-  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['meds'], icon:true}
+  // 0.7.0: started with one guide (agreed exception); 0.11.0: Nødsituasjon first
+  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds'], icon:true}
 ];
 const ICO_HEALTH = '<svg class="gh-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M6.5 12.5h3l1.3-2.5 2 4.5 1.4-2h3.3"/></svg>';
 const guideGroup = k => (GUIDE_GROUPS.find(g => g.items.indexOf(k) >= 0) || {}).key;
@@ -2110,7 +2195,7 @@ const GUIDE_LINKS = {
   'std:clothes:fjellsko / lette tursko (etter tur og årstid)':'boots',
   'std:m_vinter:skistøvler':'boots#ski', 'std:m_vinter:smøring / feller':'ski',
   'std:general:solbriller / snøbriller':'sun', 'std:m_vinter:goggles / alpinbriller (dårlig vær, også reserve for solbrillene)':'sun',
-  'std:prep:mobil':'phone',
+  'std:prep:mobil':'phone', 'std:prep:lær nødfunksjonene på mobilen':'phone#sos',
   'std:repair:tau / paracord (langt)':'knots',
   'std:m_fiske:kroker':'fishing', 'std:m_fiske:svivler / sene':'fishing', 'std:m_fiske:fiskekort (ferskvann)':'fishing#rules',
   'std:personal:kuldekrem (mot tørr og sprukken hud, ikke mot frost)':'winter',
@@ -2163,6 +2248,9 @@ function emMarks(html, lang, rg){
     return h + '[[web:https://www.helsenorge.no|Helsenorge]]';
   };
   // 0.10.0: [[call]] = the general emergency line (Om rådene), by the same place rules
+  // 0.11.0: [[calls]] = the numbers to call (Nødsituasjon); Nødmodus draws the same numbers from emPlace()
+  html = String(html).replace(/\[\[calls\]\]/g, () => pl === 'no' ? `<ul class="em-list"><li>${num('113', '113')}<span>${E.med}</span></li><li>${num('112', '112')}<span>${E.police}</span></li><li>${num('110', '110')}<span>${E.fire}</span></li></ul>`
+    : pl === 'eu' ? `<ul class="em-list"><li>${num('112', '112')}<span>${E.eu112}</span></li></ul>` : `<p>${E.noteFar}</p>`);
   return String(html).replace(/\[\[emergency\]\]/g, block).replace(/\[\[em\]\]/g, () => pl === 'no' ? '<b>113</b>' : pl === 'eu' ? '<b>112</b>' : E.local)
     .replace(/\[\[call\]\]/g, () => pl === 'no' ? E.callNo : pl === 'eu' ? E.callEu : E.callFar);
 }
@@ -2174,8 +2262,9 @@ function renderTextGuide(k){
   const T = t(), g = (GUIDE_TXT[state.lang] || GUIDE_TXT.en)[k];
   $('listName').textContent = g.title;
   document.title = g.title + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
-    <p class="tool-sub">${g.sub}</p>
+  const backBtn = sosBack ? `<button class="back" data-nav data-act="sosReturn">${CHEV_L}${T.sos.title}</button>` : `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>`;
+  main.innerHTML = `${backBtn}
+    <p class="tool-sub">${g.sub}</p>${k === 'emergency' ? sosBtn(true) : ''}
     <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(emMarks(x[1], state.lang, region(state.pos))))}</details>`).join('')}</section>`;
   loadSvgs();
   if (guideSec){
@@ -2335,7 +2424,13 @@ function renderPhone(){
   document.title = T.phoneTool + ' · ' + T.app;
   main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
     <p class="tool-sub">${T.phoneSub}</p>
-    <section class="manual guide">${T.phone.map(x => `<details><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+    <section class="manual guide">${T.phone.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
+  // 0.11.0: a link can open one section (Spar batteri, Nødfunksjoner)
+  if (guideSec){
+    const d = main.querySelector(`details[data-sec="${guideSec}"]`);
+    guideSec = null;
+    if (d) requestAnimationFrame(() => d.scrollIntoView({block:'start'}));
+  }
 }
 /* ---------- compass ---------- */
 let skyTimer = null;
@@ -2801,7 +2896,7 @@ function getPos(){
   if (!navigator.geolocation){ posMsg = T.posErr; renderCompass(); return; }
   posBusy = true; posMsg = ''; renderCompass();
   navigator.geolocation.getCurrentPosition(p => {
-    posBusy = false; state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now()}; save(); if (tab === 'compass') renderCompass();
+    posBusy = false; state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now(), acc:Math.round(p.coords.accuracy || 0) || undefined}; save(); if (tab === 'compass') renderCompass();
   }, () => { posBusy = false; posMsg = T.posErr; if (tab === 'compass') renderCompass(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:600000});
 }
 const NO_POLY = [[4.6,58.0],[7.0,57.8],[8.6,57.9],[11.0,58.9],[12.2,60.1],[12.6,61.0],[12.3,62.3],[12.1,63.6],[14.1,64.5],[14.5,65.8],[15.9,66.9],[16.4,67.9],[18.0,68.5],[20.0,69.0],[21.0,69.2],[22.4,68.7],[24.9,68.6],[26.0,69.7],[28.0,69.9],[28.9,69.0],[29.4,69.0],[30.9,69.6],[31.2,70.3],[28.3,71.2],[23.5,71.1],[18.0,70.3],[15.5,69.6],[12.0,68.6],[11.2,67.4],[10.8,66.0],[9.2,64.3],[7.2,63.3],[4.4,62.0],[4.4,61.0]];
@@ -3622,6 +3717,7 @@ main.addEventListener('click', async e => {
   if (act === 'windSign'){ const w = windState(); w.t = -w.t; save(); renderWind(); return; }
   if (act === 'hideToggle'){ state.hidePacked = !state.hidePacked; save(); render(); return; }
   if (act === 'lockToggle'){ state.listLock = !state.listLock; save(); render(); showToast(state.listLock ? T.lockedOn : T.lockedOff); return; }
+  if (act === 'sosReturn'){ sosBack = false; openSos(); return; }
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
   if (act === 'fieldList'){ state.fieldList = !state.fieldList; save(); render(); return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
@@ -3771,6 +3867,7 @@ window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
   if (sortDrag){ sortCancel(); history.pushState({tab, view, depth:(history.state && history.state.depth || 0) + 1}, ''); return; }
   if (slMode){ history.pushState(Object.assign({}, history.state || {}, {light:true}), ''); return; }
+  if (!sosEl.hidden){ closeSos(true); return; } // 0.11.0: back leaves Nødmodus
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
   if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
   if (rainLocked && !navOpen()){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
@@ -4031,7 +4128,8 @@ function pulseLock(){
   setTimeout(() => b.classList.remove('pulse'), 3100);
 }
 let slMode = null, slRaf = null;
-const SL_COL = {red:'#ff0000', green:'#00ff00'};
+const SL_COL = {red:'#ff0000', green:'#00ff00', white:'#ffffff'};
+let slTimer = null;
 let slHideT = null, slDragging = false;
 // build 34: the note and the slide track fade out after a few seconds and come back on a touch
 function slShow(ms){
@@ -4048,7 +4146,20 @@ function slFs(){
   const d = document.documentElement;
   try { if (d.requestFullscreen && !document.fullscreenElement) d.requestFullscreen({navigationUI:'hide'}).catch(() => {}); } catch(e){}
 }
-function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; }
+function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; clearTimeout(slTimer); slTimer = null; }
+/* 0.11.0: SOS on the screen, white: • • • — — — • • • (short 1 unit, long 3, gap 1, between letters 3, before repeating 7).
+   One unit is 300 ms, so it never flashes more than about twice a second. */
+const SOS_SEQ = [1, 1, 1, 1, 1, 3, 3, 1, 3, 1, 3, 3, 1, 1, 1, 1, 1, 7];
+function slSos(){
+  const el = $('slight'); let i = 0;
+  const tick = () => {
+    if (slMode !== 'sos') return;
+    el.style.background = i % 2 === 0 ? '#ffffff' : '#000000';
+    const d = SOS_SEQ[i] * 300; i = (i + 1) % SOS_SEQ.length;
+    slTimer = setTimeout(tick, d);
+  };
+  tick();
+}
 function slFire(){
   const el = $('slight'); let b = .85, tg = .85, nx = 0;
   const step = now => {
@@ -4070,7 +4181,8 @@ function openLight(m){
   if (m === 'fire'){
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) el.style.background = '#f08a14';
     else slFire();
-  } else el.style.background = SL_COL[m];
+  } else if (m === 'sos') slSos();
+  else el.style.background = SL_COL[m];
   el.hidden = false; slDragging = false; slShow(3000);
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
   slFs(); updateWake();
@@ -4126,6 +4238,119 @@ function closeLight(){
   main.addEventListener('pointercancel', e => { if (e.pointerType !== 'touch') cancel(); });
   main.addEventListener('contextmenu', e => { if (e.target.closest('.lt-btn')) e.preventDefault(); });
 })();
+/* ---------- Nødmodus / emergency mode (0.11.0) ----------
+   Opened by holding a Nødmodus button for 1 s: above Utemodus on Pakkliste (Utemodus only), at the top of Guider and of the
+   Nødsituasjon guide. A full-screen page above everything except the screen light. Regnlås never blocks it.
+   Avslutt nødmodus (a normal tap) or Back closes it. If the app was closed while it was open, it opens again, with no time limit.
+   Colours follow the night light (red or green), else a dark page with red; a button inside switches red and green.
+   Numbers come from emPlace() like everywhere else. Calls and SMS go through the phone's own apps, only when you press. */
+const ICO_SOS = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/></svg>';
+const sosEl = $('sos');
+let sosBack = false, sosPosMsg = '';
+function sosBtn(small){
+  const T = t();
+  return `<button class="sos-btn${small ? ' small' : ''}" data-sos-hold aria-label="${esc(T.sos.title + ', ' + T.holdShort)}">${ICO_SOS}<span>${T.sos.title}</span><small>${T.holdShort}</small><i class="fill"></i></button>`;
+}
+function sosCoord(p){
+  const no = state.lang === 'no';
+  return Math.abs(p.lat).toFixed(5) + '° ' + (p.lat >= 0 ? 'N' : 'S') + ', ' + Math.abs(p.lon).toFixed(5) + '° ' + (p.lon >= 0 ? (no ? 'Ø' : 'E') : (no ? 'V' : 'W'));
+}
+function sosBattery(){
+  try {
+    if (!navigator.getBattery) return;
+    navigator.getBattery().then(b => { const e = $('sosBat'); if (e) e.textContent = t().sos.batLvl(Math.round(b.level * 100)); }).catch(() => {});
+  } catch(e){}
+}
+function renderSos(){
+  const T = t(), S = T.sos, E = T.em, pl = emPlace(region(state.pos)), p = state.pos, G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
+  sosEl.className = 'sos' + (state.sosHue === 'red' ? ' h-red' : state.sosHue === 'green' ? ' h-green' : '');
+  const call = (n, lbl) => `<a class="sos-call" href="tel:${n}"><b>${n}</b><span>${lbl}</span></a>`;
+  const calls = pl === 'no' ? call('113', E.med) + call('112', E.police) + call('110', E.fire) : pl === 'eu' ? call('112', E.eu112) : `<p>${E.noteFar}</p>`;
+  const gl = (k, sec, lbl) => `<button class="sos-glink" data-sg="${k}"${sec ? ` data-ss="${sec}"` : ''}>${lbl} ›</button>`;
+  let pos;
+  if (p && typeof p.lat === 'number'){
+    const when = new Date(p.t || Date.now()).toLocaleString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+    pos = `<p class="sos-pos">${sosCoord(p)}</p><p class="s-mut">${p.acc ? '±' + Math.round(p.acc) + ' m · ' : ''}${when}</p>
+      <div class="sos-row"><a class="sos-act" href="sms:?body=${encodeURIComponent(S.smsText(sosCoord(p)))}">${S.sms}</a><button data-sa="pos">${T.updPos}</button></div>
+      <p class="s-mut">${S.smsNote}</p>`;
+  } else pos = `<p>${S.posNone}</p><div class="sos-row"><button data-sa="pos">${T.getPos}</button></div>`;
+  if (sosPosMsg) pos += `<p class="s-mut">${sosPosMsg}</p>`;
+  sosEl.innerHTML = `<div class="sos-in">
+    <div class="sos-top"><h1>${ICO_SOS}${S.title}</h1><button class="sos-hue" data-sa="hue">${state.sosHue === 'green' ? S.hueR : S.hueG}</button></div>
+    <button class="sos-x" data-sa="exit">${S.exit}</button>
+    <section class="sos-sec"><h2>${S.call}</h2>${calls}<p class="s-mut">${S.aml}</p></section>
+    <section class="sos-sec"><h2>${S.pos}</h2>${pos}</section>
+    <section class="sos-sec"><h2>${S.light}</h2><div class="sos-row"><button data-sa="white">${S.white}</button><button data-sa="sosl">${S.sosL}</button></div><p class="s-mut">${S.lightNote}</p></section>
+    <section class="sos-sec"><h2>${S.sig}</h2><p>${S.sigTxt}</p>${gl('emergency', 'signals', G.emergency.title)}</section>
+    <section class="sos-sec"><h2>${S.warm}</h2><p>${S.warmTxt}</p>${gl('emergency', 'wait', G.emergency.title)}${gl('kantgrop', '', G.kantgrop.title)}</section>
+    <section class="sos-sec"><h2>${S.bat}</h2><p class="s-mut" id="sosBat"></p><p>${S.batTxt}</p>${gl('emergency', 'battery', G.emergency.title)}</section>
+  </div>`;
+  sosBattery();
+}
+function openSos(){
+  if (!sosEl.hidden) return;
+  if (!state.sosOpen){ state.sosOpen = true; state.sosHue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null; save(); }
+  sosPosMsg = ''; renderSos(); sosEl.hidden = false; sosEl.scrollTop = 0;
+  document.body.classList.add('sosopen');
+  history.pushState(Object.assign({}, history.state || {}, {sos:true}), '');
+}
+function closeSos(fromPop){
+  state.sosOpen = false; save();
+  sosEl.hidden = true; document.body.classList.remove('sosopen');
+  if (!fromPop && history.state && history.state.sos){ ignorePop = true; history.back(); }
+}
+function sosGetPos(){
+  const T = t();
+  if (!navigator.geolocation){ sosPosMsg = T.posErr; renderSos(); return; }
+  sosPosMsg = T.posWait; renderSos();
+  navigator.geolocation.getCurrentPosition(p => {
+    state.pos = {lat:p.coords.latitude, lon:p.coords.longitude, t:Date.now(), acc:Math.round(p.coords.accuracy || 0) || undefined};
+    save(); sosPosMsg = ''; if (!sosEl.hidden) renderSos();
+  }, () => { sosPosMsg = T.posErr; if (!sosEl.hidden) renderSos(); }, {enableHighAccuracy:true, timeout:30000, maximumAge:60000});
+}
+sosEl.addEventListener('click', e => {
+  const g = e.target.closest('[data-sg]');
+  if (g){
+    // open a guide from Nødmodus; its back button leads back here. The Nødmodus history entry stays below the guide.
+    state.sosOpen = false; save(); sosEl.hidden = true; document.body.classList.remove('sosopen');
+    sosBack = true; guideSec = g.dataset.ss || null;
+    go('guide', 'tool:' + g.dataset.sg);
+    return;
+  }
+  const a = e.target.closest('[data-sa]');
+  if (!a) return;
+  const k = a.dataset.sa;
+  if (k === 'exit') closeSos();
+  else if (k === 'hue'){ state.sosHue = state.sosHue === 'green' ? 'red' : 'green'; save(); renderSos(); }
+  else if (k === 'pos') sosGetPos();
+  else if (k === 'white') openLight('white');
+  else if (k === 'sosl') openLight('sos');
+});
+/* hold a Nødmodus button 1 s (delegated, the buttons are redrawn with the page; works in Regnlås) */
+(function(){
+  let btn = null, timer = null, held = false, sx = 0, sy = 0;
+  const pt = e => e.touches ? e.touches[0] : e;
+  const cancel = () => { clearTimeout(timer); if (btn) btn.classList.remove('holding'); btn = null; };
+  const start = (b, e) => {
+    if (e.cancelable) e.preventDefault();
+    cancel(); btn = b; held = false;
+    const p = pt(e); sx = p.clientX; sy = p.clientY;
+    b.classList.add('holding');
+    timer = setTimeout(() => { held = true; cancel(); openSos(); }, 1000);
+  };
+  const move = e => { if (!btn) return; const p = pt(e); if (Math.hypot(p.clientX - sx, p.clientY - sy) > 12) cancel(); };
+  const end = () => { if (held){ held = false; return; } if (!btn) return; cancel(); showToast(t().sos.holdMsg); };
+  main.addEventListener('touchstart', e => { const b = e.target.closest('[data-sos-hold]'); if (b) start(b, e); }, {passive:false});
+  main.addEventListener('touchmove', move, {passive:true});
+  main.addEventListener('touchend', end);
+  main.addEventListener('touchcancel', cancel);
+  main.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') return; const b = e.target.closest('[data-sos-hold]'); if (b) start(b, e); });
+  main.addEventListener('pointermove', e => { if (e.pointerType !== 'touch') move(e); });
+  main.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') end(); });
+  main.addEventListener('pointercancel', e => { if (e.pointerType !== 'touch') cancel(); });
+  main.addEventListener('contextmenu', e => { if (e.target.closest('[data-sos-hold]')) e.preventDefault(); });
+  main.addEventListener('keydown', e => { const b = e.target.closest && e.target.closest('[data-sos-hold]'); if (b && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openSos(); } });
+})();
 let wakeLock = null;
 async function updateWake(){
   try {
@@ -4139,6 +4364,7 @@ document.addEventListener('visibilitychange', updateWake);
 render();
 updateWake();
 if (!state.introDone) showIntro(0, checkShared); else checkShared();
+if (state.sosOpen) openSos(); // 0.11.0: closed while in Nødmodus → opens in Nødmodus again, no time limit
 // v32: ask the browser to keep the data when space runs low (installed app only; nothing is sent anywhere)
 try {
   if (navigator.storage && navigator.storage.persist && (matchMedia('(display-mode: standalone)').matches || navigator.standalone))
