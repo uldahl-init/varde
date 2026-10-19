@@ -718,8 +718,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.11.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 53;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.11.4';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 54;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -4424,7 +4424,8 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   let reloading = false;
   // a new version takes over: reload once so it is in use straight away
   // 0.5.1: wait while a sheet, the introduction, the full-screen light or a text field is in use, then reload on the page you were on
-  const busy = () => !!sortDrag || !overlay.hidden || !$('intro').hidden || !!slMode || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
+  // 0.11.4: an open Nødmodus counts as busy too, so an update never reloads the page in an emergency
+  const busy = () => !!sortDrag || !overlay.hidden || !$('intro').hidden || !!slMode || !sosEl.hidden || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '');
   const reloadWhenSafe = () => { if (document.visibilityState === 'visible' && busy()){ setTimeout(reloadWhenSafe, 1500); return; } location.reload(); };
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloading) return; reloading = true; reloadWhenSafe(); });
   let swReg = null, lastCheck = 0;
