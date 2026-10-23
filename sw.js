@@ -1,5 +1,5 @@
 // Bump the build number (same as APP_BUILD in index.html) every time you upload a new index.html, so phones pick up the update.
-const CACHE = 'varde-b54';
+const CACHE = 'varde-b55';
 const NET_WAIT_MS = 3000; // 0.11.4: how long the app page waits for the network before opening the saved copy
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './knots/bowline.svg', './knots/taut-line.webp', './knots/clove-hitch.svg', './knots/prusik.webp', './knots/sheet-bend.webp', './knots/timber-hitch.webp', './knots/figure-eight.svg', './knots/figure-eight-loop.webp', './knots/improved-uni-tie.svg', './knots/improved-uni.svg', './knots/palomar-tie.webp', './knots/palomar.webp', './guides/stove-board.svg', './guides/stove-board-strap.svg', './guides/firesteel.svg', './guides/pack-zones.svg', './guides/edge-repair.svg', './guides/compass-parts.svg', './guides/compass-steps.svg', './guides/track-deer.svg', './guides/track-hare.svg', './guides/track-squirrel.svg', './guides/track-foxdog.svg', './guides/track-wolf.svg', './guides/track-lynx.svg', './guides/track-wolverine.svg', './guides/track-bear.svg', './guides/track-otter.svg', './guides/track-grouse.svg', './fonts/barlow-400.woff2', './fonts/barlow-600.woff2', './fonts/barlow-condensed-600.woff2'];
 

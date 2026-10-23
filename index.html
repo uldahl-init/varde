@@ -486,6 +486,19 @@ body.night .sos-btn .fill{background:currentColor}
 .slight.calm .sl-note,.slight.calm .sl-track{opacity:0;pointer-events:none}
 @media (prefers-reduced-motion: reduce){.sl-note,.sl-track{transition:none}}
 .sl-knob svg{width:26px;height:26px;stroke:rgba(255,255,255,.75);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* Bål (build 55): the fire is drawn on a canvas under the note and the track; light text, since the fire burns down to dark embers */
+.slight canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.slight canvas[hidden]{display:none}
+.slight.fire .sl-note{white-space:pre-line;color:rgba(255,244,228,.95);text-shadow:0 1px 3px rgba(40,8,0,.7)}
+.slight.fire .sl-track{background:rgba(40,10,0,.35);border-color:rgba(255,230,200,.25)}
+.slight.fire .sl-track span{color:rgba(255,240,220,.9)}
+.slight.fire .sl-knob{background:rgba(255,245,230,.9)}
+.slight.fire .sl-knob svg{stroke:#7a2a00}
+@media (orientation: landscape){
+  .slight.fire .sl-note{left:auto;right:calc(18px + env(safe-area-inset-right,0px));max-width:42%;text-align:right}
+  .slight.fire .sl-track{left:auto;right:calc(18px + env(safe-area-inset-right,0px));width:min(340px,42%);height:56px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .slight.fire .sl-knob{width:48px;height:48px}
+}
 .sub-tools{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:12px}
 .sub-tools .chip{min-width:0;width:100%;text-align:center;line-height:1.25}
 body.listlock .items .mark{opacity:.55}
@@ -704,7 +717,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <div class="toast" id="toast" hidden></div>
 <div class="rainlock" id="rainlock" hidden></div>
 <div class="sos" id="sos" hidden></div>
-<div class="slight" id="slight" hidden><p class="sl-note" id="slNote"></p><div class="sl-track" id="slTrack"><span id="slTxt"></span><div class="sl-knob" id="slKnob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></div></div></div>
+<div class="slight" id="slight" hidden><canvas id="slFireCv" hidden></canvas><p class="sl-note" id="slNote"></p><div class="sl-track" id="slTrack"><span id="slTxt"></span><div class="sl-knob" id="slKnob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></div></div></div>
 <div class="intro" id="intro" hidden></div>
 
 <div class="overlay" id="overlay" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
@@ -718,8 +731,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.11.4';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 54;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.12.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 55;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -754,7 +767,7 @@ const UI = {
     intro:[
       [`Welcome to ${APP_NAME}`,'A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The app opens on your main list with every category folded, so you see the whole list at a glance: tap a category to open it, or tap Expand all. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
-      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. The list is then one row you tap to open; trip types are set before the trip, with Outdoor mode off. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light.'],
+      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. The list is then one row you tap to open; trip types are set before the trip, with Outdoor mode off. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light; Campfire crackles and slowly burns down, and you hold the screen to add wood.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
@@ -841,7 +854,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
       bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
-    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and makes the standard list the main list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types and Light day hike are switched off, the standard list becomes the main list and all categories are folded. Outdoor mode, Rain lock, Night light and Hide packed are turned off. Nothing is deleted: lists, notes, links, pack weight, planner figures, your position and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -851,7 +864,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
       ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
@@ -975,7 +988,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     intro:[
       [`Velkommen til ${APP_NAME}`,'En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Appen åpner på hovedlisten med alle kategorier lukket, så du ser hele listen på én gang: trykk på en kategori for å åpne den, eller på Åpne alle. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
-      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Listen er da én linje du trykker på for å åpne; turtypene velger du før turen, med Utemodus av. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys.'],
+      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Listen er da én linje du trykker på for å åpne; turtypene velger du før turen, med Utemodus av. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys; Bål knitrer og brenner sakte ned, og du holder på skjermen for å legge på ved.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
@@ -1062,7 +1075,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
       bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
-    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og gjør standardlisten til hovedliste, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene og Lett dagstur slås av, standardlisten blir hovedliste og alle kategorier lukkes. Utemodus, Regnlås, nattlys og Skjul pakket slås av. Ingenting slettes: lister, notater, lenker, sekkvekt, tall i planleggerne, posisjonen din og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
@@ -1072,7 +1085,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
       ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
@@ -4160,7 +4173,7 @@ function slFs(){
   const d = document.documentElement;
   try { if (d.requestFullscreen && !document.fullscreenElement) d.requestFullscreen({navigationUI:'hide'}).catch(() => {}); } catch(e){}
 }
-function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; clearTimeout(slTimer); slTimer = null; }
+function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; clearTimeout(slTimer); slTimer = null; Fire.stop(); }
 /* 0.11.0: SOS on the screen, white: • • • — — — • • • (short 1 unit, long 3, gap 1, between letters 3, before repeating 7).
    One unit is 300 ms, so it never flashes more than about twice a second. */
 const SOS_SEQ = [1, 1, 1, 1, 1, 3, 3, 1, 3, 1, 3, 3, 1, 1, 1, 1, 1, 7];
@@ -4184,31 +4197,538 @@ function slSos(){
   };
   tick();
 }
-function slFire(){
-  const el = $('slight'); let b = .85, tg = .85, nx = 0;
-  const step = now => {
-    if (now > nx){ tg = .7 + Math.random() * .3; nx = now + 150 + Math.random() * 250; }
-    b += (tg - b) * .05;
-    const s = .5 + .5 * Math.sin(now / 3200), k = b * (.92 + .08 * s);
-    const c = (r, g, bl) => `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(bl * k)})`;
-    el.style.background = `radial-gradient(130% 95% at 50% ${Math.round(104 - 30 * b)}%, ${c(255, 150 + 30 * s, 24)} 0%, ${c(215, 80, 0)} 55%, ${c(95, 28, 0)} 100%)`;
-    slRaf = requestAnimationFrame(step);
-  };
-  slRaf = requestAnimationFrame(step);
+/* ---------- Bål (from build 55, 0.12.0) ----------
+   The campfire screen light: flames, sparks, breaking flame tips, generated crackle, burn-down to embers over 45 min,
+   hold to add wood, and now and then a guest (dark silhouettes; the reindeer stands behind the flames, the ghosts glow).
+   Kept in its own scope; the rest of the app uses only Fire.start(canvas), Fire.stop(), Fire.addWood() and Fire.resumeAudio().
+   The background brightness keeps the old Bål limits (70–100 %, new level every 150–400 ms, no hard flashes).
+   Reduce motion: a steady amber, no sparks or guests. */
+const Fire = (() => {
+/* ---------- sound: generated, no files ---------- */
+let ac = null, master = null, rumbleG = null, popTimer = null, nextPop = 0, life = 1;
+function noiseBuf(brown){
+  const n = ac.sampleRate * 2, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < n; i++){ const w = Math.random() * 2 - 1; if (brown){ last = (last + .02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; }
+  return b;
 }
+let white = null;
+function startSound(){
+  try {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
+    master.gain.setValueAtTime(0, ac.currentTime); master.gain.linearRampToValueAtTime(.75, ac.currentTime + 12); // builds slowly, like a fire catching
+    white = noiseBuf(false);
+    const br = ac.createBufferSource(); br.buffer = noiseBuf(true); br.loop = true;
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220;
+    rumbleG = ac.createGain(); rumbleG.gain.value = .55;
+    br.connect(lp); lp.connect(rumbleG); rumbleG.connect(master); br.start();
+    const hs = ac.createBufferSource(); hs.buffer = white; hs.loop = true;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600; bp.Q.value = .5;
+    const hg = ac.createGain(); hg.gain.value = .012;
+    hs.connect(bp); bp.connect(hg); hg.connect(master); hs.start();
+    nextPop = ac.currentTime + .3;
+    popTimer = setInterval(schedulePops, 60);
+  } catch(e){ ac = null; }
+}
+function pop(at, big){
+  const s = ac.createBufferSource(); s.buffer = white;
+  const f = ac.createBiquadFilter(); f.type = 'bandpass';
+  f.frequency.value = big ? 300 + Math.random() * 500 : 900 + Math.random() * 5000; f.Q.value = big ? .9 : 1 + Math.random() * 2;
+  const g = ac.createGain(), dur = big ? .05 + Math.random() * .06 : .004 + Math.random() * .025;
+  const peak = (big ? .5 : .06 + Math.random() * .35) * Math.pow(Math.random(), .6) * (.25 + .75 * life);
+  g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(peak + .0002, at + .001); g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+  s.connect(f); f.connect(g); g.connect(master);
+  s.start(at, Math.random() * 1.8, dur + .02);
+}
+function schedulePops(){
+  if (!ac) return;
+  rumbleG.gain.setTargetAtTime(.2 + .4 * life, ac.currentTime, .5);
+  while (nextPop < ac.currentTime + .15){
+    if (Math.random() < .12){ for (let k = 0, n = 3 + (Math.random() * 4 | 0); k < n; k++) pop(nextPop + Math.random() * .16, false); }
+    else pop(nextPop, Math.random() < .05);
+    nextPop += -Math.log(1 - Math.random()) * (.2 / (.15 + .85 * life));
+  }
+}
+function stopSound(){
+  clearInterval(popTimer); popTimer = null;
+  if (!ac) return;
+  const a = ac; master.gain.setTargetAtTime(0, a.currentTime, .15);
+  setTimeout(() => a.close().catch(() => {}), 700); ac = null;
+}
+
+/* ---------- the fire ---------- */
+let cv = null, cx2 = null;
+let W = 0, H = 0, DPR = 1, raf = null, running = false, t0 = 0, lastFrame = 0;
+let bri = .85, briT = .85, briNext = 0, sparks = [], burnMs = 0;
+let visitor = null, nextVisitor = 0, lastKind = null;
+let burnStart = 0, woodAt = -1e9, woodFrom = 1; // adding wood: the fire grows back from woodFrom over 10 s
+const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const R = Math.random, lerp = (a, b, k) => a + (b - a) * k;
+const PH = Array.from({length:12}, () => [R() * 6.3, R() * 6.3, R() * 6.3]);
+const FL = Array.from({length:12}, () => ({ hs: .8 + R() * .35, ws: .85 + R() * .3, jx: R() - .5 })); // each tongue its own height, width and place
+let wisps = [];
+function size(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  off.width = cv.width; off.height = cv.height;
+}
+window.addEventListener('resize', () => { if (running){ size(); if (reduced()) drawStatic(); } });
+
+// the fire's width: in landscape (a phone turned sideways, or mirrored to a TV) it spreads wider
+const fireWidth = () => W > H ? Math.min(W * .62, H * 1.5) : Math.min(W * .78, W, H);
+function nz(t, i){ const p = PH[i]; return (Math.sin(t * 1.7 + p[0]) + .6 * Math.sin(t * 2.9 + p[1]) + .3 * Math.sin(t * 5.3 + p[2])) / 1.9; }
+
+function drawFire(t, dt, under){
+  const c = cx2, u = Math.min(W, H);
+  c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  // overall brightness: a new target every 0.15–0.4 s, eased, always 70–100 %
+  if (t * 1000 > briNext){ briT = .7 + R() * .3; briNext = t * 1000 + 150 + R() * 250; }
+  bri += (briT - bri) * Math.min(1, dt * 2.6);
+  const br = .5 + .5 * Math.sin(t / 3.2), k = bri * (.92 + .08 * br);
+  const L = life, dim = .25 + .75 * L;
+  const col = (a, b, m) => `rgb(${Math.round(lerp(b[0], a[0], L) * m)},${Math.round(lerp(b[1], a[1], L) * m)},${Math.round(lerp(b[2], a[2], L) * m)})`;
+  const g = c.createRadialGradient(W / 2, H * (1.04 - .3 * bri * L), 0, W / 2, H * 1.04, Math.max(W, H) * 1.05);
+  g.addColorStop(0, col([255, 150 + 30 * br, 24], [170, 30, 0], k * dim));
+  g.addColorStop(.5, col([215, 80, 0], [90, 12, 0], k * dim));
+  g.addColorStop(1, col([95, 28, 0], [22, 2, 0], k * dim));
+  c.globalCompositeOperation = 'source-over';
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  if (under){ under(); c.setTransform(DPR, 0, 0, DPR, 0, 0); } // a guest far away, behind the flames
+
+  // glowing bed of embers, low and wide
+  c.globalCompositeOperation = 'lighter';
+  const base = H * 1.01, fw = fireWidth(), cxm = W / 2;
+  const eb = c.createRadialGradient(cxm, base, 0, cxm, base, fw * .55);
+  const ep = .55 + .25 * Math.sin(t * .9) + .1 * nz(t, 11);
+  eb.addColorStop(0, `rgba(255,${Math.round(lerp(60, 120, L))},20,${.55 * ep})`);
+  eb.addColorStop(1, 'rgba(120,20,0,0)');
+  c.fillStyle = eb; c.fillRect(0, base - fw * .55, W, fw * .55);
+
+  // flame tongues: uneven, licking shapes, with a brighter core; now and then a tip breaks off
+  const fh = H * (W > H ? .5 : .4) * (.08 + .92 * L), n = 10, wind = nz(t * .4, 10) * .5; // taller on a wide screen (TV)
+  const tips = [];
+  const tongue = (x, h, w, sway, i, a, inner) => {
+    const N = 14, Lp = [], Rp = [], asym = .25 * Math.sin(t * .9 + PH[i][2]);
+    for (let k = 0; k <= N; k++){
+      const yr = k / N, y = base - h * yr;
+      const off = sway * Math.pow(yr, 1.6) + w * .2 * yr * Math.sin(yr * 5 - t * (2.6 + (i % 3) * .5) + PH[i][0]);
+      const half = w / 2 * Math.pow(1 - yr, .75) * (1 + .18 * Math.sin(yr * 7 + t * 2.1 + PH[i][1]));
+      Lp.push([x + off - half * (1 + asym), y]); Rp.push([x + off + half * (1 - asym), y]);
+    }
+    const P = Lp.concat(Rp.slice().reverse());
+    const lg = c.createLinearGradient(0, base, 0, base - h);
+    if (inner){
+      lg.addColorStop(0, `rgba(255,${Math.round(lerp(150, 250, L))},${Math.round(lerp(60, 210, L))},${a})`);
+      lg.addColorStop(.6, `rgba(255,${Math.round(lerp(100, 200, L))},70,${a * .6})`);
+      lg.addColorStop(1, 'rgba(255,150,40,0)');
+    } else {
+      lg.addColorStop(0, `rgba(255,${Math.round(lerp(120, 236, L))},${Math.round(lerp(40, 170, L))},${a})`);
+      lg.addColorStop(.35, `rgba(255,${Math.round(lerp(70, 160, L))},40,${a * .75})`);
+      lg.addColorStop(.75, `rgba(235,${Math.round(lerp(30, 80, L))},8,${a * .35})`);
+      lg.addColorStop(1, 'rgba(200,40,0,0)');
+    }
+    c.fillStyle = lg; c.beginPath(); c.moveTo(P[0][0], P[0][1]);
+    for (let k = 1; k < P.length - 1; k++) c.quadraticCurveTo(P[k][0], P[k][1], (P[k][0] + P[k + 1][0]) / 2, (P[k][1] + P[k + 1][1]) / 2);
+    c.lineTo(P[P.length - 1][0], P[P.length - 1][1]); c.closePath(); c.fill();
+    if (!inner) tips.push([Lp[N][0], base - h, w]);
+  };
+  for (let i = 0; i < n; i++){
+    const rel = i / (n - 1) - .5, x = cxm + rel * fw * .75 + FL[i].jx * fw * .04;
+    const h = fh * FL[i].hs * Math.max(.15, 1 - Math.abs(rel) * 1.25) * (.72 + .34 * nz(t * 1.4, i));
+    const w = fw * .19 * FL[i].ws * (1 - Math.abs(rel) * .45);
+    tongue(x, h, w, (nz(t * 1.9, (i + 3) % 10) * .45 + wind) * w, i, .55 + .2 * nz(t * 2.3, (i + 6) % 10), false);
+  }
+  for (let i = 3; i < n - 3; i++){
+    const rel = i / (n - 1) - .5, w = fw * .1;
+    tongue(cxm + rel * fw * .6, fh * .5 * (.8 + .3 * nz(t * 1.7, (i + 2) % 10)), w, (nz(t * 2.2, (i + 5) % 10) * .4 + wind) * w, (i + 4) % 12, .5, true);
+  }
+  if (tips.length && R() < dt * 2.2 * L){
+    const tp = tips[R() * tips.length | 0];
+    wisps.push({ x: tp[0], y: tp[1] + tp[2] * .2, w: tp[2] * .3, age: 0, life: .35 + R() * .35, vy: -(.18 + .12 * R()) * H });
+  }
+  for (let i = wisps.length - 1; i >= 0; i--){
+    const q = wisps[i]; q.age += dt;
+    if (q.age > q.life){ wisps.splice(i, 1); continue; }
+    q.y += q.vy * dt; q.x += wind * 30 * dt;
+    const k = 1 - q.age / q.life, rw = Math.max(.5, q.w * .5 * k), rh = Math.max(.5, q.w * 1.3 * k);
+    const gq = c.createRadialGradient(q.x, q.y, 0, q.x, q.y, rh);
+    gq.addColorStop(0, `rgba(255,${Math.round(lerp(120, 200, L))},70,${.55 * k})`); gq.addColorStop(1, 'rgba(230,70,0,0)');
+    c.fillStyle = gq; c.beginPath(); c.ellipse(q.x, q.y, rw, rh, 0, 0, 6.283); c.fill();
+  }
+
+  // sparks rising
+  if (R() < dt * 4.5 * L * L && sparks.length < 40){
+    sparks.push({ x: cxm + (R() - .5) * fw * .4, y: base - fh * .35 * R(), vy: -(.1 + .17 * R()) * H, ph: R() * 6.3, sw: (R() - .5) * 30, age: 0, life: 1.6 + R() * 2, r: .9 + R() * 1.5 });
+  }
+  for (let i = sparks.length - 1; i >= 0; i--){
+    const s = sparks[i]; s.age += dt;
+    if (s.age > s.life){ sparks.splice(i, 1); continue; }
+    s.y += s.vy * dt; s.vy *= (1 - dt * .25);
+    const x = s.x + Math.sin(s.age * 2.2 + s.ph) * s.sw + wind * 40 * s.age;
+    const al = (1 - s.age / s.life) * (.65 + .35 * Math.sin(s.age * 9 + s.ph));
+    c.fillStyle = `rgba(255,${Math.round(170 + 50 * (1 - s.age / s.life))},90,${al})`;
+    c.beginPath(); c.arc(x, s.y, s.r, 0, 6.283); c.fill();
+  }
+  c.globalCompositeOperation = 'source-over';
+}
+
+/* ---------- guests: dark silhouettes against the glow ---------- */
+/* each guest is drawn fully opaque on its own sheet, then laid over the fire with one opacity,
+   so overlapping parts never show as darker seams */
+const INK = () => '#160600';
+let GA = 1;
+const off = document.createElement('canvas'), ox = off.getContext('2d');
+const env = (p, inn, out) => Math.min(1, p / inn, (1 - p) / out);
+function sitAt(c, side, s){ // origin on the bottom edge at the side, facing the fire
+  const x = side < 0 ? s * .5 : W - s * .5;
+  c.translate(x, H + s * .03); c.scale(side < 0 ? s : -s, s);
+}
+function drawTroll(c, p, side, t){
+  const a = env(p, .2, .2), s = Math.min(W, H) * .58; GA = a;
+  c.save(); sitAt(c, side, s); c.scale(1, 1 + .012 * Math.sin(t * 1.3));
+  c.fillStyle = INK(a); c.strokeStyle = INK(a);
+  c.beginPath();
+  c.moveTo(-.45, .05);
+  c.bezierCurveTo(-.55, -.3, -.42, -.58, -.18, -.62);
+  c.bezierCurveTo(-.2, -.78, -.05, -.9, .08, -.8);
+  c.bezierCurveTo(.14, -.76, .16, -.7, .18, -.66);
+  c.bezierCurveTo(.3, -.66, .42, -.6, .43, -.53);
+  c.bezierCurveTo(.43, -.49, .36, -.5, .3, -.53);
+  c.bezierCurveTo(.24, -.55, .2, -.52, .18, -.48);
+  c.bezierCurveTo(.17, -.43, .13, -.41, .1, -.4);
+  c.bezierCurveTo(.2, -.36, .32, -.33, .42, -.31);
+  c.bezierCurveTo(.47, -.33, .53, -.3, .5, -.26);
+  c.bezierCurveTo(.47, -.23, .42, -.25, .38, -.24);
+  c.bezierCurveTo(.28, -.22, .2, -.22, .14, -.2);
+  c.bezierCurveTo(.26, -.2, .36, -.14, .34, -.04);
+  c.lineTo(.34, .05); c.closePath(); c.fill();
+  // ear and tufts
+  c.beginPath(); c.moveTo(-.07, -.73); c.lineTo(-.15, -.84); c.lineTo(.0, -.77); c.fill();
+  // shaggy hair: thick locks that puff up from the crown and hang down, longest over the back
+  [[62, .1], [80, .14], [98, .18], [116, .22], [134, .28], [150, .33], [166, .38], [182, .36], [198, .3]].forEach(([deg, len], i) => {
+    const th = deg * Math.PI / 180, nx = Math.cos(th), ny = -Math.sin(th), tx = -ny, ty = nx, w = .05;
+    const rx = -.05 + nx * .13, ry = -.69 + ny * .13, puff = .13 + .05 * (i % 2);
+    const tipx = rx + nx * puff - .1 - .06 * (i % 3), tipy = ry + Math.max(.03, ny * puff + len);
+    c.beginPath(); c.moveTo(rx - tx * w, ry - ty * w);
+    c.quadraticCurveTo(rx + nx * (puff + .06) - tx * w, ry + ny * (puff + .06) - ty * w, tipx, tipy);
+    c.quadraticCurveTo(rx + nx * puff * .6 + tx * w, ry + ny * puff * .6 + ty * w, rx + tx * w, ry + ty * w);
+    c.closePath(); c.fill();
+  });
+  // a few stray wisps on top
+  c.lineWidth = .022; c.lineCap = 'round';
+  [[-.02, -.86, -.05, -.94, -.11, -.94], [-.1, -.85, -.15, -.92, -.21, -.9]].forEach(([x1, y1, cx, cy, x2, y2]) => {
+    c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(cx, cy, x2, y2); c.stroke();
+  });
+  // tail with a tuft
+  c.lineWidth = .035; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(-.42, -.04); c.bezierCurveTo(-.62, -.02, -.72, -.12, -.68, -.24); c.stroke();
+  c.beginPath(); c.ellipse(-.68, -.27, .035, .055, -.3, 0, 6.283); c.fill();
+  c.restore();
+}
+function drawNisse(c, p, side, t){
+  const a = env(p, .2, .2), s = Math.min(W, H) * .34; GA = a;
+  c.save(); sitAt(c, side, s);
+  c.fillStyle = INK(a); c.strokeStyle = INK(a); c.lineCap = 'round';
+  c.beginPath(); c.ellipse(0, -.2, .17, .21, 0, 0, 6.283); c.fill();
+  c.beginPath(); c.ellipse(.13, -.06, .15, .07, 0, 0, 6.283); c.fill();
+  c.beginPath(); c.arc(.03, -.45, .1, 0, 6.283); c.fill();
+  c.beginPath(); c.moveTo(.0, -.44); c.lineTo(.16, -.38); c.lineTo(.04, -.27); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(-.1, -.47); c.quadraticCurveTo(-.08, -.72, -.3, -.7); c.quadraticCurveTo(-.04, -.84, .14, -.49); c.closePath(); c.fill();
+  c.beginPath(); c.arc(-.31, -.69, .035, 0, 6.283); c.fill();
+  // arms in sleeves, mittens held out to the fire; they rise and sink slowly, like hands being warmed
+  const lift = .015 * Math.sin(t * 1.2), turn = .08 * Math.sin(t * 1.2 + 1);
+  [[.0, -.31, -.02, .9], [.03, -.29, .015, 1]].forEach(([sx, sy, oy, k]) => {
+    const wx = .25, wy = -.25 + oy + lift * k;
+    c.beginPath(); c.moveTo(sx - .03, sy - .04); c.quadraticCurveTo(.13, sy - .07 + lift, wx, wy - .035);
+    c.lineTo(wx, wy + .035); c.quadraticCurveTo(.12, sy + .06 + lift, sx, sy + .06); c.closePath(); c.fill();
+    c.save(); c.translate(wx, wy); c.rotate(-.25 + turn);
+    c.beginPath(); c.ellipse(.045, 0, .055, .042, 0, 0, 6.283); c.fill();             // mitten
+    c.beginPath(); c.ellipse(.025, -.045, .018, .03, -.5, 0, 6.283); c.fill();       // thumb
+    c.restore();
+  });
+  c.restore();
+}
+function drawOwl(c, p, side, t){
+  const a = env(p, .2, .2), s = Math.min(W, H) * .2; GA = a;
+  const ex = side < 0 ? 0 : W, dir = side < 0 ? 1 : -1, by = H * .2;
+  c.save(); c.fillStyle = INK(a); c.strokeStyle = INK(a); c.lineCap = 'round';
+  // branch from the edge
+  c.lineWidth = s * .09; c.beginPath(); c.moveTo(ex, by - s * .05); c.quadraticCurveTo(ex + dir * W * .22, by + s * .05, ex + dir * W * .42, by - s * .02); c.stroke();
+  c.lineWidth = s * .04; c.beginPath(); c.moveTo(ex + dir * W * .3, by + s * .02); c.lineTo(ex + dir * W * .38, by - s * .25); c.stroke();
+  c.translate(ex + dir * W * .2, by); c.scale(s, s);
+  c.beginPath(); c.ellipse(0, -.32, .2, .32, 0, 0, 6.283); c.fill();
+  c.beginPath(); c.ellipse(0, -.64, .19, .15, 0, 0, 6.283); c.fill();
+  c.beginPath(); c.moveTo(-.16, -.7); c.lineTo(-.21, -.87); c.lineTo(-.06, -.76); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(.16, -.7); c.lineTo(.21, -.87); c.lineTo(.06, -.76); c.closePath(); c.fill();
+  // eyes catching the firelight, blinking now and then
+  const blink = (t % 3.1) < .16 ? 0 : 1;
+  if (blink){ c.fillStyle = '#ffb43c'; c.beginPath(); c.arc(-.075, -.63, .04, 0, 6.283); c.fill(); c.beginPath(); c.arc(.075, -.63, .04, 0, 6.283); c.fill(); }
+  c.restore();
+}
+function drawFox(c, p, side, t){
+  const s = Math.min(W, H) * .34, dir = side < 0 ? 1 : -1;
+  const x = side < 0 ? lerp(-s * 1.2, W + s * 1.2, p) : lerp(W + s * 1.2, -s * 1.2, p);
+  const ph = t * 8.5;
+  c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.translate(x, H * .99 + Math.abs(Math.sin(ph)) * -s * .012); c.scale(dir * s, s);
+  // body, neck and head in one outline
+  c.beginPath();
+  c.moveTo(-.3, -.42);
+  c.bezierCurveTo(-.1, -.47, .12, -.46, .24, -.44);
+  c.bezierCurveTo(.3, -.48, .34, -.55, .38, -.6);
+  c.bezierCurveTo(.42, -.64, .47, -.63, .5, -.6);
+  c.bezierCurveTo(.55, -.57, .62, -.54, .68, -.52);
+  c.bezierCurveTo(.7, -.5, .67, -.48, .62, -.48);
+  c.bezierCurveTo(.56, -.47, .5, -.46, .46, -.44);
+  c.bezierCurveTo(.42, -.4, .38, -.33, .33, -.28);
+  c.bezierCurveTo(.3, -.22, .24, -.2, .18, -.21);
+  c.bezierCurveTo(.05, -.2, -.12, -.22, -.22, -.24);
+  c.bezierCurveTo(-.3, -.26, -.36, -.32, -.34, -.38);
+  c.closePath(); c.fill();
+  // ears
+  c.beginPath(); c.moveTo(.35, -.55); c.lineTo(.4, -.75); c.lineTo(.47, -.56); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(.42, -.56); c.lineTo(.49, -.76); c.lineTo(.54, -.55); c.closePath(); c.fill();
+  // bushy tail, swaying a little
+  const tw = .03 * Math.sin(ph * .5);
+  c.beginPath(); c.moveTo(-.29, -.41);
+  c.bezierCurveTo(-.45, -.5, -.64, -.44 + tw, -.8, -.34 + tw);
+  c.quadraticCurveTo(-.9, -.27 + tw, -.8, -.2 + tw);
+  c.bezierCurveTo(-.62, -.17 + tw, -.45, -.24, -.31, -.3); c.closePath(); c.fill();
+  // legs: thigh and shin, the paw lifting as it swings forward
+  [[.19, -.27, 0, true], [.15, -.27, Math.PI, true], [-.2, -.3, Math.PI / 2, false], [-.24, -.3, Math.PI * 1.5, false]].forEach(([hx, hy, o, front]) => {
+    const a = .42 * Math.sin(ph + o), lift = Math.max(0, Math.cos(ph + o));
+    const kx = hx + Math.sin(a) * .14, ky = hy + Math.cos(a) * .14;
+    const b = a + (front ? -1 : 1) * .9 * lift * (front ? 1 : .7);
+    const fx = kx + Math.sin(b) * .15, fy = Math.min(0, ky + Math.cos(b) * .15);
+    c.lineWidth = .055; c.beginPath(); c.moveTo(hx, hy); c.lineTo(kx, ky); c.stroke();
+    c.lineWidth = .034; c.beginPath(); c.moveTo(kx, ky); c.lineTo(fx, fy); c.stroke();
+    c.beginPath(); c.ellipse(fx + .012, fy - .008, .026, .016, 0, 0, 6.283); c.fill();
+  });
+  c.restore();
+}
+function drawBat(c, p, side, t, v){
+  const s = Math.min(W, H) * .1, dir = side < 0 ? 1 : -1, ph = t * 2 * Math.PI * 2.6; // about 2.6 wing beats a second
+  const x = side < 0 ? lerp(-s * 2, W + s * 2, p) : lerp(W + s * 2, -s * 2, p);
+  const y = H * v.y + Math.sin(p * 7) * H * .035 - Math.sin(ph) * s * .12;
+  const up = Math.sin(ph), fold = .8 + .2 * Math.cos(ph); // wings raise and fold a little on the upstroke
+  c.save(); c.fillStyle = INK(); c.translate(x, y); c.scale(dir * s, s);
+  c.beginPath(); c.ellipse(0, .02, .1, .17, 0, 0, 6.283); c.fill();                       // body
+  c.beginPath(); c.arc(0, -.17, .08, 0, 6.283); c.fill();                                  // head
+  c.beginPath(); c.moveTo(-.07, -.19); c.lineTo(-.09, -.33); c.lineTo(-.01, -.22); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(.07, -.19); c.lineTo(.09, -.33); c.lineTo(.01, -.22); c.closePath(); c.fill();
+  [1, -1].forEach(sg => {
+    c.save(); c.translate(.06 * sg, -.06); c.scale(sg * fold, 1); c.rotate(-.55 * up);
+    // leading edge to the wrist and the longest finger, then the scalloped membrane between finger tips
+    c.beginPath(); c.moveTo(0, 0);
+    c.quadraticCurveTo(.2, -.16, .38, -.14);
+    c.quadraticCurveTo(.68, -.16, .95, -.04);
+    c.quadraticCurveTo(.76, .0, .82, .2);
+    c.quadraticCurveTo(.62, .12, .56, .3);
+    c.quadraticCurveTo(.4, .16, .05, .2);
+    c.closePath(); c.fill();
+    c.restore();
+  });
+  c.restore();
+}
+function drawCouple(c, p, side, t){
+  const a = env(p, .18, .18), s = Math.min(W, H) * .42; GA = a;
+  c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.translate(side < 0 ? W * .28 : W * .72, H + s * .02); c.scale(s, s); c.rotate(.012 * Math.sin(t * .8));
+  const ear = (x, y, ang, len) => { // a pointed troll ear, leaf-shaped, angled up and out
+    const ca = Math.cos(ang), sa = Math.sin(ang), px = -sa, py = ca, w = len * .32;
+    c.beginPath(); c.moveTo(x + px * w, y + py * w);
+    c.quadraticCurveTo(x + ca * len * .55 + px * w * 1.3, y + sa * len * .55 + py * w * 1.3, x + ca * len, y + sa * len);
+    c.quadraticCurveTo(x + ca * len * .5 - px * w * .6, y + sa * len * .5 - py * w * .6, x - px * w, y - py * w);
+    c.closePath(); c.fill();
+  };
+  // him: broad, sloping shoulders, head set low between them, curly mop of hair
+  c.beginPath(); c.moveTo(-.46, .05); c.bezierCurveTo(-.46, -.22, -.4, -.4, -.2, -.42); c.bezierCurveTo(-.04, -.42, .02, -.25, .02, .05); c.closePath(); c.fill();
+  c.beginPath(); c.ellipse(-.19, -.42, .1, .08, 0, 0, 6.283); c.fill();
+  c.beginPath(); c.arc(-.19, -.53, .125, 0, 6.283); c.fill();
+  [[-.29, -.6], [-.22, -.66], [-.14, -.65], [-.08, -.59], [-.3, -.51]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, .05, 0, 6.283); c.fill(); });
+  ear(-.3, -.53, -Math.PI * .8, .13);
+  // her, leaning in with her head on his shoulder; hair in a bun and down her back
+  c.beginPath(); c.moveTo(-.02, .05); c.bezierCurveTo(-.03, -.2, .0, -.38, .15, -.39); c.bezierCurveTo(.3, -.39, .36, -.2, .36, .05); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(.0, -.36); c.lineTo(.08, -.48); c.lineTo(.17, -.42); c.lineTo(.16, -.33); c.closePath(); c.fill();
+  c.beginPath(); c.arc(.03, -.48, .11, 0, 6.283); c.fill();
+  c.beginPath(); c.arc(.06, -.6, .055, 0, 6.283); c.fill();
+  c.beginPath(); c.moveTo(.08, -.55); c.bezierCurveTo(.19, -.5, .22, -.4, .21, -.27); c.lineTo(.13, -.33); c.closePath(); c.fill();
+  ear(.13, -.5, -Math.PI * .2, .12);
+  // sitting close: no light between them
+  c.beginPath(); c.moveTo(-.08, .05); c.lineTo(-.08, -.36); c.quadraticCurveTo(0, -.42, .08, -.38); c.lineTo(.08, .05); c.closePath(); c.fill();
+  // his arm around her
+  c.lineWidth = .07; c.beginPath(); c.moveTo(-.06, -.36); c.quadraticCurveTo(.15, -.44, .3, -.3); c.stroke();
+  // two tails rising behind them, each making one half of a heart
+  const hx = -.07, hy = -.96, h = .085, B = [hx, hy + h];
+  c.lineWidth = .028;
+  c.beginPath(); c.moveTo(-.16, -.02); c.bezierCurveTo(-.4, -.35, -.26, -.72, B[0], B[1]);
+  c.bezierCurveTo(hx - 1.7 * h, hy - .1 * h, hx - .9 * h, hy - 1.5 * h, hx, hy - .4 * h); c.stroke();
+  c.beginPath(); c.moveTo(.1, -.02); c.bezierCurveTo(.36, -.35, .14, -.72, B[0], B[1]);
+  c.bezierCurveTo(hx + 1.7 * h, hy - .1 * h, hx + .9 * h, hy - 1.5 * h, hx, hy - .4 * h); c.stroke();
+  c.restore();
+}
+/* a reindeer far off behind the fire: grazing, then it lifts its head and shows its antlers */
+function drawReindeer(c, p, side, t){
+  GA = env(p, .15, .15) * .7; // behind the fire, so a little fainter than the others
+  const s = Math.min(W, H) * .44, dir = side < 0 ? -1 : 1; // faces away from the fire, so the antlers stand clear of the flames
+  const ss = x => x * x * (3 - 2 * x), raise = ss(Math.max(0, Math.min(1, (p - .22) / .15)));
+  c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.translate(side < 0 ? W * .3 : W * .7, H * .985); c.scale(dir * s, s);
+  // legs with knees, hocks and hooves; far legs first
+  const leg = (pts, w1, w2) => {
+    c.lineWidth = w1; c.beginPath(); c.moveTo(pts[0][0], pts[0][1]); c.lineTo(pts[1][0], pts[1][1]); c.stroke();
+    c.lineWidth = w2; c.beginPath(); c.moveTo(pts[1][0], pts[1][1]); c.lineTo(pts[2][0], pts[2][1]); c.lineTo(pts[3][0], pts[3][1]); c.stroke();
+    c.beginPath(); c.ellipse(pts[3][0] + .015, -.012, .03, .016, 0, 0, 6.283); c.fill();
+  };
+  leg([[.27, -.32], [.29, -.16], [.3, -.05], [.31, -.015]], .06, .032);       // front, far
+  leg([[-.28, -.34], [-.33, -.17], [-.3, -.05], [-.29, -.015]], .07, .032);   // hind, far
+  leg([[.22, -.32], [.22, -.16], [.23, -.05], [.24, -.015]], .065, .034);     // front, near
+  leg([[-.33, -.34], [-.39, -.17], [-.36, -.05], [-.35, -.015]], .08, .034);  // hind, near
+  // body: rump, back rising to the withers, deep chest, belly; the short tail grows out of the rump
+  c.beginPath(); c.moveTo(-.42, -.36);
+  c.bezierCurveTo(-.4, -.46, -.3, -.5, -.15, -.48);
+  c.bezierCurveTo(0, -.47, .12, -.5, .2, -.54);
+  c.bezierCurveTo(.26, -.56, .3, -.52, .32, -.46);
+  c.bezierCurveTo(.36, -.38, .34, -.3, .28, -.26);
+  c.bezierCurveTo(.15, -.23, -.05, -.26, -.2, -.27);
+  c.bezierCurveTo(-.3, -.28, -.38, -.3, -.42, -.36);
+  c.closePath(); c.fill();
+  c.beginPath(); c.ellipse(-.31, -.35, .1, .11, .3, 0, 6.283); c.fill();     // haunch
+  c.beginPath(); c.moveTo(-.4, -.44); c.quadraticCurveTo(-.47, -.45, -.47, -.41); c.quadraticCurveTo(-.45, -.38, -.4, -.39); c.closePath(); c.fill(); // tail
+  // neck from down (grazing) to up, head following, a slow proud toss once it is up
+  const th = lerp(-.7, .95, raise), toss = raise * .1 * Math.sin(Math.max(0, p - .4) * 14);
+  const px = .26, py = -.45, ex = px + Math.cos(th) * .22, ey = py - Math.sin(th) * .22;
+  c.lineWidth = .15; c.beginPath(); c.moveTo(px, py); c.lineTo(ex, ey); c.stroke();
+  c.beginPath(); c.moveTo(px + .04, py + .06); c.quadraticCurveTo((px + ex) / 2 + .08, (py + ey) / 2 + .08, ex + .02, ey + .03); c.lineTo(ex, ey); c.lineTo(px, py); c.closePath(); c.fill(); // the hanging neck mane
+  c.translate(ex, ey); c.rotate(-(lerp(-1.25, -.35, raise) + toss));
+  c.beginPath(); c.ellipse(.08, -.005, .1, .062, 0, 0, 6.283); c.fill(); c.beginPath(); c.ellipse(.17, .015, .065, .042, .15, 0, 6.283); c.fill(); // head and muzzle
+  c.beginPath(); c.moveTo(-.02, -.03); c.lineTo(-.1, -.08); c.lineTo(-.03, .01); c.closePath(); c.fill();
+  [[0, 0, .034], [.04, .012, .028]].forEach(([ox, oy, lw]) => { // near and far antler
+    c.save(); c.translate(ox, oy); c.lineWidth = lw;
+    c.beginPath(); c.moveTo(-.01, -.05); c.bezierCurveTo(-.12, -.15, -.15, -.35, -.07, -.48); c.quadraticCurveTo(-.02, -.55, .05, -.56); c.stroke();
+    c.lineWidth = lw * .75;
+    [[-.11, -.2, -.22, -.27], [-.12, -.3, -.23, -.38], [-.11, -.4, -.17, -.5], [-.07, -.47, -.06, -.61], [-.03, -.1, .08, -.16], [-.06, -.14, .04, -.24]].forEach(([x1, y1, x2, y2]) => {
+      c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo((x1 + x2) / 2 - .02, (y1 + y2) / 2 - .02, x2, y2); c.stroke(); });
+    c.restore();
+  });
+  c.restore();
+}
+/* sparks rising from the fire that turn into little glowing ghosts and drift away */
+function drawGhosts(c, p, side, t, v){
+  if (!v.gs){ const n = 3 + (R() * 3 | 0); v.gs = Array.from({length:n}, (_, i) => ({ at: i * 1.3 + R() * .8, x: W / 2 + (R() - .5) * fireWidth() * .5, ph: R() * 6.3, life: 3.6 + R() * 1.2 })); }
+  const el = p * GUESTS.ghosts.dur, base = H * (W > H ? .5 : .62), r0 = Math.min(W, H) * .035;
+  v.gs.forEach(g => {
+    const age = el - g.at; if (age < 0 || age > g.life) return;
+    const grow = Math.min(1, age / .8), fade = Math.min(1, (g.life - age) / 1.2), al = .75 * grow * fade, r = r0 * (.25 + .75 * grow);
+    const x = g.x + Math.sin(age * 1.6 + g.ph) * r0 * 1.2, y = base - age * H * .07, wv = Math.sin(age * 5 + g.ph) * .12 * r;
+    c.save(); c.translate(x, y); c.rotate(.12 * Math.sin(age * 1.6 + g.ph + 1));
+    c.shadowColor = `rgba(255,220,160,${al})`; c.shadowBlur = r * DPR * .9;
+    c.fillStyle = `rgba(255,238,210,${al})`;
+    c.beginPath(); c.moveTo(-r, .55 * r); c.lineTo(-r, -.15 * r); c.arc(0, -.15 * r, r, Math.PI, 0); c.lineTo(r, .55 * r);
+    c.quadraticCurveTo(2 * r / 3, .95 * r + wv, r / 3, .55 * r); c.quadraticCurveTo(0, .95 * r - wv, -r / 3, .55 * r); c.quadraticCurveTo(-2 * r / 3, .95 * r + wv, -r, .55 * r);
+    c.closePath(); c.fill();
+    c.shadowBlur = 0;
+    if (grow > .6){ // eyes, where the fire shows through
+      c.globalCompositeOperation = 'destination-out'; c.fillStyle = `rgba(0,0,0,${(grow - .6) / .4})`;
+      c.beginPath(); c.ellipse(-.33 * r, -.2 * r, .13 * r, .2 * r, 0, 0, 6.283); c.ellipse(.33 * r, -.2 * r, .13 * r, .2 * r, 0, 0, 6.283); c.fill();
+    }
+    c.restore();
+  });
+}
+const GUESTS = {
+  reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:12, draw:drawGhosts },
+  couple:{ dur:16, draw:drawCouple },
+  troll:{ dur:15, draw:drawTroll }, nisse:{ dur:13, draw:drawNisse }, owl:{ dur:14, draw:drawOwl },
+  fox:{ dur:8, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
+};
+function planNext(now, first){
+  nextVisitor = now + (first ? 90 + R() * 120 : 240 + R() * 300); // first after 1.5–3.5 min, then every 4–9 min
+}
+function guests(t){
+  if (!visitor && t > nextVisitor && life > .2){
+    const kinds = Object.keys(GUESTS).filter(k => k !== lastKind), kind = kinds[R() * kinds.length | 0];
+    visitor = { kind, start: t, side: R() < .5 ? -1 : 1, y: .12 + R() * .2 }; lastKind = kind;
+  }
+  if (!visitor) return;
+  const g = GUESTS[visitor.kind], p = (t - visitor.start) / g.dur;
+  if (p >= 1){ visitor = null; planNext(t, false); return; }
+  GA = 1;
+  ox.setTransform(1, 0, 0, 1, 0, 0); ox.clearRect(0, 0, off.width, off.height);
+  ox.setTransform(DPR, 0, 0, DPR, 0, 0);
+  g.draw(ox, p, visitor.side, t, visitor);
+  cx2.setTransform(1, 0, 0, 1, 0, 0);
+  cx2.globalAlpha = .92 * GA; cx2.drawImage(off, 0, 0); cx2.globalAlpha = 1;
+}
+
+function loop(now){
+  if (!running) return;
+  raf = requestAnimationFrame(loop);
+  if (now - lastFrame < 31) return; // about 30 frames a second, kinder to the battery
+  const dt = Math.min(.1, (now - (lastFrame || now)) / 1000); lastFrame = now;
+  const t = (now - t0) / 1000;
+  const burnL = burnMs ? Math.max(0, 1 - Math.pow(Math.min(1, Math.max(0, now - burnStart) / burnMs), 1.4)) : 1;
+  const wk = Math.min(1, Math.max(0, now - woodAt) / 10000), rampL = lerp(woodFrom, 1, 1 - Math.pow(1 - wk, 2));
+  life = Math.min(burnL, rampL);
+  const under = visitor && GUESTS[visitor.kind].behind;
+  drawFire(t, dt || .033, under ? () => guests(t) : null);
+  cx2.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (!under) guests(t);
+}
+function drawStatic(){
+  const c = cx2; c.setTransform(DPR, 0, 0, DPR, 0, 0);
+  c.fillStyle = '#f08a14'; c.fillRect(0, 0, W, H);
+}
+
+
+const BURN_MS = 45 * 60000; // burns down to embers over 45 minutes
+function start(canvas){
+  cv = canvas; cx2 = cv.getContext('2d');
+  cv.hidden = false; size();
+  burnMs = BURN_MS;
+  sparks = []; wisps = []; visitor = null; lastKind = null; life = 1; lastFrame = 0; t0 = burnStart = performance.now(); woodAt = -1e9; woodFrom = 1;
+  running = true;
+  if (reduced()) drawStatic();
+  else { planNext(0, true); raf = requestAnimationFrame(loop); }
+  startSound();
+}
+function stop(){
+  if (!cv) return;
+  running = false; cancelAnimationFrame(raf); raf = null; stopSound();
+  visitor = null; cv.hidden = true;
+}
+/* hold the screen 1.5 s: add wood. The flames grow back to full over about 10 s and the burn-down starts over. */
+function addWood(){
+  if (!running || reduced()) return;
+  const now = performance.now();
+  woodFrom = life; woodAt = now; burnStart = now;
+  const fw = fireWidth(), base = H * 1.01;
+  for (let i = 0; i < 18; i++) sparks.push({ x: W / 2 + (R() - .5) * fw * .35, y: base - H * .05 * R(), vy: -(.15 + .2 * R()) * H, ph: R() * 6.3, sw: (R() - .5) * 40, age: 0, life: 1.4 + R() * 1.8, r: 1 + R() * 1.6 });
+  if (ac){ const at = ac.currentTime + .02; for (let k = 0; k < 7; k++) pop(at + R() * .5, k === 0); }
+  try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
+}
+// sound pauses when the app goes to the background and comes back with it; a touch resumes it where the phone wants a gesture
+function resumeAudio(){ try { if (ac && ac.state === 'suspended') ac.resume(); } catch(e){} }
+document.addEventListener('visibilitychange', () => {
+  if (!ac) return;
+  try { if (document.visibilityState === 'hidden') ac.suspend(); else ac.resume(); } catch(e){}
+});
+return { start, stop, addWood, resumeAudio, get running(){ return running; } };
+})();
 function openLight(m){
   const T = t(), el = $('slight');
   slStop(); slMode = m;
-  $('slNote').textContent = T.lampNote;
+  $('slNote').textContent = m === 'fire' ? T.fireWood + '\n' + T.lampNote : T.lampNote;
   $('slTxt').textContent = T.lampSlide;
+  el.classList.toggle('fire', m === 'fire');
   $('slKnob').style.transition = 'none'; $('slKnob').style.transform = '';
-  if (m === 'fire'){
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) el.style.background = '#f08a14';
-    else slFire();
-  } else if (m === 'sos') slSos();
+  if (m === 'fire') el.style.background = '#000';
+  else if (m === 'sos') slSos();
   else if (m === 'six') slSix();
   else el.style.background = SL_COL[m];
   el.hidden = false; slDragging = false; slShow(3000);
+  if (m === 'fire') Fire.start($('slFireCv')); // after the light is shown, so the canvas has its size
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
   slFs(); updateWake();
 }
@@ -4230,8 +4750,21 @@ function closeLight(){
   });
   const back = () => { if (sx === null) return; sx = null; slDragging = false; knob.style.transition = 'transform .25s'; knob.style.transform = ''; slShow(4000); };
   knob.addEventListener('pointerup', back); knob.addEventListener('pointercancel', back);
-  el.addEventListener('touchstart', e => { if (!e.target.closest('#slKnob')){ if (e.cancelable) e.preventDefault(); slShow(4000); } }, {passive:false});
-  el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); slFs(); if (!e.target.closest('#slKnob')) slShow(4000); });
+  // Bål: one steady finger for 1.5 s adds wood; a second finger, a slide or lifting early cancels it, so rain cannot do it
+  let wT = null, wx = 0, wy = 0;
+  const wCancel = () => { clearTimeout(wT); wT = null; };
+  const wStart = (x, y) => { wCancel(); if (slMode !== 'fire') return; wx = x; wy = y; wT = setTimeout(() => { wT = null; if (slMode === 'fire') Fire.addWood(); }, 1500); };
+  el.addEventListener('touchstart', e => {
+    if (e.target.closest('#slKnob')) return;
+    if (e.cancelable) e.preventDefault();
+    slShow(4000);
+    if (e.touches.length === 1) wStart(e.touches[0].clientX, e.touches[0].clientY); else wCancel();
+  }, {passive:false});
+  el.addEventListener('touchmove', e => { if (wT && Math.hypot(e.touches[0].clientX - wx, e.touches[0].clientY - wy) > 12) wCancel(); }, {passive:true});
+  el.addEventListener('touchend', () => { wCancel(); Fire.resumeAudio(); }); el.addEventListener('touchcancel', wCancel);
+  el.addEventListener('pointerdown', e => { if (e.pointerType !== 'touch' && !e.target.closest('#slKnob')) wStart(e.clientX, e.clientY); });
+  el.addEventListener('pointerup', e => { if (e.pointerType !== 'touch') wCancel(); });
+  el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); slFs(); Fire.resumeAudio(); if (!e.target.closest('#slKnob')) slShow(4000); });
   el.addEventListener('contextmenu', e => e.preventDefault());
 })();
 /* tap or hold on the light buttons (delegated, since the row is redrawn with the page) */
@@ -4248,7 +4781,7 @@ function closeLight(){
   };
   const move = e => { if (!btn) return; const p = pt(e); if (Math.hypot(p.clientX - sx, p.clientY - sy) > 12) cancel(); };
   const end = () => {
-    if (held){ held = false; slFs(); return; }
+    if (held){ held = false; slFs(); Fire.resumeAudio(); return; }
     if (!btn) return;
     const m = btn.dataset.light, ok = !multi; cancel();
     if (ok) tapLight(m);
