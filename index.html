@@ -731,8 +731,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.12.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 55;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.12.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 56;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -864,7 +864,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
       ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
@@ -1085,7 +1085,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
       ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
@@ -4205,7 +4205,7 @@ function slSos(){
    Reduce motion: a steady amber, no sparks or guests. */
 const Fire = (() => {
 /* ---------- sound: generated, no files ---------- */
-let ac = null, master = null, rumbleG = null, popTimer = null, nextPop = 0, life = 1;
+let ac = null, master = null, rumbleG = null, popTimer = null, nextPop = 0, life = 1, sndFrom = 0, sndLevel = .75;
 function noiseBuf(brown){
   const n = ac.sampleRate * 2, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
   let last = 0;
@@ -4218,6 +4218,7 @@ function startSound(){
     ac = new (window.AudioContext || window.webkitAudioContext)();
     master = ac.createGain(); master.gain.value = 0; master.connect(ac.destination);
     master.gain.setValueAtTime(0, ac.currentTime); master.gain.linearRampToValueAtTime(.75, ac.currentTime + 12); // builds slowly, like a fire catching
+    sndFrom = performance.now(); sndLevel = .75;
     white = noiseBuf(false);
     const br = ac.createBufferSource(); br.buffer = noiseBuf(true); br.loop = true;
     const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220;
@@ -4244,6 +4245,9 @@ function pop(at, big){
 function schedulePops(){
   if (!ac) return;
   rumbleG.gain.setTargetAtTime(.2 + .4 * life, ac.currentTime, .5);
+  // 0.12.1: as the last embers die the crackle fades to silence; adding wood brings it back
+  const lv = .75 * Math.min(1, life / .15);
+  if (performance.now() - sndFrom > 12500 && Math.abs(lv - sndLevel) > .01){ master.gain.setTargetAtTime(lv, ac.currentTime, 1.5); sndLevel = lv; }
   while (nextPop < ac.currentTime + .15){
     if (Math.random() < .12){ for (let k = 0, n = 3 + (Math.random() * 4 | 0); k < n; k++) pop(nextPop + Math.random() * .16, false); }
     else pop(nextPop, Math.random() < .05);
@@ -4263,6 +4267,29 @@ let W = 0, H = 0, DPR = 1, raf = null, running = false, t0 = 0, lastFrame = 0;
 let bri = .85, briT = .85, briNext = 0, sparks = [], burnMs = 0;
 let visitor = null, nextVisitor = 0, lastKind = null;
 let burnStart = 0, woodAt = -1e9, woodFrom = 1; // adding wood: the fire grows back from woodFrom over 10 s
+/* 0.12.1: two minutes after the fire has burned out, it sleeps: the drawing and the sound stop and the app stops keeping
+   the screen on (onSleep → updateWake), so the phone turns it off as usual. The embers stay on the screen; holding the
+   screen to add wood wakes it all again. */
+const OUT_MS = 2 * 60000;
+let outSince = 0, sleeping = false, onSleep = null;
+let zs = [], lastZ = 0; // soft glowing Z's rising from the embers while the fire is about to sleep
+function drawZ(x, y, size, a, tilt){
+  const c = cx2; c.save(); c.setTransform(DPR, 0, 0, DPR, 0, 0); c.translate(x, y); c.rotate(tilt);
+  c.font = `600 ${size}px 'Barlow Condensed', 'Barlow', system-ui, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.shadowColor = `rgba(255,140,60,${a})`; c.shadowBlur = size * DPR * .6;
+  c.fillStyle = `rgba(255,170,100,${a})`; c.fillText('Z', 0, 0);
+  c.restore();
+}
+function drawZs(now, dt){
+  const u = Math.min(W, H) / 390;
+  if (now - lastZ > 3000){ lastZ = now; zs.push({ x: W / 2 + (R() - .5) * fireWidth() * .15, age: 0, life: 7, ph: R() * 6.3 }); }
+  for (let i = zs.length - 1; i >= 0; i--){
+    const z = zs[i]; z.age += dt;
+    if (z.age > z.life){ zs.splice(i, 1); continue; }
+    const k = z.age / z.life, a = .7 * Math.min(1, k / .2, (1 - k) / .35);
+    drawZ(z.x + Math.sin(z.age * .9 + z.ph) * 14 * u + k * 30 * u, H * .9 - k * H * .32, (22 + 30 * k) * u, a, -.15 + .1 * Math.sin(z.age + z.ph));
+  }
+}
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const R = Math.random, lerp = (a, b, k) => a + (b - a) * k;
 const PH = Array.from({length:12}, () => [R() * 6.3, R() * 6.3, R() * 6.3]);
@@ -4617,12 +4644,12 @@ function drawReindeer(c, p, side, t){
 }
 /* sparks rising from the fire that turn into little glowing ghosts and drift away */
 function drawGhosts(c, p, side, t, v){
-  if (!v.gs){ const n = 3 + (R() * 3 | 0); v.gs = Array.from({length:n}, (_, i) => ({ at: i * 1.3 + R() * .8, x: W / 2 + (R() - .5) * fireWidth() * .5, ph: R() * 6.3, life: 3.6 + R() * 1.2 })); }
+  if (!v.gs){ const n = 3 + (R() * 3 | 0); v.gs = Array.from({length:n}, (_, i) => ({ at: i * 1.6 + R() * .8, x: W / 2 + (R() - .5) * fireWidth() * .5, ph: R() * 6.3, life: 6.5 + R() * 1.5 })); }
   const el = p * GUESTS.ghosts.dur, base = H * (W > H ? .5 : .62), r0 = Math.min(W, H) * .035;
   v.gs.forEach(g => {
     const age = el - g.at; if (age < 0 || age > g.life) return;
-    const grow = Math.min(1, age / .8), fade = Math.min(1, (g.life - age) / 1.2), al = .75 * grow * fade, r = r0 * (.25 + .75 * grow);
-    const x = g.x + Math.sin(age * 1.6 + g.ph) * r0 * 1.2, y = base - age * H * .07, wv = Math.sin(age * 5 + g.ph) * .12 * r;
+    const grow = Math.min(1, age / .8), fade = Math.min(1, (g.life - age) / 2.5), al = .75 * grow * fade, r = r0 * (.25 + .75 * grow);
+    const x = g.x + Math.sin(age * 1.6 + g.ph) * r0 * 1.2, y = base - age * H * .045, wv = Math.sin(age * 5 + g.ph) * .12 * r;
     c.save(); c.translate(x, y); c.rotate(.12 * Math.sin(age * 1.6 + g.ph + 1));
     c.shadowColor = `rgba(255,220,160,${al})`; c.shadowBlur = r * DPR * .9;
     c.fillStyle = `rgba(255,238,210,${al})`;
@@ -4638,7 +4665,7 @@ function drawGhosts(c, p, side, t, v){
   });
 }
 const GUESTS = {
-  reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:12, draw:drawGhosts },
+  reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:16, draw:drawGhosts },
   couple:{ dur:16, draw:drawCouple },
   troll:{ dur:15, draw:drawTroll }, nisse:{ dur:13, draw:drawNisse }, owl:{ dur:14, draw:drawOwl },
   fox:{ dur:8, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
@@ -4675,6 +4702,25 @@ function loop(now){
   drawFire(t, dt || .033, under ? () => guests(t) : null);
   cx2.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (!under) guests(t);
+  if (life <= .001){ if (!outSince){ outSince = now; lastZ = now - 2000; } drawZs(now, dt || .033); if (now - outSince > OUT_MS) goSleep(t); }
+  else { outSince = 0; zs = []; }
+}
+function goSleep(t){
+  sleeping = true; cancelAnimationFrame(raf); raf = null;
+  visitor = null; sparks = []; wisps = [];
+  drawFire(t, 0, null); // one last still picture of the embers, with a faint z Z Z so it is clear the fire sleeps
+  const u = Math.min(W, H) / 390; zs = [];
+  [[-.08, .85, 22, .45], [.0, .78, 30, .5], [.09, .69, 40, .55]].forEach(([dx, y, sz, a]) => drawZ(W / 2 + dx * W, H * y, sz * u, a, -.12));
+  clearInterval(popTimer); popTimer = null;
+  try { if (ac) ac.suspend(); } catch(e){}
+  if (onSleep) onSleep();
+}
+function wake(){
+  if (!sleeping) return;
+  sleeping = false; outSince = 0; lastFrame = 0;
+  try { if (ac){ ac.resume(); if (!popTimer){ nextPop = ac.currentTime + .1; popTimer = setInterval(schedulePops, 60); } } } catch(e){}
+  raf = requestAnimationFrame(loop);
+  if (onSleep) onSleep();
 }
 function drawStatic(){
   const c = cx2; c.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -4683,8 +4729,8 @@ function drawStatic(){
 
 
 const BURN_MS = 45 * 60000; // burns down to embers over 45 minutes
-function start(canvas){
-  cv = canvas; cx2 = cv.getContext('2d');
+function start(canvas, sleepChanged){
+  cv = canvas; cx2 = cv.getContext('2d'); onSleep = sleepChanged || null; sleeping = false; outSince = 0;
   cv.hidden = false; size();
   burnMs = BURN_MS;
   sparks = []; wisps = []; visitor = null; lastKind = null; life = 1; lastFrame = 0; t0 = burnStart = performance.now(); woodAt = -1e9; woodFrom = 1;
@@ -4696,11 +4742,12 @@ function start(canvas){
 function stop(){
   if (!cv) return;
   running = false; cancelAnimationFrame(raf); raf = null; stopSound();
-  visitor = null; cv.hidden = true;
+  visitor = null; sleeping = false; outSince = 0; cv.hidden = true;
 }
 /* hold the screen 1.5 s: add wood. The flames grow back to full over about 10 s and the burn-down starts over. */
 function addWood(){
   if (!running || reduced()) return;
+  wake();
   const now = performance.now();
   woodFrom = life; woodAt = now; burnStart = now;
   const fw = fireWidth(), base = H * 1.01;
@@ -4709,12 +4756,12 @@ function addWood(){
   try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
 }
 // sound pauses when the app goes to the background and comes back with it; a touch resumes it where the phone wants a gesture
-function resumeAudio(){ try { if (ac && ac.state === 'suspended') ac.resume(); } catch(e){} }
+function resumeAudio(){ try { if (ac && !sleeping && ac.state === 'suspended') ac.resume(); } catch(e){} }
 document.addEventListener('visibilitychange', () => {
   if (!ac) return;
-  try { if (document.visibilityState === 'hidden') ac.suspend(); else ac.resume(); } catch(e){}
+  try { if (document.visibilityState === 'hidden') ac.suspend(); else if (!sleeping) ac.resume(); } catch(e){}
 });
-return { start, stop, addWood, resumeAudio, get running(){ return running; } };
+return { start, stop, addWood, resumeAudio, get running(){ return running; }, get sleeping(){ return sleeping; } };
 })();
 function openLight(m){
   const T = t(), el = $('slight');
@@ -4728,7 +4775,7 @@ function openLight(m){
   else if (m === 'six') slSix();
   else el.style.background = SL_COL[m];
   el.hidden = false; slDragging = false; slShow(3000);
-  if (m === 'fire') Fire.start($('slFireCv')); // after the light is shown, so the canvas has its size
+  if (m === 'fire') Fire.start($('slFireCv'), updateWake); // after the light is shown, so the canvas has its size; tells us when it sleeps or wakes
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
   slFs(); updateWake();
 }
@@ -4936,7 +4983,8 @@ sosEl.addEventListener('click', e => {
 let wakeLock = null;
 async function updateWake(){
   try {
-    if ((state.field || slMode) && document.visibilityState === 'visible'){
+    // 0.12.1: a burned-out Bål lets go of the screen, even in Utemodus, so the phone can turn it off
+    if ((state.field || slMode) && !(slMode === 'fire' && Fire.sleeping) && document.visibilityState === 'visible'){
       if (!wakeLock && navigator.wakeLock){ wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); }
     } else if (wakeLock){ await wakeLock.release(); wakeLock = null; }
   } catch(e){}
