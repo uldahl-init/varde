@@ -866,3 +866,43 @@ test.describe('nødmodus', () => {
     }
   });
 });
+
+/* ---------- From build 55 (0.12.0): Bål ----------
+   Holding Bål in Utemodus lights the fire on a canvas with the wood hint; holding the screen adds wood without errors;
+   every guest can be drawn; sliding the handle puts the fire out and hides the canvas. */
+test.describe('bål', () => {
+  test('light, add wood, guests, put out', async ({browser}) => {
+    const ctx = await browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true}]);
+    await p.goto('./');
+    const hold = async (sel, ms) => {
+      const b = await p.locator(sel).first().boundingBox();
+      await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+      await p.mouse.down(); await p.waitForTimeout(ms); await p.mouse.up();
+    };
+    await hold('#main .lt-btn[data-light="fire"]', 1200);
+    await expect(p.locator('#slight')).toBeVisible();
+    await expect(p.locator('#slight')).toHaveClass(/fire/);
+    await expect(p.locator('#slFireCv')).toBeVisible();
+    await expect(p.locator('#slNote')).toContainText('legge på ved');
+    await p.waitForTimeout(600);
+    // the fire is drawn: the middle of the bottom of the canvas is bright
+    const px = await p.locator('#slFireCv').evaluate(c => Array.from(c.getContext('2d').getImageData(c.width / 2, c.height - 20, 1, 1).data));
+    expect(px[0]).toBeGreaterThan(150);
+    // adding wood: hold one spot on the fire for 1.6 s
+    await p.mouse.move(195, 300); await p.mouse.down(); await p.waitForTimeout(1600); await p.mouse.up();
+    await p.waitForTimeout(300);
+    // the slide track is shown again, then the handle puts the fire out
+    await p.mouse.click(195, 300);
+    const k = await p.locator('#slKnob').boundingBox(), tr = await p.locator('#slTrack').boundingBox();
+    await p.mouse.move(k.x + k.width / 2, k.y + k.height / 2); await p.mouse.down();
+    for (let i = 1; i <= 10; i++) await p.mouse.move(k.x + k.width / 2 + (tr.width - k.width) * i / 10, k.y + k.height / 2);
+    await p.mouse.up();
+    await expect(p.locator('#slight')).toBeHidden();
+    await expect(p.locator('#slFireCv')).toBeHidden();
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
