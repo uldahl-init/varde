@@ -731,8 +731,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.12.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 56;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.12.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 57;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -4599,10 +4599,11 @@ function drawCouple(c, p, side, t){
 /* a reindeer far off behind the fire: grazing, then it lifts its head and shows its antlers */
 function drawReindeer(c, p, side, t){
   GA = env(p, .15, .15) * .7; // behind the fire, so a little fainter than the others
-  const s = Math.min(W, H) * .44, dir = side < 0 ? -1 : 1; // faces away from the fire, so the antlers stand clear of the flames
+  const s = Math.min(W, H) * .38, dir = side < 0 ? -1 : 1; // faces away from the fire, so the antlers stand clear of the flames
   const ss = x => x * x * (3 - 2 * x), raise = ss(Math.max(0, Math.min(1, (p - .22) / .15)));
   c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
-  c.translate(side < 0 ? W * .3 : W * .7, H * .985); c.scale(dir * s, s);
+  const rx = Math.max(W * .3, s * .72 + W * .05); // 0.12.2: far enough in that muzzle and antlers stay on the screen
+  c.translate(side < 0 ? rx : W - rx, H * .985); c.scale(dir * s, s);
   // legs with knees, hocks and hooves; far legs first
   const leg = (pts, w1, w2) => {
     c.lineWidth = w1; c.beginPath(); c.moveTo(pts[0][0], pts[0][1]); c.lineTo(pts[1][0], pts[1][1]); c.stroke();
@@ -4614,16 +4615,17 @@ function drawReindeer(c, p, side, t){
   leg([[.22, -.32], [.22, -.16], [.23, -.05], [.24, -.015]], .065, .034);     // front, near
   leg([[-.33, -.34], [-.39, -.17], [-.36, -.05], [-.35, -.015]], .08, .034);  // hind, near
   // body: rump, back rising to the withers, deep chest, belly; the short tail grows out of the rump
-  c.beginPath(); c.moveTo(-.42, -.36);
-  c.bezierCurveTo(-.4, -.46, -.3, -.5, -.15, -.48);
+  c.beginPath(); c.moveTo(-.41, -.37);
+  c.quadraticCurveTo(-.46, -.37, -.48, -.41);                 // short tail, tipped slightly down,
+  c.quadraticCurveTo(-.47, -.45, -.41, -.45);                 // growing out of the rump
+  c.bezierCurveTo(-.36, -.49, -.28, -.5, -.15, -.48);
   c.bezierCurveTo(0, -.47, .12, -.5, .2, -.54);
   c.bezierCurveTo(.26, -.56, .3, -.52, .32, -.46);
   c.bezierCurveTo(.36, -.38, .34, -.3, .28, -.26);
   c.bezierCurveTo(.15, -.23, -.05, -.26, -.2, -.27);
-  c.bezierCurveTo(-.3, -.28, -.38, -.3, -.42, -.36);
+  c.bezierCurveTo(-.3, -.28, -.38, -.3, -.42, -.35);
   c.closePath(); c.fill();
   c.beginPath(); c.ellipse(-.31, -.35, .1, .11, .3, 0, 6.283); c.fill();     // haunch
-  c.beginPath(); c.moveTo(-.4, -.44); c.quadraticCurveTo(-.47, -.45, -.47, -.41); c.quadraticCurveTo(-.45, -.38, -.4, -.39); c.closePath(); c.fill(); // tail
   // neck from down (grazing) to up, head following, a slow proud toss once it is up
   const th = lerp(-.7, .95, raise), toss = raise * .1 * Math.sin(Math.max(0, p - .4) * 14);
   const px = .26, py = -.45, ex = px + Math.cos(th) * .22, ey = py - Math.sin(th) * .22;
@@ -4644,12 +4646,12 @@ function drawReindeer(c, p, side, t){
 }
 /* sparks rising from the fire that turn into little glowing ghosts and drift away */
 function drawGhosts(c, p, side, t, v){
-  if (!v.gs){ const n = 3 + (R() * 3 | 0); v.gs = Array.from({length:n}, (_, i) => ({ at: i * 1.6 + R() * .8, x: W / 2 + (R() - .5) * fireWidth() * .5, ph: R() * 6.3, life: 6.5 + R() * 1.5 })); }
+  if (!v.gs){ const n = 3 + (R() * 3 | 0); v.gs = Array.from({length:n}, (_, i) => ({ at: i * 2 + R() * .8, x: W / 2 + (R() - .5) * fireWidth() * .5, ph: R() * 6.3, life: 10 + R() * 2 })); }
   const el = p * GUESTS.ghosts.dur, base = H * (W > H ? .5 : .62), r0 = Math.min(W, H) * .035;
   v.gs.forEach(g => {
     const age = el - g.at; if (age < 0 || age > g.life) return;
-    const grow = Math.min(1, age / .8), fade = Math.min(1, (g.life - age) / 2.5), al = .75 * grow * fade, r = r0 * (.25 + .75 * grow);
-    const x = g.x + Math.sin(age * 1.6 + g.ph) * r0 * 1.2, y = base - age * H * .045, wv = Math.sin(age * 5 + g.ph) * .12 * r;
+    const grow = Math.min(1, age / 1.2), fade = Math.min(1, (g.life - age) / 3.5), al = .75 * grow * fade, r = r0 * (.25 + .75 * grow);
+    const x = g.x + Math.sin(age * 1.6 + g.ph) * r0 * 1.2, y = base - age * H * .03, wv = Math.sin(age * 5 + g.ph) * .12 * r;
     c.save(); c.translate(x, y); c.rotate(.12 * Math.sin(age * 1.6 + g.ph + 1));
     c.shadowColor = `rgba(255,220,160,${al})`; c.shadowBlur = r * DPR * .9;
     c.fillStyle = `rgba(255,238,210,${al})`;
@@ -4665,7 +4667,7 @@ function drawGhosts(c, p, side, t, v){
   });
 }
 const GUESTS = {
-  reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:16, draw:drawGhosts },
+  reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:22, draw:drawGhosts },
   couple:{ dur:16, draw:drawCouple },
   troll:{ dur:15, draw:drawTroll }, nisse:{ dur:13, draw:drawNisse }, owl:{ dur:14, draw:drawOwl },
   fox:{ dur:8, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
