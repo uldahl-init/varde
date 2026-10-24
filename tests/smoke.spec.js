@@ -906,3 +906,56 @@ test.describe('bål', () => {
     await ctx.close();
   });
 });
+
+/* ---------- From build 56 (0.12.1): Bål sleeps when burned out ----------
+   With the page clock fast-forwarded: after 45 min the fire is out and soft Z's rise; two minutes later it sleeps,
+   the picture stands still and the screen is let go (wake lock released, even in Utemodus); holding the screen to add
+   wood wakes it and takes the screen again. The wake lock and fillText are watched through small stand-ins. */
+test.describe('bål sover', () => {
+  test('burns out, Z, sleeps, wakes on wood', async ({browser}) => {
+    const ctx = await browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await p.addInitScript(([key, s]) => {
+      try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){}
+      window.__wl = {held:false, requests:0};
+      Object.defineProperty(navigator, 'wakeLock', {configurable:true, value:{ request: async () => {
+        window.__wl.requests++; window.__wl.held = true; const fns = [];
+        return { addEventListener: (t, f) => fns.push(f), release: async () => { window.__wl.held = false; fns.forEach(f => f()); } };
+      }}});
+      window.__z = 0;
+      const ft = CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText = function(t, ...a){ if (t === 'Z') window.__z++; return ft.call(this, t, ...a); };
+    }, [KEY, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true}]);
+    await p.clock.install();
+    await p.goto('./');
+    const holdAt = async (x, y, ms) => { await p.mouse.move(x, y); await p.mouse.down(); await p.waitForTimeout(ms); await p.mouse.up(); };
+    const b = await p.locator('#main .lt-btn[data-light="fire"]').boundingBox();
+    await holdAt(b.x + b.width / 2, b.y + b.height / 2, 1200);
+    await expect(p.locator('#slFireCv')).toBeVisible();
+    await expect.poll(() => p.evaluate(() => window.__wl.held)).toBe(true);
+    const pic = () => p.locator('#slFireCv').evaluate(c => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let h = 0; for (let i = 0; i < d.length; i += 97) h = (h * 31 + d[i]) | 0; return h; });
+    // 45 minutes later: burned out, Z's rise, the screen is still held
+    await p.clock.fastForward('45:30');
+    await p.clock.runFor(5000);
+    expect(await p.evaluate(() => window.__z)).toBeGreaterThan(0);
+    expect(await p.evaluate(() => window.__wl.held)).toBe(true);
+    // two more minutes: it sleeps, lets go of the screen and stands still
+    await p.clock.fastForward('02:05');
+    await p.clock.runFor(1000);
+    await expect.poll(() => p.evaluate(() => window.__wl.held)).toBe(false);
+    await expect(p.locator('#slight')).toBeVisible();
+    const a1 = await pic(); await p.clock.runFor(1500); const a2 = await pic();
+    expect(a2).toBe(a1);
+    // adding wood wakes it: the screen is taken again and the fire moves
+    const req = await p.evaluate(() => window.__wl.requests);
+    await holdAt(195, 300, 1700);
+    await p.clock.runFor(1500);
+    await expect.poll(() => p.evaluate(() => window.__wl.held)).toBe(true);
+    expect(await p.evaluate(() => window.__wl.requests)).toBeGreaterThan(req);
+    const w1 = await pic(); await p.clock.runFor(500); const w2 = await pic();
+    expect(w2).not.toBe(w1);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
