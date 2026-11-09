@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-BSnZ329vJl74nKD5RaNB+HRvFkTLI0cO3v3GHgIPHHk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <title>Varde</title>
@@ -731,8 +732,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.12.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 57;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.12.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 58;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1294,6 +1295,7 @@ function friluftsliv(L){
 }
 
 const uid = () => Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+const own = (o, k) => !!o && Object.prototype.hasOwnProperty.call(o, k);  // build 58: own keys only, never Object.prototype
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function detectLang(){
   const l = (navigator.language || 'en').toLowerCase();
@@ -1312,12 +1314,12 @@ function cloneList(src, keepDone){
   const cats = (Array.isArray(src.cats) ? src.cats : []).filter(c => c && Array.isArray(c.items)).map(c => {
     const id = uid(); map[c.id] = id;
     return { id, icon: typeof c.icon === 'string' ? c.icon : null, name:String(c.name || t().category), note: typeof c.note === 'string' ? c.note : '',
-      mode: (typeof c.mode === 'string' && MODES[c.mode]) ? c.mode : null, bag: !!c.bag, lightOnly: !!c.lightOnly, open:true,
+      mode: (typeof c.mode === 'string' && own(MODES, c.mode)) ? c.mode : null, bag: !!c.bag, lightOnly: !!c.lightOnly, open:true,
       items: c.items.filter(i => i && i.text).map(i => ({ id:uid(), text:String(i.text), done: keepDone ? !!i.done : false, sub:!!i.sub, link: i.link || null, light:!!i.light })) };
   });
-  cats.forEach(c => c.items.forEach(i => { if (i.link) i.link = map[i.link] || null; }));
+  cats.forEach(c => c.items.forEach(i => { if (i.link) i.link = own(map, i.link) ? map[i.link] : null; }));
   const modes = {};
-  if (src.modes && typeof src.modes === 'object') Object.keys(src.modes).forEach(k => { if (MODES[k]) modes[k] = !!src.modes[k]; });
+  if (src.modes && typeof src.modes === 'object') Object.keys(src.modes).forEach(k => { if (own(MODES, k)) modes[k] = !!src.modes[k]; });
   return { id:uid(), name:String(src.name || t().myList), notes: typeof src.notes === 'string' ? src.notes : '', modes, cats };
 }
 function load(){
@@ -1368,6 +1370,20 @@ function noteMeta(nn, src){
   if (+src.c >= 1 && +src.c <= 5) nn.c = +src.c;
   return nn;
 }
+// build 58: planner figures from a file keep only what the planners store themselves: finite numbers, true/false,
+// the known choices (mode, fuel, season) and the nested figures under their known keys.
+function bkPlanClean(k, src){
+  const out = {}, okNum = v => typeof v === 'number' && isFinite(v);
+  const pick = {calc:{mode:['mix', 'temp']}, fuelCalc:{fuel:Object.keys(FUELS), mode:['overnight', 'day']}, foodCalc:{season:['summer', 'winter']}, wind:{}}[k] || {};
+  const nest = k === 'fuelCalc' ? {bottle:Object.keys(FUELS), perLc:Object.keys(FUELS), water:USE_KEYS} : {};
+  Object.keys(src).forEach(f => {
+    const v = src[f];
+    if (own(pick, f)){ if (pick[f].includes(v)) out[f] = v; }
+    else if (own(nest, f)){ if (v && typeof v === 'object'){ const o = {}; nest[f].forEach(x => { if (okNum(v[x])) o[x] = v[x]; }); out[f] = o; } }
+    else if (/^\w+$/.test(f) && f !== '__proto__' && (okNum(v) || typeof v === 'boolean')) out[f] = v;
+  });
+  return out;
+}
 function bkRestore(text){
   let obj;
   try { obj = JSON.parse(text); } catch(e){ return null; }
@@ -1383,15 +1399,18 @@ function bkRestore(text){
   });
   if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
     if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id || (x.title === n.title && x.text === n.text))) return;
-    state.notes.push(noteMeta({id:typeof n.id === 'string' ? n.id : uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}, n)); a.n++;
+    // build 58: a fresh id, never the one from the file (ids go into HTML attributes)
+    state.notes.push(noteMeta({id:uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}, n)); a.n++;
   });
   // colour names: only fill names that are empty here, never overwrite
   if (Array.isArray(obj.noteColors)) obj.noteColors.slice(0, 5).forEach((nm, k) => { if (typeof nm === 'string' && nm.trim() && !state.noteColors[k]) state.noteColors[k] = nm.trim().slice(0, 20); });
   if (obj.packW && Array.isArray(obj.packW.items)){
     const pw = packW();
     obj.packW.items.forEach(i => {
-      if (!i || typeof i.name !== 'string' || !isFinite(+i.g) || pw.items.some(x => x.id === i.id)) return;
-      pw.items.push({id:typeof i.id === 'string' ? i.id : uid(), name:i.name, g:+i.g, cat:String(i.cat || ''), cons:!!i.cons, dog:!!i.dog}); a.w++;
+      const it = {id:uid(), name:i && i.name, g:+(i && i.g), cat:String((i && i.cat) || ''), cons:!!(i && i.cons), dog:!!(i && i.dog)};
+      // build 58: a fresh id (as for notes); identical items already here are skipped, so a second restore adds nothing
+      if (!i || typeof i.name !== 'string' || !isFinite(it.g) || pw.items.some(x => x.id === i.id || (x.name === it.name && x.g === it.g && x.cat === it.cat && !!x.cons === it.cons && !!x.dog === it.dog))) return;
+      pw.items.push(it); a.w++;
     });
   }
   if (Array.isArray(obj.links)) obj.links.forEach(l => {
@@ -1400,7 +1419,7 @@ function bkRestore(text){
   });
   // Planner figures only where this phone has none of its own.
   if (obj.plan && typeof obj.plan === 'object') BK_PLAN.forEach(k => {
-    if (obj.plan[k] && typeof obj.plan[k] === 'object' && !state[k]){ state[k] = obj.plan[k]; a.p = 1; }
+    if (obj.plan[k] && typeof obj.plan[k] === 'object' && !Array.isArray(obj.plan[k]) && !state[k]){ state[k] = bkPlanClean(k, obj.plan[k]); a.p = 1; }
   });
   return a;
 }
@@ -1733,7 +1752,7 @@ function render(){
     const from = extraFrom.get(c.id);
     html += `<section class="cat${open ? '' : ' closed'}${complete ? ' complete' : ''}${from ? ' extra' : ''}" data-cat="${c.id}">
       <button class="cat-head" data-nav data-act="toggleCat" aria-expanded="${open}">
-        ${c.icon && CAT_ICONS[c.icon] ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}${from && from !== c.name ? ` <span class="from">+ ${esc(from)}</span>` : ''}</h2><span class="count">${cd}/${ct}</span>${(bag || editing) ? '' : CHEV}
+        ${c.icon && own(CAT_ICONS, c.icon) ? `<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CAT_ICONS[c.icon]}</svg>` : ''}<h2>${esc(c.name)}${from && from !== c.name ? ` <span class="from">+ ${esc(from)}</span>` : ''}</h2><span class="count">${cd}/${ct}</span>${(bag || editing) ? '' : CHEV}
       </button>`;
     if (c.mode && editing) html += `<p class="cat-note">${T.tripType}: ${esc(modeName(c.mode))}</p>`;
     if (c.bag && editing) html += `<p class="cat-note">${T.bagList}</p>`;
@@ -2566,7 +2585,7 @@ function unpackList(p){
   if (!p || !Array.isArray(p.c)) throw new Error('bad');
   const ids = p.c.map(() => uid());
   return {id:uid(), name:String(p.n || APP_NAME), notes:String(p.o || ''), modes:{}, tripType:false, cats:p.c.map((c, n) => ({
-    id:ids[n], name:String(c[0] || ''), note:String(c[1] || ''), mode:MODES[c[2]] ? c[2] : null, bag:!!c[3], icon:c[4] || null, lightOnly:false, open:true,
+    id:ids[n], name:String(c[0] || ''), note:String(c[1] || ''), mode:own(MODES, c[2]) ? c[2] : null, bag:!!c[3], icon:typeof c[4] === 'string' && c[4] ? c[4] : null, lightOnly:false, open:true,
     items:(Array.isArray(c[5]) ? c[5] : []).map(i => ({id:uid(), text:String(i[0] || ''), done:false, sub:!!(i[1] & 1), light:!!(i[1] & 2), link:(i[2] >= 0 && ids[i[2]]) ? ids[i[2]] : null}))
   }))};
 }
@@ -3206,8 +3225,10 @@ function lensChart(T){
     ${rows.map(r => `<div class="lc-row"><span class="lc-lab">${T.sunCat} ${r[0]}<small>VLT ${r[1]}</small></span><div class="lc-track"><i style="left:${r[2]}%;width:${r[3]-r[2]}%;opacity:${r[4]}"></i></div></div>`).join('')}
   </div><p>${T.sunVlt}</p>`;
 }
+// build 58: a knot photo that fails to load removes its frame (was an inline onerror, which the CSP blocks)
+document.addEventListener('error', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.parentNode && im.parentNode.classList && im.parentNode.classList.contains('photo')) im.parentNode.remove(); }, true);
 function knotCards(knots, files){
-  return knots.map((k, n) => `<details class="knot"><summary>${[].concat(files[n] || []).map(f => /\.svg$/.test(f) ? `<div class="knot-img" data-knotsrc="${f}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${f}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`).join('')}<b>${k.n}</b><span>${k.u}</span></summary>
+  return knots.map((k, n) => `<details class="knot"><summary>${[].concat(files[n] || []).map(f => /\.svg$/.test(f) ? `<div class="knot-img" data-knotsrc="${f}" aria-hidden="true"></div>` : `<div class="knot-img photo"><img src="${f}" alt="" loading="lazy"></div>`).join('')}<b>${k.n}</b><span>${k.u}</span></summary>
       <ol>${k.s.map(x => `<li>${x}</li>`).join('')}</ol><p class="check-tip">${k.c}</p></details>`).join('');
 }
 function knotCredits(knots, credits){
