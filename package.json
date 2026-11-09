@@ -3,7 +3,8 @@
   "private": true,
   "description": "Smoke test for Varde. Not part of the app: the app is index.html with no build step.",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "csp": "node tools/csp-hash.js --write"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0"

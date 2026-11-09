@@ -46,6 +46,11 @@ test.describe('static', () => {
     expect((HTML.match(/const KEY\s*=\s*'([^']+)'/) || [])[1]).toBe(KEY);
   });
 
+  test('CSP hash matches the inline script (build 58)', () => {
+    // A stale hash stops the whole app from starting. Fix: node tools/csp-hash.js --write
+    execFileSync(process.execPath, [path.join(ROOT, 'tools', 'csp-hash.js')], {stdio:'pipe'});
+  });
+
   test('every file in ASSETS in sw.js exists', () => {
     const list = (SW.match(/const ASSETS\s*=\s*\[([\s\S]*?)\]/) || [])[1];
     expect(list).toBeTruthy();
@@ -957,5 +962,55 @@ test.describe('bål sover', () => {
     expect(w2).not.toBe(w1);
     expect(err).toEqual([]);
     await ctx.close();
+  });
+});
+
+/* ---------- From build 58 (0.12.3): backup restore gives fresh ids; the CSP blocks inline handlers ---------- */
+test.describe('sikkerhet', () => {
+  test.use({locale:'nb-NO'});
+  test('a backup with hostile ids runs nothing and the items work', async ({page}) => {
+    const errors = watchErrors(page), dialogs = [];
+    page.on('dialog', d => { dialogs.push(d.message()); d.dismiss(); });
+    await openApp(page);
+    const bad = '"><img src=x onerror=alert(1)>';
+    const file = JSON.stringify({app:'trip-checklist', version:3, t:1, lists:[],
+      notes:[{id:bad, title:'Fiendtlig', text:'hei', t:5}], packW:{items:[{id:bad, name:'Ting', g:250, cat:'Annet'}]},
+      plan:{fuelCalc:{fuel:'<img src=x onerror=alert(2)>', people:2}}});
+    await page.locator('#listBtn').click();
+    await page.locator('[data-la="backup"]').click();
+    await page.locator('#bkFileIn').setInputFiles({name:'b.json', mimeType:'application/json', buffer:Buffer.from(file)});
+    await expect(page.locator('#bkRStatus')).toBeVisible();
+    const st = await page.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+    expect(st.notes[0].id).not.toBe(bad);
+    expect(st.packW.items[0].id).not.toBe(bad);
+    expect(st.fuelCalc.fuel).toBeUndefined();
+    // a second restore adds nothing
+    await page.locator('#bkFileIn').setInputFiles({name:'b.json', mimeType:'application/json', buffer:Buffer.from(file)});
+    await page.waitForTimeout(300);
+    const st2 = await page.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+    expect([st2.notes.length, st2.packW.items.length]).toEqual([1, 1]);
+    await page.locator('[data-s="cancel"]').click();
+    await goTab(page, 'notes');
+    await page.locator('#main [data-act="openNote"]').click();
+    await expect(page.locator('.note-full h2')).toContainText('Fiendtlig');
+    await goTab(page, 'plan');
+    await page.locator('#main [data-open="weight"]').click();
+    await expect(page.locator('#main input[data-wid]')).toHaveCount(1);
+    expect(await page.locator('img[src="x"]').count()).toBe(0);
+    await page.goBack();
+    await page.locator('#main [data-open="fuel"]').click();
+    await expect(page.locator('#fuelOut')).toBeVisible();
+    expect(dialogs).toEqual([]);
+    await settle(page, errors);
+  });
+
+  test('the CSP blocks inline event handlers', async ({page}) => {
+    const csp = [];
+    page.on('console', m => { if (/Content Security Policy/i.test(m.text())) csp.push(m.text()); });
+    await openApp(page);
+    await page.evaluate(() => { document.body.insertAdjacentHTML('beforeend', '<img id="cspT" src="data:," onerror="window.__ran=1" onload="window.__ran=1">'); });
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.__ran)).toBeUndefined();
+    expect(csp.length).toBeGreaterThan(0);
   });
 });
