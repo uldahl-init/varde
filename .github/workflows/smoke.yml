@@ -1,4 +1,8 @@
-# Smoke test (see "Smoke test" in CLAUDE.md). A failure is a red X on the commit; it does not stop GitHub Pages from publishing.
+# Smoke test and publish (see "Smoke test" and "Publishing" in CLAUDE.md).
+# Every pull request and every push to main runs the smoke suite (job `smoke`, the required check in the
+# ruleset for main). Only a push to main whose smoke job passed publishes to GitHub Pages (job `deploy`),
+# so a failed test leaves the previous version live. GitHub Pages must use the source "GitHub Actions".
+# Actions are pinned to full commit SHAs (tag in the comment); Dependabot keeps them up to date.
 name: Smoke test
 
 on:
@@ -6,22 +10,33 @@ on:
     branches: [main]
   pull_request:
 
+# Nothing by default; each job asks for what it needs.
+permissions: {}
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: lts/*
           cache: npm
+      # Fast, clear failure for the most dangerous mistake: a stale hash stops the app from starting.
+      # The full suite checks it again.
+      - name: CSP hash matches the inline script
+        run: node tools/csp-hash.js
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm test
         env:
           CI: true
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: playwright-report
@@ -29,3 +44,32 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 14
+
+  deploy:
+    # Only after the smoke job passed, and only for a push to main (never for pull requests).
+    needs: smoke
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read   # check out the tested commit
+      pages: write     # deploy to GitHub Pages
+      id-token: write  # prove to Pages that the deployment comes from this workflow
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # One deployment at a time; a newer push waits instead of cancelling one that is half done.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The repository root as it is: the same app files "Deploy from a branch" served.
+      # Hidden files and folders (.git, .github, .claude, .gitignore) are left out.
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
