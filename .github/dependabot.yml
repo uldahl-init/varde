@@ -1,0 +1,14 @@
+# Keeps the actions pinned to commit SHAs in .github/workflows up to date (see "Publishing" in CLAUDE.md).
+# GitHub Actions only: the app has no dependencies, and Playwright for the smoke test is pinned by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    # One pull request a month for all actions, so the smoke test runs once on the whole set.
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: CI
