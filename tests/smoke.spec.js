@@ -1014,3 +1014,115 @@ test.describe('sikkerhet', () => {
     expect(csp.length).toBeGreaterThan(0);
   });
 });
+
+/* ---------- From build 63 (0.14.1): damaged data kept aside, save failure, share link in restore, large text ---------- */
+test.describe('datasikkerhet', () => {
+  test.use({locale:'nb-NO'});
+  test('damaged stored data is kept aside and shown in the backup sheet', async ({page}) => {
+    const errors = watchErrors(page);
+    await page.addInitScript(([key]) => { if (!sessionStorage.getItem('seeded')){ sessionStorage.setItem('seeded', '1'); localStorage.setItem(key, '{"lists":[ ødelagt'); } }, [KEY]);
+    await page.goto('./');
+    // a new start shows the introduction first, then the notice
+    await page.locator('#intro [data-intro="skip"]').click();
+    await expect(page.locator('#panel h3')).toContainText('kunne ikke leses');
+    expect(await page.evaluate(k => localStorage.getItem(k + '-rescue'), KEY)).toBe('{"lists":[ ødelagt');
+    expect(JSON.parse(await page.evaluate(k => localStorage.getItem(k), KEY)).lists).toEqual([]);
+    await page.locator('#panel [data-s="ok"]').click();
+    await expect(page.locator('#rsOut')).toHaveValue('{"lists":[ ødelagt');
+    // a second start does not overwrite the copy or ask again
+    await page.locator('[data-s="cancel"]').last().click();
+    await page.waitForTimeout(400);
+    await page.reload();
+    await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
+    await page.waitForTimeout(300);
+    await expect(page.locator('#overlay')).toBeHidden();
+    // delete the copy
+    await page.locator('#listBtn').click();
+    await page.locator('[data-la="backup"]').click();
+    await page.locator('#rsDel').click();
+    await page.locator('#panel [data-s="ok"]').click();
+    await expect(page.locator('#bkIn')).toBeVisible();
+    await expect(page.locator('#rsDel')).toHaveCount(0);
+    expect(await page.evaluate(k => localStorage.getItem(k + '-rescue'), KEY)).toBeNull();
+    await settle(page, errors);
+  });
+
+  test('a failed save shows a message once', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.evaluate(() => { const real = Storage.prototype.setItem; Storage.prototype.setItem = function(k, v){ if (k === 'outdoor-lists-v1') throw new DOMException('full', 'QuotaExceededError'); return real.call(this, k, v); }; });
+    await goTab(page, 'notes');
+    await expect(page.locator('#toast')).toContainText('Kunne ikke lagre');
+    await settle(page, errors);
+  });
+
+  test('restore takes a pasted share link', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    // the uncompressed link code ('j' + base64url of the packed list), as an older phone makes it
+    const packed = {v:1, n:'Lenkeliste', o:'', c:[['Ting', '', '', 0, '', [['Kniv', 0, -1]]]]};
+    const link = (await page.evaluate(() => location.origin + location.pathname)) + '#share=j' + Buffer.from(JSON.stringify(packed)).toString('base64url');
+    await page.locator('#listBtn').click();
+    await page.locator('[data-la="backup"]').click();
+    await page.locator('#bkIn').fill('Se her: ' + link + ' hilsen meg');
+    await page.locator('#bkRestore').click();
+    await expect(page.locator('#panel h3')).toContainText('Lenkeliste');
+    await page.locator('#panel [data-s="ok"]').click();
+    await expect(page.locator('#main')).toContainText('Lenkeliste');
+    expect(await page.evaluate(k => JSON.parse(localStorage.getItem(k)).lists.map(l => l.name), KEY)).toEqual(['Lenkeliste']);
+    await settle(page, errors);
+  });
+
+  test('large text: five tab labels fit and all Nødmodus colours are on screen', async ({page}) => {
+    await page.setViewportSize({width:360, height:740});
+    await page.addInitScript(() => document.addEventListener('DOMContentLoaded', () => { document.documentElement.style.fontSize = '200%'; }));
+    await openApp(page);
+    const boxes = await page.locator('#tabbar [data-tab] span').evaluateAll(els => els.map(e => { const r = e.getBoundingClientRect(); return [r.left, r.right]; }));
+    for (let i = 1; i < boxes.length; i++) expect(boxes[i][0]).toBeGreaterThanOrEqual(boxes[i - 1][1]);
+    await goTab(page, 'guide');
+    const hb = page.locator('[data-sos-hold]').first();
+    const bb = await hb.boundingBox();
+    await page.mouse.move(bb.x + bb.width / 2, bb.y + bb.height / 2); await page.mouse.down(); await page.waitForTimeout(1300); await page.mouse.up();
+    const hues = await page.locator('.sos-hues button').evaluateAll(els => els.map(e => e.getBoundingClientRect().right));
+    expect(hues.length).toBe(3);
+    for (const r of hues) expect(r).toBeLessThanOrEqual(360);
+  });
+});
+
+/* ---------- From build 63: the service worker caches the app and opens it offline ---------- */
+// The app registers its service worker on https or localhost only, so these tests use localhost.
+async function openSw(page){
+  await page.addInitScript(([key]) => {
+    try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({lists:[], hidePacked:false, introDone:true})); } catch(e){}
+  }, [KEY]);
+  await page.goto('http://localhost:4173/');
+  await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+}
+test.describe('service worker', () => {
+  test.use({serviceWorkers:'allow', locale:'nb-NO'});
+  test('installs, caches every asset, and opens the app offline', async ({page, context}) => {
+    await openSw(page);
+    await page.reload();
+    await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
+    const cache = (SW.match(/const CACHE\s*=\s*'([^']+)'/) || [])[1];
+    const n = (SW.match(/const ASSETS\s*=\s*\[([^\]]*)\]/) || [])[1].split(',').length;
+    expect(await page.evaluate(async c => (await (await caches.open(c)).keys()).length, cache)).toBeGreaterThanOrEqual(n - 1);
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
+    await context.setOffline(false);
+  });
+
+  test('a slow network opens the saved copy within a few seconds', async ({page, context}) => {
+    await openSw(page);
+    await page.reload();
+    await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
+    await context.route(/index\.html$|\/$/, async route => { await new Promise(r => setTimeout(r, 10000)); try { await route.continue(); } catch(e){} });
+    const t0 = Date.now();
+    await page.reload({waitUntil:'domcontentloaded'});
+    await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
+    expect(Date.now() - t0).toBeLessThan(8000);
+    await context.unrouteAll({behavior:'ignoreErrors'});
+  });
+});
