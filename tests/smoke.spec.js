@@ -1222,6 +1222,9 @@ test.describe('kompass', () => {
   const ctxFor = (browser, locale) => browser.newContext({locale: locale || 'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
   const start = async (p, st) => {
     await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    // newer Chromium has DeviceOrientationEvent.requestPermission() (as on the iPhone) and denies it in a headless test:
+    // answer it as a user tapping Allow would, so Start kompasset starts
+    await p.addInitScript(() => { try { if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') Object.defineProperty(DeviceOrientationEvent, 'requestPermission', {value: async () => 'granted', configurable: true}); } catch(e){} });
     await p.goto('./');
   };
   const turn = (p, alpha) => p.evaluate(a => window.dispatchEvent(new DeviceOrientationEvent('deviceorientationabsolute', {alpha:a, beta:0, gamma:0, absolute:true})), alpha);
@@ -1231,6 +1234,7 @@ test.describe('kompass', () => {
     await start(p, {lists:[], introDone:true, lang:'no', pos:{lat:69.97, lon:23.27, t:Date.now()}});
     await p.locator('#tabbar [data-tab="compass"]').click();
     await p.locator('#main [data-act="cStart"]').click();
+    await expect(p.locator('#main [data-act="cHold"]'), 'compass started (message: ' + await p.locator('#cMsg').textContent() + ')').toBeVisible();
     await expect(p.locator('#cNorth')).toHaveText(/^Sann nord · misvisning 1[34]° Ø$/);
     await turn(p, 0); // magnetic north straight ahead
     await expect(p.locator('#cDeg')).toHaveText(/^1[34]°$/);
@@ -1239,6 +1243,7 @@ test.describe('kompass', () => {
     await start(q, {lists:[], introDone:true, lang:'no'});
     await q.locator('#tabbar [data-tab="compass"]').click();
     await q.locator('#main [data-act="cStart"]').click();
+    await expect(q.locator('#main [data-act="cHold"]')).toBeVisible();
     await turn(q, 0);
     await expect(q.locator('#cDeg')).toHaveText('0°');
     await expect(q.locator('#cNorth')).toContainText('Magnetisk nord');
