@@ -204,6 +204,7 @@ Anything that only changes what you see (changing page, back, opening bags and g
 - Claude Code is used only for smaller edits made directly in the repository, checks and documentation, where nothing needs to be handed over from a chat.
 - Every update ends with a check: manual upload or Claude Code. If Claude Code, say why it is better this time and give the message to paste; otherwise list the files to upload with the commit summary and description. Either way the change goes live only when the pull request is merged and `smoke` passes on `main`.
 - Whoever changes `index.html` must raise `APP_BUILD` and the `CACHE` build number in `sw.js` in the same commit.
+- **One build, one commit, one zip (agreed 16 Nov 2026):** a build made in a chat is delivered as one zip named after the build (`varde-b66.zip`), laid out like the repository (`index.html`, `sw.js`, `CLAUDE.md` at the top; `tests/…`, `guides/…` in their folders) and holding only the changed files. The owner unpacks it and drags everything into the repository root in the GitHub upload page, folders included, so the paths are kept and the app and its tests go up in one commit (a split upload once gave a red run when the new page met the old tests). Pictures for review are sent separately and never go in the zip.
 
 ## Lessons learned
 - `body` uses the classes `field`, `night`, `ngreen`, `locked`, `listlock`, `navopen` and `notlist`, and the attribute `data-skin`. Never reuse these names for other elements: a clash once made the whole page wider than the screen.
@@ -222,6 +223,7 @@ Anything that only changes what you see (changing page, back, opening bags and g
 ## Maintenance build 63 (0.14.1, 16 Nov 2026)
 - **Large text:** `body` font size is `1.0625rem` (17 px at normal size), so all text follows the phone's text size. Tab bar labels grow up to `min(1em, 4vw)` and then stop, with an ellipsis as a last resort, so five fit side by side. Nødmodus: the colour buttons wrap to a new line (`.sos-hues` `flex-wrap`), and the labels next to the numbers break long words (`overflow-wrap:anywhere`, `hyphens:auto`). Check a new full-width row of buttons at 200 % text and 360 px.
 - **Nødmodus red helper text:** `--s-mut` in red mode is `#ec0000` (4.6 : 1 on black; was `#b00000`, 2.9 : 1).
+- **Alpine distress signal wording (build 66):** the Signaler section calls it «kjent fra Alpene» / «known from the Alps», not «brukt i fjellet»: it is a convention of the Alpine clubs (DAV), not something Norwegian rescue bodies or ICAR publish.
 - **«6 i minuttet»:** a minute of signals (six 1 s flashes, 10 s apart), then a full minute dark, so a new round starts every 120 s (was 111 s). Sources in the project notes.
 - **Regnlås texts:** the Utemodus introduction card and Mobilen på tur say Regnlås is for any time the phone is in a pocket or the pack, not only rain. Text only; Regnlås itself is unchanged.
 - `<meta name="description">` (same text as the manifest); the dead `appHeader` lookup in `sortFrame()` is gone.
