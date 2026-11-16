@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-m486SE6fijfhu+OqrKJ55YQFkVZ/JhuIrZNs4PWLNQc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-605Y+zjFatygUMUIHpjXYGEWhCrme5GrGd2QmjvgDd4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -100,7 +100,7 @@ main.editing .items .item{-webkit-user-select:none;user-select:none;-webkit-touc
 .notes-ix > button{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .items.sorting .item.lifted{transition:none;position:relative;z-index:3;background:var(--surface);box-shadow:0 8px 22px rgba(0,0,0,.22);border-radius:10px;cursor:grabbing}
 body.sorting{cursor:grabbing}
-.cat-note{margin:0 2px 6px;color:var(--lichen);font-size:.9rem}
+.cat-note{margin:0 2px 6px;color:var(--lichen);color:color-mix(in srgb,var(--lichen) 70%,var(--ink));font-size:.9rem}
 textarea.plain{font-family:var(--body);font-size:1rem;min-height:260px}
 .modes{margin-top:16px}
 .modes-label{display:block;font-size:.9rem;color:var(--muted);font-weight:600;margin:0 0 8px}
@@ -177,11 +177,14 @@ body.notlist .list-switch svg{display:none}
 .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer}
 .tabbar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabbar button[aria-current="page"]{color:var(--red)}
+/* 0.16.1: accent colours as text are mixed a little towards --ink so small text reaches 4.5 : 1 in every skin;
+   the plain colour stays first for browsers without color-mix */
+.tabbar button[aria-current="page"] span{color:var(--red);color:color-mix(in srgb,var(--red) 70%,var(--ink))}
 .toolbar{display:flex;gap:8px;margin:14px -16px 0;padding:0 16px 2px;overflow-x:auto;scrollbar-width:none}
 .toolbar::-webkit-scrollbar{display:none}
 .toolbar .chip{flex:none}
 .toolbar .chip{padding:9px 14px}
-.chip.field-on{background:var(--red);border-color:var(--red);color:#fff}
+.chip.field-on{background:var(--red);border-color:var(--red);color:var(--on-red,#fff)}
 .chip:disabled{opacity:.4;cursor:default}
 .modes-toggle{width:100%;display:flex;align-items:center;gap:8px;margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-weight:600;text-align:left;cursor:pointer}
 .modes-toggle .mt-val{flex:1;min-width:0;color:var(--muted);font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -253,11 +256,11 @@ body{--nc1:#2F6FB0;--nc2:#2E8B57;--nc3:#B8861B;--nc4:#7B4FB0;--nc5:#1E8C8C}
 #panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
 .m-kcal{color:var(--muted);font-weight:600;font-size:.85rem;white-space:nowrap}
 /* Guider groups (v28): heading in the group colour with a thin line to the right; cards keep the left stripe */
-.ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.5rem;letter-spacing:.02em;color:var(--gc)}
+.ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.5rem;letter-spacing:.02em;color:var(--gc);color:color-mix(in srgb,var(--gc) 75%,var(--ink))}
 .ix-group::after{content:"";flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
 /* 0.15.0: groups fold. The heading keeps its look (name, line); a fold button adds the count, a chevron and,
    while folded, a line with the first guides. Helse og nød stays an always-open h2. */
-button.ix-group{display:block;width:100%;margin:26px 0 0;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:var(--gc);-webkit-tap-highlight-color:transparent}
+button.ix-group{display:block;width:100%;margin:26px 0 0;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:var(--gc);color:color-mix(in srgb,var(--gc) 75%,var(--ink));-webkit-tap-highlight-color:transparent}
 button.ix-group::after{content:none}
 .ix-group .gf-row{display:flex;align-items:center;gap:12px;font-family:var(--head);font-weight:600;font-size:1.5rem;letter-spacing:.02em;line-height:1.2}
 .ix-group .gf-row::after{content:"";order:2;flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
@@ -351,7 +354,7 @@ header .list-switch .ls-ic svg,header .list-switch .ls-chev{width:22px;height:22
 header .list-switch .ls-chev{width:18px;height:18px;stroke-width:2.6}
 header .list-switch .ls-text{flex:1;min-width:0}
 header .list-switch h1{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:1.6rem;line-height:1.1}
-header .list-switch .ls-lbl{flex:none;font-size:.8rem;font-weight:600;opacity:.85;white-space:nowrap}
+header .list-switch .ls-lbl{flex:none;font-size:.8rem;font-weight:600;white-space:nowrap}
 header .list-switch.long .ls-lbl{display:none}
 header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
 header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
@@ -369,6 +372,11 @@ body.locked .tabbar button{opacity:.4}
 body.locked.navopen [data-nav],body.locked.navopen main summary{pointer-events:auto}
 body.locked.navopen .tabbar button{opacity:1}
 .rainlock[hidden]{display:none}
+/* 0.16.1: a blocked tap flashes the lock bar (steady with reduced motion) */
+.rainlock.nudge{animation:lockNudge .5s ease-out 2}
+.rainlock.nudge .lock-note{color:var(--ink);font-weight:600}
+@keyframes lockNudge{0%{box-shadow:0 0 0 0 var(--red)}40%{box-shadow:0 -6px 0 0 var(--red)}100%{box-shadow:0 0 0 0 var(--red)}}
+@media (prefers-reduced-motion: reduce){.rainlock.nudge{animation:none;box-shadow:0 -4px 0 0 var(--red)}}
 .unlock{position:relative;overflow:hidden;width:100%;max-width:420px;padding:20px;border-radius:16px;border:2px solid var(--red);background:var(--surface);color:var(--ink);font-weight:600;font-size:1.05rem;cursor:pointer;user-select:none;-webkit-user-select:none}
 .unlock .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);opacity:.25}
 .unlock.holding .fill{width:100%;transition:width 1s linear}
@@ -417,6 +425,10 @@ body[data-skin="bris"]{--rain:#1F5A8F;--bg:#FBF3D9;--surface:#FFFDF5;--ink:#2330
 }
 :root[data-theme="dark"] body[data-skin="berg"]{--bg:#161718;--surface:#1F2022;--ink:#E4E2DD;--muted:#9A9893;--line:#2E2F32;--line-strong:#4A4B4F;--red:#D9774A;--lichen:#A3B47E;--hd:#0E0F10;--hdt:#E4E2DD;--chip:#2A2B2E;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 -.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 :root[data-theme="dark"] body[data-skin="bris"]{--rain:#74B4EA;--bg:#1C1B16;--surface:#26251E;--ink:#F1EBD6;--muted:#A8A08A;--line:#35332A;--line-strong:#55513F;--red:#3E86C2;--lichen:#A5C58F;--hd:#1F3A50;--hdt:#F3ECD2;--chip:#2A4A63;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
+/* 0.16.1: text on the accent colour (Utemodus on, primary buttons, Start kompasset) */
+body[data-skin="mose"],body[data-skin="fjord"]{--on-red:#111}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body{--on-red:#111}}
+:root[data-theme="dark"] body{--on-red:#111}
 body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
 body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
 body.night .hdr-rain{--rain:var(--ink)}
@@ -457,9 +469,9 @@ html,body{touch-action:manipulation}
 .field-btn svg{flex:none;width:30px;height:30px;stroke:var(--red);fill:none;stroke-width:2;stroke-linejoin:round}
 .field-btn span{font-family:var(--head);font-weight:600;font-size:1.45rem;line-height:1.1}
 .field-btn small{display:block;color:var(--muted);font-size:.85rem;font-weight:600}
-.field-btn.on{background:var(--red);color:#fff}
-.field-btn.on svg{stroke:#fff}
-.field-btn.on small{color:rgba(255,255,255,.85)}
+.field-btn.on{background:var(--red);color:var(--on-red,#fff)}
+.field-btn.on svg{stroke:var(--on-red,#fff)}
+.field-btn.on small{color:var(--on-red,#fff)}
 .field-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .field-tools .lt-btn{border-radius:16px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:68px;padding:10px 6px;text-align:center;line-height:1.15;white-space:normal;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .lt-btn svg{width:24px;height:24px;flex:none;stroke:var(--lc);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -471,7 +483,7 @@ body.night .lt-btn{--lc:currentColor}
 @keyframes lockPulse{0%{outline-offset:0;outline-color:var(--red)}75%{outline-offset:7px;outline-color:transparent}100%{outline-offset:7px;outline-color:transparent}}
 @media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
-.sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#e5322b;--s-line:#3a3a3a;--s-calm:#2e2e2e;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#eb3b33;--s-line:#3a3a3a;--s-calm:#2e2e2e;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
 .sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#ec0000;--s-sig:#ff0000;--s-line:#500000;--s-calm:#2a0000}
 .sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000;--s-calm:#002a00}
 .sos-in{max-width:640px;margin:0 auto}
@@ -485,6 +497,7 @@ body.night .lt-btn{--lc:currentColor}
 .sos .sos-hues button[aria-pressed="true"]{border-width:2px;border-color:var(--s-sig);font-weight:600}
 .sos .sos-x{width:100%;min-height:56px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--s-calm);border-color:var(--s-calm);font-size:1.1rem}
 .sos-x small{font-weight:400;font-size:.85rem;color:var(--s-mut)}
+.sos.h-red .sos-x small{color:var(--s-fg)}
 .sos-sec{border-top:1px solid var(--s-line);padding:14px 0 12px}
 .sos-sec h2{margin:0 0 8px;font-family:var(--head);font-weight:600;font-size:1.35rem;color:var(--s-sig)}
 .sos p{margin:6px 0;line-height:1.45;color:var(--s-fg)}
@@ -553,6 +566,7 @@ body.listlock .items .mark{opacity:.55}
 .badge.own{background:none;border:1px dashed var(--red);color:var(--red)}
 .lc-body{padding:0 16px 16px;border-top:1px solid var(--line)}
 .role{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.pg-sec > .role:last-child{border-bottom:0;padding-bottom:0}
 .role b{display:block}
 .role span{display:block;color:var(--muted);font-size:.9rem}
 .switch{flex:none;width:52px;height:32px;margin-top:2px;border-radius:999px;border:0;background:var(--line-strong);position:relative;cursor:pointer}
@@ -594,7 +608,7 @@ body.listlock .items .mark{opacity:.55}
 .intro-dots i.on{background:var(--red)}
 .intro-nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
 .intro-nav .btn{min-height:52px;padding:12px 22px}
-.sun-big{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red);margin:12px 0 6px}
+.sun-big{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red);color:color-mix(in srgb,var(--red) 75%,var(--ink));margin:12px 0 6px}
 .food-out .q.sm{font-size:1.1rem;color:var(--ink)}
 .links{display:flex;flex-direction:column;gap:8px}
 .links + .plan-link{margin-top:14px}
@@ -611,7 +625,7 @@ body.night .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(1) hue-
 .sum-label{display:block;color:var(--muted);font-size:.9rem;font-weight:600}
 .sum-big{display:block;font-family:var(--head);font-weight:600;font-size:2.2rem;line-height:1.1;color:var(--red)}
 .sum-sub{display:block;font-weight:600;margin-top:4px}
-h3.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25rem}
+h3.grp,h2.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25rem}
 .mrow{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .mrow .m-name{grid-column:1/-1;font-weight:600}
 .gauge{position:relative;display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:10px}
@@ -624,10 +638,13 @@ h3.grp{margin:22px 0 4px;font-family:var(--head);font-weight:600;font-size:1.25r
 .gauge-scale span{position:absolute;top:2px;transform:translateX(-50%)}
 .gauge-scale span:first-child{transform:none;left:0}
 .zone-text{margin:6px 0 0;font-weight:600}
-.zone-text.red{color:#C23B3B}
-.zone-text.yellow{color:#A87500}
-.zone-text.green{color:#2F7D44}
-body.night .zone-text{color:var(--ink)}
+.zone-text.red{color:#A02828}
+.zone-text.yellow{color:#6F4E00}
+.zone-text.green{color:#235E33}
+/* 0.16.1: lighter shades on dark backgrounds, so the gauge text reaches 4.5 : 1 */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .zone-text.red{color:#FF7B72}:root:not([data-theme="light"]) .zone-text.yellow{color:#E8B341}:root:not([data-theme="light"]) .zone-text.green{color:#6CC785}}
+:root[data-theme="dark"] .zone-text.red{color:#FF7B72}:root[data-theme="dark"] .zone-text.yellow{color:#E8B341}:root[data-theme="dark"] .zone-text.green{color:#6CC785}
+:root body.night.night .zone-text{color:var(--ink)}
 .sb-fig{margin:16px 0 0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);--sb-heavy:#4F5A58;--sb-ink:var(--ink);--sb-surface:var(--surface);--sb-muted:var(--muted);--sb-accent:var(--red);--sb-alu:var(--line-strong);--sb-board:#E3D3B5;--sb-foam:#9DB58A;--sb-strap:#3F7A8C}
 .sb-fig figcaption{font-weight:600;margin:0 0 8px}
 .sb-fig [data-svgsrc]{max-width:340px;margin:0 auto}
@@ -696,7 +713,7 @@ input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);bor
 textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:110px;resize:vertical}
 .btn{font-weight:600;border-radius:10px;padding:10px 16px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;white-space:nowrap}
 .btn.small{padding:6px 12px;font-size:.9rem}
-.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary{background:var(--red);border-color:var(--red);color:var(--on-red,#fff)}
 .btn.danger{color:var(--red)}
 .add-cat{display:block;width:100%;margin-top:20px;padding:14px;border:2px dashed var(--line-strong);background:none;border-radius:12px;font-weight:600;color:var(--muted);cursor:pointer}
 .empty{margin:48px 8px;text-align:center;color:var(--muted)}
@@ -730,7 +747,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <header class="top">
   <div class="wrap">
     <div class="title-row">
-      <button class="list-switch" id="listBtn" data-nav aria-label="Lists">
+      <button class="list-switch" id="listBtn" data-nav>
         <span class="ls-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span>
         <span class="ls-text"><h1 id="listName">Trip</h1></span>
         <span class="ls-lbl" id="lsLbl"></span>
@@ -751,7 +768,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 <nav class="tabbar" id="tabbar"></nav>
 <div class="toast" id="toast" hidden></div>
 <div class="rainlock" id="rainlock" hidden></div>
-<div class="sos" id="sos" hidden></div>
+<div class="sos" id="sos" role="dialog" aria-modal="true" aria-labelledby="sosTitle" hidden></div>
 <div class="slight" id="slight" hidden><canvas id="slFireCv" hidden></canvas><p class="sl-note" id="slNote"></p><div class="sl-track" id="slTrack"><span id="slTxt"></span><div class="sl-knob" id="slKnob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></div></div></div>
 <div class="intro" id="intro" hidden></div>
 
@@ -766,8 +783,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.16.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 67;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.16.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 68;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -900,7 +917,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
       bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
-    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', lockBlocked:'Locked. Hold Navigate to change page, or Unlock to switch the lock off.', relockOn:'Lock again by itself', relockHint:'After Unlock, Rain lock comes back on after 30 seconds without a touch. Only in Outdoor mode.', relockToast:'Rain lock comes back after 30 seconds without a touch', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and makes the standard list the main list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types and Light day hike are switched off, the standard list becomes the main list and all categories are folded. Outdoor mode, Rain lock, Night light and Hide packed are turned off. Nothing is deleted: lists, notes, links, pack weight, planner figures, your position and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -910,7 +927,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off. Use it not only in rain, but whenever the phone is in a pocket or the pack with the app open.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off. Use it not only in rain, but whenever the phone is in a pocket or the pack with the app open. If you tap something while it is locked, the lock bar at the bottom flashes and says what you can do. Under Your lists you can let Rain lock come back on by itself 30 seconds after you unlock.</p><p><b>Battery:</b> Outdoor mode keeps the screen on, which drains the battery in a pocket. Press the power button before the phone goes in a pocket or the pack: the app is where you left it when you turn the screen on again, and Rain lock is still on.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
       ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
@@ -1132,7 +1149,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
       bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
-    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', lockBlocked:'Låst. Hold Naviger for å bytte side, eller Lås opp for å slå låsen av.', relockOn:'Lås igjen av seg selv', relockHint:'Etter Lås opp slås Regnlås på igjen etter 30 sekunder uten berøring. Bare i Utemodus.', relockToast:'Regnlås kommer tilbake etter 30 sekunder uten berøring', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og gjør standardlisten til hovedliste, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene og Lett dagstur slås av, standardlisten blir hovedliste og alle kategorier lukkes. Utemodus, Regnlås, nattlys og Skjul pakket slås av. Ingenting slettes: lister, notater, lenker, sekkvekt, tall i planleggerne, posisjonen din og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
@@ -1142,7 +1159,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av. Bruk den ikke bare i regn, men hver gang mobilen ligger i lomma eller sekken med appen åpen.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av. Bruk den ikke bare i regn, men hver gang mobilen ligger i lomma eller sekken med appen åpen. Trykker du på noe mens alt er låst, blinker låselinja nederst og sier hva du kan gjøre. Under Dine lister kan du la Regnlås slå seg på igjen av seg selv 30 sekunder etter at du har låst opp.</p><p><b>Batteri:</b> Utemodus holder skjermen på, og det tapper batteriet i lomma. Trykk av/på-knappen før mobilen går i lomma eller sekken: appen er der du forlot den når du slår på skjermen igjen, og Regnlås er fortsatt på.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
       ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
@@ -1478,7 +1495,7 @@ function bkRestore(text){
     obj.packW.items.forEach(i => {
       const it = {id:uid(), name:i && i.name, g:+(i && i.g), cat:String((i && i.cat) || ''), cons:!!(i && i.cons), dog:!!(i && i.dog)};
       // build 58: a fresh id (as for notes); identical items already here are skipped, so a second restore adds nothing
-      if (!i || typeof i.name !== 'string' || !isFinite(it.g) || pw.items.some(x => x.id === i.id || (x.name === it.name && x.g === it.g && x.cat === it.cat && !!x.cons === it.cons && !!x.dog === it.dog))) return;
+      if (!i || typeof i.name !== 'string' || !isFinite(it.g) || it.g < 0 || pw.items.some(x => x.id === i.id || (x.name === it.name && x.g === it.g && x.cat === it.cat && !!x.cons === it.cons && !!x.dog === it.dog))) return;
       pw.items.push(it); a.w++;
     });
   }
@@ -1717,12 +1734,13 @@ function render(){
   document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
   bodyClasses();
   renderTabs();
-  $('listBtn').setAttribute('aria-label', T.yourLists);
   $('lsLbl').textContent = T.yourLists;
   $('hdrRainTxt').textContent = T.lockScreen;
   $('hdrField').setAttribute('aria-label', T.fieldSign);
   const listHeader = tab === 'list' && view !== 'lists' && view !== 'howto' && !(view && view.indexOf('edit:') === 0);
   $('listBtn').classList.toggle('plain', !listHeader);
+  // 0.16.1: as a button its name is the list name plus «Dine lister»; elsewhere it is only the page title (h1)
+  if (listHeader){ $('listBtn').removeAttribute('role'); $('listBtn').removeAttribute('tabindex'); } else { $('listBtn').setAttribute('role', 'none'); $('listBtn').setAttribute('tabindex', '-1'); }
   $('rainlock').hidden = !rainLocked;
   document.body.classList.toggle('locked', rainLocked);
   document.body.classList.toggle('navopen', rainLocked && navOpen());
@@ -1940,6 +1958,9 @@ function renderLists(){
   html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
   html += sec(T.language, `<div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
     <p class="tool-tip">${T.langNote}</p>`);
+  // 0.16.1: auto-relock, off by default (state.autoRelock); a setting, so kept out of the backup and Start på nytt
+  html += sec(T.lockScreen, `<div class="role"><button class="switch" data-act="autoRelock" aria-pressed="${!!state.autoRelock}" aria-label="${T.relockOn}"><i></i></button>
+    <div><b>${T.relockOn}</b><span>${T.relockHint}</span></div></div>`);
   html += sec(T.help, `<div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button></div>`);
   if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
@@ -3486,16 +3507,16 @@ function renderFuel(){
     <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
       ${chip('data-fueltype','gas',f.fuel === 'gas',T.fGas)}${chip('data-fueltype','petrol',f.fuel === 'petrol',T.fPetrol)}${chip('data-fueltype','spirit',f.fuel === 'spirit',T.fSpirit)}
     </div></div>
-    <h3 class="grp">${T.trip}</h3>
+    <h2 class="grp">${T.trip}</h2>
     <div class="chips">${chip('data-fuelmode','overnight',!day,T.preOvernight)}${chip('data-fuelmode','day',day,T.preDayTrip)}</div>
     <div class="calc">${day ? '' : field('days', T.days, f.days)}${field('people', T.people, f.people)}${day ? field('dayL', T.dayL, f.dayL) : ''}${field('margin', T.margin, f.margin)}${f.fuel !== 'gas' ? field('bottle', T.bottle, f.bottle[f.fuel]) : ''}</div>
     <div class="chips" style="margin-top:12px"><button class="chip" data-act="fuelSnow" aria-pressed="${!!f.snow}">${T.snowWater}</button>${f.snow ? `<button class="chip" data-act="fuelDog" aria-pressed="${!!f.dog}">${T.dogChip}</button>` : ''}</div>
     ${f.snow ? `<p class="calc-basis">${T.snowNote}</p>` : ''}
     ${f.snow && f.dog ? `<div class="calc one">${field('dogL', T.fuelDogL, f.dogL)}</div><p class="calc-basis">${T.fuelDogNote}</p>` : ''}
-    ${day ? '' : `<h3 class="grp">${T.heatPerDay}</h3>
+    ${day ? '' : `<h2 class="grp">${T.heatPerDay}</h2>
     <div class="calc">${USE_KEYS.map(u => field('w_' + u, T.useL[u], f.water[u] || 0)).join('')}</div>
     <p class="calc-basis" id="waterSum"></p>`}
-    <h3 class="grp">${T.stoveUse}</h3>
+    <h2 class="grp">${T.stoveUse}</h2>
     <div class="calc one">${field('perL', T.perL(fu.unit), perLFor(f), custom ? `<button class="reset-link" data-act="resetRate">${T.resetRate}</button>` : '')}</div>
     <p class="calc-basis">${T.perLNote}</p>
     <section class="manual"><h2>${T.manualTitle}</h2>
@@ -3640,17 +3661,17 @@ function renderFood(){
       <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
       <div id="kcalOut" aria-live="polite"></div>
     </section>
-    <h3 class="grp">${T.trip}</h3>
+    <h2 class="grp">${T.trip}</h2>
     <div class="calc">${inp('days', T.days)}${inp('people', T.people)}</div>
     <div class="chips" style="margin-top:12px"><button class="chip" data-foodtoggle="reserve" aria-pressed="${!!f.reserve}">${T.reserve}</button><button class="chip" data-foodtoggle="dog" aria-pressed="${!!f.dog}">${T.dogChip}</button></div>
     ${f.dog ? `<div class="mrow"><span class="m-name">${T.mDog}</span>${inp('dogs', T.dogs)}${inp('dogG', T.dogG)}</div><p class="calc-basis">${T.dogNote}</p>` : ''}
-    <h3 class="grp">${T.perDayGrp}</h3>
+    <h2 class="grp">${T.perDayGrp}</h2>
     ${mrow(T.mOats, 'oats', T.amountG, 'kOats', T.kcalPer100)}
     ${mrow(T.mLunch, 'lunchN', T.count, 'kLunch', T.kcalEach)}
     ${mrow(T.mDinner, 'dinnerN', T.count, 'kDinner', T.kcalEach)}
     ${mrow(T.mSnack, 'snacks', T.count, 'kSnack', T.kcalEach)}
     <p class="calc-basis">${T.defaultNote}</p>
-    <h3 class="grp">${T.toPack}</h3>
+    <h2 class="grp">${T.toPack}</h2>
     <div class="calc-result" id="foodOut" aria-live="polite"></div>
     <section class="manual"><h2>${T.packTitle}</h2>
       ${T.pack.map(m => `<details><summary>${m[0]}</summary><p>${m[1]}</p></details>`).join('')}
@@ -3724,7 +3745,7 @@ function renderWeight(){
   const groups = [];
   w.items.forEach(it => { let g = groups.find(x => x.cat === it.cat); if (!g) groups.push(g = {cat:it.cat, items:[]}); g.items.push(it); });
   groups.forEach(g => {
-    h += `<h3 class="grp">${esc(g.cat || T.wOther)}</h3><ul class="w-list">` + g.items.map(it => `<li>
+    h += `<h2 class="grp">${esc(g.cat || T.wOther)}</h2><ul class="w-list">` + g.items.map(it => `<li>
       <button class="w-name" data-act="wEdit" data-id="${it.id}"><span>${esc(it.name)}</span>${it.cons ? `<small class="w-tag">${T.wConsTag}</small>` : ''}${it.dog ? `<small class="w-tag dog">${T.wDogTag}</small>` : ''}</button>
       <label class="w-in"><input type="text" inputmode="decimal" data-wid="${it.id}" value="${it.g ? esc(wShow(it.g).replace(/\s/g, '')) : ''}" placeholder="0" aria-label="${esc(T.wWeight(w.unit) + ': ' + it.name)}"><span>${w.unit}</span></label></li>`).join('') + '</ul>';
   });
@@ -4119,6 +4140,7 @@ main.addEventListener('click', async e => {
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'cStars'){ go('compass', 'stars'); return; }
+  if (act === 'autoRelock'){ state.autoRelock = !state.autoRelock; save(); if (!state.autoRelock) clearTimeout(relockTimer); render(); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
   if (act === 'fieldToggle'){
@@ -4537,8 +4559,40 @@ function renderLock(){
     requestAnimationFrame(() => { bar.style.transition = `width ${left}ms linear`; bar.style.width = '0'; });
   }
   holdButton($('navBtn'), 1000, openNav);
-  holdButton($('unlockBtn'), 1000, () => { rainLocked = false; state.rainLocked = false; save(); navUntil = 0; clearTimeout(navTimer); render(); });
+  holdButton($('unlockBtn'), 1000, () => { rainLocked = false; state.rainLocked = false; save(); navUntil = 0; clearTimeout(navTimer); render(); relockArm(true); });
 }
+/* 0.16.1: a tap that the lock swallows flashes the lock bar and shows what to do, so the app never looks frozen.
+   Visual only: the lock itself is untouched. Taps on locked parts land on the page behind them (pointer-events:none). */
+let blockedT = null;
+document.addEventListener('click', e => {
+  if (!rainLocked) return;
+  const el = e.target;
+  if (el.closest && el.closest('#rainlock, #sos, #slight, .sos-btn, #overlay')) return;
+  if (navOpen() && el.closest && el.closest('[data-nav], summary')) return;
+  const bar = $('rainlock'), note = bar && bar.querySelector('.lock-note');
+  if (!bar || !note) return;
+  note.textContent = t().lockBlocked;
+  bar.classList.remove('nudge'); void bar.offsetWidth; bar.classList.add('nudge');
+  clearTimeout(blockedT);
+  // put the usual line back without redrawing the bar, so a hold on Lås opp or Naviger is never cut short
+  blockedT = setTimeout(() => { const r = $('rainlock'), n = r && r.querySelector('.lock-note'); if (r) r.classList.remove('nudge'); if (n && rainLocked) n.textContent = navOpen() ? t().navOpenNote : t().lockNote; }, 2600);
+}, true);
+/* 0.16.1: auto-relock (off by default). After Lås opp, Regnlås comes back after RELOCK_MS without a touch.
+   Any touch, key or scroll starts the wait again; it never locks over a sheet, a text field, Nødmodus or the screen light. */
+const RELOCK_MS = 30000;
+let relockTimer = null;
+function relockArm(first){
+  clearTimeout(relockTimer);
+  if (!state.autoRelock || !state.field || rainLocked) return;
+  if (first) showToast(t().relockToast);
+  relockTimer = setTimeout(() => {
+    if (!state.autoRelock || !state.field || rainLocked) return;
+    const a = document.activeElement, typing = a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+    if (typing || !overlay.hidden || !sosEl.hidden || slMode || !$('intro').hidden) return relockArm();
+    lockRain();
+  }, RELOCK_MS);
+}
+['pointerdown', 'keydown', 'scroll', 'wheel'].forEach(ev => window.addEventListener(ev, () => { if (relockTimer) relockArm(); }, {capture:true, passive:true}));
 /* ---------- night light and screen light (v30) ----------
    Tap Rødt / Grønt nattlys: colours the app (one at a time). Bål is a light only.
    Hold any of them 1 s: the whole screen becomes a light, locked; slide the handle to unlock.
@@ -5296,7 +5350,7 @@ function renderSos(){
       <p class="s-mut">${S.smsNote}</p>`;
   } else pos = `<div id="sosStat">${sosStat()}</div>` + (sosBusy ? '' : `<p>${S.posNone}</p><div class="sos-row"><button data-sa="pos">${T.getPos}</button></div>`);
   sosEl.innerHTML = `<div class="sos-in">
-    <div class="sos-top"><h1>${ICO_SOS}${S.title}</h1></div>
+    <div class="sos-top"><h1 id="sosTitle">${ICO_SOS}${S.title}</h1></div>
     <button class="sos-x" data-sa="exit">${S.exit}<small>${S.tap}</small></button>
     <div class="sos-hues" role="group" aria-label="${esc(S.hueLbl)}"><span>${S.hueLbl}</span>${[['', S.hueN], ['red', S.hueR], ['green', S.hueG]].map(([h, l]) => `<button data-sa="hue" data-h="${h}" aria-pressed="${(state.sosHue || '') === h}">${l}</button>`).join('')}</div>
     <section class="sos-sec"><h2>${S.call}</h2>${calls}<p class="s-mut">${S.aml}</p></section>
