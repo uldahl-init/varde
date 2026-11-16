@@ -1272,3 +1272,126 @@ test.describe('kompass', () => {
     await ctx.close();
   });
 });
+
+/* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
+   A blocked tap flashes the lock bar with a hint and changes nothing; auto-relock (off by default) locks again after
+   30 s without a touch, and a touch starts the wait again; the list button is named by what it shows; Nødmodus is a
+   dialog; the planners' headings sit right under the page title; and all text meets the contrast minimum in every skin. */
+test.describe('regnlås og tilgjengelighet', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+  };
+  const hold = async (p, sel, clockMs) => {
+    const b = await p.locator(sel).boundingBox();
+    await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down();
+    await p.clock.runFor(clockMs); await p.mouse.up();
+  };
+
+  test('a blocked tap shows the hint and changes nothing', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, {lists:[], introDone:true, lang:'no', field:true, rainLocked:true, fieldList:true});
+    await expect(p.locator('body')).toHaveClass(/locked/);
+    const before = await p.evaluate(k => localStorage.getItem(k), KEY);
+    await p.mouse.click(200, 300);
+    await expect(p.locator('#rainlock')).toHaveClass(/nudge/);
+    await expect(p.locator('#rainlock .lock-note')).toHaveText(/^Låst\. Hold Naviger/);
+    expect(await p.evaluate(k => localStorage.getItem(k), KEY)).toBe(before);
+    await expect(p.locator('#rainlock .lock-note')).toHaveText(/^Regnlås er på/, {timeout:5000});
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('auto-relock: off by default, on locks again after 30 s without a touch', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.install();
+    await start(p, {lists:[], introDone:true, lang:'no', field:true, rainLocked:true});
+    // off: unlocking stays unlocked
+    await hold(p, '#unlockBtn', 1200);
+    await expect(p.locator('body')).not.toHaveClass(/locked/);
+    await p.clock.runFor(40000);
+    await expect(p.locator('body')).not.toHaveClass(/locked/);
+    // the setting on Dine lister
+    await p.locator('#listBtn').click();
+    const sw = p.locator('#main [data-act="autoRelock"]');
+    await expect(sw).toHaveAttribute('aria-pressed', 'false');
+    await sw.click();
+    await expect(sw).toHaveAttribute('aria-pressed', 'true');
+    // on: lock, unlock, then 30 s without a touch locks again; a touch starts the wait again
+    await p.locator('#hdrLock').click();
+    await expect(p.locator('body')).toHaveClass(/locked/);
+    await hold(p, '#unlockBtn', 1200);
+    await expect(p.locator('body')).not.toHaveClass(/locked/);
+    await p.clock.runFor(20000);
+    await p.mouse.click(200, 400);
+    await p.clock.runFor(20000);
+    await expect(p.locator('body')).not.toHaveClass(/locked/);
+    await p.clock.runFor(11000);
+    await expect(p.locator('body')).toHaveClass(/locked/);
+    expect(await p.evaluate(k => JSON.parse(localStorage.getItem(k)).rainLocked, KEY)).toBe(true);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('names, headings and the Nødmodus dialog', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, {lists:[], introDone:true, lang:'no'});
+    const lb = p.locator('#listBtn');
+    await expect(lb).toHaveAccessibleName(/Dine lister/);
+    const nm = (await p.locator('#listName').textContent()).trim();
+    await expect(lb).toHaveAccessibleName(new RegExp(nm));
+    await p.locator('#tabbar [data-tab="plan"]').click();
+    await expect(lb).toHaveAttribute('role', 'none');
+    await expect(p.getByRole('heading', {level:1, name:'Planlegg'})).toBeVisible();
+    for (const k of ['food', 'fuel']){
+      await p.locator('#tabbar [data-tab="plan"]').click();
+      await p.locator(`#main [data-open="${k}"]`).click();
+      expect(await p.locator('#main h3.grp').count(), `${k}: no h3 straight under the page title`).toBe(0);
+      expect(await p.locator('#main h2.grp').count()).toBeGreaterThan(0);
+    }
+    await expect(p.locator('#sos')).toHaveAttribute('role', 'dialog');
+    await expect(p.locator('#sos')).toHaveAttribute('aria-labelledby', 'sosTitle');
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  // contrast: every visible text on the main pages, every skin, light and dark (4.5 : 1, large text 3 : 1)
+  test('text contrast in every skin', async ({browser}) => {
+    test.setTimeout(300000);
+    const audit = () => {
+      const parse = s => { const m = s && s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const q = m[1].split(',').map(parseFloat); return {r:q[0], g:q[1], b:q[2], a:q.length > 3 ? q[3] : 1}; };
+      const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+      const blend = (t, u) => ({r:t.r * t.a + u.r * (1 - t.a), g:t.g * t.a + u.g * (1 - t.a), b:t.b * t.a + u.b * (1 - t.a), a:1});
+      const bgOf = el => { const ls = []; for (let e = el; e; e = e.parentElement){ const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0){ ls.push(c); if (c.a >= 1) break; } } let b = {r:255, g:255, b:255, a:1}; for (let i = ls.length - 1; i >= 0; i--) b = blend(ls[i], b); return b; };
+      const bad = [];
+      document.querySelectorAll('header *, #main *, #tabbar *').forEach(el => {
+        if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
+        const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || !el.offsetParent || el.closest('svg, [disabled], s, del')) return;
+        let op = 1; for (let e = el; e; e = e.parentElement) op *= parseFloat(getComputedStyle(e).opacity);
+        let fg = parse(cs.color); if (!fg) return; const bg = bgOf(el); fg = blend(Object.assign({}, fg, {a:fg.a * op}), bg);
+        const L1 = lum(fg), L2 = lum(bg), cr = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+        const px = parseFloat(cs.fontSize), large = px >= 24 || (parseInt(cs.fontWeight) >= 600 && px >= 18.66);
+        if (cr < (large ? 3 : 4.5) - 0.02) bad.push(`${cr.toFixed(2)} «${el.textContent.trim().slice(0, 24)}» ${String(el.className || el.tagName).slice(0, 24)}`);
+      });
+      return [...new Set(bad)].slice(0, 6);
+    };
+    const found = {};
+    for (const skin of SKINS) for (const scheme of ['light', 'dark']){
+      const ctx = await browser.newContext({colorScheme:scheme, serviceWorkers:'block', viewport:{width:390, height:780}, locale:'nb-NO'});
+      const p = await ctx.newPage();
+      await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, {lists:[], introDone:true, lang:'no', skin, pos:{lat:58.97, lon:5.73, t:1760000000000}}]);
+      await p.goto('./');
+      const check = async name => { const r = await p.evaluate(audit); if (r.length) found[`${skin} ${scheme} ${name}`] = r; };
+      await p.locator('#main [data-act="foldAll"]').click(); await check('list');
+      await p.locator('#tabbar [data-tab="guide"]').click();
+      for (const h of await p.locator('#main [data-gfold]').all()) await h.click();
+      await check('guider');
+      await p.locator('#tabbar [data-tab="plan"]').click(); await p.locator('#main [data-open="food"]').click(); await check('food');
+      await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
+      await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#main [data-act="fieldToggle"]').click(); await check('utemodus');
+      await ctx.close();
+    }
+    expect(found).toEqual({});
+  });
+});
