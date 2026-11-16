@@ -98,6 +98,11 @@ async function goTab(page, k){
   await page.locator(`#tabbar [data-tab="${k}"]`).click();
   await expect(page.locator(`#tabbar [data-tab="${k}"]`)).toHaveAttribute('aria-current', 'page');
 }
+// 0.15.0: Guider groups fold; open the row's group first (Planlegg rows are never folded)
+async function openRow(page, k){
+  await page.evaluate(k => { const r = document.querySelector(`#main [data-open="${k}"]`), ix = r && r.closest('.index.gf-closed'); if (ix) ix.previousElementSibling.click(); }, k);
+  await page.locator(`#main [data-open="${k}"]`).click();
+}
 async function settle(page, errors){
   await page.waitForTimeout(300);
   expect(errors, 'no page errors, console errors or failed requests').toEqual([]);
@@ -131,7 +136,7 @@ for (const L of LANGS){
       const keys = await page.locator('#main [data-open]').evaluateAll(els => els.map(e => e.dataset.open));
       expect(keys).toEqual(guideKeysFromSource());
       for (const k of keys){
-        await page.locator(`#main [data-open="${k}"]`).click();
+        await openRow(page, k);
         await expect(page.locator('#main .back'), `guide ${k} has a back button`).toBeVisible();
         await expect(title(page), `guide ${k} shows a title`).not.toBeEmpty();
         await expect(title(page), `guide ${k} shows its own title`).not.toHaveText(guider);
@@ -150,7 +155,7 @@ for (const L of LANGS){
       expect(keys).toEqual(guideKeysFromSource());
       const firstSec = {};
       for (const k of keys){
-        await page.locator(`#main [data-open="${k}"]`).click();
+        await openRow(page, k);
         const su = page.locator('#main details > summary').first();
         firstSec[k] = (await su.innerText()).split('\n').map(x => x.trim()).filter(Boolean)[0];
         expect(firstSec[k], `guide ${k} has a section`).toBeTruthy();
@@ -162,7 +167,7 @@ for (const L of LANGS){
       await expect(input).toBeFocused();
       // one letter keeps the groups; a word with no match says so
       await input.fill('e');
-      await expect(page.locator('#main [data-open]').first()).toBeVisible();
+      await expect(page.locator('#main .ix-group').first()).toBeVisible();
       await input.fill('qqzzxx');
       await expect(page.locator('#main .gs-count')).toBeVisible();
       await expect(page.locator('#main .gs-hit')).toHaveCount(0);
@@ -199,7 +204,7 @@ for (const L of LANGS){
         const keys = await page.locator('#main [data-open]').evaluateAll(els => els.map(e => e.dataset.open));
         const out = {};
         for (const k of keys){
-          await page.locator(`#main [data-open="${k}"]`).click();
+          await openRow(page, k);
           const heads = (await page.locator('#main details > summary').allInnerTexts()).map(x => x.split('\n').map(y => y.trim()).filter(Boolean)[0]);
           out[k] = {first:heads[0], n:heads.length};
           await page.locator('#main .back').click();
@@ -241,7 +246,7 @@ for (const L of LANGS){
       const keys = await page.locator('#main [data-open]').evaluateAll(els => els.map(e => e.dataset.open));
       expect(keys.length).toBeGreaterThan(0);
       for (const k of keys){
-        await page.locator(`#main [data-open="${k}"]`).click();
+        await openRow(page, k);
         await expect(page.locator('#main .back'), `calculator ${k} has a back button`).toBeVisible();
         await expect(title(page), `calculator ${k} shows its own title`).not.toHaveText(plan);
         await page.locator('#main .back').click();
@@ -357,7 +362,7 @@ for (const L of LANGS){
         await p.addInitScript(([key, pos]) => { try { localStorage.setItem(key, JSON.stringify(Object.assign({lists:[], hidePacked:false, introDone:true}, pos ? {pos} : {}))); } catch(e){} }, [KEY, pos]);
         await p.goto('./');
         await p.locator('#tabbar [data-tab="guide"]').click();
-        await p.locator('#main [data-open="meds"]').click();
+        await openRow(p, 'meds');
         await p.locator('#main details[data-sec="help"] summary').click();
         const nums = p.locator('#main details[data-sec="help"] .em-num');
         if (num) await expect(nums.first(), `first number at ${JSON.stringify(pos)}`).toHaveText(num);
@@ -375,7 +380,7 @@ for (const L of LANGS){
     // From build 43 (0.8.0): Dyrespor loads all ten drawings, and they are sized by real size.
     test('Dyrespor: drawings load at proportional sizes', async ({page}) => {
       await goTab(page, 'guide');
-      await page.locator('#main [data-open="tracks"]').click();
+      await openRow(page, 'tracks');
       const secs = page.locator('#main details[data-sec]');
       const n = await secs.count();
       for (let i = 0; i < n; i++) await secs.nth(i).locator('summary').click();
@@ -657,12 +662,15 @@ test.describe('nattlys', () => {
       await check('list');
       await p.locator('#tabbar [data-tab="notes"]').click(); await check('notes');
       await p.locator('#main [data-act="openNote"][data-id="a"]').click(); await check('note');
-      await p.locator('#tabbar [data-tab="guide"]').click(); await check('guides');
+      await p.locator('#tabbar [data-tab="guide"]').click();
+      // 0.15.0: both the folded headings and the open groups
+      await check('guides folded');
+      for (const h of await p.locator('#main [data-gfold]').all()) await h.click();
+      await check('guides');
       for (const g of ['mapcompass', 'meds', 'animals']){
         await p.locator('#tabbar [data-tab="guide"]').click();
-        const open = p.locator(`#main [data-open="${g}"]`);
-        if (!(await open.count())) continue;
-        await open.click();
+        if (!(await p.locator(`#main [data-open="${g}"]`).count())) continue;
+        await openRow(p, g);
         const sums = p.locator('#main details summary');
         for (let i = 0; i < await sums.count(); i++) await sums.nth(i).click();
         await check(g);
@@ -705,7 +713,7 @@ test.describe('nødmodus', () => {
     await expect(p.locator('#main [data-sos-hold]')).toHaveCount(0);
     await p.locator('#tabbar [data-tab="guide"]').click();
     await expect(p.locator('#main [data-sos-hold]')).toHaveCount(1);
-    await p.locator('#main [data-open="emergency"]').click();
+    await openRow(p, 'emergency');
     await expect(p.locator('#main [data-sos-hold]')).toHaveCount(1);
     // a short tap does not open it
     await hold(p, '#main [data-sos-hold]', 150);
@@ -994,11 +1002,11 @@ test.describe('sikkerhet', () => {
     await page.locator('#main [data-act="openNote"]').click();
     await expect(page.locator('.note-full h2')).toContainText('Fiendtlig');
     await goTab(page, 'plan');
-    await page.locator('#main [data-open="weight"]').click();
+    await openRow(page, 'weight');
     await expect(page.locator('#main input[data-wid]')).toHaveCount(1);
     expect(await page.locator('img[src="x"]').count()).toBe(0);
     await page.goBack();
-    await page.locator('#main [data-open="fuel"]').click();
+    await openRow(page, 'fuel');
     await expect(page.locator('#fuelOut')).toBeVisible();
     expect(dialogs).toEqual([]);
     await settle(page, errors);
@@ -1124,5 +1132,58 @@ test.describe('service worker', () => {
     await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
     expect(Date.now() - t0).toBeLessThan(8000);
     await context.unrouteAll({behavior:'ignoreErrors'});
+  });
+});
+
+/* ---------- From build 64 (0.15.0): Guider groups fold ---------- */
+test.describe('guider folds', () => {
+  test.use({locale:'nb-NO'});
+  test('groups fold, remember, open with a guide, and Helse og nød never folds', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await goTab(page, 'guide');
+    const head = k => page.locator(`#main [data-gfold="${k}"]`);
+    // a fresh start: all folded, Helse og nød open with no fold button
+    for (const k of ['field', 'safety', 'sky', 'gear']) await expect(head(k)).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#main [data-open="knots"]')).toBeHidden();
+    await expect(page.locator('#main [data-gfold="health"]')).toHaveCount(0);
+    await expect(page.locator('#main [data-open="emergency"]')).toBeVisible();
+    await expect(head('field').locator('.gf-p')).toContainText('Knuter');
+    // open and close
+    await head('sky').click();
+    await expect(head('sky')).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#main [data-open="aurora"]')).toBeVisible();
+    await head('sky').click();
+    await expect(page.locator('#main [data-open="aurora"]')).toBeHidden();
+    // remembered across a reload
+    await head('gear').click();
+    await page.reload();
+    await expect(page.locator('#main [data-open="tent"]')).toBeVisible();
+    await expect(page.locator('#main [data-open="knots"]')).toBeHidden();
+    // a guide opened by a link leaves its group open for Back
+    await goTab(page, 'list');
+    await page.evaluate(() => { const b = document.createElement('button'); b.dataset.act = 'openGuide'; b.dataset.guide = 'nightsky'; b.dataset.nav = ''; b.id = 'tLink'; document.getElementById('main').prepend(b); });
+    await page.locator('#tLink').click();
+    await page.goBack();
+    await goTab(page, 'guide');
+    await expect(page.locator('#main [data-open="nightsky"]')).toBeVisible();
+    // a new window, more than 15 minutes later, is a fresh start: folded again
+    await page.evaluate(k => { const s = JSON.parse(localStorage.getItem(k)); s.hiddenAt = 0; localStorage.setItem(k, JSON.stringify(s)); }, KEY);
+    const p2 = await page.context().newPage();
+    await p2.goto('./');
+    await p2.locator('#tabbar [data-tab="guide"]').click();
+    await expect(p2.locator('#main [data-gfold="gear"]')).toHaveAttribute('aria-expanded', 'false');
+    await settle(page, errors);
+  });
+
+  test('folding works in Regnlås', async ({page}) => {
+    await openApp(page);
+    await page.evaluate(k => { const s = JSON.parse(localStorage.getItem(k)); s.field = true; s.rainLocked = true; localStorage.setItem(k, JSON.stringify(s)); }, KEY);
+    await page.reload();
+    await page.locator('#tabbar [data-tab="guide"]').click({force:true});
+    await page.waitForTimeout(200);
+    if (!(await page.locator('#main [data-gfold="field"]').count())) test.skip(true, 'Guider not reachable without Naviger');
+    await page.locator('#main [data-gfold="field"]').click();
+    await expect(page.locator('#main [data-gfold="field"]')).toHaveAttribute('aria-expanded', 'true');
   });
 });

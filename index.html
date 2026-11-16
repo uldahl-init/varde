@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-rzQhkEd7TyfREi+DLtJgsk8QL5UnvOVtG+07VbQfAgI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1HcT2yGJeMeI1ccH40CSHIBpXs7AsW2a/FeeyCKl1hE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -253,13 +253,28 @@ body{--nc1:#2F6FB0;--nc2:#2E8B57;--nc3:#B8861B;--nc4:#7B4FB0;--nc5:#1E8C8C}
 #panel select{width:100%;font-size:1.05rem;padding:10px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink)}
 .m-kcal{color:var(--muted);font-weight:600;font-size:.85rem;white-space:nowrap}
 /* Guider groups (v28): heading in the group colour with a thin line to the right; cards keep the left stripe */
-.ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.15rem;letter-spacing:.02em;color:var(--gc)}
+.ix-group{display:flex;align-items:center;gap:12px;margin:30px 0 -2px;font-family:var(--head);font-weight:600;font-size:1.5rem;letter-spacing:.02em;color:var(--gc)}
 .ix-group::after{content:"";flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
+/* 0.15.0: groups fold. The heading keeps its look (name, line); a fold button adds the count, a chevron and,
+   while folded, a line with the first guides. Helse og nød stays an always-open h2. */
+button.ix-group{display:block;width:100%;margin:26px 0 0;padding:8px 0;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:var(--gc);-webkit-tap-highlight-color:transparent}
+button.ix-group::after{content:none}
+.ix-group .gf-row{display:flex;align-items:center;gap:12px;font-family:var(--head);font-weight:600;font-size:1.5rem;letter-spacing:.02em;line-height:1.2}
+.ix-group .gf-row::after{content:"";order:2;flex:1;height:2px;border-radius:1px;background:var(--gc);opacity:.4}
+.ix-group .gf-c{order:3;flex:none;font-family:var(--body);font-weight:600;font-size:.95rem;letter-spacing:0;color:var(--muted)}
+.ix-group .gf-ch{order:4;flex:none;width:24px;height:24px;stroke:var(--gc);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.ix-group[aria-expanded="true"] .gf-ch{transform:rotate(180deg)}
+.ix-group .gf-p{display:block;margin-top:4px;color:var(--muted);font-size:1rem;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ix-group[aria-expanded="true"] .gf-p{display:none}
+.index.gf-closed{display:none}
+button.ix-group + .index{margin-top:4px}
+@media (prefers-reduced-motion: reduce){.ix-group .gf-ch{transition:none}}
 .tool-sub + .ix-group{margin-top:20px}
 .index button.g-gear,.index button.g-field,.index button.g-safety,.index button.g-health,.index button.g-sky{border-left:5px solid var(--gc)}
 .g-gear{--gc:var(--lichen)}.g-field{--gc:var(--red)}.g-safety{--gc:var(--gsafe)}.g-health{--gc:var(--ghealth)}.g-sky{--gc:var(--gsky)}
 /* 0.7.0: Helse og nød, own colour (indigo, clear of the other groups and the Planlegg colours) and a heart with a pulse line */
-.ix-group .gh-ic,.link-btn .gh-ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ix-group .gh-ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.link-btn .gh-ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .link-btn.g-health{color:var(--gc);border-color:var(--gc)}
 /* Nattlys: group colours become shades of the night light (pure red or green); --gsafe was left blue before 0.7.0 */
 :root body.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--gsky:var(--ink)}
@@ -735,8 +750,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.14.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 63;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.15.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 64;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1564,6 +1579,7 @@ function foldStart(){
   friluftsliv('no').cats.forEach(c => { state.std.open['std:' + c.key] = false; });
   (state.lists || []).forEach(L => (L.cats || []).forEach(c => { c.open = false; }));
   state.fieldList = false;
+  state.gOpen = {}; // 0.15.0: Guider groups fold too
   stdCache = null;
 }
 if (freshStart){ state.lastNav = {tab:'list', view:null}; foldStart(); save(); }
@@ -1916,8 +1932,17 @@ function renderIndex(){
   const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
   const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
-  const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr =>
-    `<h2 class="ix-group g-${gr.key}">${gr.icon ? ICO_HEALTH : ''}${gr[state.lang] || gr.en}</h2><div class="index">` + gr.items.map(k => card(info(k), gr.key)).join('') + '</div>').join('');
+  // 0.15.0: every group but Helse og nød folds; state.gOpen remembers the open ones (cleared on a fresh start)
+  const gOpen = state.gOpen || {};
+  const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr => {
+    const name = gr[state.lang] || gr.en, rows = gr.items.map(k => card(info(k), gr.key)).join('');
+    if (gr.fixed) return `<h2 class="ix-group g-${gr.key}">${gr.icon ? ICO_HEALTH : ''}${name}</h2><div class="index">${rows}</div>`;
+    const open = !!gOpen[gr.key], names = gr.items.map(k => info(k)[1]);
+    const prev = names.slice(0, 3).map((n, i) => i ? n.charAt(0).toLowerCase() + n.slice(1) : n).join(', ') + (names.length > 3 ? ' …' : '');
+    return `<button class="ix-group g-${gr.key}" data-gfold="${gr.key}" data-nav aria-expanded="${open}" aria-controls="gx-${gr.key}">` +
+      `<span class="gf-row">${gr.icon ? ICO_HEALTH : ''}<span>${name}</span><span class="gf-c">${names.length}</span><svg class="gf-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>` +
+      `<span class="gf-p">${prev}</span></button><div class="index${open ? '' : ' gf-closed'}" id="gx-${gr.key}">${rows}</div>`;
+  }).join('');
   // Søk i Guider (0.5.0): the magnifier sits at the right of the intro line; when open, the field takes that line
   // 0.11.0: the Nødmodus button sits at the top of Guider, always
   main.innerHTML = sosBtn(true) + (gSearch.open
@@ -2297,7 +2322,7 @@ const GUIDE_GROUPS = [
   {key:'sky', no:'Himmelen', en:'The sky', items:['nightdir', 'nightsky', 'aurora']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']},
   // 0.7.0: started with one guide (agreed exception); 0.11.0: Nødsituasjon first
-  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds'], icon:true}
+  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds'], icon:true, fixed:true} // 0.15.0: never folds
 ];
 const ICO_HEALTH = '<svg class="gh-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M6.5 12.5h3l1.3-2.5 2 4.5 1.4-2h3.3"/></svg>';
 const guideGroup = k => (GUIDE_GROUPS.find(g => g.items.indexOf(k) >= 0) || {}).key;
@@ -3822,6 +3847,15 @@ main.addEventListener('click', async e => {
   if (lg){ state.lang = lg.dataset.lang; stdCache = null; save(); render(); return; }
   const op = e.target.closest('[data-open]');
   if (op){ planFrom = null; go(tab, 'tool:' + op.dataset.open); return; }
+  // 0.15.0: fold a Guider group in place (no redraw, so the page does not jump)
+  const gf = e.target.closest('[data-gfold]');
+  if (gf){
+    const k = gf.dataset.gfold, open = gf.getAttribute('aria-expanded') !== 'true';
+    state.gOpen = Object.assign({}, state.gOpen, {[k]: open}); save();
+    gf.setAttribute('aria-expanded', String(open));
+    const body = $('gx-' + k); if (body) body.classList.toggle('gf-closed', !open);
+    return;
+  }
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const T = t(), act = b.dataset.act;
@@ -3985,6 +4019,8 @@ $('tabbar').addEventListener('click', e => {
 /* ---------- navigation history (Android back button) ---------- */
 function go(newTab, newView){
   if (rainLocked) extendNav();
+  // 0.15.0: a guide opened from anywhere (index, link, search) leaves its group open for Back
+  if (newTab === 'guide' && typeof newView === 'string' && newView.indexOf('tool:') === 0){ const g = guideGroup(newView.slice(5)); if (g) state.gOpen = Object.assign({}, state.gOpen, {[g]: true}); }
   tab = newTab; view = newView;
   const st = history.state || {};
   const depth = (st.depth || 0) + 1;
