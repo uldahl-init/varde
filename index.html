@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-TQm2oE65HbSPI4MiowC3UXLN6RB1ubzO4AdN2rR1uKg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-rzQhkEd7TyfREi+DLtJgsk8QL5UnvOVtG+07VbQfAgI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
+<meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
 <title>Varde</title>
 <meta name="application-name" content="Varde">
 <meta name="apple-mobile-web-app-title" content="Varde">
@@ -40,7 +41,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.45;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
 .wrap{max-width:640px;margin:0 auto;padding:0 16px}
 :focus-visible{outline:3px solid var(--lichen);outline-offset:2px}
@@ -365,6 +366,8 @@ body.field .item.sub .check{padding-left:56px}
 body.field .chip{padding:12px 18px}
 body.field .tabbar button{min-height:70px;font-size:.8rem}
 .tabbar button{min-width:0;padding:0 2px}
+/* 0.14.1: with large text the labels grow a little, then stop, so five fit side by side */
+.tabbar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:min(1em,4vw)}
 @media (max-width:370px){.tabbar button,body.field .tabbar button{font-size:.74rem}}
 body.field .link-btn{padding:10px 12px 10px 16px}
 body[data-skin="fjell"]{--bg:#E9ECEA;--surface:#FFFFFF;--ink:#1D2B2A;--muted:#5E6B69;--line:#D6DCD9;--line-strong:#A9B5B0;--red:#C8372D;--lichen:#5E7A4A;--hd:#1F3532;--hdt:#F2F5F3;--chip:#2C4743}
@@ -438,16 +441,16 @@ body.night .lt-btn{--lc:currentColor}
 @media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
 .sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#e5322b;--s-line:#3a3a3a;--s-calm:#2e2e2e;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
-.sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#b00000;--s-sig:#ff0000;--s-line:#500000;--s-calm:#2a0000}
+.sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#ec0000;--s-sig:#ff0000;--s-line:#500000;--s-calm:#2a0000}
 .sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000;--s-calm:#002a00}
 .sos-in{max-width:640px;margin:0 auto}
 .sos-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .sos-top h1{flex:1;display:flex;align-items:center;gap:10px;margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;color:var(--s-fg)}
 .sos svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--s-sig);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sos button,.sos a.sos-call,.sos a.sos-act{color:var(--s-fg);background:transparent;border:2px solid var(--s-sig);border-radius:14px;font:inherit;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.sos-hues{display:flex;align-items:center;gap:8px;margin:4px 0 10px}
+.sos-hues{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 10px}
 .sos-hues span{flex:none;color:var(--s-mut);font-size:.95rem;margin-right:2px}
-.sos .sos-hues button{flex:1;min-height:44px;padding:0 8px;font-size:.95rem;font-weight:400;border-width:1px;border-color:var(--s-line)}
+.sos .sos-hues button{flex:1 1 auto;min-height:44px;padding:0 8px;font-size:.95rem;font-weight:400;border-width:1px;border-color:var(--s-line)}
 .sos .sos-hues button[aria-pressed="true"]{border-width:2px;border-color:var(--s-sig);font-weight:600}
 .sos .sos-x{width:100%;min-height:56px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--s-calm);border-color:var(--s-calm);font-size:1.1rem}
 .sos-x small{font-weight:400;font-size:.85rem;color:var(--s-mut)}
@@ -458,7 +461,7 @@ body.night .lt-btn{--lc:currentColor}
 .sos .s-mut:empty{display:none}
 .sos a.sos-call{display:flex;align-items:center;gap:16px;min-height:64px;margin:8px 0;padding:8px 16px;text-decoration:none}
 .sos-call b{font-size:2rem;min-width:3.1ch;font-variant-numeric:tabular-nums}
-.sos-call span{font-weight:400;line-height:1.3}
+.sos-call span{font-weight:400;line-height:1.3;min-width:0;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
 .sos .sos-st{margin:4px 0 8px;font-weight:600;font-size:1.1rem}
 .sos .sos-st.sos-ok{color:var(--s-fg)}
 .sos .sos-st.sos-warn{color:var(--s-fg);border:2px solid var(--s-sig);border-radius:12px;padding:8px 12px}
@@ -732,8 +735,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.14.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 62;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.14.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 63;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -768,7 +771,7 @@ const UI = {
     intro:[
       [`Welcome to ${APP_NAME}`,'A packing list and trip planner for day hikes and shorter trips with a tent. It works without coverage.'],
       ['The main list','The app opens on your main list with every category folded, so you see the whole list at a glance: tap a category to open it, or tap Expand all. Under Trip type, switch on what the trip needs, like Winter or Fishing. Bags like the first aid kit have their own list: tap the counter to open it.'],
-      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. The list is then one row you tap to open; trip types are set before the trip, with Outdoor mode off. Rain lock at the top lets you read without water on the screen changing anything. Hold a night light or Campfire to use the screen as a light; Campfire crackles and slowly burns down, and you hold the screen to add wood.'],
+      ['Outdoor mode','Tap Outdoor mode when you are out: larger buttons, the screen stays on, and the list and editing are locked. The list is then one row you tap to open; trip types are set before the trip, with Outdoor mode off. Rain lock at the top stops all changes while you can still read: in rain, but also when the phone is in a pocket or the pack. Hold a night light or Campfire to use the screen as a light; Campfire crackles and slowly burns down, and you hold the screen to add wood.'],
       ['Your own lists','Tap the list name at the top to open Your lists, where you make your own lists. Use one as your main list, for example your tasks on a group trip, or add it as a trip type. You can share lists with others.'],
       ['Offline and private',`Add ${APP_NAME} to your home screen and it works without coverage; on iPhone, that is also what keeps your lists safe. Everything you make is stored only on this phone, so take a backup under Your lists and keep it somewhere else. ${APP_NAME} has no account and sends nothing from your phone. The advice is general and does not replace courses, forecasts and your own judgement. Notes, Plan, Guides and Compass are at the bottom.`]
     ],
@@ -819,9 +822,12 @@ const UI = {
     bkTake:'Take a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
     bkShare:'Share', bkSave:'Save as file', bkShared:'Backup shared.', bkSaved:'File made. Look in your downloads.', bkShow:'Show the backup as text',
     bkCopy:'Copy', bkCopied:'Backup copied. Paste it somewhere safe, for example in an e-mail to yourself.', bkManual:'Select the text and copy it manually.', bkShareFail:'Sharing did not work on this phone. Use Save as file or Copy instead.', bkDoneShare:'Shared', bkDoneSave:'Saved', bkDoneCopy:'Copied', restore:'Restore',
-    bkPaste:'Paste a backup here', bkFile:'Choose file', bkAdd:'Add from backup', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
+    bkPaste:'Paste a backup or a shared link here', bkFile:'Choose file', bkAdd:'Add from backup', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
     bkAddedAll:a=>'Added: ' + [a.l && `${a.l} list${a.l>1?'s':''}`, a.n && `${a.n} note${a.n>1?'s':''}`, a.w && `${a.w} in Pack weight`, a.k && `${a.k} link${a.k>1?'s':''}`, a.p && 'the figures in Plan'].filter(Boolean).join(', ') + '.',
     bkNothing:'Everything in this backup is already here.',
+    saveFail:'Could not save. The phone may be full. Free up space, and take a backup.',
+    rescueQ:'Saved data could not be read', rescueMsg:'The app has started with an empty list. A copy of the old data is kept on this phone. If you have a backup, restore it under Back up or restore.',
+    rescueLbl:'Data that could not be read', rescueNote:'Kept on this phone, never sent anywhere. Copy it if someone is to look at it, or delete it when you no longer need it.', rescueDel:'Delete the copy', rescueDelQ:'Delete the copy of the data that could not be read?',
     bkLast:d=>`Last backup: ${d}`, bkNever:'never', bkChanged:'You have changes that are not backed up.',
     bkRemind:'It is a while since your last backup, and you have changes that exist only on this phone.', bkLater:'Later',
     adviceTitle:'About the advice', adviceTxt:`${APP_NAME} gives general advice and checklists for planning trips. The advice does not replace courses, local knowledge or your own judgement of weather, conditions and avalanche danger. Always check official forecasts and rules before the trip, and carry a map, compass and emergency beacon, not just your phone. The figures in Plan are estimates. You are responsible for your own choices on a trip.`,
@@ -865,7 +871,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off. Use it not only in rain, but whenever the phone is in a pocket or the pack with the app open.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
       ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
@@ -989,7 +995,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     intro:[
       [`Velkommen til ${APP_NAME}`,'En pakkliste og turplanlegger for dagsturer og kortere turer med telt. Den virker uten dekning.'],
       ['Hovedlisten','Appen åpner på hovedlisten med alle kategorier lukket, så du ser hele listen på én gang: trykk på en kategori for å åpne den, eller på Åpne alle. Under Turtype slår du på det turen trenger, som Vinter eller Fiske. Pakkposer som førstehjelpssettet har sin egen liste: trykk på telleren for å åpne den.'],
-      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Listen er da én linje du trykker på for å åpne; turtypene velger du før turen, med Utemodus av. Regnlås øverst lar deg lese uten at vann på skjermen endrer noe. Hold et nattlys eller Bål for å bruke skjermen som lys; Bål knitrer og brenner sakte ned, og du holder på skjermen for å legge på ved.'],
+      ['Utemodus','Trykk Utemodus når du er ute: større knapper, skjermen holdes på, og listen og redigering låses. Listen er da én linje du trykker på for å åpne; turtypene velger du før turen, med Utemodus av. Regnlås øverst stopper alle endringer mens du fortsatt kan lese: i regn, men også når mobilen ligger i lomma eller sekken. Hold et nattlys eller Bål for å bruke skjermen som lys; Bål knitrer og brenner sakte ned, og du holder på skjermen for å legge på ved.'],
       ['Dine egne lister','Trykk på listenavnet øverst for å åpne Dine lister, der du lager egne lister. Bruk en som hovedliste, for eksempel det du skal ha med på en felles tur, eller legg den til i turtype. Du kan dele lister med andre.'],
       ['Uten nett og trygt',`Legg ${APP_NAME} til på startskjermen, så virker den uten dekning; på iPhone er det også det som holder listene trygge. Alt du lager, ligger bare på denne mobilen, så ta en sikkerhetskopi under Dine lister og lagre den et annet sted. ${APP_NAME} har ingen konto og sender ingenting fra mobilen din. Rådene er generelle og erstatter ikke kurs, varsler og egen vurdering. Notater, Planlegg, Guider og Kompass finner du nederst.`]
     ],
@@ -1040,9 +1046,12 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     bkTake:'Ta sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
     bkShare:'Del', bkSave:'Lagre som fil', bkShared:'Sikkerhetskopien er delt.', bkSaved:'Filen er laget. Se i nedlastingene dine.', bkShow:'Vis sikkerhetskopien som tekst',
     bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert. Lim den inn et trygt sted, for eksempel i en e-post til deg selv.', bkManual:'Merk teksten og kopier den manuelt.', bkShareFail:'Deling virket ikke på denne mobilen. Bruk Lagre som fil eller Kopier i stedet.', bkDoneShare:'Delt', bkDoneSave:'Lagret', bkDoneCopy:'Kopiert', restore:'Gjenopprett',
-    bkPaste:'Lim inn en sikkerhetskopi her', bkFile:'Velg fil', bkAdd:'Legg til fra sikkerhetskopi', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
+    bkPaste:'Lim inn en sikkerhetskopi eller en delt lenke her', bkFile:'Velg fil', bkAdd:'Legg til fra sikkerhetskopi', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
     bkAddedAll:a=>'Lagt til: ' + [a.l && `${a.l} ${a.l>1?'lister':'liste'}`, a.n && `${a.n} ${a.n>1?'notater':'notat'}`, a.w && `${a.w} i Sekkvekt`, a.k && `${a.k} ${a.k>1?'lenker':'lenke'}`, a.p && 'tallene i Planlegg'].filter(Boolean).join(', ') + '.',
     bkNothing:'Alt i denne sikkerhetskopien finnes her fra før.',
+    saveFail:'Kunne ikke lagre. Mobilen kan være full. Frigjør plass, og ta en sikkerhetskopi.',
+    rescueQ:'Lagrede data kunne ikke leses', rescueMsg:'Appen har startet med tom liste. En kopi av de gamle dataene er tatt vare på på denne mobilen. Har du en sikkerhetskopi, gjenoppretter du den under Sikkerhetskopi.',
+    rescueLbl:'Data som ikke kunne leses', rescueNote:'Ligger bare på denne mobilen og sendes ingen steder. Kopier den hvis noen skal se på den, eller slett den når du ikke trenger den.', rescueDel:'Slett kopien', rescueDelQ:'Slette kopien av dataene som ikke kunne leses?',
     bkLast:d=>`Sist sikkerhetskopi: ${d}`, bkNever:'aldri', bkChanged:'Du har endringer som ikke er sikkerhetskopiert.',
     bkRemind:'Det er en stund siden sist sikkerhetskopi, og du har endringer som bare finnes på denne mobilen.', bkLater:'Senere',
     adviceTitle:'Om rådene', adviceTxt:`${APP_NAME} gir generelle råd og huskelister for å planlegge turer. Rådene erstatter ikke kurs, lokalkunnskap eller din egen vurdering av vær, føre og skredfare. Sjekk alltid offisielle varsler og regler før turen, og ha kart, kompass og nødsender, ikke bare mobilen. Utregningene i Planlegg er anslag. Du er selv ansvarlig for valgene dine på tur.`,
@@ -1086,7 +1095,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av. Bruk den ikke bare i regn, men hver gang mobilen ligger i lomma eller sekken med appen åpen.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
       ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
@@ -1322,11 +1331,24 @@ function cloneList(src, keepDone){
   if (src.modes && typeof src.modes === 'object') Object.keys(src.modes).forEach(k => { if (own(MODES, k)) modes[k] = !!src.modes[k]; });
   return { id:uid(), name:String(src.name || t().myList), notes: typeof src.notes === 'string' ? src.notes : '', modes, cats };
 }
+/* 0.14.1: data that cannot be read is kept aside under RESCUE_KEY (never overwritten by a later rescue),
+   and a failed save says so once per session instead of failing quietly */
+const RESCUE_KEY = KEY + '-rescue';
+let rescued = false, saveWarned = false;
 function load(){
-  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.lists)) return s; } catch(e){}
+  let raw = null;
+  try { raw = localStorage.getItem(KEY); } catch(e){ return null; }
+  if (raw == null) return null;
+  try { const s = JSON.parse(raw); if (s && Array.isArray(s.lists)) return s; } catch(e){}
+  try { if (!localStorage.getItem(RESCUE_KEY)) localStorage.setItem(RESCUE_KEY, raw); rescued = true; } catch(e){}
   return null;
 }
-function save(){ bkTrack(); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+function persist(){
+  try { localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+  catch(e){ if (!saveWarned){ saveWarned = true; setTimeout(() => showToast(t().saveFail), 0); } return false; }
+}
+function save(){ bkTrack(); persist(); }
+function rescueText(){ try { return localStorage.getItem(RESCUE_KEY); } catch(e){ return null; } }
 
 /* ---------- backup bookkeeping (v32) ---------- */
 // Personal content, without ticks, folds and other state that changes on every trip.
@@ -1486,7 +1508,7 @@ function migrate(){
   state.main = 'std';
   delete state.active;
   state.v = 2;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  persist();
 }
 if (state.v !== 2) migrate();
 /* Renamed template lines keep their ticks (v27, v29, v30: the merged shelter line keeps a tick from either old line) */
@@ -1534,7 +1556,7 @@ if (freshStart && state.hiddenAt && Date.now() - state.hiddenAt < RETURN_MS) fre
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'hidden') return;
   state.hiddenAt = Date.now();
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  persist();
 });
 function foldStart(){
   state.std = state.std || {done:{}, modes:{}, light:{}, open:{}};
@@ -1643,7 +1665,7 @@ function render(){
   const T = t();
   state.lastNav = {tab, view};
   if (!(tab === 'guide' && view && view.indexOf('tool:') === 0)) sosBack = false;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  persist();
   document.documentElement.lang = state.lang === 'no' ? 'nb' : 'en';
   bodyClasses();
   renderTabs();
@@ -2672,9 +2694,12 @@ async function shareList(L){
 }
 async function checkShared(){
   const h = location.hash;
-  if (h.indexOf('#note=') === 0){ history.replaceState(history.state, '', location.pathname + location.search); return receiveNote(h.slice(6)); }
-  if (h.indexOf('#share=') !== 0) return;
+  if (h.indexOf('#note=') !== 0 && h.indexOf('#share=') !== 0) return;
   history.replaceState(history.state, '', location.pathname + location.search);
+  return importHash(h);
+}
+async function importHash(h){
+  if (h.indexOf('#note=') === 0) return receiveNote(h.slice(6));
   const T = t();
   let L;
   try { L = await decodeList(h.slice(7)); } catch(e){ await confirmBox(T.share, T.shareBad, T.ok); return; }
@@ -3657,7 +3682,7 @@ async function listAction(a, id){
 
 function backupSheet(){
   const T = t();
-  const data = bkData();
+  const data = bkData(), rt = rescueText();
   const canShare = !!navigator.share;
   openSheet(`<h3>${T.backup}</h3>
     <div class="bk-warn"><p>${T.bkWarn}</p><p class="bk-how">${T.bkWarnHow}</p></div>
@@ -3672,7 +3697,21 @@ function backupSheet(){
     <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
     <div class="row"><button class="btn" id="bkFile">${T.bkFile}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>
     <div class="bk-msg" id="bkRStatus" role="status" hidden></div>
+    ${rt ? `<div class="section-label">${T.rescueLbl}</div><p class="bk-covers">${T.rescueNote}</p>
+    <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="rsOut" readonly>${esc(rt)}</textarea></details>
+    <div class="row" style="justify-content:flex-start"><button class="btn" id="rsCopy">${T.bkCopy}</button><button class="btn" id="rsDel">${T.rescueDel}</button></div>` : ''}
     <div class="row"><button class="btn" data-s="cancel">${T.close}</button></div>`);
+  if (rt){
+    $('rsCopy').onclick = async () => {
+      const ta = $('rsOut');
+      try { await navigator.clipboard.writeText(ta.value); $('rsCopy').textContent = T.bkDoneCopy; }
+      catch(e){ ta.closest('details').open = true; ta.select(); try { document.execCommand('copy'); } catch(_){} }
+    };
+    $('rsDel').onclick = async () => {
+      if (await confirmBox(T.rescueDel, T.rescueDelQ, T.rescueDel)){ try { localStorage.removeItem(RESCUE_KEY); } catch(e){} }
+      backupSheet();
+    };
+  }
   const status = $('bkStatus');
   const say = (msg, ok) => { status.textContent = msg; status.className = 'bk-msg' + (ok ? ' ok' : ''); status.hidden = !msg; };
   const flash = (btn, label) => {
@@ -3714,6 +3753,9 @@ function backupSheet(){
   const rstatus = $('bkRStatus');
   const sayR = (msg, ok) => { rstatus.textContent = msg; rstatus.className = 'bk-msg' + (ok ? ' ok' : ''); rstatus.hidden = !msg; };
   const restore = text => {
+    // 0.14.1: a pasted share link (#share= or #note=) is added the same way as when the link is opened
+    const m = /#(share|note)=([A-Za-z0-9_-]+)/.exec(text || '');
+    if (m){ closeSheet(null); render(); importHash('#' + m[1] + '=' + m[2]); return; }
     const a = bkRestore(text);
     if (!a){ sayR(T.bkBad, false); return; }
     if (!(a.l || a.n || a.w || a.k || a.p)){ sayR(T.bkNothing, true); return; }
@@ -4070,7 +4112,7 @@ function sortLift(c, e){
 function sortFrame(){
   const d = sortDrag; if (!d) return;
   // auto-scroll near the header and the tab bar
-  const hb = ($('appHeader') || document.querySelector('header') || {getBoundingClientRect:() => ({bottom:0})}).getBoundingClientRect().bottom;
+  const hb = (document.querySelector('header') || {getBoundingClientRect:() => ({bottom:0})}).getBoundingClientRect().bottom;
   const tb = ($('tabbar') || {getBoundingClientRect:() => ({top:innerHeight})}).getBoundingClientRect().top;
   let v = 0;
   if (d.y < hb + SORT_EDGE) v = -Math.ceil((hb + SORT_EDGE - d.y) / 6);
@@ -4248,12 +4290,13 @@ function slStop(){ if (slRaf) cancelAnimationFrame(slRaf); slRaf = null; clearTi
 /* 0.11.0: SOS on the screen, white: • • • — — — • • • (short 1 unit, long 3, gap 1, between letters 3, before repeating 7).
    One unit is 300 ms, so it never flashes more than about twice a second. */
 const SOS_SEQ = [1, 1, 1, 1, 1, 3, 3, 1, 3, 1, 3, 3, 1, 1, 1, 1, 1, 7];
-/* 0.11.1: the alpine distress signal on the screen: six 1-second flashes a minute (one every 10 s), then 60 s dark */
+/* 0.11.1: the alpine distress signal on the screen: six 1-second flashes a minute (one every 10 s), then a minute dark.
+   0.14.1: the dark minute starts when the signalling minute ends, so a new round starts every 120 s (was 111 s) */
 function slSix(){
   const el = $('slight'); let n = 0;
   const tick = () => {
     if (slMode !== 'six') return;
-    if (n < 6){ el.style.background = '#ffffff'; slTimer = setTimeout(() => { if (slMode !== 'six') return; el.style.background = '#000000'; n++; slTimer = setTimeout(tick, n < 6 ? 9000 : 60000); }, 1000); }
+    if (n < 6){ el.style.background = '#ffffff'; slTimer = setTimeout(() => { if (slMode !== 'six') return; el.style.background = '#000000'; n++; slTimer = setTimeout(tick, n < 6 ? 9000 : 69000); }, 1000); }
     else { n = 0; tick(); }
   };
   tick();
@@ -5066,7 +5109,9 @@ document.addEventListener('visibilitychange', updateWake);
 
 render();
 updateWake();
-if (!state.introDone) showIntro(0, checkShared); else checkShared();
+// 0.14.1: tell once that stored data could not be read (a copy is kept, see the backup sheet)
+const startChecks = async () => { if (rescued){ rescued = false; const T = t(); if (await confirmBox(T.rescueQ, T.rescueMsg, T.backup)){ backupSheet(); return; } } checkShared(); };
+if (!state.introDone) showIntro(0, startChecks); else startChecks();
 if (state.sosOpen) openSos(); // 0.11.0: closed while in Nødmodus → opens in Nødmodus again, no time limit
 // v32: ask the browser to keep the data when space runs low (installed app only; nothing is sent anywhere)
 try {
