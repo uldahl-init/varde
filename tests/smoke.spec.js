@@ -613,6 +613,11 @@ for (const L of LANGS){
       if (await all.getAttribute('aria-expanded') !== 'true') await all.click();
       for (const k of ['list', 'guide']){
         await goTab(page, k);
+        // 0.15.1: with every group folded Guider fits on one screen, so open them to get a page that scrolls
+        if (k === 'guide') for (const g of await page.locator('#main [data-gfold]').evaluateAll(els => els.map(e => e.dataset.gfold))){
+          const h = page.locator(`#main [data-gfold="${g}"]`);
+          if (await h.getAttribute('aria-expanded') !== 'true') await h.click();
+        }
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         await expect.poll(() => page.evaluate(() => window.scrollY), `${k} page is long enough to scroll`).toBeGreaterThan(100);
         await page.locator(`#tabbar [data-tab="${k}"]`).click();
@@ -1138,17 +1143,19 @@ test.describe('service worker', () => {
 /* ---------- From build 64 (0.15.0): Guider groups fold ---------- */
 test.describe('guider folds', () => {
   test.use({locale:'nb-NO'});
-  test('groups fold, remember, open with a guide, and Helse og nød never folds', async ({page}) => {
+  test('groups fold, remember and open with a guide', async ({page}) => {
     const errors = watchErrors(page);
     await openApp(page);
     await goTab(page, 'guide');
     const head = k => page.locator(`#main [data-gfold="${k}"]`);
-    // a fresh start: all folded, Helse og nød open with no fold button
-    for (const k of ['field', 'safety', 'sky', 'gear']) await expect(head(k)).toHaveAttribute('aria-expanded', 'false');
+    // a fresh start: every group folded (0.15.1: Helse og nød too), Nødmodus still at the top
+    for (const k of ['field', 'safety', 'sky', 'gear', 'health']) await expect(head(k)).toHaveAttribute('aria-expanded', 'false');
     await expect(page.locator('#main [data-open="knots"]')).toBeHidden();
-    await expect(page.locator('#main [data-gfold="health"]')).toHaveCount(0);
-    await expect(page.locator('#main [data-open="emergency"]')).toBeVisible();
+    await expect(page.locator('#main [data-open="emergency"]')).toBeHidden();
+    await expect(page.locator('#main [data-sos-hold]')).toBeVisible();
     await expect(head('field').locator('.gf-p')).toContainText('Knuter');
+    // 0.15.1: every group heading has its icon
+    for (const k of ['field', 'safety', 'sky', 'gear', 'health']) await expect(head(k).locator('svg.gh-ic')).toHaveCount(1);
     // open and close
     await head('sky').click();
     await expect(head('sky')).toHaveAttribute('aria-expanded', 'true');
