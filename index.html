@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-1HcT2yGJeMeI1ccH40CSHIBpXs7AsW2a/FeeyCKl1hE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-DD3DXrp74C2MKEwRiOnIy3XotH8p2aDxhyFQcHcgFtE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -750,8 +750,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.15.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 64;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.15.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 65;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1932,15 +1932,15 @@ function renderIndex(){
   const G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
   const old = {knots:[T.knotTool, T.knotShort], fishing:[T.fishTool, T.fishShort], sun:[T.sunTool, T.sunShort], winter:[T.winterTool, T.winterShort], stoveboard:[T.sbTool, T.sbShort], phone:[T.phoneTool, T.phoneShort]};
   const info = k => G[k] ? [k, G[k].title, G[k].short] : [k, old[k][0], old[k][1]];
-  // 0.15.0: every group but Helse og nød folds; state.gOpen remembers the open ones (cleared on a fresh start)
+  // 0.15.0: groups fold (0.15.1: Helse og nød too; fixed:true would keep a group open); state.gOpen remembers the open ones (cleared on a fresh start)
   const gOpen = state.gOpen || {};
   const groups = `<p class="tool-sub gs-sub">${T.guideSub}</p>` + GUIDE_GROUPS.map(gr => {
     const name = gr[state.lang] || gr.en, rows = gr.items.map(k => card(info(k), gr.key)).join('');
-    if (gr.fixed) return `<h2 class="ix-group g-${gr.key}">${gr.icon ? ICO_HEALTH : ''}${name}</h2><div class="index">${rows}</div>`;
+    if (gr.fixed) return `<h2 class="ix-group g-${gr.key}">${GROUP_ICONS[gr.key] || ''}${name}</h2><div class="index">${rows}</div>`;
     const open = !!gOpen[gr.key], names = gr.items.map(k => info(k)[1]);
     const prev = names.slice(0, 3).map((n, i) => i ? n.charAt(0).toLowerCase() + n.slice(1) : n).join(', ') + (names.length > 3 ? ' …' : '');
     return `<button class="ix-group g-${gr.key}" data-gfold="${gr.key}" data-nav aria-expanded="${open}" aria-controls="gx-${gr.key}">` +
-      `<span class="gf-row">${gr.icon ? ICO_HEALTH : ''}<span>${name}</span><span class="gf-c">${names.length}</span><svg class="gf-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>` +
+      `<span class="gf-row">${GROUP_ICONS[gr.key] || ''}<span>${name}</span><span class="gf-c">${names.length}</span><svg class="gf-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>` +
       `<span class="gf-p">${prev}</span></button><div class="index${open ? '' : ' gf-closed'}" id="gx-${gr.key}">${rows}</div>`;
   }).join('');
   // Søk i Guider (0.5.0): the magnifier sits at the right of the intro line; when open, the field takes that line
@@ -2322,9 +2322,18 @@ const GUIDE_GROUPS = [
   {key:'sky', no:'Himmelen', en:'The sky', items:['nightdir', 'nightsky', 'aurora']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']},
   // 0.7.0: started with one guide (agreed exception); 0.11.0: Nødsituasjon first
-  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds'], icon:true, fixed:true} // 0.15.0: never folds
+  {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds']} // 0.15.1: folds like the rest (Nødmodus sits above the groups)
 ];
 const ICO_HEALTH = '<svg class="gh-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M6.5 12.5h3l1.3-2.5 2 4.5 1.4-2h3.3"/></svg>';
+/* 0.15.1: one icon per Guider group, drawn in the same line style as the heart (no text, colour from the group) */
+const gIco = d => `<svg class="gh-ic" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const GROUP_ICONS = {
+  field: gIco('<g transform="matrix(0.5144 0.5144 -0.5144 0.5144 15.781 5.878)" stroke-width="2.749"><path d="M-1.7 5.6V19.4c0 1.6-.5 3-1.1 4.2 1.4.8 3.9.9 5.4.2-.7-1.4-.9-2.9-.9-4.4V5.6"/><path d="M-2.8 0h5.6v5.6h-5.6z"/><path d="M2.8 .5C5 .4 7.6-.4 9.9-1.8c1.2 3.8 1.2 8.1-.2 12-2.1-2.2-4.5-3.6-7.3-4.2"/></g>'), // axe
+  safety: gIco('<path d="M8 6.5a3.5 3.5 0 0 1 6.6-1.6"/><path d="M5 18.5h12a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-.6A4.3 4.3 0 0 0 5 18.5z"/><path d="M3.5 4.5l1.2 1.2M8 1.8v1.6M1.6 9.2h1.6"/>'), // sun behind a cloud
+  sky: gIco('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/><path d="M17 3l.7 1.8 1.8.7-1.8.7L17 8l-.7-1.8-1.8-.7 1.8-.7z"/>'), // moon and star
+  gear: gIco('<path d="M2 20.5h20"/><path d="M4 20.5L12 5.5l8 15"/><path d="M9.3 20.5L12 15l2.7 5.5"/><path d="M12 5.5L10.6 3M12 5.5L13.4 3"/>'), // tent
+  health: ICO_HEALTH
+};
 const guideGroup = k => (GUIDE_GROUPS.find(g => g.items.indexOf(k) >= 0) || {}).key;
 /* standard list line -> guide (standard list only) */
 const GUIDE_LINKS = {
