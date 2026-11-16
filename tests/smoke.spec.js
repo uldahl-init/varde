@@ -656,7 +656,7 @@ test.describe('nattlys', () => {
     for (const skin of SKINS) for (const scheme of ['light', 'dark']) for (const hue of ['red', 'green']){
       const ctx = await browser.newContext({colorScheme: scheme, serviceWorkers: 'block', viewport: {width: 390, height: 780}, locale: 'nb-NO'});
       const p = await ctx.newPage();
-      const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes, noteOrder:1, noteColors:['Fiske', 'Turer', '', 'Ideer', '']};
+      const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes, noteOrder:1, noteColors:['Fiske', 'Turer', '', 'Ideer', ''], pos:{lat:58.97, lon:5.73, t:1760000000000}};
       await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
       await p.goto('./');
       const found = {};
@@ -681,6 +681,9 @@ test.describe('nattlys', () => {
         await check(g);
       }
       await p.locator('#tabbar [data-tab="plan"]').click(); await check('plan');
+      // 0.16.0: Kompass and Stjerner og planeter (stars, planets and the moon on the ring)
+      await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
+      await p.locator('#main [data-act="cStars"]').click(); await check('stars');
       expect(found, `${skin}, ${scheme} mode, ${hue} light`).toEqual({});
       await ctx.close();
     }
@@ -1192,5 +1195,80 @@ test.describe('guider folds', () => {
     if (!(await page.locator('#main [data-gfold="field"]').count())) test.skip(true, 'Guider not reachable without Naviger');
     await page.locator('#main [data-gfold="field"]').click();
     await expect(page.locator('#main [data-gfold="field"]')).toHaveAttribute('aria-expanded', 'true');
+  });
+});
+
+/* ---------- From build 67 (0.16.0): true north and Stjerner og planeter ----------
+   The phone gives magnetic north; with a saved position the app adds the WMM2025 declination. Reference values are
+   from the WMM2025 coefficient file run through an independent implementation (pygeomag). The star view opens from
+   Kompass, shows the sky on the outer ring and in the list (Saturn and the moon at a fixed evening), and Back returns. */
+// The sky code from index.html, run in Node (the app keeps everything inside one closure, so a page cannot reach it)
+const SKY = (() => {
+  const a = HTML.indexOf('/* ---------- true north: declination'), b = HTML.indexOf('/* ---------- Stjerner og planeter (0.16.0)');
+  return new Function('RAD', HTML.slice(a, b) + '\nreturn {magDecl, skyObjects};')(Math.PI / 180);
+})();
+test.describe('kompass', () => {
+  test('declination and sky positions match the reference values', () => {
+    const at = new Date('2026-11-16T00:00:00Z');
+    expect(SKY.magDecl(58.97, 5.73, at)).toBeCloseTo(3.033, 1);   // Stavanger
+    expect(SKY.magDecl(69.97, 23.27, at)).toBeCloseTo(13.832, 1); // Alta
+    expect(SKY.magDecl(-33.9, 151.2, at)).toBeCloseTo(12.838, 1); // Sydney
+    const sky = SKY.skyObjects(new Date('2026-11-16T20:00:00Z'), 58.97, 5.73), o = k => sky.find(x => x.k === k);
+    // reference: PyEphem for Stavanger at that time (Saturn 172° / 32°, Venus 335° / −39°); Polaris stands at the latitude in the north
+    expect(Math.abs(o('saturn').az - 172)).toBeLessThan(1.5); expect(Math.abs(o('saturn').alt - 32)).toBeLessThan(1.5);
+    expect(Math.abs(o('venus').az - 335)).toBeLessThan(1.5); expect(Math.abs(o('venus').alt + 39)).toBeLessThan(1.5);
+    expect(Math.abs(((o('polaris').az + 180) % 360) - 180)).toBeLessThan(1.5); expect(Math.abs(o('polaris').alt - 58.97)).toBeLessThan(1.5);
+  });
+  const ctxFor = (browser, locale) => browser.newContext({locale: locale || 'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+  const start = async (p, st) => {
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    // newer Chromium has DeviceOrientationEvent.requestPermission() (as on the iPhone) and denies it in a headless test:
+    // answer it as a user tapping Allow would, so Start kompasset starts
+    await p.addInitScript(() => { try { if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') Object.defineProperty(DeviceOrientationEvent, 'requestPermission', {value: async () => 'granted', configurable: true}); } catch(e){} });
+    await p.goto('./');
+  };
+  const turn = (p, alpha) => p.evaluate(a => window.dispatchEvent(new DeviceOrientationEvent('deviceorientationabsolute', {alpha:a, beta:0, gamma:0, absolute:true})), alpha);
+
+  test('the dial shows true north with a position, magnetic without', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, {lists:[], introDone:true, lang:'no', pos:{lat:69.97, lon:23.27, t:Date.now()}});
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStart"]').click();
+    await expect(p.locator('#main [data-act="cHold"]'), 'compass started (message: ' + await p.locator('#cMsg').textContent() + ')').toBeVisible();
+    await expect(p.locator('#cNorth')).toHaveText(/^Sann nord · misvisning 1[34]° Ø$/);
+    await turn(p, 0); // magnetic north straight ahead
+    await expect(p.locator('#cDeg')).toHaveText(/^1[34]°$/);
+    // without a position: magnetic, and the line says so
+    const c2 = await ctxFor(browser), q = await c2.newPage();
+    await start(q, {lists:[], introDone:true, lang:'no'});
+    await q.locator('#tabbar [data-tab="compass"]').click();
+    await q.locator('#main [data-act="cStart"]').click();
+    await expect(q.locator('#main [data-act="cHold"]')).toBeVisible();
+    await turn(q, 0);
+    await expect(q.locator('#cDeg')).toHaveText('0°');
+    await expect(q.locator('#cNorth')).toContainText('Magnetisk nord');
+    expect(err).toEqual([]);
+    await ctx.close(); await c2.close();
+  });
+
+  for (const L of LANGS) test(`Stjerner og planeter opens, shows the sky and goes back (${L.lang})`, async ({browser}) => {
+    const ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-16T20:00:00Z')); // Stavanger, dark: Saturn high in the south, the moon low in the south-west
+    await start(p, {lists:[], introDone:true, lang:L.lang, pos:{lat:58.97, lon:5.73, t:Date.now()}});
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStars"]').click();
+    const T = L.lang === 'no' ? {title:'Stjerner og planeter', n:{saturn:'Saturn', moon:'Månen', polaris:'Polarstjernen', vega:'Vega', capella:'Capella', venus:'Venus', sirius:'Sirius'}}
+      : {title:'Stars and planets', n:{saturn:'Saturn', moon:'The moon', polaris:'Polaris', vega:'Vega', capella:'Capella', venus:'Venus', sirius:'Sirius'}};
+    await expect(p.locator('#listName')).toHaveText(T.title);
+    const rows = p.locator('#stList .st-row');
+    expect(await rows.count()).toBeGreaterThan(5);
+    for (const k of ['saturn', 'moon', 'polaris', 'vega', 'capella']) await expect(p.locator('#stList .st-name', {hasText: new RegExp('^' + T.n[k] + '$')})).toHaveCount(1);
+    for (const k of ['venus', 'sirius']) await expect(p.locator('#stList .st-name', {hasText: new RegExp('^' + T.n[k] + '$')})).toHaveCount(0); // below the horizon
+    await expect(p.locator('#skyStars text', {hasText: T.n.polaris})).toHaveCount(1);
+    await expect(p.locator('#stSay')).toHaveText('');
+    await p.locator('#main [data-act="back"]').click();
+    await expect(p.locator('#main [data-act="cStars"]')).toBeVisible();
+    expect(err).toEqual([]);
+    await ctx.close();
   });
 });

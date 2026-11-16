@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-btwaesAW/B1fJJBqgvDVabehaU6e4m45yx5WYi8K4zI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-m486SE6fijfhu+OqrKJ55YQFkVZ/JhuIrZNs4PWLNQc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -429,6 +429,22 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .c-deg{font-family:var(--head);font-weight:600;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
 .c-dir{font-family:var(--head);font-weight:600;font-size:1.6rem;color:var(--red)}
 .c-mode{color:var(--muted);font-size:.95rem;margin-top:4px;min-height:1.4em}
+/* 0.16.0: which north, and Stjerner og planeter (a larger compass with an outer ring for the sky) */
+.c-north{color:var(--muted);font-size:.9rem;margin-top:2px;min-height:1.3em}
+.st-open{display:inline-flex;align-items:center;gap:10px;padding:12px 18px}
+.st-open svg{width:24px;height:24px;flex:none}
+.rose.big{width:min(96vw,62vh,520px);height:min(96vw,62vh,520px)}
+.compass.stars{margin-top:4px}
+.compass.stars .c-read{margin-top:4px}
+.compass.stars .c-deg{font-size:2.6rem}
+.st-say{margin:12px auto 0;max-width:460px;text-align:center;color:var(--muted)}
+.st-list{list-style:none;margin:8px 0 0;padding:0}
+.st-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.st-row:last-child{border-bottom:0}
+.st-sym{flex:none;width:28px;height:28px}
+.st-name{flex:1;font-weight:600}
+.st-pos{text-align:right;font-variant-numeric:tabular-nums}
+.st-pos small{display:block;color:var(--muted);font-size:.85rem}
 .c-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .c-btns .chip{padding:12px 20px}
 .c-msg{margin-top:14px;text-align:center;color:var(--muted);max-width:420px}
@@ -750,8 +766,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.15.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 66;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.16.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 67;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -855,11 +871,19 @@ const UI = {
     catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
     medNote:'Read the package leaflet. Ask a doctor or pharmacist if you are unsure, take other medicines, are pregnant or have an illness.', tripType:'Trip type', lightDay:'Light day hike',
 appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
+    cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
+    stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
+    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', stNone:'None of these are above the horizon right now.',
+    stLow:'low on the horizon', stHigh:'nearly overhead', stAlt:(h, f) => `${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`,
+    stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
+    starN:{sirius:'Sirius', canopus:'Canopus', acen:'Alpha Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polaris', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'The moon'},
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
-      ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. It shows magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
+      ['True north','<p>With your position saved, the compass shows <b>true north</b>, the north of maps and of the sky, so the sun, the moon and the stars line up with the dial. A phone measures magnetic north, so the app adds the declination where you are, calculated on the phone with the World Magnetic Model 2025. The line under the direction says which north you see and gives the declination. Without a position the compass shows magnetic north, like a baseplate compass.</p><p>In Norway the declination is about 3–5° east in the south and up to 15–18° east in Finnmark (2026). It changes slowly from year to year.</p>'],
+      ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p>'],
+      ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
@@ -1079,11 +1103,19 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
     medNote:'Les pakningsvedlegget. Spør lege eller apotek hvis du er usikker, bruker andre medisiner, er gravid eller har en sykdom.', tripType:'Turtype', lightDay:'Lett dagstur',
 appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
+    cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
+    stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
+    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', stNone:'Ingen av disse står over horisonten akkurat nå.',
+    stLow:'lavt i horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
+    stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
+    starN:{sirius:'Sirius', canopus:'Canopus', acen:'Alfa Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polarstjernen', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'Månen'},
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
-      ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Det viser magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
+      ['Sann nord','<p>Med posisjonen lagret viser kompasset <b>sann nord</b>, nord på kartet og på himmelen, så sola, månen og stjernene stemmer med skiva. Mobilen måler magnetisk nord, så appen legger til misvisningen der du er, regnet ut på mobilen med verdens magnetiske modell (World Magnetic Model 2025). Linja under retningen sier hvilket nord du ser, og viser misvisningen. Uten posisjon viser kompasset magnetisk nord, som et vanlig kompass.</p><p>I Norge er misvisningen omtrent 3–5° østlig i sør og opptil 15–18° østlig i Finnmark (2026). Den endrer seg sakte fra år til år.</p>'],
+      ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p>'],
+      ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
@@ -2110,7 +2142,7 @@ const GUIDE_TXT = {
       ['Kompasset','<figure class="sb-fig"><div data-svgsrc="guides/compass-parts.svg"></div><ul class="fig-legend"><li><b class="fig-num">1</b><span>Kurspil: viser retningen du skal gå.</span></li><li><b class="fig-num">2</b><span>Kanten: legges langs streken på kartet.</span></li><li><b class="fig-num">3</b><span>Kompasshuset med gradskive: kan dreies.</span></li><li><b class="fig-num">4</b><span>Nordlinjene og N-merket (kompasshuspila) i bunnen av kompasshuset.</span></li><li><b class="fig-num">5</b><span>Kompassnåla: den røde enden peker mot magnetisk nord.</span></li></ul></figure>', 'parts'],
       ['Ta ut kursen','<figure class="sb-fig"><div data-svgsrc="guides/compass-steps.svg"></div></figure><ol><li>Legg kanten av kompasset langs streken fra der du står til dit du skal. Kurspila, ikke kompassnåla, skal peke dit du skal.</li><li>Vri kompasshuset til linjene i bunnen er parallelle med kartets nord–sør-linjer, og N-merket peker opp på kartet.</li><li>Ta kompasset bort fra kartet og hold det flatt. Drei deg til den røde nåla ligger i kompasshuspila. Nå viser kurspila retningen du skal gå.</li></ol>', 'steps'],
       ['Gå på kursen','<ul><li>Sikt på et punkt kurspila peker mot, et tre i skogen eller en knaus på fjellet. Gå dit og sikt på nytt.</li><li>Del turen i etapper mellom sikre punkter på kartet, som vann, veikryss eller bekkekryss, og ta ut ny kurs der.</li><li>Metall og kraftledninger kan dra i nåla. Selv en klokke eller kniv tett inntil kompasset kan gi feil kurs.</li></ul>'],
-      ['Misvisning','<p>Kartets nord–sør-linjer peker ikke mot magnetisk nord. Forskjellen kalles misvisning, og den varierer med hvor du er i landet. Du finner den på turkartet du lager på norgeskart.no.</p><p>For en nøyaktig kurs: drei kompasshuset like mange grader som misvisningen etter steg 2, med klokka hvis den er østlig og mot klokka hvis den er vestlig.</p><p>Med 5 graders misvisning bommer du med om lag 90 meter på én kilometer.</p>', 'decl'],
+      ['Misvisning','<p>Kartets nord–sør-linjer peker ikke mot magnetisk nord. Forskjellen kalles misvisning, og den varierer med hvor du er i landet. Du finner den på turkartet du lager på norgeskart.no. Med posisjonen lagret viser også kompasset i appen misvisningen der du er.</p><p>For en nøyaktig kurs: drei kompasshuset like mange grader som misvisningen etter steg 2, med klokka hvis den er østlig og mot klokka hvis den er vestlig.</p><p>Med 5 graders misvisning bommer du med om lag 90 meter på én kilometer.</p>', 'decl'],
       ['Kart','<p>Turkartet «Norge 1:50 000» kan skrives ut gratis fra norgeskart.no. Ha alltid med kart og kompass, ikke bare mobilen.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
     emergency:{title:'Nødsituasjon', short:'Når du trenger hjelp', sub:'Når du trenger hjelp på tur.', secs:[
       ['Ring etter hjelp','[[calls]]<p>Du kan ringe 112 selv om ditt eget mobilselskap ikke har dekning der du er, så lenge et annet nett har det. De fleste nyere mobiler sender posisjonen din automatisk når du ringer et nødnummer.</p>', 'call'],
@@ -2228,7 +2260,7 @@ const GUIDE_TXT = {
       ['The compass','<figure class="sb-fig"><div data-svgsrc="guides/compass-parts.svg"></div><ul class="fig-legend"><li><b class="fig-num">1</b><span>Direction-of-travel arrow: shows the way to go.</span></li><li><b class="fig-num">2</b><span>The edge: laid along the line on the map.</span></li><li><b class="fig-num">3</b><span>The compass housing with its degree ring, which turns.</span></li><li><b class="fig-num">4</b><span>The north lines and the N mark (orienting arrow) in the bottom of the housing.</span></li><li><b class="fig-num">5</b><span>The needle: the red end points to magnetic north.</span></li></ul></figure>', 'parts'],
       ['Taking a bearing','<figure class="sb-fig"><div data-svgsrc="guides/compass-steps.svg"></div></figure><ol><li>Lay the edge of the compass along the line from where you are to where you are going. The direction-of-travel arrow, not the needle, must point where you are going.</li><li>Turn the housing until the lines in its bottom are parallel with the map\'s north–south lines, with the N mark pointing up the map.</li><li>Take the compass off the map and hold it flat. Turn yourself until the red needle lies in the orienting arrow. The direction-of-travel arrow now shows the way to go.</li></ol>', 'steps'],
       ['Following the bearing','<ul><li>Aim at a point the arrow points to, a tree in the forest or a crag in the mountains. Walk there and aim again.</li><li>Split the route into legs between points you are sure of on the map, such as lakes, road junctions or stream junctions, and take a new bearing there.</li><li>Metal and power lines can pull the needle. Even a watch or knife close to the compass can give a wrong bearing.</li></ul>'],
-      ['Declination','<p>The map\'s north–south lines do not point to magnetic north. The difference is called declination, and it varies with where you are in the country. You find it on the hiking map you make at norgeskart.no.</p><p>For an accurate bearing, turn the housing by as many degrees as the declination after step 2: clockwise if it is east, anticlockwise if it is west.</p><p>With 5 degrees of declination you miss by about 90 metres over one kilometre.</p>', 'decl'],
+      ['Declination','<p>The map\'s north–south lines do not point to magnetic north. The difference is called declination, and it varies with where you are in the country. You find it on the hiking map you make at norgeskart.no. With your position saved, the app\'s compass also shows the declination where you are.</p><p>For an accurate bearing, turn the housing by as many degrees as the declination after step 2: clockwise if it is east, anticlockwise if it is west.</p><p>With 5 degrees of declination you miss by about 90 metres over one kilometre.</p>', 'decl'],
       ['Maps','<p>The «Norge 1:50 000» hiking map can be printed free from norgeskart.no. Always bring a map and compass, not just your phone.</p>[[web:https://www.norgeskart.no|Norgeskart]]', 'maps']]},
     emergency:{title:'Emergency', short:'When you need help', sub:'When you need help on a trip.', secs:[
       ['Call for help','[[calls]]<p>You can call 112 even if your own mobile operator has no coverage where you are, as long as another network has. Most newer phones send your position automatically when you call an emergency number.</p>', 'call'],
@@ -2586,27 +2618,45 @@ function renderPhone(){
 /* ---------- compass ---------- */
 let skyTimer = null;
 let cOn = false, cHeld = false, cGot = false, cVec = null, cHeading = null, cUpright = false, cRaf = null, cTimer = null;
-function renderCompass(){
+/* 0.16.0: true north. The phone gives magnetic north (Android's deviceorientationabsolute and iPhone's
+   webkitCompassHeading both do), so with a saved position the declination from magDecl() is added. Cached per
+   position and day. Without a position the compass stays magnetic, and the line under the direction says so. */
+let cDeclC = null;
+function declNow(){
+  if (!state.pos) return null;
+  const k = state.pos.lat.toFixed(2) + ',' + state.pos.lon.toFixed(2) + ',' + today();
+  if (!cDeclC || cDeclC.k !== k) cDeclC = {k, d:magDecl(state.pos.lat, state.pos.lon, new Date())};
+  return cDeclC.d;
+}
+function declTxt(d){ const T = t(), a = Math.round(Math.abs(d)); return a === 0 ? '0°' : a + '° ' + (d > 0 ? T.cDirs[2] : T.cDirs[6]); }
+function northLine(){ if (!cOn) return ''; const d = declNow(); return d === null ? t().cMagN : t().cTrue(declTxt(d)); }
+// the letters and ticks of the dial, shared by Kompass and Stjerner og planeter
+function roseDial(){
   const T = t();
-  $('listName').textContent = T.tabCompass;
-  document.title = T.tabCompass + ' · ' + T.app;
   let ticks = '';
   for (let a = 0; a < 360; a += 10){
     const big = a % 30 === 0, r1 = big ? 128 : 134;
     ticks += `<line x1="160" y1="${160 - r1}" x2="160" y2="${160 - 142}" stroke="var(--muted)" stroke-width="${big ? 2.5 : 1.2}" transform="rotate(${a} 160 160)"/>`;
   }
   const dirs = T.cDirs;
-  const labels = [0,2,4,6].map(i => `<text x="160" y="52" text-anchor="middle" font-family="var(--head)" font-weight="600" font-size="${i === 0 ? 30 : 24}" fill="${i === 0 ? 'var(--red)' : 'var(--ink)'}" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('')
+  return ticks + [0,2,4,6].map(i => `<text x="160" y="52" text-anchor="middle" font-family="var(--head)" font-weight="600" font-size="${i === 0 ? 30 : 24}" fill="${i === 0 ? 'var(--red)' : 'var(--ink)'}" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('')
     + [1,3,5,7].map(i => `<text x="160" y="58" text-anchor="middle" font-size="14" font-weight="600" fill="var(--muted)" transform="rotate(${i * 45} 160 160)">${dirs[i]}</text>`).join('');
+}
+const ICO_STARS = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M10 2.5l1.7 5.3 5.3 1.7-5.3 1.7L10 16.5l-1.7-5.3L3 9.5l5.3-1.7z"/><circle cx="18.5" cy="16.5" r="1.7"/><circle cx="14.5" cy="21" r="1.1"/><circle cx="20.5" cy="4.5" r="1.1"/></svg>';
+function renderCompass(){
+  if (view === 'stars') return renderStars();
+  const T = t();
+  $('listName').textContent = T.tabCompass;
+  document.title = T.tabCompass + ' · ' + T.app;
   main.innerHTML = `<div class="compass pg-sec first">
       <svg class="rose" viewBox="0 0 320 320" aria-hidden="true">
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
-        <g class="dial" id="dial">${ticks}${labels}${sunMarks()}<g id="skyNow">${skyNowMarks()}</g></g>
+        <g class="dial" id="dial">${roseDial()}${sunMarks()}<g id="skyNow">${skyNowMarks()}</g></g>
         <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
         <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
         <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
       </svg>
-      <div class="c-read"><div class="c-deg" id="cDeg">${cOn ? '–' : ''}</div>${cOn ? '' : `<div class="c-idle">${T.cIdle}</div>`}<div class="c-dir" id="cDir">${cOn ? '&nbsp;' : ''}</div><div class="c-mode" id="cMode"></div></div>
+      <div class="c-read"><div class="c-deg" id="cDeg">${cOn ? '–' : ''}</div>${cOn ? '' : `<div class="c-idle">${T.cIdle}</div>`}<div class="c-dir" id="cDir">${cOn ? '&nbsp;' : ''}</div><div class="c-mode" id="cMode"></div><div class="c-north" id="cNorth">${northLine()}</div></div>
       <div class="c-btns">${cOn
         ? `<button class="chip" data-act="cHold" aria-pressed="${cHeld}">${cHeld ? T.cRelease : T.cHold}</button>`
         : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
@@ -2615,6 +2665,7 @@ function renderCompass(){
         <button class="chip ico" data-act="cRiseSet" aria-pressed="${skyOn('rs')}" aria-label="${T.cRiseSet}" title="${T.cRiseSet}">${ICO_RISESET}</button>
       </div>
       ${!state.pos && (skyOn('now') || skyOn('rs')) ? `<p class="c-sky-note">${T.cSkyNoPos}</p>` : ''}
+      <div class="c-btns"><button class="chip st-open" data-nav data-act="cStars">${ICO_STARS}<span>${T.cStars}</span></button></div>
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${sunHtml()}${linksHtml()}
@@ -2642,13 +2693,14 @@ function onOrient(ev){
   const h = headingFrom(alpha, ev.beta, ev.gamma);
   const len = Math.hypot(h.e, h.n) || 1, e = h.e / len, n = h.n / len;
   cVec = cVec ? {e: cVec.e * 0.75 + e * 0.25, n: cVec.n * 0.75 + n * 0.25} : {e, n};
-  cHeading = (Math.atan2(cVec.e, cVec.n) * 180 / Math.PI + 360) % 360;
+  cHeading = (Math.atan2(cVec.e, cVec.n) * 180 / Math.PI + (declNow() || 0) + 720) % 360;
   cUpright = h.upright;
   if (!cRaf) cRaf = requestAnimationFrame(() => { cRaf = null; paintCompass(); });
 }
 function uprightMarks(){
   if (cHeading === null) return;
   document.querySelectorAll('#dial .upr').forEach(g => g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${cHeading.toFixed(1)})`));
+  placeStarLabels();
 }
 function paintCompass(){
   const T = t(), dial = $('dial');
@@ -2658,6 +2710,7 @@ function paintCompass(){
   $('cDeg').textContent = Math.round(cHeading) % 360 + '°';
   $('cDir').textContent = T.cDirs[Math.round(cHeading / 45) % 8];
   $('cMode').textContent = cUpright ? T.cUp : T.cFlat;
+  if ($('cNorth')) $('cNorth').textContent = northLine();
 }
 async function startCompass(){
   const T = t();
@@ -2956,6 +3009,188 @@ function moonIcon(phase, size, south){
   for (let i = n; i >= 0; i--){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([c + (waxing ? s * w : -s * w), c + y]); }
   const poly = pts.map(q => q[0].toFixed(2) + ',' + q[1].toFixed(2)).join(' ');
   return `<svg class="moon-ic" viewBox="0 0 36 36" width="${size}" height="${size}" aria-hidden="true"${south ? ' style="transform:scaleX(-1)"' : ''}><circle cx="18" cy="18" r="16" fill="var(--line)"/><polygon points="${poly}" fill="var(--moon,#E8D9A0)"/><circle cx="18" cy="18" r="16" fill="none" stroke="var(--line-strong)" stroke-width="1"/></svg>`;
+}
+
+/* ---------- true north: declination from the World Magnetic Model 2025 (0.16.0) ----------
+   WMM2025 main field and secular variation to degree 12 (NOAA NCEI and BGS, public domain), valid 2025.0–2030.0.
+   Rows run n = 1..12, m = 0..n: g, h, dg/dt, dh/dt (nT, nT/year). Computed on the phone, nothing is sent. */
+const WMM_EPOCH = 2025.0;
+const WMM_COF = [-29351.8,0.0,12.0,0.0,-1410.8,4545.4,9.7,-21.5,-2556.6,0.0,-11.6,0.0,2951.1,-3133.6,-5.2,-27.7,1649.3,-815.1,-8.0,-12.1,1361.0,0.0,-1.3,0.0,-2404.1,-56.6,-4.2,4.0,1243.8,237.5,0.4,-0.3,453.6,-549.5,-15.6,-4.1,895.0,0.0,-1.6,0.0,799.5,278.6,-2.4,-1.1,55.7,-133.9,-6.0,4.1,-281.1,212.0,5.6,1.6,12.1,-375.6,-7.0,-4.4,-233.2,0.0,0.6,0.0,368.9,45.4,1.4,-0.5,187.2,220.2,0.0,2.2,-138.7,-122.9,0.6,0.4,-142.0,43.0,2.2,1.7,20.9,106.1,0.9,1.9,64.4,0.0,-0.2,0.0,63.8,-18.4,-0.4,0.3,76.9,16.8,0.9,-1.6,-115.7,48.8,1.2,-0.4,-40.9,-59.8,-0.9,0.9,14.9,10.9,0.3,0.7,-60.7,72.7,0.9,0.9,79.5,0.0,-0.0,0.0,-77.0,-48.9,-0.1,0.6,-8.8,-14.4,-0.1,0.5,59.3,-1.0,0.5,-0.8,15.8,23.4,-0.1,0.0,2.5,-7.4,-0.8,-1.0,-11.1,-25.1,-0.8,0.6,14.2,-2.3,0.8,-0.2,23.2,0.0,-0.1,0.0,10.8,7.1,0.2,-0.2,-17.5,-12.6,0.0,0.5,2.0,11.4,0.5,-0.4,-21.7,-9.7,-0.1,0.4,16.9,12.7,0.3,-0.5,15.0,0.7,0.2,-0.6,-16.8,-5.2,-0.0,0.3,0.9,3.9,0.2,0.2,4.6,0.0,-0.0,0.0,7.8,-24.8,-0.1,-0.3,3.0,12.2,0.1,0.3,-0.2,8.3,0.3,-0.3,-2.5,-3.3,-0.3,0.3,-13.1,-5.2,0.0,0.2,2.4,7.2,0.3,-0.1,8.6,-0.6,-0.1,-0.2,-8.7,0.8,0.1,0.4,-12.9,10.0,-0.1,0.1,-1.3,0.0,0.1,0.0,-6.4,3.3,0.0,0.0,0.2,0.0,0.1,-0.0,2.0,2.4,0.1,-0.2,-1.0,5.3,-0.0,0.1,-0.6,-9.1,-0.3,-0.1,-0.9,0.4,0.0,0.1,1.5,-4.2,-0.1,0.0,0.9,-3.8,-0.1,-0.1,-2.7,0.9,-0.0,0.2,-3.9,-9.1,-0.0,-0.0,2.9,0.0,0.0,0.0,-1.5,0.0,-0.0,-0.0,-2.5,2.9,0.0,0.1,2.4,-0.6,0.0,-0.0,-0.6,0.2,0.0,0.1,-0.1,0.5,-0.1,-0.0,-0.6,-0.3,0.0,-0.0,-0.1,-1.2,-0.0,0.1,1.1,-1.7,-0.1,-0.0,-1.0,-2.9,-0.1,0.0,-0.2,-1.8,-0.1,0.0,2.6,-2.3,-0.1,0.0,-2.0,0.0,0.0,0.0,-0.2,-1.3,0.0,-0.0,0.3,0.7,-0.0,0.0,1.2,1.0,-0.0,-0.1,-1.3,-1.4,-0.0,0.1,0.6,-0.0,-0.0,-0.0,0.6,0.6,0.1,-0.0,0.5,-0.1,-0.0,-0.0,-0.1,0.8,0.0,0.0,-0.4,0.1,0.0,-0.0,-0.2,-1.0,-0.1,-0.0,-1.3,0.1,-0.0,0.0,-0.7,0.2,-0.1,-0.1];
+function magDecl(lat, lon, date){
+  const yr = date.getUTCFullYear() + (date - Date.UTC(date.getUTCFullYear(), 0, 1)) / (365.25 * 86400000), dt = yr - WMM_EPOCH;
+  const A = 6378.137, F = 1 / 298.257223563, E2 = F * (2 - F), RE = 6371.2;
+  const phi = lat * RAD, lam = lon * RAD, sp = Math.sin(phi), Rc = A / Math.sqrt(1 - E2 * sp * sp);
+  const px = Rc * Math.cos(phi), pz = Rc * (1 - E2) * sp, r = Math.hypot(px, pz), phc = Math.asin(pz / r);
+  // Schmidt semi-normalised Legendre functions of sin(phc), and the potential sums for one latitude
+  const sums = pc => {
+    const s = Math.sin(pc), c = Math.cos(pc), P = [[1]];
+    for (let n = 1; n <= 12; n++){
+      P[n] = [];
+      for (let m = 0; m <= n; m++){
+        if (m === n) P[n][m] = (n === 1 ? 1 : Math.sqrt(1 - 1 / (2 * n))) * c * P[n - 1][n - 1];
+        else P[n][m] = ((2 * n - 1) * s * P[n - 1][m] - (n > 1 && m <= n - 2 ? Math.sqrt((n - 1) * (n - 1) - m * m) * P[n - 2][m] : 0)) / Math.sqrt(n * n - m * m);
+      }
+    }
+    let V = 0, Y = 0, Z = 0, k = 0;
+    for (let n = 1; n <= 12; n++){
+      const ar = Math.pow(RE / r, n + 2);
+      for (let m = 0; m <= n; m++, k += 4){
+        const g = WMM_COF[k] + dt * WMM_COF[k + 2], h = WMM_COF[k + 1] + dt * WMM_COF[k + 3], cm = Math.cos(m * lam), sm = Math.sin(m * lam);
+        V += ar * (g * cm + h * sm) * P[n][m];
+        Y += ar * m * (g * sm - h * cm) * P[n][m];
+        Z -= ar * (n + 1) * (g * cm + h * sm) * P[n][m];
+      }
+    }
+    return {V, Y: Y / c, Z};
+  };
+  const d = 1e-6, a = sums(phc), Xs = -(sums(phc + d).V - sums(phc - d).V) / (2 * d);
+  const psi = phc - phi, X = Xs * Math.cos(psi) - a.Z * Math.sin(psi);
+  return Math.atan2(a.Y, X) / RAD;
+}
+
+/* ---------- stars and planets (0.16.0), calculated on the phone ----------
+   Stars: J2000 positions (right ascension in hours, declination in degrees, magnitude); precession since 2000
+   moves them well under a degree, far less than the compass error. Planets: JPL's approximate Keplerian elements
+   (Standish, valid 1800–2050), good to a small fraction of a degree. Names are the same in both languages
+   except where the app's guides use another (Polarstjernen, Alfa Centauri). */
+const STARS = [
+  ['sirius', 6.7525, -16.716, -1.46], ['canopus', 6.3992, -52.696, -0.74], ['acen', 14.6600, -60.834, -0.27],
+  ['arcturus', 14.2610, 19.182, -0.05], ['vega', 18.6156, 38.784, 0.03], ['capella', 5.2782, 45.998, 0.08],
+  ['rigel', 5.2423, -8.202, 0.13], ['procyon', 7.6550, 5.225, 0.34], ['achernar', 1.6286, -57.237, 0.46],
+  ['betelgeuse', 5.9195, 7.407, 0.50], ['altair', 19.8464, 8.868, 0.77], ['acrux', 12.4433, -63.099, 0.77],
+  ['aldebaran', 4.5987, 16.509, 0.86], ['antares', 16.4901, -26.432, 0.96], ['spica', 13.4199, -11.161, 0.97],
+  ['pollux', 7.7553, 28.026, 1.14], ['fomalhaut', 22.9608, -29.622, 1.16], ['deneb', 20.6905, 45.280, 1.25],
+  ['regulus', 10.1395, 11.967, 1.35], ['castor', 7.5767, 31.888, 1.58], ['polaris', 2.5303, 89.264, 1.98]];
+// a, e, I, L, long. perihelion, long. node at J2000, then the rates per century (au, degrees)
+const PLANETS = {
+  venus:  [0.72333566, 0.00677672, 3.39467605, 181.97909950, 131.60246718, 76.67984255, 0.00000390, -0.00004107, -0.00078890, 58517.81538729, 0.00268329, -0.27769418],
+  earth:  [1.00000261, 0.01671123, -0.00001531, 100.46457166, 102.93768193, 0, 0.00000562, -0.00004392, -0.01294668, 35999.37244981, 0.32327364, 0],
+  mars:   [1.52371034, 0.09339410, 1.84969142, -4.55343205, -23.94362959, 49.55953891, 0.00001847, 0.00007882, -0.00813131, 19140.30268499, 0.44441088, -0.29257343],
+  jupiter:[5.20288700, 0.04838624, 1.30439695, 34.39644051, 14.72847983, 100.47390909, -0.00011607, -0.00013253, -0.00183714, 3034.74612775, 0.21252668, 0.20469106],
+  saturn: [9.53667594, 0.05386179, 2.48599187, 49.95424423, 92.59887831, 113.66242448, -0.00125060, -0.00050991, 0.00193609, 1222.49362201, -0.41897216, -0.28867794]};
+function helio(k, T){
+  const p = PLANETS[k], el = i => p[i] + p[i + 6] * T;
+  const a = el(0), e = el(1), I = el(2) * RAD, L = el(3), w = el(4), O = el(5);
+  const om = (w - O) * RAD, M = (((L - w) % 360) + 540) % 360 - 180;
+  let E = M * RAD + e * Math.sin(M * RAD);
+  for (let i = 0; i < 6; i++) E -= (E - e * Math.sin(E) - M * RAD) / (1 - e * Math.cos(E));
+  const x1 = a * (Math.cos(E) - e), y1 = a * Math.sqrt(1 - e * e) * Math.sin(E), Or = O * RAD;
+  const co = Math.cos(om), so = Math.sin(om), cO = Math.cos(Or), sO = Math.sin(Or), cI = Math.cos(I), sI = Math.sin(I);
+  return [(co * cO - so * sO * cI) * x1 + (-so * cO - co * sO * cI) * y1,
+          (co * sO + so * cO * cI) * x1 + (-so * sO + co * cO * cI) * y1,
+          (so * sI) * x1 + (co * sI) * y1];
+}
+function planetRaDec(k, date){
+  const T = (date.getTime() / 86400000 + 2440587.5 - 2451545.0) / 36525;
+  const p = helio(k, T), e = helio('earth', T), x = p[0] - e[0], y = p[1] - e[1], z = p[2] - e[2];
+  const eps = 23.43928 * RAD, ye = y * Math.cos(eps) - z * Math.sin(eps), ze = y * Math.sin(eps) + z * Math.cos(eps);
+  return {ra: Math.atan2(ye, x), dec: Math.atan2(ze, Math.hypot(x, ye))};
+}
+// right ascension and declination in radians -> azimuth (from true north, clockwise) and altitude in degrees
+function azAlt(ra, dec, date, lat, lon){
+  const n = date.getTime() / 86400000 + 2440587.5 - 2451545.0, gmst = (280.46061837 + 360.98564736629 * n) % 360;
+  const H = (gmst + lon) * RAD - ra, la = lat * RAD;
+  const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(H));
+  const az = Math.atan2(-Math.sin(H), Math.tan(dec) * Math.cos(la) - Math.sin(la) * Math.cos(H));
+  return {az: (az / RAD + 360) % 360, alt: alt / RAD};
+}
+function skyObjects(date, lat, lon){
+  const out = STARS.map(s => Object.assign({k:s[0], kind:'star', mag:s[3]}, azAlt(s[1] * 15 * RAD, s[2] * RAD, date, lat, lon)));
+  ['venus', 'jupiter', 'mars', 'saturn'].forEach(k => { const q = planetRaDec(k, date); out.push(Object.assign({k, kind:'planet'}, azAlt(q.ra, q.dec, date, lat, lon))); });
+  return out;
+}
+
+/* ---------- Stjerner og planeter (0.16.0): the compass grows to fill the page, with the sky on an outer ring ----------
+   Dots sit at r 162 just outside the dial; names stand upright on one of two rings (176 or 196) so close neighbours
+   do not overlap, and a name with no free place is left out (the list below has them all). Above the horizon only. */
+const ST_PLANETS = ['venus', 'jupiter', 'mars', 'saturn'];
+function skyVisible(now){
+  const p = state.pos, objs = skyObjects(now, p.lat, p.lon), m = moonAzAlt(now, p.lat, p.lon);
+  objs.push({k:'moon', kind:'moon', az:m.az, alt:m.alt});
+  const rank = o => o.kind === 'moon' ? -10 : o.kind === 'planet' ? -9 + ST_PLANETS.indexOf(o.k) : o.k === 'polaris' ? -4 : o.mag;
+  return objs.filter(o => o.alt > (o.kind === 'moon' ? MOON_H0 : 0)).sort((a, b) => rank(a) - rank(b));
+}
+function stSym(o, x, y){
+  if (o.kind === 'moon') return moonGlyph(moonIllum(new Date()).phase, x, y, 7, state.pos.lat < 0);
+  if (o.kind === 'planet') return `<circle cx="${x}" cy="${y}" r="5.5" fill="var(--sun)" stroke="var(--ink)" stroke-width="1"/>`;
+  return `<circle cx="${x}" cy="${y}" r="${Math.max(1.8, Math.min(5.2, 4.6 - 1.1 * o.mag)).toFixed(1)}" fill="var(--ink)"/>`;
+}
+function starMarks(objs){
+  const T = t(), used = [[], []], gap = 15;
+  const near = (list, az) => list.some(a => Math.abs(((az - a + 540) % 360) - 180) < gap);
+  let dots = '', names = '';
+  objs.forEach(o => {
+    dots += o.kind === 'star' ? stSym(o, ...rosePt(o.az, 162).map(v => +v.toFixed(1))) : upr(o.az, 162, stSym(o, 0, 0));
+    const tier = !near(used[0], o.az) ? 0 : !near(used[1], o.az) ? 1 : -1;
+    if (tier < 0) return;
+    used[tier].push(o.az);
+    names += `<g class="stl" data-az="${o.az.toFixed(1)}" data-t="${tier}"><text dominant-baseline="central" font-size="12" font-weight="600" fill="${o.kind === 'star' ? 'var(--ink)' : 'var(--muted)'}">${esc(T.starN[o.k] || o.k)}</text></g>`;
+  });
+  return dots + names;
+}
+/* Names stay inside the ring whichever way the dial has turned: at the top and bottom they are centred on the ring
+   (two rings for close neighbours); at the sides they run inwards from the outer edge, above or below their dot. */
+function placeStarLabels(){
+  const h = cHeading || 0;
+  document.querySelectorAll('#skyStars .stl').forEach(g => {
+    const az = +g.dataset.az, tier = +g.dataset.t, side = Math.sin((az - h) * RAD), tx = g.firstChild;
+    let q, anc = 'middle', dy = 0;
+    if (Math.abs(side) > 0.6){ q = rosePt(az, 207); anc = side > 0 ? 'end' : 'start'; dy = tier ? 12 : -11; }
+    else q = rosePt(az, tier ? 197 : 178);
+    g.setAttribute('transform', `translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${h.toFixed(1)})`);
+    tx.setAttribute('text-anchor', anc); tx.setAttribute('y', dy);
+  });
+}
+function starList(objs){
+  const T = t();
+  if (!objs.length) return `<p class="tool-sub">${T.stNone}</p>`;
+  return '<ul class="st-list">' + objs.map(o => {
+    const h = Math.round(o.alt), f = Math.round(o.alt / 10);
+    const ht = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, f));
+    return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg><span class="st-name">${esc(T.starN[o.k] || o.k)}</span>
+      <span class="st-pos">${T.cDirs[Math.round(o.az / 45) % 8]} · ${Math.round(o.az) % 360}°<small>${ht}</small></span></li>`;
+  }).join('') + '</ul>';
+}
+function starSay(now){
+  const T = t(), el = sunPos(now, state.pos.lat, state.pos.lon).el;
+  return el > -0.833 ? T.stDay : el > -12 ? T.stTwi : '';
+}
+function renderStars(){
+  const T = t();
+  $('listName').textContent = T.stTitle;
+  document.title = T.stTitle + ' · ' + T.app;
+  const now = new Date(), objs = state.pos ? skyVisible(now) : [], say = state.pos ? starSay(now) : '';
+  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabCompass}</button>
+    <div class="compass stars">
+      <svg class="rose big" viewBox="-52 -52 424 424" aria-hidden="true">
+        <circle cx="160" cy="160" r="181" fill="none" stroke="var(--line)" stroke-width="62" opacity=".35"/>
+        <circle cx="160" cy="160" r="211" fill="none" stroke="var(--line-strong)" stroke-width="1"/>
+        <line x1="160" y1="-50" x2="160" y2="8" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
+        <g class="dial" id="dial">${roseDial()}<g id="skyStars">${state.pos ? starMarks(objs) : ''}</g></g>
+        <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
+        <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
+        <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
+      </svg>
+      <div class="c-read"><div class="c-deg" id="cDeg">${cOn ? '–' : ''}</div>${cOn ? '' : `<div class="c-idle">${T.cIdle}</div>`}<div class="c-dir" id="cDir">${cOn ? '&nbsp;' : ''}</div><div class="c-mode" id="cMode"></div><div class="c-north" id="cNorth">${northLine()}</div></div>
+      <div class="c-btns">${cOn
+        ? `<button class="chip" data-act="cHold" aria-pressed="${cHeld}">${cHeld ? T.cRelease : T.cHold}</button>`
+        : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
+      <p class="c-msg" id="cMsg"></p>
+    </div>
+    ${state.pos ? `<p class="st-say" id="stSay">${say}</p>` : `<p class="st-say">${T.stNoPos}</p>`}
+    <section class="pg-sec manual"><h2 class="sec-lbl">${T.stUp}</h2><div id="stList">${state.pos ? starList(objs) : ''}</div>${T.stNote}
+      <div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="nightsky">${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).nightsky.title} ›</button></div></section>`;
+  placeStarLabels(); paintCompass();
+  clearInterval(skyTimer);
+  skyTimer = setInterval(() => {
+    const g = $('skyStars');
+    if (!g || !state.pos){ clearInterval(skyTimer); skyTimer = null; return; }
+    const n = new Date(), o = skyVisible(n);
+    g.innerHTML = starMarks(o); placeStarLabels(); uprightMarks();
+    if ($('stList')) $('stList').innerHTML = starList(o);
+    if ($('stSay')) $('stSay').textContent = starSay(n);
+  }, 60000);
 }
 
 /* ---------- sky section: at a glance, details, settings ---------- */
@@ -3883,6 +4118,7 @@ main.addEventListener('click', async e => {
   }
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
+  if (act === 'cStars'){ go('compass', 'stars'); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
   if (act === 'fieldToggle'){
