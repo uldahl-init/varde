@@ -1273,6 +1273,57 @@ test.describe('kompass', () => {
   });
 });
 
+/* ---------- From build 69 (0.17.0): the Milky Way band, its centre and the moon in the middle ----------
+   Stavanger 17 Nov 22:00: the Milky Way runs from W to E nearly overhead, two horizon marks, its centre only just clears
+   the horizon here (2°), the moon sits in the middle of the dial. Sydney 15 Jul 22:00: the centre is up and nearly
+   overhead, with its mark on the ring. Tenerife 1 Mar 03:20: the Milky Way lies low along the horizon, so no band.
+   Nødmodus points to the real whistle in both languages. */
+test.describe('melkeveien', () => {
+  const ctxFor = (browser, locale) => browser.newContext({locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+  const open = async (p, lang, pos, when) => {
+    await p.clock.setFixedTime(new Date(when));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:Object.assign({t:Date.now()}, pos)}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStars"]').click();
+  };
+  const TX = {no:{mw:'Melkeveien', gc:'Melkeveiens sentrum (Skytten)', wE:'fra V til Ø', high:'høyest nesten rett over deg', barely:'kommer bare så vidt over horisonten her (høyest 2°)',
+      over:'nesten rett over deg', low:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mark:'Sentrum', whistle:'Bruk fløyta i sekken; den høres mye lenger enn mobilen.'},
+    en:{mw:'Milky Way', gc:'Centre of the Milky Way (Sagittarius)', wE:'from W to E', high:'highest nearly overhead', barely:'only just clears the horizon here (highest 2°)',
+      over:'nearly overhead', low:'The Milky Way lies low along the horizon now, and is hard to see.', mark:'Centre', whistle:'Use the whistle in your pack; it carries much further than the phone.'}};
+  for (const L of LANGS) test(`Milky Way band, centre and moon (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    let ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
+    await open(p, L.lang, {lat:58.97, lon:5.73}, '2026-11-17T21:00:00Z');
+    const rows = p.locator('#stList .st-row');
+    await expect(rows.nth(0).locator('.st-name')).toHaveText(X.mw);
+    await expect(rows.nth(0).locator('.st-pos')).toContainText(X.wE);
+    await expect(rows.nth(0).locator('.st-pos')).toContainText(X.high);
+    await expect(rows.nth(1).locator('.st-name')).toHaveText(X.gc);
+    await expect(rows.nth(1).locator('.st-pos')).toContainText(X.barely);
+    expect(await p.locator('#skyBand path').count()).toBeGreaterThan(20);
+    await expect(p.locator('#skyBand line')).toHaveCount(2);
+    await expect(p.locator('#stMoon polygon')).toHaveCount(1);
+    await expect(p.locator('#skyStars text', {hasText: new RegExp('^' + X.mark + '$')})).toHaveCount(0);
+    expect(await p.content()).toContain(X.whistle);
+    expect(err).toEqual([]);
+    await ctx.close();
+    ctx = await ctxFor(browser, L.locale); p = await ctx.newPage(); err = watchErrors(p);
+    await open(p, L.lang, {lat:-33.87, lon:151.21}, '2026-07-15T12:00:00Z');
+    await expect(p.locator('#stList .st-row').nth(1).locator('.st-pos')).toContainText(X.over);
+    await expect(p.locator('#skyStars text', {hasText: new RegExp('^' + X.mark + '$')})).toHaveCount(1);
+    expect(err).toEqual([]);
+    await ctx.close();
+    ctx = await ctxFor(browser, L.locale); p = await ctx.newPage(); err = watchErrors(p);
+    await open(p, L.lang, {lat:28.3, lon:-16.5}, '2026-03-01T03:20:00Z');
+    await expect(p.locator('#stList .st-row').nth(0).locator('.st-pos')).toContainText(X.low);
+    await expect(p.locator('#skyBand path')).toHaveCount(0);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
    A blocked tap flashes the lock bar with a hint and changes nothing; auto-relock (off by default) locks again after
    30 s without a touch, and a touch starts the wait again; the list button is named by what it shows; Nødmodus is a

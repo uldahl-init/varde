@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-605Y+zjFatygUMUIHpjXYGEWhCrme5GrGd2QmjvgDd4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vbMY+5i/wccvR7Alr0CBwcw6ef/Phe0407gUdShUZjA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -783,8 +783,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.16.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 68;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.17.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 69;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -892,14 +892,15 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
     stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', stNone:'None of these are above the horizon right now.',
     stLow:'low on the horizon', stHigh:'nearly overhead', stAlt:(h, f) => `${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`,
+    mwName:'Milky Way', mwFrom:(a, b) => `from ${a} to ${b}`, gcName:'Centre of the Milky Way (Sagittarius)', gcBelow:'below the horizon now', gcHighest:(h, d) => `highest ${h}° up in the ${d}`, gcBarely:h => `only just clears the horizon here (highest ${h}°)`, gcNever:'never rises above the horizon here', mwTop:(d, h, f) => `highest in the ${d} · ${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`, mwTopHigh:'highest nearly overhead', mwLow:'The Milky Way lies low along the horizon now, and is hard to see.', mwMoon:'The moon is bright now, so the Milky Way is hard to see.',
     stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
-    starN:{sirius:'Sirius', canopus:'Canopus', acen:'Alpha Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polaris', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'The moon'},
+    starN:{gc:'Centre', sirius:'Sirius', canopus:'Canopus', acen:'Alpha Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polaris', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'The moon'},
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['True north','<p>With your position saved, the compass shows <b>true north</b>, the north of maps and of the sky, so the sun, the moon and the stars line up with the dial. A phone measures magnetic north, so the app adds the declination where you are, calculated on the phone with the World Magnetic Model 2025. The line under the direction says which north you see and gives the declination. Without a position the compass shows magnetic north, like a baseplate compass.</p><p>In Norway the declination is about 3–5° east in the south and up to 15–18° east in Finnmark (2026). It changes slowly from year to year.</p>'],
-      ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p>'],
+      ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The faint band in the ring is the Milky Way: it runs from the horizon on one side to the other, strongest where it stands highest and towards its bright centre in Sagittarius. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
@@ -914,7 +915,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       posRough:m => `Uncertain position (±${m} m). Tap Update position, preferably in the open.`,
       ago:{min:n => `${n} min`, h:n => `${n} h`, d:n => n === 1 ? '1 day' : `${n} days`},
       light:'Light', white:'Screen light', sosL:'SOS flashes', lightNote:'6 a minute is the alpine distress signal: a flash every ten seconds, then a minute’s pause. SOS is the signal from the sea. Set the brightness on the phone, and slide the handle at the bottom to turn the light off.',
-      sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no».',
+      sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no». Use the whistle in your pack; it carries much further than the phone.',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
       bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
     field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', lockBlocked:'Locked. Hold Navigate to change page, or Unlock to switch the lock off.', relockOn:'Lock again by itself', relockHint:'After Unlock, Rain lock comes back on after 30 seconds without a touch. Only in Outdoor mode.', relockToast:'Rain lock comes back after 30 seconds without a touch', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
@@ -1124,14 +1125,15 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
     stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', stNone:'Ingen av disse står over horisonten akkurat nå.',
     stLow:'lavt i horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
+    mwName:'Melkeveien', mwFrom:(a, b) => `fra ${a} til ${b}`, gcName:'Melkeveiens sentrum (Skytten)', gcBelow:'under horisonten nå', gcHighest:(h, d) => `høyest ${h}° opp i ${d}`, gcBarely:h => `kommer bare så vidt over horisonten her (høyest ${h}°)`, gcNever:'kommer aldri over horisonten her', mwTop:(d, h, f) => `høyest i ${d} · ${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`, mwTopHigh:'høyest nesten rett over deg', mwLow:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mwMoon:'Månen er lys nå, så Melkeveien er vanskelig å se.',
     stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
-    starN:{sirius:'Sirius', canopus:'Canopus', acen:'Alfa Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polarstjernen', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'Månen'},
+    starN:{gc:'Sentrum', sirius:'Sirius', canopus:'Canopus', acen:'Alfa Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polarstjernen', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'Månen'},
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Sann nord','<p>Med posisjonen lagret viser kompasset <b>sann nord</b>, nord på kartet og på himmelen, så sola, månen og stjernene stemmer med skiva. Mobilen måler magnetisk nord, så appen legger til misvisningen der du er, regnet ut på mobilen med verdens magnetiske modell (World Magnetic Model 2025). Linja under retningen sier hvilket nord du ser, og viser misvisningen. Uten posisjon viser kompasset magnetisk nord, som et vanlig kompass.</p><p>I Norge er misvisningen omtrent 3–5° østlig i sør og opptil 15–18° østlig i Finnmark (2026). Den endrer seg sakte fra år til år.</p>'],
-      ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p>'],
+      ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Det svake båndet i ringen er Melkeveien: det går fra horisonten på den ene siden til den andre, sterkest der det står høyest og mot det klare sentrum i Skytten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
@@ -1146,7 +1148,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       posRough:m => `Usikker posisjon (±${m} m). Trykk Oppdater posisjon, gjerne i åpent lende.`,
       ago:{min:n => `${n} min`, h:n => `${n} t`, d:n => n === 1 ? '1 døgn' : `${n} døgn`},
       light:'Lys', white:'Skjermlys', sosL:'SOS-blink', lightNote:'6 i minuttet er det alpine nødsignalet: et blink hvert tiende sekund, så ett minutt pause. SOS er signalet fra sjøen. Lysstyrken stiller du på mobilen, og du drar håndtaket nederst for å slå av lyset.',
-      sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei».',
+      sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei». Bruk fløyta i sekken; den høres mye lenger enn mobilen.',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
       bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
     field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', lockBlocked:'Låst. Hold Naviger for å bytte side, eller Lås opp for å slå låsen av.', relockOn:'Lås igjen av seg selv', relockHint:'Etter Lås opp slås Regnlås på igjen etter 30 sekunder uten berøring. Bare i Utemodus.', relockToast:'Regnlås kommer tilbake etter 30 sekunder uten berøring', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
@@ -2962,8 +2964,8 @@ function moonAzAlt(date, lat, lon){
   const az = Math.atan2(-Math.sin(H), Math.tan(c.dec) * Math.cos(phi) - Math.sin(phi) * Math.cos(H)) / RAD;
   return {az: (az + 360) % 360, alt};
 }
-function moonGlyph(phase, cx, cy, r, south){
-  const s = Math.cos(2 * Math.PI * phase), waxing = (phase < 0.5) !== !!south, n = 16, pts = [];
+function moonGlyph(phase, cx, cy, r, south, n = 16){
+  const s = Math.cos(2 * Math.PI * phase), waxing = (phase < 0.5) !== !!south, pts = [];
   for (let i = 0; i <= n; i++){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([cx + (waxing ? w : -w), cy + y]); }
   for (let i = n; i >= 0; i--){ const y = -r + 2 * r * i / n, w = Math.sqrt(Math.max(0, r * r - y * y)); pts.push([cx + (waxing ? s * w : -s * w), cy + y]); }
   return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--line)"/><polygon points="${pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ')}" fill="var(--moon,#E8D9A0)"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--muted)" stroke-width="1.4"/>`;
@@ -3132,6 +3134,7 @@ function skyVisible(now){
   return objs.filter(o => o.alt > (o.kind === 'moon' ? MOON_H0 : 0)).sort((a, b) => rank(a) - rank(b));
 }
 function stSym(o, x, y){
+  if (o.kind === 'gc') return `<circle cx="${x}" cy="${y}" r="8.5" fill="var(--ink)" opacity=".16"/><circle cx="${x}" cy="${y}" r="5" fill="var(--ink)" opacity=".3"/><circle cx="${x}" cy="${y}" r="2.2" fill="var(--ink)"/>`;
   if (o.kind === 'moon') return moonGlyph(moonIllum(new Date()).phase, x, y, 7, state.pos.lat < 0);
   if (o.kind === 'planet') return `<circle cx="${x}" cy="${y}" r="5.5" fill="var(--sun)" stroke="var(--ink)" stroke-width="1"/>`;
   return `<circle cx="${x}" cy="${y}" r="${Math.max(1.8, Math.min(5.2, 4.6 - 1.1 * o.mag)).toFixed(1)}" fill="var(--ink)"/>`;
@@ -3162,10 +3165,10 @@ function placeStarLabels(){
     tx.setAttribute('text-anchor', anc); tx.setAttribute('y', dy);
   });
 }
-function starList(objs){
+function starList(objs, mw, now){
   const T = t();
-  if (!objs.length) return `<p class="tool-sub">${T.stNone}</p>`;
-  return '<ul class="st-list">' + objs.map(o => {
+  if (!objs.length && !mw) return `<p class="tool-sub">${T.stNone}</p>`;
+  return '<ul class="st-list">' + (mw ? mwRow(mw, now) + gcRow(galCentre(now)) : '') + objs.map(o => {
     const h = Math.round(o.alt), f = Math.round(o.alt / 10);
     const ht = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, f));
     return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg><span class="st-name">${esc(T.starN[o.k] || o.k)}</span>
@@ -3175,6 +3178,86 @@ function starList(objs){
 function starSay(now){
   const T = t(), el = sunPos(now, state.pos.lat, state.pos.lon).el;
   return el > -0.833 ? T.stDay : el > -12 ? T.stTwi : '';
+}
+/* ---------- 0.17.0: the Milky Way band on the ring of Stjerner og planeter ----------
+   The middle of the Milky Way is the galactic plane (b = 0): points every 2° along it go through azAlt like the stars.
+   Galactic pole and zero point J2000 (IAU 1958 system, values as in Astropy). Precession left out, as for the stars.
+   Drawn in the grey ring on the half where it is above the horizon, strongest where it stands highest and towards
+   Sagittarius (l = 0); a short mark at each horizon point. Not drawn when its highest point is under 10°. */
+const GAL_RA = 192.8595 * RAD, GAL_DEC = 27.1283 * RAD, GAL_L0 = 122.9319, MW_LOW = 10;
+// the centre of the Milky Way, Sagittarius A* (J2000): a mark on the ring when up, and its own row in the list
+const GC_RA = 266.417 * RAD, GC_DEC = -29.008;
+function galCentre(now){
+  const p = state.pos, o = azAlt(GC_RA, GC_DEC * RAD, now, p.lat, p.lon);
+  return Object.assign({k:'gc', kind:'gc', max: 90 - Math.abs(p.lat - GC_DEC), south: p.lat > GC_DEC}, o);
+}
+function gcRow(g){
+  const T = t(), d = az => T.cDirs[Math.round(az / 45) % 8];
+  let pos, small;
+  if (g.max < 0){ pos = ''; small = T.gcNever; }
+  else if (g.max < 5){ pos = ''; small = T.gcBarely(Math.round(g.max * 10) / 10); }
+  else if (g.alt > 0){ const h = Math.round(g.alt); pos = `${d(g.az)} · ${Math.round(g.az) % 360}°`; small = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, Math.round(g.alt / 10))); }
+  else { pos = T.gcBelow; small = T.gcHighest(Math.round(g.max), g.south ? T.cDirs[4] : T.cDirs[0]); }
+  return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(g, 0, 0)}</svg><span class="st-name">${T.gcName}</span><span class="st-pos">${pos}<small>${small}</small></span></li>`;
+}
+function galRaDec(l){
+  const d = (GAL_L0 - l) * RAD;
+  return {ra: GAL_RA + Math.atan2(Math.sin(d), -Math.sin(GAL_DEC) * Math.cos(d)), dec: Math.asin(Math.cos(GAL_DEC) * Math.cos(d))};
+}
+function milkyWay(now){
+  const p = state.pos, pts = [];
+  for (let l = 0; l < 360; l += 2){ const q = galRaDec(l); pts.push(Object.assign({l}, azAlt(q.ra, q.dec, now, p.lat, p.lon))); }
+  let top = pts[0];
+  pts.forEach(o => { if (o.alt > top.alt) top = o; });
+  const cross = [];
+  pts.forEach((o, i) => {
+    const n = pts[(i + 1) % pts.length];
+    if ((o.alt > 0) === (n.alt > 0)) return;
+    const f = o.alt / (o.alt - n.alt), x = (1 - f) * Math.sin(o.az * RAD) + f * Math.sin(n.az * RAD), y = (1 - f) * Math.cos(o.az * RAD) + f * Math.cos(n.az * RAD);
+    cross.push((Math.atan2(x, y) / RAD + 360) % 360);
+  });
+  const north = az => Math.min(az, 360 - az);
+  cross.sort((a, b) => north(a) - north(b)); // the more northerly horizon point first: «fra N til S», «fra Ø til V»
+  return {pts, top, cross, low: top.alt < MW_LOW};
+}
+function mwArc(a1, a2, r){
+  let d = ((a2 - a1 + 540) % 360) - 180;
+  const p = rosePt(a1, r), q = rosePt(a1 + d, r);
+  return `M${p[0].toFixed(1)} ${p[1].toFixed(1)} A${r} ${r} 0 0 ${d >= 0 ? 1 : 0} ${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+}
+function mwBand(mw){
+  if (!mw || mw.low) return '';
+  let seg = '';
+  const P = mw.pts, n = P.length;
+  for (let i = 0; i < n; i++){
+    const a = P[i], b = P[(i + 1) % n];
+    if (a.alt <= 0 && b.alt <= 0) continue;
+    const alt = Math.max(0, (a.alt + b.alt) / 2), lw = 0.45 + 0.55 * (1 + Math.cos(a.l * RAD)) / 2;
+    const op = (0.07 + 0.30 * Math.pow(alt / mw.top.alt, 0.8)) * lw;
+    seg += `<path d="${mwArc(a.az, b.az, 181)}" fill="none" stroke="var(--ink)" stroke-width="54" stroke-opacity="${op.toFixed(3)}"/>`;
+  }
+  const marks = mw.cross.map(az => { const p = rosePt(az, 203), q = rosePt(az, 219); return `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`; }).join('');
+  return `<g filter="url(#mwBlur)">${seg}</g>${marks}`;
+}
+function mwRow(mw, now){
+  const T = t(), d = az => T.cDirs[Math.round(az / 45) % 8];
+  const sym = '<svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true"><path d="M-12 8 C-4 2 4 -2 12 -8" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" opacity=".28" fill="none"/></svg>';
+  if (mw.low) return `<li class="st-row">${sym}<span class="st-name">${T.mwName}</span><span class="st-pos"><small>${T.mwLow}</small></span></li>`;
+  const h = Math.round(mw.top.alt), f = Math.max(1, Math.round(mw.top.alt / 10));
+  const moon = moonAlt(now, state.pos.lat, state.pos.lon) > MOON_H0 && moonIllum(now).fraction > 0.5;
+  return `<li class="st-row">${sym}<span class="st-name">${T.mwName}</span><span class="st-pos">${T.mwFrom(d(mw.cross[0]), d(mw.cross[1]))}<small>${h > 80 ? T.mwTopHigh : T.mwTop(d(mw.top.az), h, f)}</small>${moon ? `<small>${T.mwMoon}</small>` : ''}</span></li>`;
+}
+// the ring's marks: stars, planets and the moon, with the centre of the Milky Way after the planets when it is up
+function ringObjs(objs, now){
+  const g = galCentre(now);
+  if (g.alt <= 0) return objs;
+  const i = objs.findIndex(o => o.kind === 'star');
+  return i < 0 ? objs.concat([g]) : objs.slice(0, i).concat([g], objs.slice(i));
+}
+// the moon in the middle of the dial (0.17.0): its phase now, upright, faded below the horizon
+function centreMoon(now){
+  const p = state.pos, ph = moonIllum(now), up = moonAlt(now, p.lat, p.lon) > MOON_H0;
+  return `<g${up ? '' : ' opacity=".35"'}>${moonGlyph(ph.phase, 160, 160, 44, p.lat < 0, 48)}</g>`;
 }
 function renderStars(){
   const T = t();
@@ -3188,10 +3271,11 @@ function renderStars(){
         <circle cx="160" cy="160" r="211" fill="none" stroke="var(--line-strong)" stroke-width="1"/>
         <line x1="160" y1="-50" x2="160" y2="8" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="3 5"/>
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
-        <g class="dial" id="dial">${roseDial()}<g id="skyStars">${state.pos ? starMarks(objs) : ''}</g></g>
+        <defs><filter id="mwBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+        <g class="dial" id="dial">${roseDial()}<g id="skyBand">${state.pos ? mwBand(milkyWay(now)) : ''}</g><g id="skyStars">${state.pos ? starMarks(ringObjs(objs, now)) : ''}</g></g>
         <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
-        <line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/>
-        <circle cx="160" cy="160" r="4" fill="var(--ink)"/>
+        ${state.pos ? `<line x1="160" y1="70" x2="160" y2="111" stroke="var(--line)" stroke-width="1"/><line x1="160" y1="209" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/><g id="stMoon">${centreMoon(now)}</g>`
+          : `<line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/><circle cx="160" cy="160" r="4" fill="var(--ink)"/>`}
       </svg>
       <div class="c-read"><div class="c-deg" id="cDeg">${cOn ? '–' : ''}</div>${cOn ? '' : `<div class="c-idle">${T.cIdle}</div>`}<div class="c-dir" id="cDir">${cOn ? '&nbsp;' : ''}</div><div class="c-mode" id="cMode"></div><div class="c-north" id="cNorth">${northLine()}</div></div>
       <div class="c-btns">${cOn
@@ -3200,7 +3284,7 @@ function renderStars(){
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${state.pos ? `<p class="st-say" id="stSay">${say}</p>` : `<p class="st-say">${T.stNoPos}</p>`}
-    <section class="pg-sec manual"><h2 class="sec-lbl">${T.stUp}</h2><div id="stList">${state.pos ? starList(objs) : ''}</div>${T.stNote}
+    <section class="pg-sec manual"><h2 class="sec-lbl">${T.stUp}</h2><div id="stList">${state.pos ? starList(objs, milkyWay(now), now) : ''}</div>${T.stNote}
       <div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="nightsky">${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).nightsky.title} ›</button></div></section>`;
   placeStarLabels(); paintCompass();
   clearInterval(skyTimer);
@@ -3208,8 +3292,10 @@ function renderStars(){
     const g = $('skyStars');
     if (!g || !state.pos){ clearInterval(skyTimer); skyTimer = null; return; }
     const n = new Date(), o = skyVisible(n);
-    g.innerHTML = starMarks(o); placeStarLabels(); uprightMarks();
-    if ($('stList')) $('stList').innerHTML = starList(o);
+    g.innerHTML = starMarks(ringObjs(o, n)); placeStarLabels(); uprightMarks();
+    if ($('stMoon')) $('stMoon').innerHTML = centreMoon(n);
+    const mw = milkyWay(n); if ($('skyBand')) $('skyBand').innerHTML = mwBand(mw);
+    if ($('stList')) $('stList').innerHTML = starList(o, mw, n);
     if ($('stSay')) $('stSay').textContent = starSay(n);
   }, 60000);
 }
