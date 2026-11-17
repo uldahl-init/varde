@@ -1465,7 +1465,8 @@ test.describe('privat', () => {
   }
   async function pwOk(p, pw, again){
     await p.locator('#pw1').fill(pw);
-    if (again) await p.locator('#pw2').fill(pw);
+    await expect(p.locator('#pw1')).toHaveValue(pw);
+    if (again){ await p.locator('#pw2').fill(pw); await expect(p.locator('#pw2')).toHaveValue(pw); }
     await p.locator('#overlay [data-s="ok"]').click();
   }
   async function makePrivate(p, pw, first){
@@ -1530,9 +1531,13 @@ test.describe('privat', () => {
     // Bytt passord: the old one fails, the new one opens, the note is unchanged
     await goTab(page, 'list');
     await page.locator('#listBtn').click();
+    const before = await stored(page);
     await page.locator('#main [data-act="privChange"]').click();
     await pwOk(page, 'nytt-passord-9', true);
     await expect(page.locator('#toast')).toContainText('Passordet er byttet');
+    const after = await stored(page);
+    expect(after.priv.salt).not.toBe(before.priv.salt);
+    expect(after.notes.find(n => n.priv).ct).not.toBe(before.notes.find(n => n.priv).ct);   // build 71: a new data key
     await page.locator('#main [data-act="privLockNow"]').click();
     await goTab(page, 'notes');
     await page.locator('#main .notes-ix .priv-locked').click();
@@ -1640,8 +1645,9 @@ test.describe('privat', () => {
     const errors = watchErrors(page);
     await openApp(page);
     await newNote(page, 'Til Kari', 'møt meg ved varden');
-    await page.evaluate(() => { window.__shared = null; navigator.share = async d => { window.__shared = d.url; }; });
+    await page.evaluate(() => { window.__shared = null; navigator.share = async d => { window.__shared = d.url; window.__shareText = d.title + ' ' + d.text; }; });
     await page.locator('#main [data-act="noteShare"]').click();
+    await expect(page.locator('#shPw')).toHaveAttribute('type', 'password');
     await page.locator('#shPw').fill('kort');
     await page.locator('#overlay [data-s="ok"]').click();
     await expect(page.locator('#shPwSt')).toHaveText('Minst 8 tegn.');
@@ -1650,6 +1656,10 @@ test.describe('privat', () => {
     await expect.poll(() => page.evaluate(() => window.__shared)).toContain('#note=e');
     const url = await page.evaluate(() => window.__shared);
     expect(url).not.toContain(Buffer.from('varden').toString('base64url').slice(0, 6));
+    // build 71: the message beside a password link names nothing from the note
+    const shText = await page.evaluate(() => window.__shareText);
+    expect(shText).toContain('Et låst notat');
+    expect(shText).not.toContain('Til Kari');
     // a private note: the password is required
     await makePrivate(page, PW, true);
     await page.locator('#main [data-act="noteShare"]').click();
@@ -1670,6 +1680,16 @@ test.describe('privat', () => {
     await expect(p2.locator('#overlay .sh-prev')).toContainText('møt meg ved varden');
     await p2.locator('#overlay [data-s="ok"]').click();
     await expect(p2.locator('#main .note-full h2')).toHaveText('Til Kari');
+    // build 71: the same link again, added as a private note (a password is created on this phone)
+    await p2.goto('about:blank'); await p2.goto(url);
+    await pwOk(p2, 'fjelltur-2026');
+    await p2.locator('#overlay [data-s="priv"]').click();
+    await expect(p2.locator('#overlay h3')).toHaveText('Lag passord for private notater');
+    await pwOk(p2, 'mitt-eget-pw', true);
+    await expect(p2.locator('#toast')).toContainText('privat og kryptert');
+    const s2 = await stored(p2);
+    expect(s2.notes.filter(n => n.priv).length).toBe(1);
+    expect(JSON.stringify(s2.notes.filter(n => n.priv))).not.toContain('varden');
     await p2.waitForTimeout(300);
     expect(err2).toEqual([]);
     await ctx.close();
@@ -1711,8 +1731,18 @@ test.describe('privat', () => {
     await p2.locator('#bkRPw').fill('galt-galt'); await p2.locator('#bkRPwOk').click();
     await expect(p2.locator('#bkRPwSt')).toHaveText('Feil passord.');
     await p2.locator('#bkRPw').fill('kopi-passord'); await p2.locator('#bkRPwOk').click();
-    await expect(p2.locator('#bkRStatus')).toContainText('2 notater');
+    await expect(p2.locator('#bkRStatus')).toContainText('1 notat');
+    // build 71: the private notes wait for their password; the file's key is never taken over
+    await expect(p2.locator('#bkRPwMsg')).toHaveText('Kopien har private notater. Skriv passordet deres for å ta dem med.');
+    expect((await stored(p2)).priv).toBeUndefined();
+    await p2.locator('#bkRPw').fill(PW); await p2.locator('#bkRPwOk').click();
+    await expect(p2.locator('#bkRStatus')).toContainText('1 privat notat lagt til');
+    const s2 = await stored(p2), file = JSON.parse(plainCopy);
+    expect(s2.priv.salt).not.toBe(file.priv.salt);
+    expect(s2.priv.wrap).not.toBe(file.priv.wrap);
     await p2.locator('[data-s="cancel"]').last().click();
+    await goTab(p2, 'list'); await p2.locator('#listBtn').click();
+    await p2.locator('#main [data-act="privLockNow"]').click();
     await goTab(p2, 'notes');
     await expect(p2.locator('#main .notes-ix .priv-locked')).toHaveCount(1);
     await p2.locator('#main .notes-ix .priv-locked').click();
