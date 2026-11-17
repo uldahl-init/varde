@@ -1090,6 +1090,32 @@ test.describe('datasikkerhet', () => {
     await settle(page, errors);
   });
 
+  test('a cut-off backup text points to Velg fil; a broken file does not', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.locator('#listBtn').click();
+    await page.locator('[data-la="backup"]').click();
+    // build 73: Velg fil is the main restore button, pasting comes second
+    await expect(page.locator('#bkFile')).toHaveClass(/primary/);
+    await expect(page.locator('#bkRestore')).not.toHaveClass(/primary/);
+    const full = await page.locator('#bkOut').inputValue();
+    await page.locator('#bkIn').fill(full.slice(0, Math.floor(full.length / 2)));
+    await page.locator('#bkRestore').click();
+    await expect(page.locator('#bkRStatus')).toHaveText('Teksten ser ut til å være kuttet av underveis. Bruk Velg fil og hent sikkerhetskopien rett fra filen.');
+    // other text that is not a backup keeps the old message
+    await page.locator('#bkIn').fill('bare litt tekst');
+    await page.locator('#bkRestore').click();
+    await expect(page.locator('#bkRStatus')).toContainText('ikke en gyldig sikkerhetskopi');
+    // a broken file gets the old message, not a pointer to the file picker it came from
+    await page.locator('#bkFileIn').setInputFiles({name:'b.json', mimeType:'application/json', buffer:Buffer.from(full.slice(0, 40))});
+    await expect(page.locator('#bkRStatus')).toContainText('ikke en gyldig sikkerhetskopi');
+    // the whole text still restores
+    await page.locator('#bkIn').fill(full);
+    await page.locator('#bkRestore').click();
+    await expect(page.locator('#bkRStatus')).not.toContainText('kuttet');
+    await settle(page, errors);
+  });
+
   test('large text: five tab labels fit and all Nødmodus colours are on screen', async ({page}) => {
     await page.setViewportSize({width:360, height:740});
     await page.addInitScript(() => document.addEventListener('DOMContentLoaded', () => { document.documentElement.style.fontSize = '200%'; }));
