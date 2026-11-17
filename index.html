@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-96w6nX+aMssO0VLISn650hn0IV4BaYXEd27uUjpsfkE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-r3Iaf9Bwssq6LeGqJhZNxNm96OgdBs3MmZwZ+1CxZ8I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -793,8 +793,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.18.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 73;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.18.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 74;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -4418,7 +4418,7 @@ function backupSheet(){
     <div class="section-label">${T.restore}</div>
     <p class="bk-covers">${T.bkRestoreNote}</p>
     <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
-    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="bkFile">${T.bkFile}</button></div>
+    <div class="row" style="justify-content:flex-start;margin-bottom:14px"><button class="btn primary" id="bkFile">${T.bkFile}</button></div>
     <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
     <div class="row" style="justify-content:flex-start"><button class="btn" id="bkRestore">${T.bkAdd}</button></div>
     <div class="bk-msg" id="bkRStatus" role="status" hidden></div>
