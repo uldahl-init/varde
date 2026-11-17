@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-vbMY+5i/wccvR7Alr0CBwcw6ef/Phe0407gUdShUZjA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-cTT7+QKB8gkG3UemV4XQYgzvTA8iBow1tq6Ks1Nk4/E='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -232,6 +232,14 @@ body{--nc1:#2F6FB0;--nc2:#2E8B57;--nc3:#B8861B;--nc4:#7B4FB0;--nc5:#1E8C8C}
 .nc-dot[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
 .nc-names label{display:flex;align-items:center;gap:10px;margin:8px 0}
 .nc-names .nc-dot{flex:none;cursor:default}
+.lock-ic{display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-2px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.note-full.priv-locked h2{color:var(--muted)}
+.pw-show{display:flex;align-items:center;gap:10px;min-height:44px;margin:6px 0 0;font-weight:600;cursor:pointer}
+.pw-show input{width:22px;height:22px;margin:0;accent-color:var(--accent)}
+.pw-st,#panel .pw-st{min-height:1.3em;margin:4px 0 0;color:var(--red);font-weight:600}
+.pw-forgot{min-height:44px;padding:0;border:0;background:none;color:var(--link);text-decoration:underline;font:inherit;cursor:pointer}
+.bk-pw{margin:8px 0 4px}
+#bkPwBox{margin-bottom:14px}
 .pin-ic{display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-2px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .index .pin-ic{width:17px;height:17px;stroke:var(--muted);stroke-width:2}
 .sh-prev{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);max-height:38vh;overflow:auto}
@@ -709,7 +717,7 @@ body.night{--link:var(--ink)}
 
 .add-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
 
-input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
+input[type=text],input[type=password],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:8px;padding:10px 12px;width:100%}
 textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-height:110px;resize:vertical}
 .btn{font-weight:600;border-radius:10px;padding:10px 16px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;white-space:nowrap}
 .btn.small{padding:6px 12px;font-size:.9rem}
@@ -783,8 +791,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.17.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 69;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.18.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 71;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -846,7 +854,7 @@ const UI = {
     skyTitle:'The sky', moonTitle:'Moon', moonUp:'The moon is up', moonDown:'The moon is below the horizon', moonrise:'Moonrise', moonset:'Moonset', phaseLbl:'Phase', litLbl:'Lit', noneToday:'not this day',
     phases:['New moon','Waxing crescent','First quarter','Waxing moon','Full moon','Waning moon','Last quarter','Waning crescent'], lit:n=>`${n} % lit`,
     dateAndPos:'Date and position', posLbl:'Position', linksNoPos:'They match where you are once you have fetched your position.', avalancheLocal:'Check the local avalanche service where you are.', avalancheWord:'avalanche forecast',
-    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:`${APP_NAME} has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). Before a note is shared, you see exactly what is sent. The code is open, so anyone can check what the app does:`, privacyLink:`${APP_NAME} on GitHub`, linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
+    addLink:'Add your own link', addLinkHint:'Add an aurora forecast, ski conditions or anything else you check before a trip.', openAll:'Expand all', foldAll:'Fold all', skyFold:'Sun and moon', privacy:'Privacy', privacyTxt:`${APP_NAME} has no account, no server and no tracking. Lists, notes and position stay on your phone and are only shared when you choose to (Share or backup). Before a note is shared, you see exactly what is sent. Private notes are encrypted on the phone with your password, and no one can open them without it. Share through Signal or similar if the content is private. The code is open, so anyone can check what the app does:`, privacyLink:`${APP_NAME} on GitHub`, linkName:'Name of the link', linkUrl:'Address', linkBad:'The address must start with https://', linkDeleted:'Link removed',
     editing:'Editing list', lockList:'Lock list', lockedOn:'The list is locked: ticks and trip types cannot be changed.', tripLocked:'The list is locked: trip types cannot be changed. Tap Lock list to unlock it.', lockedOff:'The list is unlocked.', lockedMsg:'The list is locked. Tap Lock list to unlock it.', editLocked:'Editing is locked in Outdoor mode, so nothing can be changed or deleted by accident. Switch Outdoor mode off to edit your lists.', fieldOn:'Switched on', fieldOff:'For rain, cold and gloves',
     tripHint:'Trip types add items to your list. Your own trip types are marked with +.', bagList:'Bag list: shown as one line in the main list',
     mainBadge:'Main list', tripBadge:'Trip type', stdHint:'The standard list follows the app language. To change it, make your own copy.',
@@ -902,6 +910,13 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['True north','<p>With your position saved, the compass shows <b>true north</b>, the north of maps and of the sky, so the sun, the moon and the stars line up with the dial. A phone measures magnetic north, so the app adds the declination where you are, calculated on the phone with the World Magnetic Model 2025. The line under the direction says which north you see and gives the declination. Without a position the compass shows magnetic north, like a baseplate compass.</p><p>In Norway the declination is about 3–5° east in the south and up to 15–18° east in Finnmark (2026). It changes slowly from year to year.</p>'],
       ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The faint band in the ring is the Milky Way: it runs from the horizon on one side to the other, strongest where it stands highest and towards its bright centre in Sagittarius. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
+    notePriv:'Make private', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
+    pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
+    privUnlockT:'Unlock private notes', privUnlock:'Unlock', pwForgot:'Forgot the password?', pwForgotT:'Forgot the password?', pwForgotMsg:'The password cannot be recovered. You can delete the private notes and start again. Ordinary notes and lists are not affected.', privDelAll:'Delete private notes', privDeleted:'Private notes deleted', privField:'Private notes open outside Outdoor mode.', privMade:'The note is private and encrypted.',
+    privSec:'Private notes', privLockNow:'Lock now', privChange:'Change password', privSecHint:'Locks again after 5 minutes without use, and after a minute in the background.', privChanged:'The password has been changed. Older backups still open with the old password.', noteShareLocked:`A locked note from ${APP_NAME}`, bkPrivAsk:'The backup holds private notes. Type their password to include them.', noteImportPriv:'Add as a private note', noteImportPrivHint:'The note was locked with a password. As a private note it stays encrypted on this phone too.',
+    shPw:'Password for the link (optional)', shPwHint:'Give the password another way than the link, for example in person.', shPwReq:'Password for the link', shPwReqHint:'A private note is only shared with a password.', lnkLockedT:'This note is locked with a password', lnkLockedMsg:'Type the password you got from the sender.', lnkOpen:'Open',
+    bkPwOn:'Protect the backup with a password (optional)', bkPwHint:'The backup cannot be restored without the password. Private notes are always encrypted in the backup.', bkPwLock:'Lock the backup', bkPwDone:'The backup is locked with a password. Share, save or copy it now.', bkPwFirst:'Tap Lock the backup first, or turn the password off.',
+    bkLockedMsg:'The backup is locked with a password', bkPrivOther:'The backup holds private notes with a different password. Type that password to include them.', bkSkipPriv:'Skip private ones', bkRPwOk:'Unlock and add', privAdded:n=>`${n} private note${n === 1 ? '' : 's'} added.`, privSkipped:'The private notes were not added.',
     tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
@@ -1079,7 +1094,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     skyTitle:'Himmelen', moonTitle:'Måne', moonUp:'Månen er oppe', moonDown:'Månen er under horisonten', moonrise:'Måneoppgang', moonset:'Månenedgang', phaseLbl:'Fase', litLbl:'Opplyst', noneToday:'ikke denne dagen',
     phases:['Nymåne','Voksende månesigd','Første kvarter','Voksende måne','Fullmåne','Minkende måne','Siste kvarter','Minkende månesigd'], lit:n=>`${n} % opplyst`,
     dateAndPos:'Dato og posisjon', posLbl:'Posisjon', linksNoPos:'De tilpasses der du er når du har hentet posisjon.', avalancheLocal:'Sjekk den lokale skredvarslingen der du er.', avalancheWord:'snøskredvarsel',
-    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:`${APP_NAME} har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Før et notat deles, ser du nøyaktig hva som sendes. Koden er åpen, så alle kan sjekke hva appen gjør:`, privacyLink:`${APP_NAME} på GitHub`, linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
+    addLink:'Legg til egen lenke', addLinkHint:'Legg til nordlysvarsel, skiføre eller annet du sjekker før turen.', openAll:'Åpne alle', foldAll:'Lukk alle', skyFold:'Sol og måne', privacy:'Personvern', privacyTxt:`${APP_NAME} har ingen konto, ingen server og ingen sporing. Lister, notater og posisjon blir liggende på mobilen din, og deles bare når du selv velger det (Del eller sikkerhetskopi). Før et notat deles, ser du nøyaktig hva som sendes. Private notater krypteres på telefonen med passordet ditt, og ingen kan åpne dem uten det. Del via Signal eller lignende hvis innholdet er privat. Koden er åpen, så alle kan sjekke hva appen gjør:`, privacyLink:`${APP_NAME} på GitHub`, linkName:'Navn på lenken', linkUrl:'Adresse', linkBad:'Adressen må starte med https://', linkDeleted:'Lenke fjernet',
     editing:'Redigerer liste', lockList:'Lås listen', lockedOn:'Listen er låst: avkrysninger og turtyper kan ikke endres.', tripLocked:'Listen er låst: turtypene kan ikke endres. Trykk Lås listen for å åpne den.', lockedOff:'Listen er åpnet igjen.', lockedMsg:'Listen er låst. Trykk Lås listen for å åpne den.', editLocked:'Redigering er låst i Utemodus, så ingenting kan endres eller slettes ved et uhell. Slå av Utemodus for å redigere listene.', fieldOn:'Slått på', fieldOff:'For regn, kulde og hansker',
     tripHint:'Turtyper legger til ting i listen din. Dine egne turtyper er merket med +.', bagList:'Pakkliste: vises som én linje i hovedlisten',
     mainBadge:'Hovedliste', tripBadge:'Turtype', stdHint:'Standardlisten følger språket i appen. Vil du endre den, lag din egen kopi.',
@@ -1135,6 +1150,13 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Sann nord','<p>Med posisjonen lagret viser kompasset <b>sann nord</b>, nord på kartet og på himmelen, så sola, månen og stjernene stemmer med skiva. Mobilen måler magnetisk nord, så appen legger til misvisningen der du er, regnet ut på mobilen med verdens magnetiske modell (World Magnetic Model 2025). Linja under retningen sier hvilket nord du ser, og viser misvisningen. Uten posisjon viser kompasset magnetisk nord, som et vanlig kompass.</p><p>I Norge er misvisningen omtrent 3–5° østlig i sør og opptil 15–18° østlig i Finnmark (2026). Den endrer seg sakte fra år til år.</p>'],
       ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Det svake båndet i ringen er Melkeveien: det går fra horisonten på den ene siden til den andre, sterkest der det står høyest og mot det klare sentrum i Skytten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
+    notePriv:'Gjør privat', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
+    pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
+    privUnlockT:'Lås opp private notater', privUnlock:'Lås opp', pwForgot:'Glemt passordet?', pwForgotT:'Glemt passordet?', pwForgotMsg:'Passordet kan ikke hentes fram. Du kan slette de private notatene og begynne på nytt. Vanlige notater og lister berøres ikke.', privDelAll:'Slett private notater', privDeleted:'Private notater slettet', privField:'Private notater åpnes utenfor Utemodus.', privMade:'Notatet er privat og kryptert.',
+    privSec:'Private notater', privLockNow:'Lås nå', privChange:'Bytt passord', privSecHint:'Låses igjen etter 5 minutter uten bruk, og når appen har vært i bakgrunnen et minutt.', privChanged:'Passordet er byttet. Eldre sikkerhetskopier åpnes fortsatt med det gamle passordet.', noteShareLocked:`Et låst notat fra ${APP_NAME}`, bkPrivAsk:'Kopien har private notater. Skriv passordet deres for å ta dem med.', noteImportPriv:'Legg til som privat notat', noteImportPrivHint:'Notatet var låst med passord. Som privat notat blir det kryptert på denne telefonen også.',
+    shPw:'Passord for lenken (valgfritt)', shPwHint:'Gi passordet på en annen måte enn lenken, for eksempel muntlig.', shPwReq:'Passord for lenken', shPwReqHint:'Et privat notat deles bare med passord.', lnkLockedT:'Notatet er låst med passord', lnkLockedMsg:'Skriv passordet du fikk fra avsenderen.', lnkOpen:'Åpne',
+    bkPwOn:'Beskytt sikkerhetskopien med passord (valgfritt)', bkPwHint:'Uten passordet kan ikke kopien gjenopprettes. Private notater er alltid kryptert i kopien.', bkPwLock:'Lås kopien', bkPwDone:'Kopien er låst med passord. Del, lagre eller kopier den nå.', bkPwFirst:'Trykk Lås kopien først, eller slå av passordet.',
+    bkLockedMsg:'Sikkerhetskopien er låst med passord', bkPrivOther:'Kopien har private notater med et annet passord. Skriv det passordet for å ta dem med.', bkSkipPriv:'Hopp over private', bkRPwOk:'Lås opp og legg til', privAdded:n=>`${n} ${n === 1 ? 'privat notat' : 'private notater'} lagt til.`, privSkipped:'De private notatene ble ikke lagt til.',
     tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
@@ -1423,7 +1445,7 @@ const BK_REMIND_MS = 14 * 86400000, BK_SNOOZE_MS = 7 * 86400000;
 function listSig(L){ return [L.name, (L.cats || []).map(c => [c.name, c.note || '', (c.items || []).map(i => (i.sub ? '>' : '') + i.text)])]; }
 function strHash(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 function personalSig(){
-  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => { const a = (n.pin || n.rcv) ? [n.title, n.text, !!n.pin, n.rcv ? (n.rcv.n || '-') : ''] : [n.title, n.text]; if (n.c) a.push('c' + n.c); return a; }),
+  return strHash(JSON.stringify([(state.lists || []).map(listSig), (state.notes || []).map(n => { const a = n.priv ? ['p', n.ct || '', !!n.pin] : (n.pin || n.rcv) ? [n.title, n.text, !!n.pin, n.rcv ? (n.rcv.n || '-') : ''] : [n.title, n.text]; if (n.c) a.push('c' + n.c); return a; }),
     ((state.packW || {}).items || []).map(i => [i.name, i.g, i.cat, !!i.cons, !!i.dog]), (state.links || []).map(l => [l.n, l.u])].concat((state.noteColors || []).some(Boolean) ? [state.noteColors] : [])));
 }
 function hasOwnContent(){
@@ -1445,8 +1467,8 @@ function bkRemindDue(){
 function bkData(){
   const plan = {};
   BK_PLAN.forEach(k => { if (state[k]) plan[k] = state[k]; });
-  return JSON.stringify({app:'trip-checklist', version:3, t:Date.now(), lists:state.lists, notes:state.notes, noteColors:state.noteColors || [],
-    packW:{items:(state.packW || {}).items || []}, links:state.links || [], plan});
+  return JSON.stringify(Object.assign({app:'trip-checklist', version:3, t:Date.now(), lists:state.lists, notes:state.notes, noteColors:state.noteColors || [],
+    packW:{items:(state.packW || {}).items || []}, links:state.links || [], plan}, state.priv ? {priv:state.priv} : {}));
 }
 function bkFileName(){ return APP_NAME.toLowerCase() + '-' + (state.lang === 'no' ? 'sikkerhetskopi' : 'backup') + '-' + new Date().toISOString().slice(0, 10) + '.json'; }
 // Adds what is new; never overwrites. Returns counts, or null if the text is not a backup.
@@ -1485,8 +1507,18 @@ function bkRestore(text){
     if (have.has(sig)) return;
     have.add(sig); state.lists.push(c); a.l++;
   });
+  // 0.18.0: private notes come as they are (encrypted). A phone with no private password takes the file's; the same
+  // password adds them at once; another password leaves them in a.pend for the restore sheet to ask for it.
+  const pn = Array.isArray(obj.notes) ? obj.notes.filter(n => n && n.priv && b64ok(n.iv) && b64ok(n.ct)) : [], fp = privClean(obj.priv);
+  if (pn.length && fp && CRYPTO_OK){
+    const clean = pn.map(n => noteMeta({id:uid(), title:'', text:'', t:+n.t || Date.now(), priv:1, iv:n.iv, ct:n.ct}, n));
+    // build 71: the file's key is never taken over; without the same key here, the file's password is asked for
+    if (state.priv && state.priv.salt === fp.salt && state.priv.wrap === fp.wrap){
+      clean.forEach(n => { if (!state.notes.some(x => x.priv && x.ct === n.ct)){ state.notes.push(n); a.n++; } });
+    } else a.pend = {priv:fp, notes:clean};
+  }
   if (Array.isArray(obj.notes)) obj.notes.forEach(n => {
-    if (!n || typeof n.text !== 'string' || state.notes.some(x => x.id === n.id || (x.title === n.title && x.text === n.text))) return;
+    if (!n || n.priv || typeof n.text !== 'string' || state.notes.some(x => !x.priv && (x.id === n.id || (x.title === n.title && x.text === n.text)))) return;
     // build 58: a fresh id, never the one from the file (ids go into HTML attributes)
     state.notes.push(noteMeta({id:uid(), title:String(n.title || ''), text:n.text, t:+n.t || Date.now()}, n)); a.n++;
   });
@@ -1963,6 +1995,8 @@ function renderLists(){
   // 0.16.1: auto-relock, off by default (state.autoRelock); a setting, so kept out of the backup and Start på nytt
   html += sec(T.lockScreen, `<div class="role"><button class="switch" data-act="autoRelock" aria-pressed="${!!state.autoRelock}" aria-label="${T.relockOn}"><i></i></button>
     <div><b>${T.relockOn}</b><span>${T.relockHint}</span></div></div>`);
+  // 0.18.0: shown once a private password exists
+  if (state.priv && CRYPTO_OK) html += sec(T.privSec, `<p class="tool-tip">${T.privSecHint}</p>${privKey || !state.field ? `<div class="row-btns">${privKey ? `<button class="btn" data-act="privLockNow">${T.privLockNow}</button>` : ''}${state.field ? '' : `<button class="btn" data-act="privChange">${T.privChange}</button>`}</div>` : ''}`);
   html += sec(T.help, `<div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button></div>`);
   if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
@@ -2498,6 +2532,7 @@ function askNote(title, n){
 const noteDate = ms => { try { return new Date(ms).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}); } catch(e){ return ''; } };
 /* 0.6.0: edit in place (noteEdit, never stored), Fest øverst (n.pin), Del (n.shT = when you shared it; n.rcv = {n:name, t} on a received note) */
 let noteEdit = null;
+const LOCK_IC = '<svg class="lock-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const PIN_IC = '<svg class="pin-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 7 4 3H6l4-3z"/><path d="M12 13v8"/></svg>';
 function noteTags(n){
   const T = t(), tags = [];
@@ -2525,11 +2560,21 @@ function renderNotes(){
   const T = t();
   $('listName').textContent = T.tabNotes;
   document.title = T.tabNotes + ' · ' + T.app;
-  const n = view && view.indexOf('note:') === 0 ? state.notes.find(x => x.id === view.slice(5)) : null;
+  let n = view && view.indexOf('note:') === 0 ? state.notes.find(x => x.id === view.slice(5)) : null;
   if (view && !n) view = null;
   if (noteEdit && (!n || n.id !== noteEdit.id || state.field)) noteEdit = null;
+  // 0.18.0: a locked private note shows only the lock, «Privat notat» and the date
+  if (n && !noteView(n)){
+    noteEdit = null;
+    let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>
+      <article class="note-full priv-locked"><h2>${LOCK_IC}${T.privNote}</h2><p class="note-date">${noteDate(n.t)}</p></article>`;
+    h += state.field ? `<p class="tool-sub">${T.privField}</p>` : `<div class="row-btns">${CRYPTO_OK ? `<button class="btn primary" data-act="privOpen">${T.privUnlock}</button>` : ''}<button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
+    main.innerHTML = h;
+    return;
+  }
   if (n){
-    const tags = noteTags(n), rcv = (n.rcv ? ' rcv' : '') + (n.c ? ` has-nc nc-${n.c}` : ''), pin = n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '';
+    n = noteView(n);
+    const tags = noteTags(n), rcv = (n.rcv ? ' rcv' : '') + (n.c ? ` has-nc nc-${n.c}` : ''), pin = (n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '') + (n.priv ? `<span role="img" aria-label="${esc(T.privNote)}">${LOCK_IC}</span>` : '');
     let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>`;
     if (noteEdit){
       h += `<article class="note-full note-edit${rcv}"><input type="text" id="neTitle" class="ne-title" placeholder="${esc(T.noteTitlePh)}" value="${esc(noteEdit.title)}">
@@ -2552,7 +2597,7 @@ function renderNotes(){
     }
     const tap = f => state.field ? '' : ` class="note-tap" data-act="editNote" data-f="${f}" data-id="${n.id}"`;
     h += `<article class="note-full${rcv}"><h2${tap('title')}>${pin}${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}<div class="note-body${state.field ? '' : ' note-tap'}"${state.field ? '' : ` data-act="editNote" data-f="text" data-id="${n.id}"`}>${esc(n.text)}</div></article>`;
-    h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn" data-act="notePin" data-id="${n.id}">${n.pin ? T.noteUnpin : T.notePin}</button><button class="btn" data-act="noteShare" data-id="${n.id}">${T.noteShare}</button><button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
+    h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn" data-act="notePin" data-id="${n.id}">${n.pin ? T.noteUnpin : T.notePin}</button><button class="btn" data-act="noteShare" data-id="${n.id}">${T.noteShare}</button>${n.priv ? `<button class="btn" data-act="notePubl" data-id="${n.id}">${T.notePubl}</button>` : CRYPTO_OK ? `<button class="btn" data-act="notePriv" data-id="${n.id}">${T.notePriv}</button>` : ''}<button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
     main.innerHTML = h;
     return;
   }
@@ -2560,12 +2605,14 @@ function renderNotes(){
   let h = `<p class="tool-sub">${T.notesSub}</p>`;
   h += state.field ? '' : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button></div>`;
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
-  else h += '<div class="index notes-ix">' + list.map(x => { const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
+  else h += '<div class="index notes-ix">' + list.map(x0 => { const x = noteView(x0);
+    if (!x) return `<button class="priv-locked${x0.c ? ` has-nc nc-${x0.c}` : ''}" data-act="openNote" data-id="${x0.id}"${x0.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x0.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${LOCK_IC}${T.privNote}</span><span class="ix-d note-date">${noteDate(x0.t)}</span></span>${CHEV_R}</button>`;
+    const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${x.priv ? LOCK_IC : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
   main.innerHTML = h;
 }
 /* 0.6.0: share one note. Step 1 shows exactly what is sent (title, text and the optional name, empty by default);
    step 2 is Rediger først or Del. Nothing else from the app goes into the link. */
-function askShareNote(n){
+function askShareNote(n, req){
   const T = t();
   return new Promise(res => {
     sheetResolve = res;
@@ -2574,22 +2621,38 @@ function askShareNote(n){
       <div class="bk-warn"><p>${T.noteShareWarn}</p></div>
       <label class="sh-lbl" for="shName">${T.noteShareName}</label><input type="text" id="shName" maxlength="40" autocomplete="off" value="">
       <p class="sh-hint">${T.noteShareNameHint}</p>
+      ${CRYPTO_OK ? `<label class="sh-lbl" for="shPw">${req ? T.shPwReq : T.shPw}</label><input type="password" id="shPw" maxlength="200" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" value="">
+      <label class="pw-show"><input type="checkbox" id="shPwShow"> ${T.pwShow}</label>
+      <p class="sh-hint">${req ? T.shPwReqHint : T.shPwHint}</p><p class="pw-st" id="shPwSt" role="alert"></p>` : ''}
       <div class="row"><button class="btn" data-s="edit">${T.noteShareEdit}</button><button class="btn primary" data-s="ok">${T.noteShare}</button></div>`, true);
+    if (req) panel.dataset.priv = '1';
+    if (CRYPTO_OK) $('shPwShow').onchange = e => { $('shPw').type = e.target.checked ? 'text' : 'password'; };
     panel.querySelector('[data-s=edit]').onclick = () => closeSheet('edit');
-    panel.querySelector('[data-s=ok]').onclick = () => closeSheet({name:$('shName').value.trim().slice(0, 40)});
+    panel.querySelector('[data-s=ok]').onclick = () => {
+      const pw = CRYPTO_OK ? $('shPw').value : '';
+      if ((req || pw) && pwLen(pw) < PW_MIN){ $('shPwSt').textContent = T.pwShort; $('shPw').focus(); return; }
+      closeSheet({name:$('shName').value.trim().slice(0, 40), pw});
+    };
   });
 }
-async function shareNote(n){
+async function shareNote(n0){
   const T = t();
-  const r = await askShareNote(n);
+  // 0.18.0: a private note must be open, and is only shared with a password
+  if (n0.priv && !(await privEnsure())) return;
+  const n = noteView(n0);
+  if (!n) return;
+  const r = await askShareNote(n, !!n0.priv);
   if (!r) return;
   if (r === 'edit'){ noteEdit = {id:n.id, title:n.title, text:n.text, c:n.c || 0, focus:'text'}; render(); return; }
   const pk = {v:1, k:'note', ti:n.title || '', tx:n.text || ''};
   if (r.name) pk.n = r.name;
-  const url = location.origin + location.pathname + '#note=' + await encodePacked(pk);
-  const done = () => { n.shT = Date.now(); save(); if (tab === 'notes') render(); };
+  if (n0.priv && !r.pw) return;
+  const url = location.origin + location.pathname + '#note=' + (r.pw ? await sealLink(pk, r.pw) : await encodePacked(pk));
+  const done = () => { n0.shT = Date.now(); save(); if (tab === 'notes') render(); };
   if (navigator.share){
-    try { await navigator.share({title:n.title || T.untitled, text:T.noteShareText(n.title || T.untitled), url}); done(); return; }
+    // build 71: with a password, the message beside the link names nothing from the note
+    const sh = r.pw ? {title:T.noteShareLocked, text:T.noteShareLocked, url} : {title:n.title || T.untitled, text:T.noteShareText(n.title || T.untitled), url};
+    try { await navigator.share(sh); done(); return; }
     catch(e){ if (e && e.name === 'AbortError') return; }
   }
   openSheet(`<h3>${T.noteShare}</h3><p>${T.noteShareFallback}</p><textarea id="shOut" readonly>${esc(url)}</textarea>
@@ -2600,26 +2663,54 @@ async function shareNote(n){
   };
 }
 /* a received note: shown in full, then «Legg til i notatene dine?» */
-function askAddNote(p){
+function askAddNote(p, sealed){
   const T = t();
+  // build 71: a note from a password link can go straight in as a private note (not in Utemodus, which never asks)
+  const pv = sealed && CRYPTO_OK && !state.field;
   return new Promise(res => {
     sheetResolve = res;
     openSheet(`<h3>${esc(T.noteImportQ)}</h3><p>${p.n ? esc(T.noteImportFrom(p.n)) : T.noteImportAnon}</p>
       <div class="sh-prev"><b>${esc(p.ti || T.untitled)}</b><div>${esc(p.tx)}</div></div>
-      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.noteImportOk}</button></div>`, true);
+      ${pv ? `<p class="sh-hint">${T.noteImportPrivHint}</p>` : ''}
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn${pv ? '' : ' primary'}" data-s="ok">${T.noteImportOk}</button>${pv ? `<button class="btn primary" data-s="priv">${T.noteImportPriv}</button>` : ''}</div>`, true);
+    if (sealed) panel.dataset.priv = '1';
     panel.querySelector('[data-s=ok]').onclick = () => closeSheet(true);
+    if (pv) panel.querySelector('[data-s=priv]').onclick = () => closeSheet('priv');
     panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(false);
   });
 }
 async function receiveNote(code){
   const T = t();
   let p;
-  try { p = await decodePacked(code); if (!p || p.k !== 'note' || typeof p.tx !== 'string') throw new Error('bad'); }
+  try {
+    if (code[0] === 'e'){
+      // 0.18.0: a link locked with a password; the sheet stays open until the password is right or cancelled
+      if (!CRYPTO_OK) throw new Error('bad');
+      unb64u(code.slice(1));
+      let got = null;
+      const pw = await pwSheet({title:T.lnkLockedT, msg:T.lnkLockedMsg, ok:T.lnkOpen, check: async x => { got = await openLink(code, x); return got ? null : T.pwWrong; }});
+      if (!pw || !got) return;
+      p = got;
+    } else p = await decodePacked(code);
+    if (!p || p.k !== 'note' || typeof p.tx !== 'string') throw new Error('bad');
+  }
   catch(e){ await confirmBox(T.share, T.noteBad, T.ok); return; }
   p = {ti:String(p.ti || '').slice(0, 300), tx:p.tx, n:String(p.n || '').trim().slice(0, 40)};
   if (!p.ti.trim() && !p.tx.trim()){ await confirmBox(T.share, T.noteBad, T.ok); return; }
-  if (!(await askAddNote(p))) return;
-  const old = state.notes.find(x => x.title === p.ti && x.text === p.tx);
+  const how = await askAddNote(p, code[0] === 'e');
+  if (!how) return;
+  if (how === 'priv'){
+    if (!state.priv){
+      const pw = await pwSheet({title:T.privNewT, msg:T.privNewMsg, warn:T.privNewWarn, twice:true, ok:T.privCreate});
+      if (!pw) return;
+      await privCreate(pw);
+    } else if (!(await privEnsure())) return;
+    const now = Date.now(), nn = {id:uid(), title:'', text:'', t:now, rcv:{n:p.n, t:now}};
+    await noteSeal(nn, p.ti, p.tx);
+    noteAddTop(nn); save(); go('notes', 'note:' + nn.id); showToast(T.privMade);
+    return;
+  }
+  const old = state.notes.find(x => !x.priv && x.title === p.ti && x.text === p.tx);
   if (old){ showToast(T.noteHave); go('notes', 'note:' + old.id); return; }
   const now = Date.now(), nn = {id:uid(), title:p.ti, text:p.tx, t:now, rcv:{n:p.n, t:now}};
   noteAddTop(nn); save(); go('notes', 'note:' + nn.id);
@@ -2773,6 +2864,245 @@ function unpackList(p){
 }
 function b64u(bytes){ let b = ''; for (let i = 0; i < bytes.length; i++) b += String.fromCharCode(bytes[i]); return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function unb64u(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '='; const bin = atob(str), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+/* ---------- 0.18.0: encryption (Web Crypto, offline) ----------
+   Password → key: PBKDF2-SHA-256, PRIV_ITER rounds, 16 random bytes of salt; the password is normalised (NFKC) first,
+   so æøå typed on another keyboard still matches; nothing else is changed. Content: AES-GCM, 256-bit key, a fresh
+   12-byte IV for every save. Private notes: one random data key encrypts them; it is stored only wrapped with the
+   password key (state.priv). The data key and the opened texts live in memory only (privRaw, privKey, privOpen),
+   never in state, localStorage or sessionStorage. A wrong password fails the GCM check; no check value is stored. */
+const CRYPTO_OK = !!(window.isSecureContext && window.crypto && crypto.subtle && crypto.getRandomValues);
+const PRIV_ITER = 600000, PW_MIN = 8, PRIV_IDLE_MS = 5 * 60000, PRIV_BG_MS = 60000, PRIV_FREE_TRIES = 5;
+let privRaw = null, privKey = null, privLastT = 0, privHiddenT = 0, privBgTimer = null;
+const privOpen = new Map();
+const rnd = n => crypto.getRandomValues(new Uint8Array(n));
+const pwNorm = pw => String(pw || '').normalize('NFKC');
+const pwLen = pw => [...pwNorm(pw)].length;
+const b64ok = s => typeof s === 'string' && s.length >= 8 && s.length < 4e6 && /^[A-Za-z0-9_-]+$/.test(s);
+async function pwKey(pw, salt, iter){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pwNorm(pw)), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', hash:'SHA-256', salt, iterations:iter}, base, {name:'AES-GCM', length:256}, false, ['encrypt', 'decrypt']);
+}
+async function gcmEnc(key, bytes){ const iv = rnd(12); return {iv, ct:new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, bytes))}; }
+async function gcmDec(key, iv, ct){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct)); }
+const dkImport = raw => crypto.subtle.importKey('raw', raw, {name:'AES-GCM'}, false, ['encrypt', 'decrypt']);
+// The data key wrapped with a password: a fresh salt every time (new password, raised round count).
+async function privWrap(raw, pw){
+  const salt = rnd(16), w = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), raw);
+  return {v:1, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt), iv:b64u(w.iv), wrap:b64u(w.ct)};
+}
+// The raw data key, or null for a wrong password (or damaged data).
+async function privUnwrap(p, pw){
+  try { const raw = await gcmDec(await pwKey(pw, unb64u(p.salt), p.iter), unb64u(p.iv), unb64u(p.wrap)); return raw.length === 32 ? raw : null; }
+  catch(e){ return null; }
+}
+// state.priv from a file: only the known fields, in their known form.
+function privClean(p){
+  if (!p || typeof p !== 'object' || p.v !== 1 || p.kdf !== 'pbkdf2-sha256') return null;
+  const iter = +p.iter;
+  if (!Number.isInteger(iter) || iter < 100000 || iter > 10000000 || !b64ok(p.salt) || !b64ok(p.iv) || !b64ok(p.wrap)) return null;
+  return {v:1, kdf:'pbkdf2-sha256', iter, salt:p.salt, iv:p.iv, wrap:p.wrap};
+}
+async function privSetKey(raw){ privRaw = raw; privKey = await dkImport(raw); privTouch(); }
+// build 71: a new password gets a new data key; every private note is sealed again with it, all or nothing.
+// If a note could not be opened (damaged), the old key is kept and only wrapped again, so nothing is lost.
+async function privRekey(pw){
+  const all = state.notes.filter(n => n.priv);
+  if (!all.every(n => privOpen.has(n.id))){ state.priv = await privWrap(privRaw, pw); return; }
+  const raw = rnd(32), key = await dkImport(raw), sealed = [];
+  for (const n of all){ const o = privOpen.get(n.id), c = {}; await noteSeal(c, o.title, o.text, key); sealed.push([n, c]); }
+  const wrap = await privWrap(raw, pw);
+  sealed.forEach(([n, c]) => { n.iv = c.iv; n.ct = c.ct; });
+  state.priv = wrap;
+  if (privRaw) privRaw.fill(0);
+  await privSetKey(raw);
+}
+async function privCreate(pw){
+  const raw = rnd(32);
+  state.priv = await privWrap(raw, pw);
+  await privSetKey(raw); save();
+}
+const noteBytes = (title, text) => new TextEncoder().encode(JSON.stringify({ti:title, tx:text}));
+async function noteOpenWith(key, n){
+  try { const o = JSON.parse(new TextDecoder().decode(await gcmDec(key, unb64u(n.iv), unb64u(n.ct)))); return {title:String(o.ti || ''), text:String(o.tx || '')}; }
+  catch(e){ return null; }
+}
+// Encrypts a note in place: title and text are emptied in state and kept only in privOpen.
+async function noteSeal(n, title, text, key){
+  key = key || privKey;
+  if (!key) throw new Error('locked');
+  const e = await gcmEnc(key, noteBytes(title, text));
+  n.priv = 1; n.iv = b64u(e.iv); n.ct = b64u(e.ct); n.title = ''; n.text = '';
+  if (key === privKey) privOpen.set(n.id, {title, text});
+}
+// What a note shows: itself, the opened copy of a private note, or null while it is locked.
+const noteView = n => !n.priv ? n : (privOpen.has(n.id) ? Object.assign({}, n, privOpen.get(n.id)) : null);
+async function privUnlock(pw){
+  if (!state.priv) return false;
+  const raw = await privUnwrap(state.priv, pw);
+  if (!raw) return false;
+  if (state.priv.iter < PRIV_ITER) state.priv = await privWrap(raw, pw);   // a raised round count takes effect here
+  await privSetKey(raw);
+  privOpen.clear();
+  for (const n of state.notes){ if (n.priv){ const o = await noteOpenWith(privKey, n); if (o) privOpen.set(n.id, o); } }
+  delete state.privFail; save();
+  return true;
+}
+async function privLock(){
+  if (!privKey && !privOpen.size) return;
+  // an open edit of a private note is saved (encrypted) first, so nothing is lost
+  const ed = noteEdit, n = ed && state.notes.find(x => x.id === ed.id);
+  if (n && n.priv && privKey){
+    const o = privOpen.get(n.id) || {}, ti = ed.title.trim(), tx = ed.text;
+    try { if ((ti || tx.trim()) && (ti !== o.title || tx !== o.text)){ await noteSeal(n, ti, tx); n.t = Date.now(); } } catch(e){}
+    if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; }
+    noteEdit = null;
+  }
+  if (privRaw) privRaw.fill(0);
+  privRaw = null; privKey = null; privOpen.clear(); clearTimeout(privBgTimer);
+  if (!overlay.hidden && panel.dataset.priv) closeSheet(null);
+  save();
+  if (tab === 'notes' || tab === 'list') render();
+}
+function privTouch(){ privLastT = Date.now(); }
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if (privKey) privTouch(); }, true));
+setInterval(() => { if (privKey && Date.now() - privLastT > PRIV_IDLE_MS) privLock(); }, 5000);
+document.addEventListener('visibilitychange', () => {
+  if (!privKey) return;
+  if (document.hidden){ privHiddenT = Date.now(); clearTimeout(privBgTimer); privBgTimer = setTimeout(() => { if (document.hidden) privLock(); }, PRIV_BG_MS); }
+  else { clearTimeout(privBgTimer); if (privHiddenT && Date.now() - privHiddenT >= PRIV_BG_MS) privLock(); else privTouch(); privHiddenT = 0; }
+});
+// Wrong tries: after PRIV_FREE_TRIES wrong passwords a 30 s wait, doubled for each further one, at most an hour.
+// Stored, so a restart does not reset it; a right password clears it.
+function privWait(){ const f = state.privFail; return f && f.until > Date.now() ? f.until - Date.now() : 0; }
+function privFailed(){
+  const f = state.privFail = state.privFail && typeof state.privFail === 'object' ? state.privFail : {n:0, until:0};
+  f.n = (+f.n || 0) + 1;
+  if (f.n >= PRIV_FREE_TRIES) f.until = Date.now() + Math.min(3600, 30 * Math.pow(2, f.n - PRIV_FREE_TRIES)) * 1000;
+  persist();
+}
+function fmtWait(ms){ const T = t(), s = Math.ceil(ms / 1000); return s < 90 ? T.waitS(s) : T.waitM(Math.ceil(s / 60)); }
+/* One sheet for every password: set (twice, at least PW_MIN), unlock, open a link, restore. check(pw) runs while the
+   sheet stays open and returns an error text, or null when the password is right. Resolves with the password, null,
+   or 'forgot'. */
+function pwSheet(o){
+  const T = t();
+  return new Promise(res => {
+    sheetResolve = res;
+    const inp = (id, ac) => `<input type="password" id="${id}" autocomplete="${ac}" autocapitalize="off" autocorrect="off" spellcheck="false">`;
+    openSheet(`<h3>${esc(o.title)}</h3>${o.msg ? `<p>${esc(o.msg)}</p>` : ''}${o.warn ? `<div class="bk-warn"><p>${esc(o.warn)}</p></div>` : ''}
+      <label class="sh-lbl" for="pw1">${T.pwLbl}</label>${inp('pw1', o.twice ? 'new-password' : 'current-password')}
+      ${o.twice ? `<label class="sh-lbl" for="pw2">${T.pwAgain}</label>${inp('pw2', 'new-password')}` : ''}
+      <label class="pw-show"><input type="checkbox" id="pwShow"> ${T.pwShow}</label>
+      <p class="pw-st" id="pwSt" role="alert"></p>
+      ${o.forgot ? `<p><button class="pw-forgot" data-s="forgot">${T.pwForgot}</button></p>` : ''}
+      <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${esc(o.ok)}</button></div>`);
+    const p1 = $('pw1'), p2 = $('pw2'), st = $('pwSt'), okB = panel.querySelector('[data-s=ok]');
+    let busy = false;
+    $('pwShow').onchange = e => { [p1, p2].forEach(x => { if (x) x.type = e.target.checked ? 'text' : 'password'; }); };
+    const go = async () => {
+      if (busy) return;
+      const a = p1.value;
+      let err = null;
+      if (!a) err = o.twice ? T.pwShort : T.pwWrong;
+      else if (o.twice && pwLen(a) < PW_MIN) err = T.pwShort;
+      else if (o.twice && a !== p2.value) err = T.pwDiff;
+      if (!err && o.check){
+        busy = true; okB.disabled = true; st.textContent = T.pwBusy;
+        try { err = await o.check(a); } catch(e){ err = T.pwWrong; }
+        busy = false;
+        if (!panel.contains(okB)) return;   // the sheet was closed meanwhile
+        okB.disabled = false;
+      }
+      if (err){ st.textContent = err; p1.select(); return; }
+      closeSheet(a);
+    };
+    okB.onclick = go;
+    [p1, p2].forEach(x => { if (x) x.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); if (x === p1 && p2) p2.focus(); else go(); } }); });
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    const fg = panel.querySelector('[data-s=forgot]');
+    if (fg) fg.onclick = () => closeSheet('forgot');
+  });
+}
+// Unlocks the private notes when needed; true when they are open. Never asks in Utemodus or Regnlås.
+async function privEnsure(){
+  if (privKey) return true;
+  if (!state.priv || !CRYPTO_OK || state.field || rainLocked) return false;
+  const T = t();
+  const r = await pwSheet({title:T.privUnlockT, ok:T.privUnlock, forgot:true, check: async pw => {
+    let w = privWait();
+    if (w) return T.pwWait(fmtWait(w));
+    if (await privUnlock(pw)) return null;
+    privFailed(); w = privWait();
+    return w ? T.pwWait(fmtWait(w)) : T.pwWrong;
+  }});
+  if (r === 'forgot'){ await privForgot(); return false; }
+  return !!privKey;
+}
+async function privForgot(){
+  const T = t();
+  if (!(await confirmBox(T.pwForgotT, T.pwForgotMsg, T.privDelAll))) return;
+  if (privRaw) privRaw.fill(0);
+  privRaw = null; privKey = null; privOpen.clear();
+  view = null;
+  withUndo(T.privDeleted, () => { state.notes = state.notes.filter(n => !n.priv); delete state.priv; delete state.privFail; });
+}
+/* A note link with a password: 'e' + base64url(version 1 | z flag | salt 16 | IV 12 | ciphertext of the packed note).
+   Version 1 = PBKDF2-SHA-256 with 600,000 rounds; a later version byte can raise it. */
+const LINK_ITER = {1:600000};
+async function packBytes(obj){
+  const json = new TextEncoder().encode(JSON.stringify(obj));
+  if (typeof CompressionStream !== 'undefined'){
+    try { const st = new Blob([json]).stream().pipeThrough(new CompressionStream('deflate-raw')); return {z:1, bytes:new Uint8Array(await new Response(st).arrayBuffer())}; } catch(e){}
+  }
+  return {z:0, bytes:json};
+}
+async function unpackBytes(z, bytes){
+  if (z){ const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')); bytes = new Uint8Array(await new Response(st).arrayBuffer()); }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+async function sealLink(obj, pw){
+  const p = await packBytes(obj), salt = rnd(16), e = await gcmEnc(await pwKey(pw, salt, LINK_ITER[1]), p.bytes);
+  const out = new Uint8Array(2 + 16 + 12 + e.ct.length);
+  out[0] = 1; out[1] = p.z; out.set(salt, 2); out.set(e.iv, 18); out.set(e.ct, 30);
+  return 'e' + b64u(out);
+}
+// The packed note, or null for a wrong password; throws on a link that is not readable at all.
+async function openLink(code, pw){
+  const b = unb64u(code.slice(1));
+  if (b.length < 31 || !LINK_ITER[b[0]]) throw new Error('bad');
+  let bytes;
+  try { bytes = await gcmDec(await pwKey(pw, b.slice(2, 18), LINK_ITER[b[0]]), b.slice(18, 30), b.slice(30)); } catch(e){ return null; }
+  return unpackBytes(b[1], bytes);
+}
+// A backup with a password: a wrapper around the normal backup text. Old backups without one restore as before.
+async function bkSeal(text, pw){
+  const salt = rnd(16), e = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), new TextEncoder().encode(text));
+  return JSON.stringify({app:'trip-checklist', enc:1, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt), iv:b64u(e.iv), ct:b64u(e.ct)});
+}
+const bkIsSealed = o => !!(o && o.app === 'trip-checklist' && o.enc === 1 && o.kdf === 'pbkdf2-sha256' && Number.isInteger(o.iter) && o.iter >= 100000 && o.iter <= 10000000 && b64ok(o.salt) && b64ok(o.iv) && b64ok(o.ct));
+async function bkUnseal(o, pw){
+  try { return new TextDecoder().decode(await gcmDec(await pwKey(pw, unb64u(o.salt), o.iter), unb64u(o.iv), unb64u(o.ct))); }
+  catch(e){ return null; }
+}
+// Private notes from a backup with another password: opened with that password, sealed again with this phone's key.
+async function privAddForeign(pend, pw){
+  const raw = await privUnwrap(pend.priv, pw);
+  if (!raw) return null;
+  const key = await dkImport(raw); raw.fill(0);
+  const out = [];
+  for (const n of pend.notes){ const o = await noteOpenWith(key, n); if (o) out.push({n, o}); }
+  return out;
+}
+async function privStoreOpened(list){
+  let k = 0;
+  for (const {n, o} of list){
+    if ([...privOpen.values()].some(x => x.title === o.title && x.text === o.text)) continue;
+    const nn = noteMeta({id:uid(), title:'', text:'', t:n.t || Date.now()}, n);
+    await noteSeal(nn, o.title, o.text); state.notes.push(nn); k++;
+  }
+  if (k) save();
+  return k;
+}
 async function encodeList(L){ return encodePacked(packList(L)); }
 async function decodeList(code){ return unpackList(await decodePacked(code)); }
 // 0.6.0: the same compact link code for lists (#share=) and notes (#note=)
@@ -3945,6 +4275,7 @@ function openSheet(html, noFocus){
 }
 function closeSheet(val){
   overlay.hidden = true;
+  delete panel.dataset.priv;
   panel.innerHTML = '';
   if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
   setTimeout(() => {
@@ -4059,12 +4390,20 @@ async function listAction(a, id){
 
 function backupSheet(){
   const T = t();
-  const data = bkData(), rt = rescueText();
+  const plain = bkData(), rt = rescueText();
+  let data = plain, sealed = false;   // 0.18.0: data becomes the locked copy after Lås kopien
   const canShare = !!navigator.share;
   openSheet(`<h3>${T.backup}</h3>
     <div class="bk-warn"><p>${T.bkWarn}</p><p class="bk-how">${T.bkWarnHow}</p></div>
     <div class="section-label">${T.bkTake}</div>
     <p class="bk-covers">${T.bkCovers}</p>
+    ${CRYPTO_OK ? `<label class="pw-show bk-pw"><input type="checkbox" id="bkPwOn"> ${T.bkPwOn}</label>
+    <div id="bkPwBox" hidden><p class="sh-hint">${T.bkPwHint}</p>
+      <label class="sh-lbl" for="bkPw1">${T.pwLbl}</label><input type="password" id="bkPw1" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <label class="sh-lbl" for="bkPw2">${T.pwAgain}</label><input type="password" id="bkPw2" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <label class="pw-show"><input type="checkbox" id="bkPwShow"> ${T.pwShow}</label>
+      <p class="pw-st" id="bkPwSt" role="alert"></p>
+      <div class="row" style="justify-content:flex-start"><button class="btn" id="bkPwLock">${T.bkPwLock}</button></div></div>` : ''}
     <div class="bk-btns">${canShare ? `<button class="btn primary" id="bkShare">${T.bkShare}</button>` : ''}<button class="btn${canShare ? '' : ' primary'}" id="bkSave">${T.bkSave}</button><button class="btn" id="bkCopy">${T.bkCopy}</button></div>
     <div class="bk-msg" id="bkStatus" role="status" hidden></div>
     <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="bkOut" readonly>${esc(data)}</textarea></details>
@@ -4074,6 +4413,10 @@ function backupSheet(){
     <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
     <div class="row"><button class="btn" id="bkFile">${T.bkFile}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>
     <div class="bk-msg" id="bkRStatus" role="status" hidden></div>
+    <div id="bkRPwBox" hidden><p class="sh-hint" id="bkRPwMsg"></p>
+      <label class="sh-lbl" for="bkRPw">${T.pwLbl}</label><input type="password" id="bkRPw" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <p class="pw-st" id="bkRPwSt" role="alert"></p>
+      <div class="row" style="justify-content:flex-start"><button class="btn primary" id="bkRPwOk">${T.bkRPwOk}</button><button class="btn" id="bkRPwSkip" hidden>${T.bkSkipPriv}</button></div></div>
     ${rt ? `<div class="section-label">${T.rescueLbl}</div><p class="bk-covers">${T.rescueNote}</p>
     <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="rsOut" readonly>${esc(rt)}</textarea></details>
     <div class="row" style="justify-content:flex-start"><button class="btn" id="rsCopy">${T.bkCopy}</button><button class="btn" id="rsDel">${T.rescueDel}</button></div>` : ''}
@@ -4098,7 +4441,26 @@ function backupSheet(){
   };
   const done = (msg, btn, label) => { bkMarkDone(); say(msg, true); if (btn) flash(btn, label); };
   panel.querySelector('[data-s=cancel]').onclick = () => { closeSheet(null); render(); };
+  // 0.18.0: an optional password; the copy is locked first (Lås kopien), so Del still runs straight from the tap
+  const pwOn = () => CRYPTO_OK && $('bkPwOn').checked;
+  const waitLock = () => { if (pwOn() && !sealed){ say(T.bkPwFirst, false); return true; } return false; };
+  const unseal = () => { sealed = false; data = plain; $('bkOut').value = plain; };
+  if (CRYPTO_OK){
+    $('bkPwOn').onchange = e => { $('bkPwBox').hidden = !e.target.checked; unseal(); say('', false); if (e.target.checked) $('bkPw1').focus(); };
+    $('bkPwShow').onchange = e => { ['bkPw1', 'bkPw2'].forEach(id => { $(id).type = e.target.checked ? 'text' : 'password'; }); };
+    ['bkPw1', 'bkPw2'].forEach(id => $(id).addEventListener('input', () => { if (sealed){ unseal(); say('', false); } }));
+    $('bkPwLock').onclick = async () => {
+      const a = $('bkPw1').value, st = $('bkPwSt');
+      if (pwLen(a) < PW_MIN){ st.textContent = T.pwShort; return; }
+      if (a !== $('bkPw2').value){ st.textContent = T.pwDiff; return; }
+      st.textContent = ''; $('bkPwLock').disabled = true;
+      try { data = await bkSeal(plain, a); sealed = true; $('bkOut').value = data; say(T.bkPwDone, true); }
+      catch(e){ unseal(); say(T.bkManual, false); }
+      $('bkPwLock').disabled = false;
+    };
+  }
   if (canShare) $('bkShare').onclick = async () => {
+    if (waitLock()) return;
     // Android's share sheet takes plain text files, not .json, so the shared file is a .txt (restore reads both).
     const name = bkFileName().replace(/\.json$/, '.txt');
     let file = null;
@@ -4113,6 +4475,7 @@ function backupSheet(){
     say(T.bkShareFail, false);
   };
   $('bkSave').onclick = () => {
+    if (waitLock()) return;
     try {
       const url = URL.createObjectURL(new Blob([data], {type:'application/json'}));
       const a = document.createElement('a');
@@ -4122,6 +4485,7 @@ function backupSheet(){
     } catch(e){ say(T.bkManual, false); }
   };
   $('bkCopy').onclick = async () => {
+    if (waitLock()) return;
     const ta = $('bkOut');
     const btn = $('bkCopy');
     try { await navigator.clipboard.writeText(ta.value); done(T.bkCopied, btn, T.bkDoneCopy); }
@@ -4129,17 +4493,53 @@ function backupSheet(){
   };
   const rstatus = $('bkRStatus');
   const sayR = (msg, ok) => { rstatus.textContent = msg; rstatus.className = 'bk-msg' + (ok ? ' ok' : ''); rstatus.hidden = !msg; };
+  // 0.18.0: one password box for a locked backup and for private notes with another password
+  let rPend = null;
+  const rBox = (msg, skip) => { $('bkRPwBox').hidden = !msg; $('bkRPwMsg').textContent = msg || ''; $('bkRPwSkip').hidden = !skip; $('bkRPwSt').textContent = ''; $('bkRPw').value = ''; if (msg) $('bkRPw').focus(); };
   const restore = text => {
     // 0.14.1: a pasted share link (#share= or #note=) is added the same way as when the link is opened
     const m = /#(share|note)=([A-Za-z0-9_-]+)/.exec(text || '');
     if (m){ closeSheet(null); render(); importHash('#' + m[1] + '=' + m[2]); return; }
+    rPend = null; rBox(null);
+    let o = null; try { o = JSON.parse(text); } catch(e){}
+    if (bkIsSealed(o)){
+      if (!CRYPTO_OK){ sayR(T.bkBad, false); return; }
+      sayR('', false); rPend = {kind:'enc', o}; rBox(T.bkLockedMsg, false); return;
+    }
     const a = bkRestore(text);
     if (!a){ sayR(T.bkBad, false); return; }
-    if (!(a.l || a.n || a.w || a.k || a.p)){ sayR(T.bkNothing, true); return; }
+    $('bkIn').value = '';
+    if (a.pend){ rPend = {kind:'priv', p:a.pend}; rBox(state.priv ? T.bkPrivOther : T.bkPrivAsk, true); }
+    if (!(a.l || a.n || a.w || a.k || a.p)){ sayR(a.pend ? '' : T.bkNothing, true); return; }
     save(); render();
     sayR(T.bkAddedAll(a), true);
-    $('bkIn').value = '';
   };
+  $('bkRPwSkip').onclick = () => { rPend = null; rBox(null); };
+  $('bkRPwOk').onclick = async () => {
+    const pw = $('bkRPw').value, st = $('bkRPwSt'), btn = $('bkRPwOk');
+    if (!rPend || !pw || btn.disabled) return;
+    btn.disabled = true; st.textContent = T.pwBusy;
+    try {
+      if (rPend.kind === 'enc'){
+        const inner = await bkUnseal(rPend.o, pw);
+        if (inner == null){ st.textContent = T.pwWrong; return; }
+        restore(inner); return;
+      }
+      const opened = await privAddForeign(rPend.p, pw);
+      if (!opened){ st.textContent = T.pwWrong; return; }
+      rPend = null;
+      // no private password on this phone yet: the same password, with a new data key made here
+      if (!state.priv) await privCreate(pw);
+      if (!privKey){
+        // this phone's own private notes must be open to seal the new ones with its key
+        closeSheet(null); render();
+        if (!(await privEnsure())){ showToast(T.privSkipped); return; }
+        const k = await privStoreOpened(opened); render(); showToast(T.privAdded(k)); return;
+      }
+      const k = await privStoreOpened(opened); rBox(null); render(); sayR(T.privAdded(k), true);
+    } finally { if (panel.contains(btn)){ btn.disabled = false; if (st.textContent === T.pwBusy) st.textContent = ''; } }
+  };
+  $('bkRPw').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('bkRPwOk').click(); } });
   $('bkRestore').onclick = () => restore($('bkIn').value);
   $('bkFile').onclick = () => $('bkFileIn').click();
   $('bkFileIn').onchange = e => {
@@ -4262,13 +4662,20 @@ main.addEventListener('click', async e => {
   // 0.6.0: Rediger, the title or the text turns the note into fields in place; the pop-up is only for Nytt notat
   if (act === 'editNote'){
     if (state.field) return;
-    const n = state.notes.find(x => x.id === b.dataset.id); if (!n) return;
+    const n = noteView(state.notes.find(x => x.id === b.dataset.id) || {priv:1}); if (!n) return;
     if (window.getSelection && String(window.getSelection()).length) return;   // selecting text to copy is not a tap to edit
     noteEdit = {id:n.id, title:n.title, text:n.text, c:n.c || 0, focus:b.dataset.f === 'title' ? 'title' : 'text'}; render(); return;
   }
   if (act === 'noteSave' || act === 'noteCancel'){
     const ed = noteEdit, n = ed && state.notes.find(x => x.id === ed.id);
     noteEdit = null;
+    if (act === 'noteSave' && n && n.priv && !state.field){
+      // 0.18.0: a private note is sealed again with a fresh IV; plain text never reaches state
+      const o = privOpen.get(n.id), ti = ed.title.trim(), tx = ed.text;
+      if (o && privKey && (ti || tx.trim()) && (ti !== o.title || tx !== o.text)){ try { await noteSeal(n, ti, tx); n.t = Date.now(); } catch(e){} }
+      if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; }
+      save(); render(); return;
+    }
     if (act === 'noteSave' && n && !state.field){
       const ti = ed.title.trim(), tx = ed.text;
       if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); }
@@ -4285,13 +4692,45 @@ main.addEventListener('click', async e => {
   }
   if (act === 'notePin'){
     if (state.field) return;
-    const n = state.notes.find(x => x.id === b.dataset.id); if (!n) return;
+    const n = state.notes.find(x => x.id === b.dataset.id); if (!n || !noteView(n)) return;
     if (n.pin) delete n.pin; else n.pin = true;
     save(); render(); return;
   }
   if (act === 'noteShare'){
     if (state.field) return;
     const n = state.notes.find(x => x.id === b.dataset.id); if (n) shareNote(n); return;
+  }
+  // 0.18.0: private notes
+  if (act === 'privOpen'){ if (await privEnsure()) render(); return; }
+  if (act === 'privLockNow'){ await privLock(); render(); return; }
+  if (act === 'notePriv'){
+    if (state.field || !CRYPTO_OK) return;
+    const id = b.dataset.id;
+    if (!state.priv){
+      const pw = await pwSheet({title:T.privNewT, msg:T.privNewMsg, warn:T.privNewWarn, twice:true, ok:T.privCreate});
+      if (!pw) return;
+      await privCreate(pw);
+    } else if (!(await privEnsure())) return;
+    const n = state.notes.find(x => x.id === id);
+    if (!n || n.priv || !privKey) return;
+    await noteSeal(n, n.title, n.text); save(); render(); showToast(T.privMade);
+    return;
+  }
+  if (act === 'notePubl'){
+    if (state.field) return;
+    const id = b.dataset.id;
+    if (!(await privEnsure())) return;
+    const n = state.notes.find(x => x.id === id), o = n && privOpen.get(id);
+    if (!n || !n.priv || !o) return;
+    n.title = o.title; n.text = o.text; delete n.priv; delete n.iv; delete n.ct; privOpen.delete(id);
+    save(); render(); return;
+  }
+  if (act === 'privChange'){
+    if (state.field || !state.priv || !(await privEnsure())) return;
+    const pw = await pwSheet({title:T.privChange, msg:T.privNewMsg, warn:T.privNewWarn, twice:true, ok:T.privChange});
+    if (!pw || !privRaw) return;
+    await privRekey(pw); save(); render(); showToast(T.privChanged);
+    return;
   }
   if (act === 'delNote'){
     if (state.field) return;
@@ -4486,7 +4925,7 @@ function notesSortStart(btn, e){
     commit: pos => {
       const id = btn.dataset.id, order = free.map(r => r.dataset.id).filter(x => x !== id);
       order.splice(pos, 0, id);
-      const n = state.notes.find(x => x.id === id), title = n ? (n.title || t().untitled) : '';
+      const n = state.notes.find(x => x.id === id), nv = n && noteView(n), title = n ? (nv ? (nv.title || t().untitled) : t().privNote) : '';
       withUndo(t().movedX(title), () => { state.notes = state.notes.filter(x => x.pin).concat(order.map(x => state.notes.find(y => y.id === x)).filter(Boolean)); });
     }}, e);
 }
