@@ -1500,13 +1500,23 @@ test.describe('privat', () => {
     const st = await stored(page);
     expect(Object.keys(st.priv).sort()).toEqual(['iter', 'iv', 'kdf', 'salt', 'v', 'wrap']);
     expect(st.priv.iter).toBe(600000);
-    // open while unlocked: the title shows with a lock; Lås nå on Dine lister locks it
+    // open while unlocked: the title shows with the open lock; Lås nå on Dine lister locks it
     await page.locator('#main [data-act="back"]').click();
+    await expect(page.locator('#main .notes-ix')).toContainText('Hemmelig hytte');
+    await expect(page.locator('#main .notes-ix .lock-open')).toHaveCount(1);
+    // build 72: Lås nå next to Nytt notat locks all; then it says Lås opp and opens them again
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await expect(page.locator('#main .notes-ix .priv-locked')).toContainText('Privat notat');
+    await page.locator('#main .row-btns [data-act="privOpen"]').click();
+    await pwOk(page, PW);
     await expect(page.locator('#main .notes-ix')).toContainText('Hemmelig hytte');
     await page.locator('#listBtn').click().catch(() => {});
     await goTab(page, 'list');
     await page.locator('#listBtn').click();
+    await expect(page.locator('#main .priv-status')).toHaveText('Private notater er åpne.');
     await page.locator('#main [data-act="privLockNow"]').click();
+    await expect(page.locator('#main .priv-status')).toHaveText('Private notater er låst.');
+    await expect(page.locator('#main .pg-sec [data-act="privOpen"]')).toHaveCount(1);
     await goTab(page, 'notes');
     await expect(page.locator('#main .notes-ix .priv-locked')).toContainText('Privat notat');
     await expect(page.locator('#main .notes-ix')).not.toContainText('Hemmelig');
@@ -1550,6 +1560,16 @@ test.describe('privat', () => {
     await page.locator('#main [data-act="notePubl"]').click();
     expect(JSON.stringify(await stored(page))).toContain('flyttet til sekken');
     await makePrivate(page, null, false);
+    // build 72: deleting a private note asks first; Avbryt keeps it, Slett deletes with Angre
+    await page.locator('#main [data-act="delNote"]').click();
+    await expect(page.locator('#overlay h3')).toHaveText('Slette det private notatet?');
+    await page.locator('#overlay [data-s="cancel"]').click();
+    await expect(page.locator('#main .note-full h2')).toContainText('Hemmelig hytte');
+    await page.locator('#main [data-act="delNote"]').click();
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect(page.locator('#toast')).toContainText('slettet');
+    await page.locator('#toast button').click();
+    await expect(page.locator('#main .notes-ix [data-act="openNote"]')).toHaveCount(2);
     // Glemt passordet: deletes only the private notes, with Angre
     await goTab(page, 'list');
     await page.locator('#listBtn').click();
