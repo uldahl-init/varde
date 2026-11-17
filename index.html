@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5XkXtJPk+TRw2ppayD3u9B99517niRck3RlhoiZ4KN8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-96w6nX+aMssO0VLISn650hn0IV4BaYXEd27uUjpsfkE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -793,8 +793,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.18.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 72;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.18.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 73;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -880,7 +880,7 @@ const UI = {
     bkTake:'Take a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
     bkShare:'Share', bkSave:'Save as file', bkShared:'Backup shared.', bkSaved:'File made. Look in your downloads.', bkShow:'Show the backup as text',
     bkCopy:'Copy', bkCopied:'Backup copied. Paste it somewhere safe, for example in an e-mail to yourself.', bkManual:'Select the text and copy it manually.', bkShareFail:'Sharing did not work on this phone. Use Save as file or Copy instead.', bkDoneShare:'Shared', bkDoneSave:'Saved', bkDoneCopy:'Copied', restore:'Restore',
-    bkPaste:'Paste a backup or a shared link here', bkFile:'Choose file', bkAdd:'Add from backup', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
+    bkPaste:'Paste a backup or a shared link here', bkFile:'Choose file', bkAdd:'Add from the text', bkCut:'The text seems to have been cut off. Use Choose file to read the backup straight from the file.', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
     bkAddedAll:a=>'Added: ' + [a.l && `${a.l} list${a.l>1?'s':''}`, a.n && `${a.n} note${a.n>1?'s':''}`, a.w && `${a.w} in Pack weight`, a.k && `${a.k} link${a.k>1?'s':''}`, a.p && 'the figures in Plan'].filter(Boolean).join(', ') + '.',
     bkNothing:'Everything in this backup is already here.',
     saveFail:'Could not save. The phone may be full. Free up space, and take a backup.',
@@ -1120,7 +1120,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     bkTake:'Ta sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
     bkShare:'Del', bkSave:'Lagre som fil', bkShared:'Sikkerhetskopien er delt.', bkSaved:'Filen er laget. Se i nedlastingene dine.', bkShow:'Vis sikkerhetskopien som tekst',
     bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert. Lim den inn et trygt sted, for eksempel i en e-post til deg selv.', bkManual:'Merk teksten og kopier den manuelt.', bkShareFail:'Deling virket ikke på denne mobilen. Bruk Lagre som fil eller Kopier i stedet.', bkDoneShare:'Delt', bkDoneSave:'Lagret', bkDoneCopy:'Kopiert', restore:'Gjenopprett',
-    bkPaste:'Lim inn en sikkerhetskopi eller en delt lenke her', bkFile:'Velg fil', bkAdd:'Legg til fra sikkerhetskopi', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
+    bkPaste:'Lim inn en sikkerhetskopi eller en delt lenke her', bkFile:'Velg fil', bkAdd:'Legg til fra teksten', bkCut:'Teksten ser ut til å være kuttet av underveis. Bruk Velg fil og hent sikkerhetskopien rett fra filen.', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
     bkAddedAll:a=>'Lagt til: ' + [a.l && `${a.l} ${a.l>1?'lister':'liste'}`, a.n && `${a.n} ${a.n>1?'notater':'notat'}`, a.w && `${a.w} i Sekkvekt`, a.k && `${a.k} ${a.k>1?'lenker':'lenke'}`, a.p && 'tallene i Planlegg'].filter(Boolean).join(', ') + '.',
     bkNothing:'Alt i denne sikkerhetskopien finnes her fra før.',
     saveFail:'Kunne ikke lagre. Mobilen kan være full. Frigjør plass, og ta en sikkerhetskopi.',
@@ -4417,9 +4417,10 @@ function backupSheet(){
     <details class="bk-text"><summary>${T.bkShow}</summary><textarea id="bkOut" readonly>${esc(data)}</textarea></details>
     <div class="section-label">${T.restore}</div>
     <p class="bk-covers">${T.bkRestoreNote}</p>
-    <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
     <input type="file" id="bkFileIn" accept=".json,.txt,application/json,text/plain" hidden>
-    <div class="row"><button class="btn" id="bkFile">${T.bkFile}</button><button class="btn primary" id="bkRestore">${T.bkAdd}</button></div>
+    <div class="row" style="justify-content:flex-start"><button class="btn primary" id="bkFile">${T.bkFile}</button></div>
+    <textarea id="bkIn" placeholder="${esc(T.bkPaste)}"></textarea>
+    <div class="row" style="justify-content:flex-start"><button class="btn" id="bkRestore">${T.bkAdd}</button></div>
     <div class="bk-msg" id="bkRStatus" role="status" hidden></div>
     <div id="bkRPwBox" hidden><p class="sh-hint" id="bkRPwMsg"></p>
       <label class="sh-lbl" for="bkRPw">${T.pwLbl}</label><input type="password" id="bkRPw" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false">
@@ -4504,7 +4505,9 @@ function backupSheet(){
   // 0.18.0: one password box for a locked backup and for private notes with another password
   let rPend = null;
   const rBox = (msg, skip) => { $('bkRPwBox').hidden = !msg; $('bkRPwMsg').textContent = msg || ''; $('bkRPwSkip').hidden = !skip; $('bkRPwSt').textContent = ''; $('bkRPw').value = ''; if (msg) $('bkRPw').focus(); };
-  const restore = text => {
+  // build 73: pasted text that starts like a backup but does not parse was cut off on the way (long texts often are)
+  const looksCut = text => { const x = String(text || '').trim(); if (!/^\{\s*"app"\s*:\s*"trip-checklist"/.test(x)) return false; try { JSON.parse(x); return false; } catch(e){ return true; } };
+  const restore = (text, fromFile) => {
     // 0.14.1: a pasted share link (#share= or #note=) is added the same way as when the link is opened
     const m = /#(share|note)=([A-Za-z0-9_-]+)/.exec(text || '');
     if (m){ closeSheet(null); render(); importHash('#' + m[1] + '=' + m[2]); return; }
@@ -4515,7 +4518,7 @@ function backupSheet(){
       sayR('', false); rPend = {kind:'enc', o}; rBox(T.bkLockedMsg, false); return;
     }
     const a = bkRestore(text);
-    if (!a){ sayR(T.bkBad, false); return; }
+    if (!a){ sayR(!fromFile && looksCut(text) ? T.bkCut : T.bkBad, false); return; }
     $('bkIn').value = '';
     if (a.pend){ rPend = {kind:'priv', p:a.pend}; rBox(state.priv ? T.bkPrivOther : T.bkPrivAsk, true); }
     if (!(a.l || a.n || a.w || a.k || a.p)){ sayR(a.pend ? '' : T.bkNothing, true); return; }
@@ -4554,7 +4557,7 @@ function backupSheet(){
     const f = e.target.files && e.target.files[0];
     if (!f) return;
     const r = new FileReader();
-    r.onload = () => restore(String(r.result || ''));
+    r.onload = () => restore(String(r.result || ''), true);
     r.onerror = () => sayR(T.bkBad, false);
     r.readAsText(f);
     e.target.value = '';
