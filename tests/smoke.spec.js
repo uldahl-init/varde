@@ -1323,14 +1323,21 @@ test.describe('melkeveien', () => {
     const X = TX[L.lang];
     let ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
     await open(p, L.lang, {lat:58.97, lon:5.73}, '2026-11-17T21:00:00Z');
-    const rows = p.locator('#stList .st-row');
+    const rows = p.locator('#stList ul[data-g="mw"] .st-row');  // 0.19.0: the Milky Way rows are their own group, last
+    await expect(p.locator('#stList h3[data-g="mw"]')).toHaveText(X.mw);
     await expect(rows.nth(0).locator('.st-name')).toHaveText(X.mw);
     await expect(rows.nth(0).locator('.st-pos')).toContainText(X.wE);
     await expect(rows.nth(0).locator('.st-pos')).toContainText(X.high);
     await expect(rows.nth(1).locator('.st-name')).toHaveText(X.gc);
     await expect(rows.nth(1).locator('.st-pos')).toContainText(X.barely);
-    expect(await p.locator('#skyBand path').count()).toBeGreaterThan(20);
-    await expect(p.locator('#skyBand line')).toHaveCount(2);
+    // 0.19.0: the band lies inside the dial (r 150), and two triangles on the outer edge mark the horizon points
+    expect(await p.locator('#skyBand .mwseg').count()).toBeGreaterThan(20);
+    const far = await p.locator('#skyBand .mwseg').evaluateAll(ls => Math.max(...ls.flatMap(l => [[+l.getAttribute('x1'), +l.getAttribute('y1')], [+l.getAttribute('x2'), +l.getAttribute('y2')]]).map(q => Math.hypot(q[0] - 160, q[1] - 160))));
+    expect(far).toBeLessThanOrEqual(150.5);
+    const near = await p.locator('#skyBand .mwseg').evaluateAll(ls => Math.min(...ls.map(l => Math.hypot((+l.getAttribute('x1') + +l.getAttribute('x2')) / 2 - 160, (+l.getAttribute('y1') + +l.getAttribute('y2')) / 2 - 160))));
+    expect(near).toBeLessThan(30);  // nearly overhead: passes close to the middle
+    await expect(p.locator('#skyBand .mwtri')).toHaveCount(2);
+    await expect(p.locator('#skyBand path:not(.mwtri)')).toHaveCount(0);
     await expect(p.locator('#stMoon polygon')).toHaveCount(1);
     await expect(p.locator('#skyStars text', {hasText: new RegExp('^' + X.mark + '$')})).toHaveCount(0);
     expect(await p.content()).toContain(X.whistle);
@@ -1338,14 +1345,114 @@ test.describe('melkeveien', () => {
     await ctx.close();
     ctx = await ctxFor(browser, L.locale); p = await ctx.newPage(); err = watchErrors(p);
     await open(p, L.lang, {lat:-33.87, lon:151.21}, '2026-07-15T12:00:00Z');
-    await expect(p.locator('#stList .st-row').nth(1).locator('.st-pos')).toContainText(X.over);
+    await expect(p.locator('#stList ul[data-g="mw"] .st-row').nth(1).locator('.st-pos')).toContainText(X.over);
     await expect(p.locator('#skyStars text', {hasText: new RegExp('^' + X.mark + '$')})).toHaveCount(1);
     expect(err).toEqual([]);
     await ctx.close();
     ctx = await ctxFor(browser, L.locale); p = await ctx.newPage(); err = watchErrors(p);
     await open(p, L.lang, {lat:28.3, lon:-16.5}, '2026-03-01T03:20:00Z');
-    await expect(p.locator('#stList .st-row').nth(0).locator('.st-pos')).toContainText(X.low);
-    await expect(p.locator('#skyBand path')).toHaveCount(0);
+    await expect(p.locator('#stList ul[data-g="mw"] .st-row').nth(0).locator('.st-pos')).toContainText(X.low);
+    await expect(p.locator('#skyBand .mwseg')).toHaveCount(0);
+    await expect(p.locator('#skyBand .mwtri')).toHaveCount(0);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
+/* ---------- From build 75 (0.19.0): names on the ring, the list in groups with a sort switch, the Milky Way in the dial ----------
+   Stavanger 19 Nov 2026 21:00 local (20:00 UTC): Rigel (3° up, 108°) and Aldebaran (104°) are a close pair at the east
+   side; Rigel's name goes below its own dot and Aldebaran's above its own, each line starts at its own dot, and no two
+   names overlap. The list has three groups in order; Høyest først puts Deneb (55°) before Rigel (3°) in Stjerner, and the
+   choice survives a reload. «lavt over horisonten» for Rigel. Help text and guides carry the new texts. */
+test.describe('stjerner 0.19', () => {
+  const ctxFor = (browser, locale) => browser.newContext({locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+  const open = async (p, lang, pos, when) => {
+    await p.clock.setFixedTime(new Date(when));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:Object.assign({t:Date.now()}, pos)}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStars"]').click();
+  };
+  const TX = {no:{mp:'Månen og planetene', st:'Stjerner', mw:'Melkeveien', bright:'Lysest først', high:'Høyest først', low:'lavt over horisonten',
+      help:'De to trekantene på ytterkanten peker dit Melkeveien møter horisonten', guide:'Hvorfor den går rundt hele himmelen:', comp:'Båndet inne i kompasset er Melkeveien'},
+    en:{mp:'The moon and planets', st:'Stars', mw:'Milky Way', bright:'Brightest first', high:'Highest first', low:'low on the horizon',
+      help:'The two triangles on the outer edge point to where the Milky Way meets the horizon', guide:'Why it runs all round the sky:', comp:'The band inside the compass is the Milky Way'}};
+  const dotOf = (p, name) => p.evaluate(n => {
+    const g = [...document.querySelectorAll('#skyStars .stl')].find(e => e.querySelector('text').textContent === n);
+    if (!g) return null;
+    const svg = g.ownerSVGElement, az = +g.dataset.az, R = Math.PI / 180, x = 160 + 162 * Math.sin(az * R), y = 160 - 162 * Math.cos(az * R);
+    const pt = svg.createSVGPoint(); pt.x = x; pt.y = y; const d = pt.matrixTransform(document.getElementById('dial').getScreenCTM());
+    const t = g.querySelector('text').getBoundingClientRect(), ln = g.querySelector('line');
+    let l = null;
+    if (ln.getAttribute('visibility') === 'visible'){ const a = svg.createSVGPoint(); a.x = +ln.getAttribute('x1'); a.y = +ln.getAttribute('y1'); const m = g.getScreenCTM(); const s = a.matrixTransform(m); l = {x: s.x, y: s.y}; }
+    return {dot: {x: d.x, y: d.y}, text: {top: t.top, bottom: t.bottom, left: t.left, right: t.right, cy: (t.top + t.bottom) / 2}, line: l, shown: g.getAttribute('visibility') !== 'hidden'};
+  }, name);
+  for (const L of LANGS) test(`names, groups and the sort switch (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
+    await open(p, L.lang, {lat:58.97, lon:5.73}, '2026-11-19T20:00:00Z');
+    // names: Rigel below its own dot, Aldebaran above its own, Rigel's line starts at Rigel's dot
+    const rig = await dotOf(p, 'Rigel'), ald = await dotOf(p, 'Aldebaran');
+    expect(rig && ald).toBeTruthy();
+    expect(rig.shown && ald.shown).toBe(true);
+    expect(rig.dot.y).toBeGreaterThan(ald.dot.y);
+    expect(rig.text.cy).toBeGreaterThan(rig.dot.y);
+    expect(ald.text.cy).toBeLessThan(ald.dot.y);
+    expect(rig.line).toBeTruthy();
+    expect(Math.hypot(rig.line.x - rig.dot.x, rig.line.y - rig.dot.y)).toBeLessThan(12);
+    // every visible line starts at its own dot, and no two shown names overlap
+    const chk = await p.evaluate(() => {
+      const R = Math.PI / 180, out = {bad: 0, lines: 0, overlap: 0}, boxes = [];
+      document.querySelectorAll('#skyStars .stl').forEach(g => {
+        if (g.getAttribute('visibility') === 'hidden') return;
+        const svg = g.ownerSVGElement, az = +g.dataset.az, pt = svg.createSVGPoint();
+        pt.x = 160 + 162 * Math.sin(az * R); pt.y = 160 - 162 * Math.cos(az * R);
+        const d = pt.matrixTransform(document.getElementById('dial').getScreenCTM()), ln = g.querySelector('line');
+        if (ln.getAttribute('visibility') === 'visible'){
+          out.lines++;
+          const a = svg.createSVGPoint(); a.x = +ln.getAttribute('x1'); a.y = +ln.getAttribute('y1');
+          const s = a.matrixTransform(g.getScreenCTM());
+          if (Math.hypot(s.x - d.x, s.y - d.y) > 12) out.bad++;
+        }
+        const b = g.querySelector('text').getBoundingClientRect();
+        boxes.forEach(o => { if (b.left < o.right - 1 && b.right > o.left + 1 && b.top < o.bottom - 1 && b.bottom > o.top + 1) out.overlap++; });
+        boxes.push(b);
+      });
+      return out;
+    });
+    expect(chk.lines).toBeGreaterThan(1);
+    expect(chk.bad).toBe(0);
+    expect(chk.overlap).toBe(0);
+    // the names sit under the dots: each name group comes before the dots in #skyStars
+    expect(await p.evaluate(() => { const k = [...document.getElementById('skyStars').children]; const last = k.map(e => e.classList.contains('stl')).lastIndexOf(true); return k.slice(0, last + 1).every(e => e.classList.contains('stl')); })).toBe(true);
+    // three groups in order, and Rigel low
+    await expect(p.locator('#stList h3.st-grp')).toHaveText([X.mp, X.st, X.mw]);
+    const stars = p.locator('#stList ul[data-g="st"] .st-name');
+    await expect(p.locator('#stList ul[data-g="st"] .st-row', {hasText: 'Rigel'}).locator('small')).toHaveText(X.low);
+    const order = async () => (await stars.allTextContents());
+    let o = await order();
+    expect(o.indexOf('Rigel')).toBeLessThan(o.indexOf('Deneb'));  // brightest first: Rigel (0.1) before Deneb (1.3)
+    await expect(p.locator('#main [data-act="stSort"][data-v="bright"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(p.locator('#main [data-act="stSort"][data-v="bright"]')).toHaveText(X.bright);
+    await p.locator('#main [data-act="stSort"][data-v="high"]').click();
+    await expect(p.locator('#main [data-act="stSort"][data-v="high"]')).toHaveText(X.high);
+    await expect(p.locator('#main [data-act="stSort"][data-v="high"]')).toHaveAttribute('aria-pressed', 'true');
+    o = await order();
+    expect(o.indexOf('Deneb')).toBeLessThan(o.indexOf('Rigel'));
+    const alts = await p.locator('#stList ul[data-g="st"] .st-row small').allTextContents();
+    const num = alts.map(a => /^(\d+)°/.test(a) ? +a.match(/^(\d+)/)[1] : (a === X.low ? 0 : 90));
+    expect(num).toEqual(num.slice().sort((a, b) => b - a));
+    await expect(p.locator('#stList h3.st-grp')).toHaveText([X.mp, X.st, X.mw]);
+    // the choice is kept after a reload
+    await p.reload();
+    await expect(p.locator('#main [data-act="stSort"][data-v="high"]')).toHaveAttribute('aria-pressed', 'true');
+    o = await order();
+    expect(o.indexOf('Deneb')).toBeLessThan(o.indexOf('Rigel'));
+    // help text, and the two guides
+    await expect(p.locator('#main .manual')).toContainText(X.help);
+    expect(await p.content()).toContain(X.guide);
+    expect(await p.content()).toContain(X.comp);
     expect(err).toEqual([]);
     await ctx.close();
   });

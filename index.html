@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-r3Iaf9Bwssq6LeGqJhZNxNm96OgdBs3MmZwZ+1CxZ8I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-IH5IpV+DWyT9TflxMs9W4YfCtjy77XUZkbw6wC5R4b0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -467,6 +467,11 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .st-name{flex:1;font-weight:600}
 .st-pos{text-align:right;font-variant-numeric:tabular-nums}
 .st-pos small{display:block;color:var(--muted);font-size:.85rem}
+.st-sort{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.st-grp{margin:18px 0 0;font-size:1rem;font-weight:600;color:var(--muted)}
+.mwb{opacity:.8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mwb{opacity:1}}
+:root[data-theme="dark"] .mwb{opacity:1}
 .c-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .c-btns .chip{padding:12px 20px}
 .c-msg{margin-top:14px;text-align:center;color:var(--muted);max-width:420px}
@@ -793,8 +798,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.18.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 74;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.19.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 75;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -900,17 +905,17 @@ const UI = {
 appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
-    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', stNone:'None of these are above the horizon right now.',
+    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNone:'None of these are above the horizon right now.',
     stLow:'low on the horizon', stHigh:'nearly overhead', stAlt:(h, f) => `${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`,
     mwName:'Milky Way', mwFrom:(a, b) => `from ${a} to ${b}`, gcName:'Centre of the Milky Way (Sagittarius)', gcBelow:'below the horizon now', gcHighest:(h, d) => `highest ${h}° up in the ${d}`, gcBarely:h => `only just clears the horizon here (highest ${h}°)`, gcNever:'never rises above the horizon here', mwTop:(d, h, f) => `highest in the ${d} · ${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`, mwTopHigh:'highest nearly overhead', mwLow:'The Milky Way lies low along the horizon now, and is hard to see.', mwMoon:'The moon is bright now, so the Milky Way is hard to see.',
-    stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
+    stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>The ring shows only the direction of the stars and planets; their height is in the list. The Milky Way is a band right across the sky, so it is drawn inside the compass, where its height shows too: the middle of the compass is straight overhead, and the edge is the horizon. The two triangles on the outer edge point to where the Milky Way meets the horizon, the same directions as «from … to …» in the list.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
     starN:{gc:'Centre', sirius:'Sirius', canopus:'Canopus', acen:'Alpha Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polaris', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'The moon'},
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
       ['Sun and moon on the compass','<p>The two round buttons under Hold reading switch these on and off. <b>Sun and moon now</b> (sun and moon symbol) shows where the sun and the moon are right now. Faded means below the horizon. <b>Sunrise and sunset</b> (half sun with arrows, the same symbol as in the Sun details below) marks the directions where the sun rises (arrow up) and sets (arrow down) on the chosen date, with a short line at the edge for the exact direction. Both need your position, and both are on from the start.</p>'],
       ['True north','<p>With your position saved, the compass shows <b>true north</b>, the north of maps and of the sky, so the sun, the moon and the stars line up with the dial. A phone measures magnetic north, so the app adds the declination where you are, calculated on the phone with the World Magnetic Model 2025. The line under the direction says which north you see and gives the declination. Without a position the compass shows magnetic north, like a baseplate compass.</p><p>In Norway the declination is about 3–5° east in the south and up to 15–18° east in Finnmark (2026). It changes slowly from year to year.</p>'],
-      ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The faint band in the ring is the Milky Way: it runs from the horizon on one side to the other, strongest where it stands highest and towards its bright centre in Sagittarius. The moon in the middle shows its phase right now.</p>'],
+      ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The band inside the compass is the Milky Way: the middle of the compass is straight overhead, and the edge is the horizon. It is strongest where it stands highest and towards its bright centre in Sagittarius. The two triangles on the outer edge show where the Milky Way meets the horizon. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     notePriv:'Make private', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
     pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
@@ -1140,17 +1145,17 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
 appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
-    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', stNone:'Ingen av disse står over horisonten akkurat nå.',
-    stLow:'lavt i horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
+    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNone:'Ingen av disse står over horisonten akkurat nå.',
+    stLow:'lavt over horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
     mwName:'Melkeveien', mwFrom:(a, b) => `fra ${a} til ${b}`, gcName:'Melkeveiens sentrum (Skytten)', gcBelow:'under horisonten nå', gcHighest:(h, d) => `høyest ${h}° opp i ${d}`, gcBarely:h => `kommer bare så vidt over horisonten her (høyest ${h}°)`, gcNever:'kommer aldri over horisonten her', mwTop:(d, h, f) => `høyest i ${d} · ${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`, mwTopHigh:'høyest nesten rett over deg', mwLow:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mwMoon:'Månen er lys nå, så Melkeveien er vanskelig å se.',
-    stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
+    stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Ringen viser bare retningen til stjernene og planetene; høyden står i listen. Melkeveien er et bånd tvers over himmelen, så den er tegnet inne i kompasset, slik at høyden også vises: midten av kompasset er rett over deg, og kanten er horisonten. De to trekantene på ytterkanten peker dit Melkeveien møter horisonten, i de samme retningene som «fra … til …» i listen.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
     starN:{gc:'Sentrum', sirius:'Sirius', canopus:'Canopus', acen:'Alfa Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polarstjernen', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'Månen'},
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
       ['Sol og måne på kompasset','<p>De to runde knappene under Hold retningen slår dette av og på. <b>Sol og måne nå</b> (symbol med sol og måne) viser hvor solen og månen står akkurat nå. Blek betyr under horisonten. <b>Soloppgang og solnedgang</b> (halv sol med piler, samme symbol som under Sol lenger ned) markerer retningen der solen står opp (pil opp) og går ned (pil ned) på valgt dato, med en kort strek ytterst for nøyaktig retning. Begge trenger posisjonen din, og begge er på fra start.</p>'],
       ['Sann nord','<p>Med posisjonen lagret viser kompasset <b>sann nord</b>, nord på kartet og på himmelen, så sola, månen og stjernene stemmer med skiva. Mobilen måler magnetisk nord, så appen legger til misvisningen der du er, regnet ut på mobilen med verdens magnetiske modell (World Magnetic Model 2025). Linja under retningen sier hvilket nord du ser, og viser misvisningen. Uten posisjon viser kompasset magnetisk nord, som et vanlig kompass.</p><p>I Norge er misvisningen omtrent 3–5° østlig i sør og opptil 15–18° østlig i Finnmark (2026). Den endrer seg sakte fra år til år.</p>'],
-      ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Det svake båndet i ringen er Melkeveien: det går fra horisonten på den ene siden til den andre, sterkest der det står høyest og mot det klare sentrum i Skytten. Månen i midten viser fasen akkurat nå.</p>'],
+      ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Båndet inne i kompasset er Melkeveien: midten av kompasset er rett over deg, og kanten er horisonten. Det er sterkest der det står høyest og mot det klare sentrum i Skytten. De to trekantene på ytterkanten viser hvor Melkeveien møter horisonten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     notePriv:'Gjør privat', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
     pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
@@ -2278,7 +2283,7 @@ const GUIDE_TXT = {
       ["Sørlige himmel", "<ul><li>Sørkorset med pekerne Alfa og Beta Centauri.</li><li>Skorpionen står høyt på den sørlige vinterhimmelen.</li><li>De magellanske skyene: to tåkeflekker, synlige på mørk himmel. De er galakser, små følgegalakser til Melkeveien, og de tydeligste galaksene å se med det blotte øye. Fra Europa ses de aldri.</li><li>Orion ses også herfra, men opp ned. Årstidene er snudd: den nordlige vinterhimmelen er den sørlige sommerhimmelen.</li></ul>", "south"],
       ["Fortellinger: sørhimmelen", "<ul><li><b>Māori i New Zealand:</b> Tainui-stammene så et anker i Sørkorset, mens folk fra Wairarapa så en plugg som stormvindene blåste gjennom. Navnene varierer mellom stammene.</li><li>Matariki (Pleiadene) stiger opp ved midtvinter og markerer for mange māorier starten på et nytt år.</li><li><b>Aboriginsk Australia:</b> «Emuen på himmelen» er tegnet av mørke skyer i Melkeveien, ikke av stjerner. Hodet er Kullsekken, den mørke flekken ved Sørkorset. Hvordan emuen står gjennom året, har fortalt når det er tid for å jakte emu og samle egg.</li></ul>", "southst"],
       ["Klare stjerner", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><ul><li><b>Sirius</b>, den klareste stjerna: følg Orions belte nedover mot venstre (sett fra nord). Motsatt vei peker beltet mot Aldebaran og Pleiadene.</li><li><b>Arcturus og Spica:</b> følg buen i håndtaket på Karlsvogna til den oransje Arcturus, og fortsett like langt til den blåhvite Spica.</li><li>Andre å kjenne: Vega, Capella, Betelgeuse (rødlig) og Rigel i Orion.</li><li>I sør: Canopus, den nest klareste stjerna (ses ikke fra Norge, bare sør for omtrent 37° nord), og Alfa Centauri.</li></ul><p><b>Fra fortellingene:</b> mange stjernenavn kommer fra arabisk. Aldebaran betyr «den som følger»: den ser ut til å følge etter Pleiadene over himmelen. Mintaka betyr «beltet». Arcturus er jegeren Fávdna i samisk tradisjon.</p>", "stars"],
-      ["Melkeveien", "<ul><li><b>Hva den er:</b> vår egen galakse, rundt 300 milliarder stjerner, med sola som én av dem. Vi ser den fra innsiden, langs skiva, så den ser ut som et svakt, lysende bånd over himmelen. Den krever mørk himmel uten måne; i byen forsvinner den.</li><li><b>Den lyseste delen</b> ligger mot sentrum av galaksen, i Skytten ved siden av Skorpionen. Fra sørlige halvkule går sentrum høyt over hodet om vinteren (juni–august). Fra nordlige halvkule står det lavt i sør om sommeren, og det ses bare sør for omtrent 55° nord. Fra det meste av Norge ser du det derfor ikke, og de lyse sommernettene skjuler det uansett.</li><li><b>I Norge</b> ser vi den svakere, ytre delen. På høstkvelder går båndet høyt over himmelen gjennom Kassiopeia og Svanen, midt i Sommertrekanten. Om vinteren går det fra Kefevs i nord, gjennom Perseus og Kusken over hodet, ned mot Store Hund i sør.</li><li><b>Slik beveger den seg:</b> Melkeveien dreier med resten av himmelen rundt polen gjennom natta, og vinkelen endrer seg. Til tider står den som en bue rett over hodet fra nord til sør, til andre tider ligger den lavere og mer på skrå. Gjennom året skifter det hvilken del som er oppe om kvelden.</li><li><b>Den mørke stripen</b> midt i båndet, tydelig i Svanen, er skyer av støv og gass som skjuler stjernene bak.</li></ul>", "milky"],
+      ["Melkeveien", "<ul><li><b>Hva den er:</b> vår egen galakse, rundt 300 milliarder stjerner, med sola som én av dem. Vi ser den fra innsiden, langs skiva, så den ser ut som et svakt, lysende bånd over himmelen. Den krever mørk himmel uten måne; i byen forsvinner den.</li><li><b>Hvorfor den går rundt hele himmelen:</b> galaksen er en flat skive, bare rundt 1000 lysår tykk, og sola ligger inne i den, rundt 26 000 lysår fra sentrum. Ser vi langs skiva, ser vi stjerner i alle retninger rundt oss, så båndet går som en ring rundt hele himmelen. Halve ringen er alltid under horisonten. Ser vi over eller under båndet, ser vi ut av skiva, og stjernene tynner raskt ut. Mot sentrum, i Skytten, ser vi inn mot det tette, lyse midtpartiet. Den motsatte veien, der Kusken møter Tyren, ser vi utover mot kanten av galaksen, så båndet er tynnere og svakere der.</li><li><b>Armene:</b> sola ligger i en liten arm, Orion-armen, mellom Skytten-armen innenfor og Perseus-armen utenfor. Ser vi bort fra sentrum, ser vi gjennom Perseus-armen, rundt 6000 lysår ut.</li><li><b>Den lyseste delen</b> ligger mot sentrum av galaksen, i Skytten ved siden av Skorpionen. Fra sørlige halvkule går sentrum høyt over hodet om vinteren (juni–august). Fra nordlige halvkule står det lavt i sør om sommeren, og det ses bare sør for omtrent 55° nord. Fra det meste av Norge ser du det derfor ikke, og de lyse sommernettene skjuler det uansett.</li><li><b>I Norge</b> ser vi den svakere, ytre delen. På høstkvelder går båndet høyt over himmelen gjennom Kassiopeia og Svanen, midt i Sommertrekanten. Om vinteren går det fra Kefevs i nord, gjennom Perseus og Kusken over hodet, ned mot Store Hund i sør.</li><li><b>Slik beveger den seg:</b> Melkeveien dreier med resten av himmelen rundt polen gjennom natta, og vinkelen endrer seg. Til tider står den som en bue rett over hodet fra nord til sør, til andre tider ligger den lavere og mer på skrå. Gjennom året skifter det hvilken del som er oppe om kvelden.</li><li><b>Den mørke stripen</b> midt i båndet, tydelig i Svanen, er skyer av støv og gass som skjuler stjernene bak.</li></ul>", "milky"],
       ["Fortellinger: Melkeveien", "<ul><li>Vinterbrauta, «vintervegen», er et gammelt nordisk navn, som islandsk vetrarbrautin og svensk Vintergatan. Langt nord ses Melkeveien best om vinteren, fordi sommernettene er for lyse. I gammelnorske tekster heter den også mjólkhringr og vetrhringr.</li><li>Grekerne kalte den galaxias kyklos, «melkesirkelen»: i myten er den melk fra gudinnen Hera, spredt over himmelen. Ordet galakse kommer herfra.</li><li>I Finland heter den Linnunrata, «fuglenes vei»: trekkfuglene ble trodd å følge den til Lintukoto, fuglenes varme hjem. Esterne kaller den Linnutee. I samisk tradisjon er den Fuglestigen.</li><li>For māori er Melkeveien kanoen (waka) til Tama-rereti: Orion og Skorpionen er baug og akter, Sørkorset og pekerne anker og tau.</li><li>Mange aboriginske folk i Australia ser Melkeveien som en elv på himmelen, og leser figurer i de mørke flekkene, som Emuen.</li></ul>", "milkyst"],
       ["Lys som beveger seg", "<ul><li><b>Satellitt:</b> et jevnt, hvitt punkt som glir rolig over himmelen uten å blinke, på noen få minutter. Det kan forsvinne brått når det går inn i jordas skygge. Den internasjonale romstasjonen er den klareste, nesten like klar som Venus. En rad med like punkter etter hverandre er satellitter skutt opp sammen.</li><li><b>Fly:</b> blinkende lys, ofte rødt og grønt på vingespissene, og det kan endre retning.</li><li><b>Stjerneskudd (meteor):</b> en rask strek som er borte på et sekund eller to.</li><li><b>Store meteorsvermer hvert år:</b> Kvadrantidene rundt 3.–4. januar, Perseidene rundt 12.–13. august (i Norge ofte i lyse netter) og Geminidene rundt 14. desember. Månen avgjør hvor mange du ser.</li></ul>", "moving"],
       ["Planetene", "<ul><li><b>Venus:</b> klarest etter månen. Står aldri langt fra sola, så den ses i vest etter solnedgang («aftenstjerna») eller i øst før soloppgang («morgenstjerna»), aldri midt på natta.</li><li><b>Jupiter:</b> svært klar og rolig, kan være oppe hele natta.</li><li><b>Mars:</b> tydelig rødlig. Lysstyrken varierer mye; den er klarest når den står nærmest jorda, omtrent hvert annet år.</li><li><b>Saturn:</b> gulaktig og svakere. Lysstyrken følger også hvor mye vi ser av ringene.</li><li><b>Tommelfingerregel:</b> stjerner blinker, planeter lyser roligere. Nær horisonten kan begge blinke. Planetene står alltid langs samme bånd over himmelen som sola og månen. De flytter seg, så de finnes ikke på faste stjernekart.</li></ul><p>Fra norrøn tid er det nesten ikke bevart egne navn på planetene: middelalderens islandske skrivere brukte de latinske navnene.</p>", "planets"]]},
@@ -2396,7 +2401,7 @@ const GUIDE_TXT = {
       ["Southern sky", "<ul><li>The Southern Cross with the Pointers, Alpha and Beta Centauri.</li><li>Scorpius is high in the southern winter sky.</li><li>The Magellanic Clouds: two hazy patches, visible under a dark sky. They are galaxies, small companion galaxies of the Milky Way, and the most prominent galaxies to see with the naked eye. They are never seen from Europe.</li><li>Orion is visible here too, but upside down. Seasons are reversed: the northern winter sky is the southern summer sky.</li></ul>", "south"],
       ["Stories: the southern sky", "<ul><li><b>Māori of New Zealand:</b> the Tainui tribes saw an anchor in the Southern Cross, while people from the Wairarapa saw a plug that the storm winds blew through. The names vary between tribes.</li><li>Matariki (the Pleiades) rises in midwinter and for many Māori marks the start of a new year.</li><li><b>Aboriginal Australia:</b> the «Emu in the Sky» is drawn by dark clouds in the Milky Way, not by stars. Its head is the Coalsack, the dark patch next to the Southern Cross. How the Emu sits through the year told people when to hunt emus and collect their eggs.</li></ul>", "southst"],
       ["Bright stars", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><ul><li><b>Sirius</b>, the brightest star: follow Orion's Belt down and to the left (seen from the north). The other way, the Belt points to Aldebaran and the Pleiades.</li><li><b>Arcturus and Spica:</b> follow the curve of the Big Dipper's handle to orange Arcturus, then go on as far again to blue-white Spica.</li><li>Others worth knowing: Vega, Capella, Betelgeuse (reddish) and Rigel in Orion.</li><li>In the south: Canopus, the second-brightest star (not visible from Norway, only south of about 37° N), and Alpha Centauri.</li></ul><p><b>From the stories:</b> many star names come from Arabic. Aldebaran means «the follower»: it seems to follow the Pleiades across the sky. Mintaka means «the belt». Arcturus is the hunter Fávdna in Sámi tradition.</p>", "stars"],
-      ["The Milky Way", "<ul><li><b>What it is:</b> our own galaxy, around 300 billion stars, the Sun among them. We see it from the inside, along its disk, so it looks like a faint, glowing band across the sky. It needs a dark sky without the Moon; in towns it disappears.</li><li><b>The brightest part</b> lies towards the centre of the galaxy, in Sagittarius next to Scorpius. From the southern hemisphere the centre passes high overhead in winter (June–August). From the northern hemisphere it sits low in the south in summer, and it is only seen south of about 55° N. So from most of Norway you never see it, and the light summer nights hide it anyway.</li><li><b>In Norway</b> we see the fainter, outer part. On autumn evenings the band runs high across the sky through Cassiopeia and Cygnus, in the middle of the Summer Triangle. In winter it runs from Cepheus in the north, through Perseus and Auriga overhead, down to Canis Major in the south.</li><li><b>How it moves:</b> the Milky Way turns with the rest of the sky around the pole through the night, and its angle changes. At times it arches straight overhead from north to south, at other times it lies lower and more slanted. Through the year, which part is up in the evening shifts.</li><li><b>The dark lane</b> down the middle of the band, clear in Cygnus, is clouds of dust and gas hiding the stars behind.</li></ul>", "milky"],
+      ["The Milky Way", "<ul><li><b>What it is:</b> our own galaxy, around 300 billion stars, the Sun among them. We see it from the inside, along its disk, so it looks like a faint, glowing band across the sky. It needs a dark sky without the Moon; in towns it disappears.</li><li><b>Why it runs all round the sky:</b> the galaxy is a flat disk, only about 1,000 light-years thick, and the Sun lies inside it, about 26,000 light-years from the centre. Looking along the disk we see stars in every direction around us, so the band runs as a ring right round the sky. Half the ring is always below the horizon. Looking above or below the band, we look out of the disk, and the stars thin out fast. Towards the centre, in Sagittarius, we look into the dense, bright middle. The opposite way, where Auriga meets Taurus, we look outwards towards the edge of the galaxy, so the band is thinner and fainter there.</li><li><b>The arms:</b> the Sun lies in a small arm, the Orion Arm, between the Sagittarius Arm further in and the Perseus Arm further out. Looking away from the centre, we look through the Perseus Arm, about 6,000 light-years out.</li><li><b>The brightest part</b> lies towards the centre of the galaxy, in Sagittarius next to Scorpius. From the southern hemisphere the centre passes high overhead in winter (June–August). From the northern hemisphere it sits low in the south in summer, and it is only seen south of about 55° N. So from most of Norway you never see it, and the light summer nights hide it anyway.</li><li><b>In Norway</b> we see the fainter, outer part. On autumn evenings the band runs high across the sky through Cassiopeia and Cygnus, in the middle of the Summer Triangle. In winter it runs from Cepheus in the north, through Perseus and Auriga overhead, down to Canis Major in the south.</li><li><b>How it moves:</b> the Milky Way turns with the rest of the sky around the pole through the night, and its angle changes. At times it arches straight overhead from north to south, at other times it lies lower and more slanted. Through the year, which part is up in the evening shifts.</li><li><b>The dark lane</b> down the middle of the band, clear in Cygnus, is clouds of dust and gas hiding the stars behind.</li></ul>", "milky"],
       ["Stories: the Milky Way", "<ul><li>Vinterbrauta, «the winter way», is an old Nordic name, like Icelandic vetrarbrautin and Swedish Vintergatan. Far north the Milky Way is best seen in winter, because summer nights are too light. Old Norwegian texts also call it mjólkhringr and vetrhringr.</li><li>The Greeks called it galaxias kyklos, «the milky circle»: in myth it is milk from the goddess Hera, sprayed across the sky. The word galaxy comes from this.</li><li>In Finland it is Linnunrata, «the birds' path»: migrating birds were believed to follow it to Lintukoto, the birds' warm home. Estonians call it Linnutee. In Sámi tradition it is the Birds' Ladder.</li><li>For Māori the Milky Way is the canoe (waka) of Tama-rereti: Orion and Scorpius are bow and stern, the Southern Cross and the Pointers the anchor and rope.</li><li>Many Aboriginal peoples in Australia see the Milky Way as a river in the sky, and read figures in its dark patches, such as the Emu.</li></ul>", "milkyst"],
       ["Moving lights", "<ul><li><b>Satellite:</b> a steady white point gliding smoothly across the sky without blinking, over a few minutes. It can vanish suddenly as it enters Earth's shadow. The International Space Station is the brightest, almost as bright as Venus. A row of similar points following each other is satellites launched together.</li><li><b>Aircraft:</b> blinking lights, often red and green on the wingtips, and it can change direction.</li><li><b>Shooting star (meteor):</b> a quick streak gone in a second or two.</li><li><b>Major meteor showers each year:</b> the Quadrantids around 3–4 January, the Perseids around 12–13 August (in Norway often in light nights) and the Geminids around 14 December. The Moon decides how many you see.</li></ul>", "moving"],
       ["The planets", "<ul><li><b>Venus:</b> brightest after the Moon. Never far from the Sun, so seen in the west after sunset («evening star») or in the east before sunrise («morning star»), never in the middle of the night.</li><li><b>Jupiter:</b> very bright and steady, can be up all night.</li><li><b>Mars:</b> clearly reddish. Its brightness varies a lot; it is brightest when closest to Earth, about every two years.</li><li><b>Saturn:</b> yellowish and fainter. Its brightness also follows how much of the rings we see.</li><li><b>Rule of thumb:</b> stars twinkle, planets shine more steadily. Near the horizon both can twinkle. The planets always lie along the same band across the sky as the Sun and Moon. They move, so they are not on fixed star charts.</li></ul><p>Almost no native Norse names for the planets survive: medieval Icelandic writers used the Latin names.</p>", "planets"]]},
@@ -3486,32 +3491,93 @@ function starMarks(objs){
     const tier = !near(used[0], o.az) ? 0 : !near(used[1], o.az) ? 1 : -1;
     if (tier < 0) return;
     used[tier].push(o.az);
-    names += `<g class="stl" data-az="${o.az.toFixed(1)}" data-t="${tier}"><text dominant-baseline="central" font-size="12" font-weight="600" fill="${o.kind === 'star' ? 'var(--ink)' : 'var(--muted)'}">${esc(T.starN[o.k] || o.k)}</text></g>`;
+    // 0.19.0: each name has a thin line to its own dot (set in placeStarLabels) and an outline in the page colour;
+    // the names come first, so the dots are drawn on top of them
+    names += `<g class="stl" data-az="${o.az.toFixed(1)}" data-t="${tier}" data-big="${o.kind === 'moon' || o.kind === 'gc' ? 1 : 0}"><line class="stll" stroke="var(--muted)" stroke-width="1" visibility="hidden"/><text dominant-baseline="central" font-size="12" font-weight="600" fill="${o.kind === 'star' ? 'var(--ink)' : 'var(--muted)'}" stroke="var(--bg)" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">${esc(T.starN[o.k] || o.k)}</text></g>`;
   });
-  return dots + names;
+  return names + dots;
 }
 /* Names stay inside the ring whichever way the dial has turned: at the top and bottom they are centred on the ring
-   (two rings for close neighbours); at the sides they run inwards from the outer edge, above or below their dot. */
+   (two rings for close neighbours); at the sides they run inwards from the outer edge, just above or below their own
+   dot. 0.19.0: at the sides the name is placed from its dot (not from the outer edge); when two named dots are close,
+   the higher dot's name goes above it and the lower one's below it. A place that would cover another dot, a Milky Way
+   triangle or a name already placed is swapped for the other one (other side of the dot, or the other ring), if that
+   one is free. A thin line runs from the dot to the nearest point of its name, unless the name is right next to it. */
+const PAIR_DEG = 9;  // dots closer than this (about 25 px on the ring) count as a close pair
 function placeStarLabels(){
-  const h = cHeading || 0;
-  document.querySelectorAll('#skyStars .stl').forEach(g => {
-    const az = +g.dataset.az, tier = +g.dataset.t, side = Math.sin((az - h) * RAD), tx = g.firstChild;
-    let q, anc = 'middle', dy = 0;
-    if (Math.abs(side) > 0.6){ q = rosePt(az, 207); anc = side > 0 ? 'end' : 'start'; dy = tier ? 12 : -11; }
-    else q = rosePt(az, tier ? 197 : 178);
+  const h = cHeading || 0, ch = Math.cos(h * RAD), sh = Math.sin(h * RAD);
+  const gs = [...document.querySelectorAll('#skyStars .stl')];
+  const scr = az => [Math.sin((az - h) * RAD), -Math.cos((az - h) * RAD)];  // screen direction of an azimuth
+  const toScr = (x, y) => { const dx = x - 160, dy = y - 160; return [dx * ch + dy * sh, -dx * sh + dy * ch]; }; // dial point, centre 0
+  const dots = [...document.querySelectorAll('#skyStars > circle')].map(c => toScr(+c.getAttribute('cx'), +c.getAttribute('cy')))
+    .concat([...document.querySelectorAll('#skyStars > .upr')].map(e => toScr(+e.dataset.x, +e.dataset.y)));
+  const tris = [...document.querySelectorAll('#skyBand .mwtri')].map(e => { const v = scr(+e.dataset.az); return [203 * v[0], 203 * v[1]]; });
+  const boxes = [];
+  // cost of a place: covering a name is never allowed; another dot costs 2, a triangle 1, and for a close pair the
+  // side towards the other dot 3
+  const cost = (bx, own) => boxes.some(o => bx[0] < o[2] && bx[2] > o[0] && bx[1] < o[3] && bx[3] > o[1]) ? Infinity
+    : 2 * dots.filter(d => Math.hypot(d[0] - own[0], d[1] - own[1]) > 1 && d[0] > bx[0] - 4 && d[0] < bx[2] + 4 && d[1] > bx[1] - 4 && d[1] < bx[3] + 4).length
+    + tris.filter(d => d[0] > bx[0] - 7 && d[0] < bx[2] + 7 && d[1] > bx[1] - 8 && d[1] < bx[3] + 8).length;
+  const close = g => gs.some(o => o !== g && Math.abs(((+o.dataset.az - +g.dataset.az + 540) % 360) - 180) < PAIR_DEG);
+  // names of close pairs are placed first, so their rule (higher dot's name above) wins; then the rest in order
+  gs.filter(close).concat(gs.filter(g => !close(g))).forEach(g => {
+    const az = +g.dataset.az, tier = +g.dataset.t, u = scr(az), tx = g.querySelector('text'), ln = g.querySelector('line');
+    const own = [162 * u[0], 162 * u[1]], side = Math.abs(u[0]) > 0.6;
+    let cands;
+    if (side){
+      const nb = gs.find(o => o !== g && Math.abs(((+o.dataset.az - az + 540) % 360) - 180) < PAIR_DEG);
+      const above = nb ? u[1] < scr(+nb.dataset.az)[1] : !tier;
+      cands = [above, !above].map((up, i) => ({r: 207, anc: u[0] > 0 ? 'end' : 'start', dy: (162 - 207) * u[1] + (up ? -14 : 14), base: nb && i ? 3 : 0}));
+    } else cands = [tier ? 197 : 178, tier ? 178 : 197].map(r => ({r, anc: 'middle', dy: 0}));
+    let c = null;
+    for (const k of cands){
+      tx.setAttribute('text-anchor', k.anc); tx.setAttribute('y', k.dy.toFixed(1));
+      let bb; try { bb = tx.getBBox(); } catch(e){ bb = null; }
+      const o = [k.r * u[0], k.r * u[1]];
+      k.bb = bb; k.box = bb && bb.width ? [o[0] + bb.x, o[1] + bb.y, o[0] + bb.x + bb.width, o[1] + bb.y + bb.height] : null;
+      k.cost = (k.box ? cost(k.box, own) : 0) + (k.base || 0);
+      if (!c || k.cost < c.cost) c = k;
+      if (!k.cost) break;
+    }
+    // no place without covering another name: the name is left out (the list has them all)
+    g.setAttribute('visibility', c.cost === Infinity ? 'hidden' : 'visible');
+    if (c.cost === Infinity){ return; }
+    const q = rosePt(az, c.r);
+    tx.setAttribute('text-anchor', c.anc); tx.setAttribute('y', c.dy.toFixed(1));
     g.setAttribute('transform', `translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${h.toFixed(1)})`);
-    tx.setAttribute('text-anchor', anc); tx.setAttribute('y', dy);
+    if (c.box) boxes.push(c.box);
+    if (!ln) return;
+    const bb = c.bb;
+    if (!bb || !bb.width){ ln.setAttribute('visibility', 'hidden'); return; }
+    // the dot in the name's own (upright) frame, and the nearest point of the name's box
+    const d = [(162 - c.r) * u[0], (162 - c.r) * u[1]], cl = (v, a, b) => Math.max(a, Math.min(b, v));
+    const nx = cl(d[0], bb.x - 2, bb.x + bb.width + 2), ny = cl(d[1], bb.y - 1, bb.y + bb.height + 1);
+    const L = Math.hypot(nx - d[0], ny - d[1]), s0 = g.dataset.big === '1' ? 10 : 6;
+    if (L < s0 + 5){ ln.setAttribute('visibility', 'hidden'); return; }
+    ln.setAttribute('x1', (d[0] + (nx - d[0]) / L * s0).toFixed(1)); ln.setAttribute('y1', (d[1] + (ny - d[1]) / L * s0).toFixed(1));
+    ln.setAttribute('x2', nx.toFixed(1)); ln.setAttribute('y2', ny.toFixed(1)); ln.setAttribute('visibility', 'visible');
   });
 }
-function starList(objs, mw, now){
-  const T = t();
-  if (!objs.length && !mw) return `<p class="tool-sub">${T.stNone}</p>`;
-  return '<ul class="st-list">' + (mw ? mwRow(mw, now) + gcRow(galCentre(now)) : '') + objs.map(o => {
-    const h = Math.round(o.alt), f = Math.round(o.alt / 10);
-    const ht = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, f));
-    return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg><span class="st-name">${esc(T.starN[o.k] || o.k)}</span>
+/* 0.19.0: the list in three groups (the moon and planets, stars, the Milky Way), each sorted by the switch above the
+   list: Lysest først (as before: the moon, then Venus, Jupiter, Mars, Saturn; stars by brightness) or Høyest først. */
+const stHigh = () => state.stSort === 'high';
+function starRow(o){
+  const T = t(), h = Math.round(o.alt), f = Math.round(o.alt / 10);
+  const ht = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, f));
+  return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg><span class="st-name">${esc(T.starN[o.k] || o.k)}</span>
       <span class="st-pos">${T.cDirs[Math.round(o.az / 45) % 8]} · ${Math.round(o.az) % 360}°<small>${ht}</small></span></li>`;
-  }).join('') + '</ul>';
+}
+function starList(objs, mw, now){
+  const T = t(), ord = l => stHigh() ? l.slice().sort((a, b) => b.alt - a.alt) : l;
+  const grp = (k, head, rows) => rows ? `<h3 class="st-grp" data-g="${k}">${head}</h3><ul class="st-list" data-g="${k}">${rows}</ul>` : '';
+  const mp = ord(objs.filter(o => o.kind !== 'star')), st = ord(objs.filter(o => o.kind === 'star'));
+  return (objs.length ? '' : `<p class="tool-sub">${T.stNone}</p>`)
+    + grp('mp', T.stGrpMP, mp.map(starRow).join('')) + grp('st', T.stGrpSt, st.map(starRow).join(''))
+    + (mw ? grp('mw', T.stGrpMW, mwRow(mw, now) + gcRow(galCentre(now))) : '');
+}
+function stSortBtns(){
+  const T = t(), hi = stHigh();
+  return `<div class="st-sort" role="group" aria-label="${T.stSortL}"><button class="chip" data-nav data-act="stSort" data-v="bright" aria-pressed="${!hi}">${T.stSortB}</button><button class="chip" data-nav data-act="stSort" data-v="high" aria-pressed="${hi}">${T.stSortH}</button></div>`;
 }
 function starSay(now){
   const T = t(), el = sunPos(now, state.pos.lat, state.pos.lon).el;
@@ -3558,24 +3624,32 @@ function milkyWay(now){
   cross.sort((a, b) => north(a) - north(b)); // the more northerly horizon point first: «fra N til S», «fra Ø til V»
   return {pts, top, cross, low: top.alt < MW_LOW};
 }
-function mwArc(a1, a2, r){
-  let d = ((a2 - a1 + 540) % 360) - 180;
-  const p = rosePt(a1, r), q = rosePt(a1 + d, r);
-  return `M${p[0].toFixed(1)} ${p[1].toFixed(1)} A${r} ${r} 0 0 ${d >= 0 ? 1 : 0} ${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+/* 0.19.0: the band is drawn inside the dial, not in the ring: the middle of the dial is straight overhead and its edge
+   (r 150) the horizon, so a point h° up sits (90 − h)/90 of the radius out, in its compass direction. Short straight
+   pieces every 2° (butt ends, so they do not pile up), blurred, cut off at the edge of the dial, under the ticks, the
+   letters and the moon. Strength as before. Where it meets the horizon, a small triangle stands on the outer circle
+   of the ring (r 211) and points in, in line with the band's end. */
+const mwR = alt => 150 * (90 - Math.max(0, alt)) / 90;
+function mwHorizon(a, b){
+  const f = a.alt / (a.alt - b.alt), x = (1 - f) * Math.sin(a.az * RAD) + f * Math.sin(b.az * RAD), y = (1 - f) * Math.cos(a.az * RAD) + f * Math.cos(b.az * RAD);
+  return {az: (Math.atan2(x, y) / RAD + 360) % 360, alt: 0, l: (1 - f) * a.l + f * b.l};
 }
 function mwBand(mw){
   if (!mw || mw.low) return '';
   let seg = '';
   const P = mw.pts, n = P.length;
   for (let i = 0; i < n; i++){
-    const a = P[i], b = P[(i + 1) % n];
+    let a = P[i], b = P[(i + 1) % n];
     if (a.alt <= 0 && b.alt <= 0) continue;
-    const alt = Math.max(0, (a.alt + b.alt) / 2), lw = 0.45 + 0.55 * (1 + Math.cos(a.l * RAD)) / 2;
-    const op = (0.07 + 0.30 * Math.pow(alt / mw.top.alt, 0.8)) * lw;
-    seg += `<path d="${mwArc(a.az, b.az, 181)}" fill="none" stroke="var(--ink)" stroke-width="54" stroke-opacity="${op.toFixed(3)}"/>`;
+    if (a.alt <= 0) a = mwHorizon(a, b); else if (b.alt <= 0) b = mwHorizon(a, b);
+    const alt = (a.alt + b.alt) / 2, lw = 0.45 + 0.55 * (1 + Math.cos(a.l * RAD)) / 2;
+    const op = (0.22 + 0.48 * Math.pow(alt / mw.top.alt, 0.8)) * lw;
+    const p = rosePt(a.az, mwR(a.alt)), q = rosePt(b.az, mwR(b.alt));
+    seg += `<line class="mwseg" x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="var(--ink)" stroke-width="34" stroke-opacity="${op.toFixed(3)}"/>`;
   }
-  const marks = mw.cross.map(az => { const p = rosePt(az, 203), q = rosePt(az, 219); return `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`; }).join('');
-  return `<g filter="url(#mwBlur)">${seg}</g>${marks}`;
+  const tri = mw.cross.map(az => { const t0 = rosePt(az, 195), b1 = rosePt(az - 2.6, 211), b2 = rosePt(az + 2.6, 211);
+    return `<path class="mwtri" data-az="${az.toFixed(1)}" d="M${t0[0].toFixed(1)} ${t0[1].toFixed(1)} L${b1[0].toFixed(1)} ${b1[1].toFixed(1)} L${b2[0].toFixed(1)} ${b2[1].toFixed(1)} Z" fill="var(--ink)" opacity=".75"/>`; }).join('');
+  return `<g class="mwb" clip-path="url(#mwClip)"><g filter="url(#mwBlur)">${seg}</g></g>${tri}`;
 }
 function mwRow(mw, now){
   const T = t(), d = az => T.cDirs[Math.round(az / 45) % 8];
@@ -3609,8 +3683,8 @@ function renderStars(){
         <circle cx="160" cy="160" r="211" fill="none" stroke="var(--line-strong)" stroke-width="1"/>
         <line x1="160" y1="-50" x2="160" y2="8" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="3 5"/>
         <circle cx="160" cy="160" r="150" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="2"/>
-        <defs><filter id="mwBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter></defs>
-        <g class="dial" id="dial">${roseDial()}<g id="skyBand">${state.pos ? mwBand(milkyWay(now)) : ''}</g><g id="skyStars">${state.pos ? starMarks(ringObjs(objs, now)) : ''}</g></g>
+        <defs><filter id="mwBlur" filterUnits="userSpaceOnUse" x="-60" y="-60" width="440" height="440"><feGaussianBlur stdDeviation="7"/></filter><clipPath id="mwClip"><circle cx="160" cy="160" r="149"/></clipPath></defs>
+        <g class="dial" id="dial"><g id="skyBand">${state.pos ? mwBand(milkyWay(now)) : ''}</g>${roseDial()}<g id="skyStars">${state.pos ? starMarks(ringObjs(objs, now)) : ''}</g></g>
         <path d="M160 6 L151 26 L169 26 Z" fill="var(--red)"/>
         ${state.pos ? `<line x1="160" y1="70" x2="160" y2="111" stroke="var(--line)" stroke-width="1"/><line x1="160" y1="209" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/><g id="stMoon">${centreMoon(now)}</g>`
           : `<line x1="160" y1="70" x2="160" y2="250" stroke="var(--line)" stroke-width="1"/><circle cx="160" cy="160" r="4" fill="var(--ink)"/>`}
@@ -3622,7 +3696,7 @@ function renderStars(){
       <p class="c-msg" id="cMsg"></p>
     </div>
     ${state.pos ? `<p class="st-say" id="stSay">${say}</p>` : `<p class="st-say">${T.stNoPos}</p>`}
-    <section class="pg-sec manual"><h2 class="sec-lbl">${T.stUp}</h2><div id="stList">${state.pos ? starList(objs, milkyWay(now), now) : ''}</div>${T.stNote}
+    <section class="pg-sec manual"><h2 class="sec-lbl">${T.stUp}</h2>${state.pos ? stSortBtns() : ''}<div id="stList">${state.pos ? starList(objs, milkyWay(now), now) : ''}</div>${T.stNote}
       <div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="nightsky">${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).nightsky.title} ›</button></div></section>`;
   placeStarLabels(); paintCompass();
   clearInterval(skyTimer);
@@ -3630,9 +3704,9 @@ function renderStars(){
     const g = $('skyStars');
     if (!g || !state.pos){ clearInterval(skyTimer); skyTimer = null; return; }
     const n = new Date(), o = skyVisible(n);
+    const mw = milkyWay(n); if ($('skyBand')) $('skyBand').innerHTML = mwBand(mw);
     g.innerHTML = starMarks(ringObjs(o, n)); placeStarLabels(); uprightMarks();
     if ($('stMoon')) $('stMoon').innerHTML = centreMoon(n);
-    const mw = milkyWay(n); if ($('skyBand')) $('skyBand').innerHTML = mwBand(mw);
     if ($('stList')) $('stList').innerHTML = starList(o, mw, n);
     if ($('stSay')) $('stSay').textContent = starSay(n);
   }, 60000);
@@ -4637,6 +4711,12 @@ main.addEventListener('click', async e => {
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'cStars'){ go('compass', 'stars'); return; }
+  if (act === 'stSort'){
+    state.stSort = b.dataset.v === 'high' ? 'high' : 'bright'; save();
+    document.querySelectorAll('[data-act="stSort"]').forEach(x => x.setAttribute('aria-pressed', String((x.dataset.v === 'high') === stHigh())));
+    const n = new Date(); if ($('stList') && state.pos) $('stList').innerHTML = starList(skyVisible(n), milkyWay(n), n);
+    return;
+  }
   if (act === 'autoRelock'){ state.autoRelock = !state.autoRelock; save(); if (!state.autoRelock) clearTimeout(relockTimer); render(); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
