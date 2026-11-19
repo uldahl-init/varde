@@ -1513,7 +1513,16 @@ test.describe('månen 0.20', () => {
     const sec = p.locator('#main details[data-sec="moon"]');
     await expect(sec).toHaveAttribute('open', '');
     await expect(sec.locator('.ma-title').first()).toHaveText(X.full);
-    await expect(sec.locator('.ma-cv')).toHaveCount(5);
+    await expect(sec.locator('.ma-cv')).toHaveCount(6);
+    // 0.20.2: the pictures in a row line up, whatever the text above them
+    for (const fig of ['full', 'cres']){
+      const tops = await sec.locator(`.moon-anim[data-anim="${fig}"] .ma-cv`).evaluateAll(cs => cs.map(c => c.getBoundingClientRect().top));
+      expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(1);
+    }
+    // the evening crescent: Sør-Norge lit from the right, Australia mirrored, lit from the left (lit side as an angle
+    // counter-clockwise from up: right = −90, left = +90)
+    const cl = await sec.locator('.moon-anim[data-anim="cres"] .ma-cv').evaluateAll(cs => cs.map(c => ((+c.dataset.limb % 360) + 540) % 360 - 180));
+    expect(cl[0]).toBeLessThan(-30); expect(cl[2]).toBeGreaterThan(30);
     await expect(sec.locator('.ma-n').first()).toHaveText(X.nn);
     await expect(sec.locator('.ma-credit')).toHaveText(X.credit);
     // 0.20.1: the equator shows the full moon as it rises in the east, lying on its side; every moon says where it stands
@@ -1546,7 +1555,7 @@ test.describe('månen 0.20', () => {
     await p.locator('#main .gs-btn').click();
     await p.locator('#gsInput').fill(X.q);
     await p.locator('#main .gs-hit[data-guide="nightsky"]').first().click();
-    await expect(p.locator('#main details[data-sec="moon"] .ma-cv')).toHaveCount(20);
+    await expect(p.locator('#main details[data-sec="moon"] .ma-cv')).toHaveCount(24);
     await expect(p.locator('#main details[data-sec="moon"] .ma-btn')).toHaveCount(0);
     // 0.20.1: Norway is Sør-Norge, where the full moon is above the horizon at its highest all year
     const no = await p.locator('#main .moon-anim[data-anim="full"] .ma-row .ma-cell:first-child canvas').evaluateAll(cs => cs.map(c => +c.dataset.alt));
@@ -1560,6 +1569,7 @@ test.describe('månen 0.20', () => {
   });
 });
 
+/* (build 78, 0.20.2: Australia in the evening crescent too, mirrored; the pictures in a row line up) */
 /* (build 77, 0.20.1: the equator column shows the full moon as it rises, lying on its side; direction under every moon) */
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
    A blocked tap flashes the lock bar with a hint and changes nothing; auto-relock (off by default) locks again after
