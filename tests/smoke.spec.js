@@ -1338,7 +1338,7 @@ test.describe('melkeveien', () => {
     expect(near).toBeLessThan(30);  // nearly overhead: passes close to the middle
     await expect(p.locator('#skyBand .mwtri')).toHaveCount(2);
     await expect(p.locator('#skyBand path:not(.mwtri)')).toHaveCount(0);
-    await expect(p.locator('#stMoon polygon')).toHaveCount(1);
+    await expect(p.locator('#stMoon image.mn-big')).toHaveCount(1);  // 0.20.0: the Moon as it stands, as an image
     await expect(p.locator('#skyStars text', {hasText: new RegExp('^' + X.mark + '$')})).toHaveCount(0);
     expect(await p.content()).toContain(X.whistle);
     expect(err).toEqual([]);
@@ -1455,6 +1455,98 @@ test.describe('stjerner 0.19', () => {
     expect(await p.content()).toContain(X.comp);
     expect(err).toEqual([]);
     await ctx.close();
+  });
+});
+
+/* ---------- From build 76 (0.20.0): the Moon as it stands ----------
+   Reference values from PyEphem with Meeus ch. 14, 48 and 53 (19 Nov 2026). The orientation also matches the owner's
+   photo of 27 Dec 2023 05:42 (+01), Stavanger. Tycho from straight down when the full moon stands highest in Stavanger:
+   −28° on 25 Oct 2026, +8° on 21 Mar 2027. In Sydney the Moon stands upside down (Tycho above the middle). The large
+   Moon in Stjerner og planeter is an image turned as it stands; the guide section Månen has the two animations, a
+   Pause button, still rows with reduce motion, and the credit line; Retning om natta links to it. */
+const MOON = (() => {
+  const a = HTML.indexOf('/* ---------- moon (calculated on the phone'), b = HTML.indexOf('/* ---------- end of the Moon as it stands');
+  return new Function(HTML.slice(a, b) + '\nreturn {moonOrient, moonPoint};')();
+})();
+test.describe('månen 0.20', () => {
+  const D = r => r * 180 / Math.PI;
+  test('orientation matches the reference values', () => {
+    const ph = MOON.moonOrient(new Date('2023-12-27T04:42:09Z'), 58.97, 5.73);
+    expect(Math.abs(D(ph.rot) + 31.9)).toBeLessThan(2); expect(Math.abs(D(ph.l) - 4.4)).toBeLessThan(1); expect(Math.abs(D(ph.b) + 6.3)).toBeLessThan(1);
+    const now = MOON.moonOrient(new Date('2026-11-19T20:00:00Z'), 58.97, 5.73);
+    expect(Math.abs(D(now.rot) + 28.3)).toBeLessThan(2); expect(Math.abs(D(now.limb) + 118.7)).toBeLessThan(3); expect(Math.abs(now.k - 0.73)).toBeLessThan(0.03);
+    const tycho = (t, la, lo) => { const o = MOON.moonOrient(new Date(t), la, lo), q = MOON.moonPoint(o, -43.4, -11.1); return {a: D(Math.atan2(q.x, -q.y)), y: q.y}; };
+    expect(Math.abs(tycho('2026-10-25T23:03:00Z', 58.97, 5.73).a + 28.2)).toBeLessThan(2);
+    expect(Math.abs(tycho('2027-03-21T23:16:00Z', 58.97, 5.73).a - 7.9)).toBeLessThan(2);
+    // Sydney, the full moon of 24 Nov 2026 at its highest: Tycho above the middle
+    let best = null;
+    for (let m = 0; m < 24 * 60; m += 10){ const t = new Date(Date.parse('2026-11-24T00:00:00Z') + m * 60000), o = MOON.moonOrient(t, -33.87, 151.21); const h = Math.abs(Math.atan2(Math.sin(o.H), Math.cos(o.H))); if (o.alt > 0 && (!best || h < best.h)) best = {h, t}; }
+    expect(tycho(best.t.toISOString(), -33.87, 151.21).y).toBeGreaterThan(0.3);
+  });
+  const ctxFor = (browser, locale, extra) => browser.newContext(Object.assign({locale, serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, lang) => {
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
+    await p.goto('./');
+  };
+  const TX = {no:{q:'Fasene', full:'Fullmånen gjennom året, når den står høyest', pause:'Pause', play:'Spill av', credit:'Havene er tegnet etter et fullmånebilde tatt fra Stavanger 27. desember 2023.', nn:'Nord-Norge'},
+    en:{q:'The phases', full:'The full moon through the year, when it stands highest', pause:'Pause', play:'Play', credit:'The seas are drawn from a photo of the full moon taken from Stavanger, 27 December 2023.', nn:'Northern Norway'}};
+  for (const L of LANGS) test(`the large Moon, the guide section and its animations (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    let ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, L.lang);
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStars"]').click();
+    const big = p.locator('#stMoon image.mn-big');
+    await expect(big).toHaveCount(1);
+    expect(Math.abs(+(await big.getAttribute('data-rot')) + 28.3)).toBeLessThan(2);
+    expect(Math.abs(+(await big.getAttribute('data-limb')) + 118.7)).toBeLessThan(3);
+    expect((await big.getAttribute('href')).startsWith('data:image/png')).toBe(true);
+    // the small moon on the ring is turned too
+    await expect(p.locator('#skyStars .upr polygon[transform^="rotate("]')).toHaveCount(1);
+    // the guide section, found by search
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await p.locator('#main .gs-btn').click();
+    await p.locator('#gsInput').fill(X.q);
+    await p.locator('#main .gs-hit[data-guide="nightsky"]').first().click();
+    const sec = p.locator('#main details[data-sec="moon"]');
+    await expect(sec).toHaveAttribute('open', '');
+    await expect(sec.locator('.ma-title').first()).toHaveText(X.full);
+    await expect(sec.locator('.ma-cv')).toHaveCount(5);
+    await expect(sec.locator('.ma-n').first()).toHaveText(X.nn);
+    await expect(sec.locator('.ma-credit')).toHaveText(X.credit);
+    // it moves, and Pause stops it
+    const cap = sec.locator('.moon-anim[data-anim="full"] .ma-cap');
+    const c0 = await cap.textContent();
+    await p.clock.runFor(1200);
+    await expect(cap).not.toHaveText(c0);
+    const btn = sec.locator('.moon-anim[data-anim="full"] .ma-btn');
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-pressed', 'true');
+    await expect(btn).toHaveText(X.play);
+    const c1 = await cap.textContent();
+    await p.clock.runFor(3500);
+    await expect(cap).toHaveText(c1);
+    await btn.click();
+    await expect(btn).toHaveText(X.pause);
+    expect(err).toEqual([]);
+    await ctx.close();
+    // with reduce motion: four still rows each, no Pause button
+    ctx = await ctxFor(browser, L.locale, {reducedMotion:'reduce'}); p = await ctx.newPage(); err = watchErrors(p);
+    await start(p, L.lang);
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await p.locator('#main .gs-btn').click();
+    await p.locator('#gsInput').fill(X.q);
+    await p.locator('#main .gs-hit[data-guide="nightsky"]').first().click();
+    await expect(p.locator('#main details[data-sec="moon"] .ma-cv')).toHaveCount(20);
+    await expect(p.locator('#main details[data-sec="moon"] .ma-btn')).toHaveCount(0);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  test('Retning om natta links to Månen', async () => {
+    expect(HTML).toContain('data-guide=\\"nightsky\\" data-sec=\\"moon\\">Nattehimmelen: Månen ›');
+    expect(HTML).toContain('data-guide=\\"nightsky\\" data-sec=\\"moon\\">The night sky: The Moon ›');
   });
 });
 
