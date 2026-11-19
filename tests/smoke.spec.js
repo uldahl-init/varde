@@ -1490,8 +1490,8 @@ test.describe('månen 0.20', () => {
       [KEY, {lists:[], introDone:true, lang, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
     await p.goto('./');
   };
-  const TX = {no:{q:'Fasene', full:'Fullmånen gjennom året, når den står høyest', pause:'Pause', play:'Spill av', credit:'Havene er tegnet etter et fullmånebilde tatt fra Stavanger 27. desember 2023.', nn:'Nord-Norge'},
-    en:{q:'The phases', full:'The full moon through the year, when it stands highest', pause:'Pause', play:'Play', credit:'The seas are drawn from a photo of the full moon taken from Stavanger, 27 December 2023.', nn:'Northern Norway'}};
+  const TX = {no:{q:'Fasene', full:'Fullmånen gjennom året', rise:'når den står opp', side:'Ved ekvator går fullmånen nesten rett over hodet', pause:'Pause', play:'Spill av', credit:'Havene er tegnet etter et fullmånebilde tatt fra Stavanger 27. desember 2023.', nn:'Sør-Norge'},
+    en:{q:'The phases', full:'The full moon through the year', rise:'as it rises', side:'At the equator the full moon passes almost straight overhead', pause:'Pause', play:'Play', credit:'The seas are drawn from a photo of the full moon taken from Stavanger, 27 December 2023.', nn:'Southern Norway'}};
   for (const L of LANGS) test(`the large Moon, the guide section and its animations (${L.lang})`, async ({browser}) => {
     const X = TX[L.lang];
     let ctx = await ctxFor(browser, L.locale), p = await ctx.newPage(), err = watchErrors(p);
@@ -1516,6 +1516,13 @@ test.describe('månen 0.20', () => {
     await expect(sec.locator('.ma-cv')).toHaveCount(5);
     await expect(sec.locator('.ma-n').first()).toHaveText(X.nn);
     await expect(sec.locator('.ma-credit')).toHaveText(X.credit);
+    // 0.20.1: the equator shows the full moon as it rises in the east, lying on its side; every moon says where it stands
+    const eqc = sec.locator('.moon-anim[data-anim="full"] .ma-cell').nth(1);
+    await expect(eqc.locator('.ma-w')).toHaveText(X.rise);
+    const rot = Math.abs(+(await eqc.locator('canvas').getAttribute('data-rot')));
+    expect(rot).toBeGreaterThan(45); expect(rot).toBeLessThan(135);
+    await expect(eqc.locator('.ma-s')).toContainText('°');
+    await expect(sec).toContainText(X.side);
     // it moves, and Pause stops it
     const cap = sec.locator('.moon-anim[data-anim="full"] .ma-cap');
     const c0 = await cap.textContent();
@@ -1541,6 +1548,9 @@ test.describe('månen 0.20', () => {
     await p.locator('#main .gs-hit[data-guide="nightsky"]').first().click();
     await expect(p.locator('#main details[data-sec="moon"] .ma-cv')).toHaveCount(20);
     await expect(p.locator('#main details[data-sec="moon"] .ma-btn')).toHaveCount(0);
+    // 0.20.1: Norway is Sør-Norge, where the full moon is above the horizon at its highest all year
+    const no = await p.locator('#main .moon-anim[data-anim="full"] .ma-row .ma-cell:first-child canvas').evaluateAll(cs => cs.map(c => +c.dataset.alt));
+    expect(no.length).toBe(4); for (const a of no) expect(a).toBeGreaterThan(0);
     expect(err).toEqual([]);
     await ctx.close();
   });
@@ -1550,6 +1560,7 @@ test.describe('månen 0.20', () => {
   });
 });
 
+/* (build 77, 0.20.1: the equator column shows the full moon as it rises, lying on its side; direction under every moon) */
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
    A blocked tap flashes the lock bar with a hint and changes nothing; auto-relock (off by default) locks again after
    30 s without a touch, and a touch starts the wait again; the list button is named by what it shows; Nødmodus is a
