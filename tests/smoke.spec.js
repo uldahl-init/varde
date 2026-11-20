@@ -212,10 +212,10 @@ for (const L of LANGS){
         return out;
       };
       const before = await readGuides();
-      // switch to the other language on Dine lister
+      // switch to the other language in Innstillinger (from build 80, the gear in the header)
       const other = L.lang === 'no' ? 'en' : 'no';
       await goTab(page, 'list');
-      await page.locator('#listBtn').click();
+      await page.locator('#hdrSet').click();
       await page.locator(`#main [data-lang="${other}"]`).click();
       const after = await readGuides();
       for (const k of Object.keys(before)) expect(after[k].n, `guide ${k} has the same sections in both languages`).toBe(before[k].n);
@@ -290,7 +290,7 @@ for (const L of LANGS){
     });
 
     test('version line under Hjelp', async ({page}) => {
-      await page.locator('#listBtn').click();
+      await page.locator('#hdrSet').click();
       const ver = page.locator('#main .app-ver');
       await expect(ver).toContainText(APP_VERSION);
       await expect(ver).toContainText(new RegExp(`\\b${APP_BUILD}\\b`));
@@ -559,7 +559,7 @@ for (const L of LANGS){
       await expect(p2.locator('#main section.cat:not(.closed)')).toHaveCount(0);
       // Start på nytt (Utemodus off): Lett dagstur and Nattlys are reset, every category folded
       await p2.locator('#main [data-act="fieldToggle"]').click();
-      await p2.locator('#listBtn').click();
+      await p2.locator('#hdrSet').click();
       await p2.locator('#main [data-la="startOver"]').click();
       await p2.locator('#panel [data-s="ok"]').click();
       await expect(p2.locator('#main section.cat').first()).toBeVisible();
@@ -598,7 +598,7 @@ for (const L of LANGS){
         const err = watchErrors(p);
         await p.addInitScript(([key, pos]) => { try { localStorage.setItem(key, JSON.stringify(Object.assign({lists:[], hidePacked:false, introDone:true}, pos ? {pos} : {}))); } catch(e){} }, [KEY, pos]);
         await p.goto('./');
-        await p.locator('#listBtn').click();
+        await p.locator('#hdrSet').click();
         await expect(p.locator('#main .em-call b'), `numbers at ${JSON.stringify(pos)}`).toHaveText(nums);
         await p.locator('#main [data-act="openGuide"][data-guide="meds"][data-sec="help"]').click();
         await expect(p.locator('#main details[data-sec="help"]')).toHaveAttribute('open', '');
@@ -685,6 +685,8 @@ test.describe('nattlys', () => {
       // 0.16.0: Kompass and Stjerner og planeter (stars, planets and the moon on the ring)
       await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
       await p.locator('#main [data-act="cStars"]').click(); await check('stars');
+      // the Dine lister row in Utemodus (from build 80)
+      await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#tabbar [data-tab="list"]').click(); await check('list rows');
       expect(found, `${skin}, ${scheme} mode, ${hue} light`).toEqual({});
       await ctx.close();
     }
@@ -766,9 +768,9 @@ test.describe('nødmodus', () => {
     const err = watchErrors(p);
     await start(p, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true, rainLocked:true, night:true, nightHue:'green',
       pos:{lat:59.91, lon:10.75, t:Date.now(), acc:12}});
-    // the button sits above the Utemodus button and works in Regnlås
+    // the button sits right under the Utemodus button (from build 80; Utemodus keeps its place) and works in Regnlås
     const order = await p.locator('#main > .sos-btn, #main > .field-btn').evaluateAll(els => els.map(e => e.className.split(' ')[0]));
-    expect(order.slice(0, 2)).toEqual(['sos-btn', 'field-btn']);
+    expect(order.slice(0, 2)).toEqual(['field-btn', 'sos-btn']);
     await hold(p, '#main [data-sos-hold]', 1200);
     await expect(p.locator('#sos')).toBeVisible();
     await expect(p.locator('#sos')).toHaveClass(/h-green/);
@@ -954,6 +956,151 @@ test.describe('bål gjester', () => {
     await p.clock.runFor(30000);
     expect(err).toEqual([]);
     await ctx.close();
+  });
+});
+
+/* ---------- From build 80 (0.22.0): Innstillinger og Om Varde, the Utemodus page and header, Bål visitors ----------
+   The gear (only with Utemodus off) opens Innstillinger on any tab, Back returns; Dine lister keeps only the lists, the
+   backup and a link row; Om Varde has the photo line and the version. In Utemodus the header says «Pakkliste», Regnlås is
+   48 px and the sign sits at the right end; Utemodus keeps its place and size, Nødmodus comes under it in the same size,
+   then the lights, Dine lister (with the list name) and Pakkliste. A tap grows Nødmodus over Utemodus for about 3 s
+   without opening it; a hold on it opens. Besøk Av gives no guest, Ofte one within 3 minutes. */
+test.describe('innstillinger 0.22', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st, test) => {
+    await p.addInitScript(([key, s, tst]) => { if (tst) window.__vardeTest = {}; try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st, !!test]);
+    await p.goto('./');
+  };
+  const LONG = 'Fjelltur med telt og hund i Jotunheimen';
+  const own = {id:'L1', name:LONG, notes:'', modes:{}, cats:[{id:'k1', name:'K1', open:true, items:[{id:'a', text:'A', done:false}]}]};
+
+  test('the gear, the page and Dine lister', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, {lists:[], introDone:true, lang:'no'});
+    await expect(p.locator('#hdrSet')).toBeVisible();
+    await expect(p.locator('#hdrSet')).toHaveAccessibleName('Innstillinger og om Varde');
+    // from Guider: the page opens on that tab and Back returns
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await p.locator('#hdrSet').click();
+    await expect(p.locator('#listName')).toHaveText('Innstillinger');
+    await expect(p.locator('#hdrSet')).toHaveAttribute('aria-current', 'page');
+    await expect(p.locator('#tabbar [data-tab="guide"]')).toHaveAttribute('aria-current', /page|true/);
+    const labels = (await p.locator('#main .sec-lbl').allTextContents()).map(x => x.trim());
+    expect(labels).toEqual(['Utseende', 'Språk', 'Regnlås', 'Bål', 'Start på nytt', 'Hjelp', 'Personvern', 'Om rådene', 'Bildene']);
+    await expect(p.locator('#main .part-lbl')).toHaveText('Om Varde');
+    await expect(p.locator('#main .app-ver')).toContainText('bygg');
+    await expect(p.locator('#main')).toContainText('Bildene i appen er ekte foto');
+    await expect(p.locator('#main [data-act="fireGuests"][aria-pressed="true"]')).toHaveText('Av og til');
+    await p.locator('#main [data-act="back"]').click();
+    await expect(p.locator('#listName')).toHaveText('Guider');
+    // Dine lister: the lists and the backup, no settings, one row to the page
+    await p.locator('#tabbar [data-tab="list"]').click();
+    await p.locator('#listBtn').click();
+    await expect(p.locator('#main .sec-lbl')).toHaveCount(0);
+    await expect(p.locator('#main .app-ver')).toHaveCount(0);
+    await expect(p.locator('#main [data-la="backup"]')).toBeVisible();
+    await p.locator('#main [data-act="openSettings"]').click();
+    await expect(p.locator('#listName')).toHaveText('Innstillinger');
+    // Besøk is a setting: stored, and kept by Start på nytt
+    await p.locator('#main [data-act="fireGuests"][data-v="often"]').click();
+    await expect(p.locator('#main [data-act="fireGuests"][data-v="often"]')).toHaveAttribute('aria-pressed', 'true');
+    expect(await p.evaluate(k => JSON.parse(localStorage.getItem(k)).fireGuests, KEY)).toBe('often');
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('Utemodus: header, order and sizes; no gear', async ({browser}) => {
+    let ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    // the Utemodus button keeps its place and size (with a one-line list name; a long name may wrap the header with Utemodus off)
+    await start(p, {lists:[], introDone:true, lang:'no'});
+    const fieldOff = await p.locator('#main .field-btn').boundingBox();
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    let fieldOn = await p.locator('#main .field-btn').boundingBox();
+    expect(Math.abs(fieldOn.y - fieldOff.y)).toBeLessThan(1);
+    expect(Math.abs(fieldOn.height - fieldOff.height)).toBeLessThan(1);
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    // a long list name: the header says Pakkliste in Utemodus, the name is in the Dine lister row
+    expect(err).toEqual([]);
+    await ctx.close();
+    ctx = await ctxFor(browser); p = await ctx.newPage(); err = watchErrors(p);
+    await start(p, {v:2, std:{done:{}, modes:{}, light:{}, open:{}}, lists:[own], main:'L1', introDone:true, lang:'no'});
+    await expect(p.locator('#listName')).toHaveText(LONG);
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    fieldOn = await p.locator('#main .field-btn').boundingBox();
+    await expect(p.locator('#hdrSet')).toBeHidden();
+    await expect(p.locator('#listName')).toHaveText('Pakkliste');
+    const order = await p.locator('#main > *').evaluateAll(els => els.map(e => e.classList[0] + (e.classList.contains('lists-row') ? '+lists' : '')));
+    expect(order.slice(0, 6)).toEqual(['field-btn', 'sos-btn', 'field-tools', 'field-hint', 'modes-toggle+lists', 'modes-toggle']);
+    const sos = await p.locator('#main .sos-btn').boundingBox();
+    expect(Math.abs(sos.height - fieldOn.height)).toBeLessThan(2);
+    await expect(p.locator('#main .lists-row')).toContainText(LONG);
+    const rain = await p.locator('#hdrLock').boundingBox(), sign = await p.locator('#hdrField').boundingBox();
+    expect(rain.height).toBeGreaterThanOrEqual(47.5);
+    expect(sign.x).toBeGreaterThan(rain.x + rain.width);
+    await p.locator('#main .lists-row').click();
+    await expect(p.locator('#main [data-sel]').first()).toBeVisible();
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('a long name at 200 % text never meets the gear', async ({browser}) => {
+    const ctx = await ctxFor(browser, {viewport:{width:360, height:780}}), p = await ctx.newPage(), err = watchErrors(p);
+    await p.addInitScript(() => document.addEventListener('DOMContentLoaded', () => { document.documentElement.style.fontSize = '200%'; }));
+    await start(p, {v:2, std:{done:{}, modes:{}, light:{}, open:{}}, lists:[own], main:'L1', introDone:true, lang:'no'});
+    const a = await p.locator('#listBtn').boundingBox(), g = await p.locator('#hdrSet').boundingBox();
+    expect(a.x + a.width).toBeLessThanOrEqual(g.x + 0.5);
+    expect(g.x + g.width).toBeLessThanOrEqual(360);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('a tap grows Nødmodus over Utemodus for about 3 s; a hold opens it', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, {lists:[], introDone:true, lang:'no', field:true});
+    const f = await p.locator('#main .field-btn').boundingBox(), s0 = await p.locator('#main .sos-btn').boundingBox();
+    await p.mouse.click(s0.x + s0.width / 2, s0.y + s0.height / 2);
+    await expect(p.locator('#main .sos-btn')).toHaveClass(/grow/);
+    await p.waitForTimeout(450);
+    await expect(p.locator('#sos')).toBeHidden();
+    const s1 = await p.locator('#main .sos-btn').boundingBox();
+    expect(s1.height).toBeGreaterThan(125);
+    expect(Math.abs(s1.y - f.y)).toBeLessThan(2);                                       // over the Utemodus button
+    expect(Math.abs((s1.y + s1.height) - (s0.y + s0.height))).toBeLessThan(2);          // its bottom edge stays: nothing moves
+    await expect(p.locator('#main .sos-btn .g')).toHaveText('Hold inne for å åpne');
+    const hit = await p.evaluate(([x, y]) => !!document.elementFromPoint(x, y).closest('.sos-btn'), [f.x + f.width / 2, f.y + f.height / 2]);
+    expect(hit).toBe(true);
+    // back to its size after about 3 s
+    await p.waitForTimeout(3600);
+    await expect(p.locator('#main .sos-btn')).not.toHaveClass(/grow/);
+    expect((await p.locator('#main .sos-btn').boundingBox()).height).toBeLessThan(70);
+    // tap, then hold on the grown button where Utemodus is: it opens
+    await p.mouse.click(s0.x + s0.width / 2, s0.y + s0.height / 2);
+    await p.waitForTimeout(450);
+    await p.mouse.move(f.x + f.width / 2, f.y + f.height / 2); await p.mouse.down(); await p.waitForTimeout(1200); await p.mouse.up();
+    await expect(p.locator('#sos')).toBeVisible();
+    expect(await p.evaluate(k => JSON.parse(localStorage.getItem(k)).field, KEY)).toBe(true);   // Utemodus was not touched
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('Bål visitors: Av never, Ofte within 3 minutes', async ({browser}) => {
+    for (const [mode, within] of [['off', null], ['often', 3]]){
+      const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+      await p.clock.install();
+      await start(p, {lists:[], introDone:true, lang:'no', field:true, fireGuests:mode}, true);
+      const b = await p.locator('#main .lt-btn[data-light="fire"]').boundingBox();
+      await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down(); await p.waitForTimeout(1200); await p.mouse.up();
+      await expect(p.locator('#slFireCv')).toBeVisible();
+      let first = null;
+      for (let m = 1; m <= 30 && first === null; m++){
+        await p.clock.fastForward('01:00'); await p.clock.runFor(200);
+        if (await p.evaluate(() => window.__vardeTest.Fire.guest)) first = m;
+      }
+      if (within === null) expect(first, mode).toBeNull();
+      else { expect(first, mode).not.toBeNull(); expect(first).toBeLessThanOrEqual(within); }
+      expect(err).toEqual([]);
+      await ctx.close();
+    }
   });
 });
 
@@ -1552,7 +1699,7 @@ test.describe('månen 0.20', () => {
     const cl = await sec.locator('.moon-anim[data-anim="cres"] .ma-cv').evaluateAll(cs => cs.map(c => ((+c.dataset.limb % 360) + 540) % 360 - 180));
     expect(cl[0]).toBeLessThan(-30); expect(cl[2]).toBeGreaterThan(30);
     await expect(sec.locator('.ma-n').first()).toHaveText(X.nn);
-    await expect(sec.locator('.ma-credit')).toHaveText(X.credit);
+    await expect(sec.locator('.ma-credit')).toHaveCount(0);   // from build 80: one line for all the photos, in Om Varde
     // 0.20.1: the equator shows the full moon as it rises in the east, lying on its side; every moon says where it stands
     const eqc = sec.locator('.moon-anim[data-anim="full"] .ma-cell').nth(1);
     await expect(eqc.locator('.ma-w')).toHaveText(X.rise);
@@ -1638,12 +1785,17 @@ test.describe('regnlås og tilgjengelighet', () => {
     await expect(p.locator('body')).not.toHaveClass(/locked/);
     await p.clock.runFor(40000);
     await expect(p.locator('body')).not.toHaveClass(/locked/);
-    // the setting on Dine lister
-    await p.locator('#listBtn').click();
+    // the setting is in Innstillinger, made with Utemodus off (from build 80): the gear is gone in Utemodus
+    await expect(p.locator('#hdrSet')).toBeHidden();
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    await p.locator('#hdrSet').click();
     const sw = p.locator('#main [data-act="autoRelock"]');
     await expect(sw).toHaveAttribute('aria-pressed', 'false');
     await sw.click();
     await expect(sw).toHaveAttribute('aria-pressed', 'true');
+    await p.locator('#main [data-act="back"]').click();
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    await expect(p.locator('#hdrSet')).toBeHidden();
     // on: lock, unlock, then 30 s without a touch locks again; a touch starts the wait again
     await p.locator('#hdrLock').click();
     await expect(p.locator('body')).toHaveClass(/locked/);
@@ -1715,6 +1867,8 @@ test.describe('regnlås og tilgjengelighet', () => {
       await check('guider');
       await p.locator('#tabbar [data-tab="plan"]').click(); await p.locator('#main [data-open="food"]').click(); await check('food');
       await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
+      await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#hdrSet').click(); await check('innstillinger');
+      await p.locator('#main [data-act="back"]').click();
       await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#main [data-act="fieldToggle"]').click(); await check('utemodus');
       await ctx.close();
     }
@@ -1786,7 +1940,7 @@ test.describe('privat', () => {
     await expect(page.locator('#main .notes-ix')).toContainText('Hemmelig hytte');
     await page.locator('#listBtn').click().catch(() => {});
     await goTab(page, 'list');
-    await page.locator('#listBtn').click();
+    await page.locator('#hdrSet').click();
     await expect(page.locator('#main .priv-status')).toHaveText('Private notater er åpne.');
     await page.locator('#main [data-act="privLockNow"]').click();
     await expect(page.locator('#main .priv-status')).toHaveText('Private notater er låst.');
@@ -1814,7 +1968,7 @@ test.describe('privat', () => {
     expect(JSON.stringify(st2)).not.toContain('sekken');
     // Bytt passord: the old one fails, the new one opens, the note is unchanged
     await goTab(page, 'list');
-    await page.locator('#listBtn').click();
+    await page.locator('#hdrSet').click();
     const before = await stored(page);
     await page.locator('#main [data-act="privChange"]').click();
     await pwOk(page, 'nytt-passord-9', true);
@@ -1846,7 +2000,7 @@ test.describe('privat', () => {
     await expect(page.locator('#main .notes-ix [data-act="openNote"]')).toHaveCount(2);
     // Glemt passordet: deletes only the private notes, with Angre
     await goTab(page, 'list');
-    await page.locator('#listBtn').click();
+    await page.locator('#hdrSet').click();
     await page.locator('#main [data-act="privLockNow"]').click();
     await goTab(page, 'notes');
     await page.locator('#main .notes-ix .priv-locked').click();
@@ -1897,7 +2051,7 @@ test.describe('privat', () => {
     await openApp(page);
     await newNote(page, 'Ventetid', 'tekst');
     await makePrivate(page, PW, true);
-    await goTab(page, 'list'); await page.locator('#listBtn').click();
+    await goTab(page, 'list'); await page.locator('#hdrSet').click();
     await page.locator('#main [data-act="privLockNow"]').click();
     await goTab(page, 'notes');
     await page.locator('#main .notes-ix .priv-locked').click();
@@ -1925,7 +2079,7 @@ test.describe('privat', () => {
     await openApp(page);
     await newNote(page, 'Unicode', 'tekst');
     await makePrivate(page, 'Blåbær på ' + 'heia', true);   // å composed (U+00E5)
-    await goTab(page, 'list'); await page.locator('#listBtn').click();
+    await goTab(page, 'list'); await page.locator('#hdrSet').click();
     await page.locator('#main [data-act="privLockNow"]').click();
     await goTab(page, 'notes');
     await page.locator('#main .notes-ix .priv-locked').click();
@@ -2035,7 +2189,7 @@ test.describe('privat', () => {
     expect(s2.priv.salt).not.toBe(file.priv.salt);
     expect(s2.priv.wrap).not.toBe(file.priv.wrap);
     await p2.locator('[data-s="cancel"]').last().click();
-    await goTab(p2, 'list'); await p2.locator('#listBtn').click();
+    await goTab(p2, 'list'); await p2.locator('#hdrSet').click();
     await p2.locator('#main [data-act="privLockNow"]').click();
     await goTab(p2, 'notes');
     await expect(p2.locator('#main .notes-ix .priv-locked')).toHaveCount(1);
@@ -2052,8 +2206,9 @@ test.describe('privat', () => {
     await p3.goto('./');
     await newNote(p3, 'Eget', 'mitt eget');
     await makePrivate(p3, 'annet-passord', true);
-    await goTab(p3, 'list'); await p3.locator('#listBtn').click();
+    await goTab(p3, 'list'); await p3.locator('#hdrSet').click();
     await p3.locator('#main [data-act="privLockNow"]').click();
+    await p3.locator('#main [data-act="back"]').click(); await p3.locator('#listBtn').click();   // from build 80: the backup stays on Dine lister
     await p3.locator('[data-la="backup"]').click();
     await p3.locator('#bkIn').fill(plainCopy);
     await p3.locator('#bkRestore').click();
@@ -2081,7 +2236,7 @@ test.describe('privat', () => {
     await p.goto('./');
     await newNote(p, 'Felt', 'tekst');
     await makePrivate(p, PW, true);
-    await goTab(p, 'list'); await p.locator('#listBtn').click();
+    await goTab(p, 'list'); await p.locator('#hdrSet').click();
     await p.locator('#main [data-act="privLockNow"]').click();
     // Utemodus on through stored state, then reload
     await goTab(p, 'list');
