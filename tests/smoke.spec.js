@@ -1891,10 +1891,15 @@ test.describe('privat', () => {
     await p.locator('#overlay [data-s="ok"]').click();
     await expect(p.locator('#main .note-full h2')).toContainText(ti);
   }
+  // after build 80: on GitHub's runner the second field was sometimes empty right after filling (the sheet still settling),
+  // so both fields are filled again until they hold the password; what follows still checks the result
   async function pwOk(p, pw, again){
-    await p.locator('#pw1').fill(pw);
-    await expect(p.locator('#pw1')).toHaveValue(pw);
-    if (again){ await p.locator('#pw2').fill(pw); await expect(p.locator('#pw2')).toHaveValue(pw); }
+    await expect(async () => {
+      await p.locator('#pw1').fill(pw);
+      if (again) await p.locator('#pw2').fill(pw);
+      await expect(p.locator('#pw1')).toHaveValue(pw, {timeout:1000});
+      if (again) await expect(p.locator('#pw2')).toHaveValue(pw, {timeout:1000});
+    }).toPass({timeout:10000});
     await p.locator('#overlay [data-s="ok"]').click();
   }
   async function makePrivate(p, pw, first){
