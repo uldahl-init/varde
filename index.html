@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eg3mYCIj+zpe51rYuAwxkfxl84l4p7HnfP6cZxmOois='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-gqcam3fj04mdqkFwZ3fkEqcBLkyiEmlMh2RS0bZMOoQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -47,7 +47,7 @@ button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--lichen);outline-offset:2px}
 
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--hd,var(--bg));color:var(--hdt,var(--ink));padding:12px 0 14px}
-.title-row{display:flex;align-items:center;gap:4px}
+.title-row{display:flex;align-items:center;gap:4px;min-height:54px} /* 0.22.0: the same height with the list button and with Regnlås, so Utemodus keeps its place */
 .list-switch{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;cursor:pointer;text-align:left}
 .list-switch h1{margin:0;font-family:var(--head);font-weight:600;font-size:1.9rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .list-switch svg{flex:none;width:20px;height:20px;stroke:var(--muted)}
@@ -289,6 +289,8 @@ button.ix-group + .index{margin-top:4px}
 .ix-group .gh-ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .link-btn .gh-ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .link-btn.g-health{color:var(--gc);border-color:var(--gc)}
+.pg-sec .link-btn.g-health{color:color-mix(in srgb,var(--gc) 80%,var(--ink))} /* 0.22.0: contrast on Berg's grey page */
+body[data-skin="berg"] .pg-sec a{color:color-mix(in srgb,var(--link) 80%,var(--ink))}
 /* Nattlys: group colours become shades of the night light (pure red or green); --gsafe was left blue before 0.7.0 */
 :root body.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--gsky:var(--ink)}
 .link-btn .gh-ic{width:16px;height:16px;margin-right:4px}
@@ -369,12 +371,17 @@ header .list-switch.long .ls-lbl{display:none}
 header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
 header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
 header .list-switch.plain h1{font-size:1.9rem}
-.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:8px;border-radius:50%;border:2px solid var(--red);color:var(--red);align-items:center;justify-content:center;pointer-events:none}
+.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:10px;border-radius:50%;border:2px solid var(--red);color:var(--red);align-items:center;justify-content:center;pointer-events:none}
 body.field .hdr-field{display:flex}
 .hdr-field svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
-.hdr-rain{display:none;flex:none;align-items:center;gap:6px;margin-left:12px;padding:8px 14px;min-height:44px;border-radius:999px;border:2px solid var(--rain,#74B4EA);background:none;color:inherit;font-weight:600;font-size:.85rem;cursor:pointer;opacity:.95}
+.hdr-rain{display:none;flex:none;align-items:center;gap:8px;margin-left:12px;padding:10px 20px;min-height:48px;border-radius:999px;border:2px solid var(--rain,#74B4EA);background:none;color:inherit;font-weight:600;font-size:1rem;cursor:pointer;opacity:.95}
 body.field .hdr-rain{display:flex}
-.hdr-rain svg{width:20px;height:20px;stroke:var(--rain,#74B4EA);fill:none;stroke-width:2;stroke-linecap:round}
+/* 0.22.0: the gear (Innstillinger og Om Varde) at the right end, only with Utemodus off; the Utemodus sign takes its spot */
+.hdr-set{display:flex;flex:none;width:44px;height:44px;margin-left:8px;padding:0;align-items:center;justify-content:center;border:0;border-radius:50%;background:none;color:inherit;cursor:pointer}
+.hdr-set svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linejoin:round}
+.hdr-set[aria-current="page"]{background:var(--hd-btn,rgba(255,255,255,.16))}
+body.field .hdr-set{display:none}
+.hdr-rain svg{width:22px;height:22px;stroke:var(--rain,#74B4EA);fill:none;stroke-width:2;stroke-linecap:round}
 .lock-note{margin:0;text-align:center;font-size:.9rem;color:var(--muted);max-width:420px}
 body.locked main,body.locked main *,body.locked header.top button,body.locked .toolbar{pointer-events:none}
 body.locked .tabbar{pointer-events:none}
@@ -477,7 +484,7 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .ma-cv{display:block;width:100%;max-width:120px;height:auto;aspect-ratio:1;margin:4px auto 0}
 .ma-n{font-weight:600;font-size:.95rem}
 .ma-w{color:var(--muted);font-size:.8rem}
-.ma-s,.ma-cap,.ma-credit{color:var(--muted);font-size:.85rem}
+.ma-s,.ma-cap{color:var(--muted);font-size:.85rem}
 .ma-cap{text-align:center;margin:4px 0 10px}
 .ma-hz{border-top:2px solid var(--muted);margin:2px 6px 0}
 .ma-btn{margin:0 auto;display:block}
@@ -510,6 +517,18 @@ body.night .lt-btn{--lc:currentColor}
 @keyframes lockPulse{0%{outline-offset:0;outline-color:var(--red)}75%{outline-offset:7px;outline-color:transparent}100%{outline-offset:7px;outline-color:transparent}}
 @media (prefers-reduced-motion: reduce){.chip.pulse{animation:none;outline-offset:2px}}
 .field-hint{text-align:center;color:var(--muted);font-size:.85rem;margin:8px 0 0}
+/* 0.22.0: Utemodus and Nødmodus one size, the same gap; the Dine lister row in Utemodus */
+.field-btn{min-height:62px}
+.field-btn + .sos-btn{min-height:62px;margin:10px 0 0}
+.lists-row svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.lists-row .mt-val{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.lists-row + .list-toggle{margin-top:10px}
+.set-row{margin-top:28px}
+.set-row .mt-val{white-space:normal}
+.set-row svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.part-lbl{margin:40px 0 0;padding-top:18px;border-top:2px solid var(--line-strong);font-family:var(--head);font-weight:600;font-size:1.6rem;line-height:1.2;color:var(--ink)}
+.part-lbl + .pg-sec{margin-top:16px;padding-top:0;border-top:0}
+.fg-row .chip{flex:1 1 auto}
 .sos{position:fixed;inset:0;z-index:30;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#0d0d0d;color:var(--s-fg);--s-fg:#f2f2f2;--s-mut:#b0b0b0;--s-sig:#eb3b33;--s-line:#3a3a3a;--s-calm:#2e2e2e;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
 .sos.h-red{background:#000;--s-fg:#ff0000;--s-mut:#ec0000;--s-sig:#ff0000;--s-line:#500000;--s-calm:#2a0000}
 .sos.h-green{background:#000;--s-fg:#00ff00;--s-mut:#00a000;--s-sig:#00ff00;--s-line:#004000;--s-calm:#002a00}
@@ -547,6 +566,13 @@ body.sosopen{overflow:hidden}
 .sos-btn .fill{position:absolute;left:0;bottom:0;height:5px;width:0;background:#ff5a52}
 .sos-btn.holding .fill{width:100%;transition:width 1s linear}
 .sos-btn.small{min-height:48px;font-size:1rem;margin:8px 0 10px}
+/* 0.22.0: grown by a tap: over the button above, nothing moves; says what to do */
+.sos-btn{transition:height .3s ease-out,margin .3s ease-out}
+.sos-btn.grow{z-index:5;font-size:1.4rem;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.sos-btn.shrink{transition-duration:.6s;transition-timing-function:ease-in-out}
+.sos-btn .g{display:none}
+.sos-btn.grow:not(.shrink) small{display:none}
+.sos-btn.grow:not(.shrink) .g{display:block;width:100%;font-size:1rem;opacity:1;font-weight:600}
 body.locked .sos-btn,body.locked .sos-btn *{pointer-events:auto}
 body.night .sos-btn{background:#000;border-color:var(--ink);color:var(--ink)}
 body.night .sos-btn svg{stroke:currentColor}
@@ -741,7 +767,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 .btn{font-weight:600;border-radius:10px;padding:10px 16px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;white-space:nowrap}
 .btn.small{padding:6px 12px;font-size:.9rem}
 .btn.primary{background:var(--red);border-color:var(--red);color:var(--on-red,#fff)}
-.btn.danger{color:var(--red)}
+.btn.danger{color:var(--red);color:color-mix(in srgb,var(--red) 62%,var(--ink))} /* 0.22.0: contrast on Innstillinger in every skin */
 .add-cat{display:block;width:100%;margin-top:20px;padding:14px;border:2px dashed var(--line-strong);background:none;border-radius:12px;font-weight:600;color:var(--muted);cursor:pointer}
 .empty{margin:48px 8px;text-align:center;color:var(--muted)}
 .done-banner{margin:20px 0 0;padding:14px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--red);display:flex;gap:12px;align-items:center;font-weight:600}
@@ -780,8 +806,9 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
         <span class="ls-lbl" id="lsLbl"></span>
         <svg class="ls-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
-      <span class="hdr-field" id="hdrField" role="img"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></span>
       <button class="hdr-rain" id="hdrLock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 7.5a3.75 3.75 0 0 1 .5 7.47"/><path d="M9 18l-1 2.5M13 18l-1 2.5M17 18l-1 2.5"/></svg><span id="hdrRainTxt"></span></button>
+      <span class="hdr-field" id="hdrField" role="img"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></span>
+      <button class="hdr-set" id="hdrSet" data-nav><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.48 10.47 L21.48 13.53 L19.07 13.38 L17.97 16.02 L19.78 17.62 L17.62 19.78 L16.02 17.97 L13.38 19.07 L13.53 21.48 L10.47 21.48 L10.62 19.07 L7.98 17.97 L6.38 19.78 L4.22 17.62 L6.03 16.02 L4.93 13.38 L2.52 13.53 L2.52 10.47 L4.93 10.62 L6.03 7.98 L4.22 6.38 L6.38 4.22 L7.98 6.03 L10.62 4.93 L10.47 2.52 L13.53 2.52 L13.38 4.93 L16.02 6.03 L17.62 4.22 L19.78 6.38 L17.97 7.98 L19.07 10.62Z"/><circle cx="12" cy="12" r="3"/></svg></button>
     </div>
     <div class="progress">
       <div class="bar"><span id="barFill"></span></div>
@@ -810,8 +837,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.21.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 79;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.22.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 80;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -914,7 +941,7 @@ const UI = {
     resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
     catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
     medNote:'Read the package leaflet. Ask a doctor or pharmacist if you are unsure, take other medicines, are pregnant or have an illness.', tripType:'Trip type', lightDay:'Light day hike',
-appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
+appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP_NAME}`, setLink:`Settings and about ${APP_NAME}`, aboutApp:`About ${APP_NAME}`, fgHint:'How often someone drops by the fire.', fg:{off:'Off', rare:'Rarely', some:'Now and then', often:'Often'}, photosTitle:'The pictures', photosTxt:'The pictures in the app are real photos, and several drawings are made from photos. All are by the app\'s maker unless stated otherwise.', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
     stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNone:'None of these are above the horizon right now.',
@@ -941,7 +968,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
     tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
-    sos:{title:'Emergency mode', exit:'Exit emergency mode', tap:'tap', six:'6 a minute', hueG:'Green', hueR:'Red', hueN:'Normal', hueLbl:'Colours', holdMsg:'Hold Emergency mode for 1 second to open it.',
+    sos:{title:'Emergency mode', exit:'Exit emergency mode', tap:'tap', six:'6 a minute', hueG:'Green', hueR:'Red', hueN:'Normal', hueLbl:'Colours', holdMsg:'Hold Emergency mode for 1 second to open it.', holdGrow:'Hold to open',
       call:'Call for help', aml:'Most newer phones send your position automatically when you call.',
       pos:'Position', posNone:'No position saved. Tap Get position, or find the coordinates in your phone’s map app.', sms:'Send position by SMS',
       smsNote:'Your messages app opens with the text written. It is sent only when you press send.', smsText:(c, w) => `My position: ${c} (WGS84), measured ${w}`,
@@ -962,7 +989,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
       ['Cold and battery','<p>Cold drains the battery fast, and the phone can shut down even with charge left. Keep it in an inner pocket close to your body, and keep the power bank warm too. Low power mode, lower brightness and flight mode when you do not need coverage all save battery. Dark screens use less power on most phones, so a <b>night light</b> helps as well.</p>', 'battery'],
       ['Gloves and cold fingers','<p>Thin touchscreen gloves work on most phones. Many Android phones have a glove mode in the display settings that makes the screen more sensitive. In this app, <b>Outdoor mode</b> gives larger text and buttons.</p>'],
       ['Before you go','<p>Download offline maps and charge everything. This app works without coverage once it is installed. But never depend on the phone for safety: bring map and compass, and a satellite messenger or emergency beacon for areas without coverage.</p>'],
-      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off. Use it not only in rain, but whenever the phone is in a pocket or the pack with the app open. If you tap something while it is locked, the lock bar at the bottom flashes and says what you can do. Under Your lists you can let Rain lock come back on by itself 30 seconds after you unlock.</p><p><b>Battery:</b> Outdoor mode keeps the screen on, which drains the battery in a pocket. Press the power button before the phone goes in a pocket or the pack: the app is where you left it when you turn the screen on again, and Rain lock is still on.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor. Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
+      ['Outdoor mode in this app','<p><b>Outdoor mode</b> gives larger text and buttons, keeps the screen on, and locks editing so nothing can be deleted by accident. Only clear, single taps count, so water drops are less likely to tick anything. A mountain sign at the top shows that it is on.</p><p>The list is folded into one row, <b>Packing list</b>, with how much is packed. Tap it to open the list. Trip types are not shown in Outdoor mode: choose them before the trip, with Outdoor mode off.</p><p><b>Lock list</b> switches on with Outdoor mode, so a wet screen or a glove cannot tick anything. Tap Lock list when you want to tick while you pack; it goes back to how it was when Outdoor mode is switched off.</p><p><b>Rain lock</b>, the button with the blue outline at the top, stops all changes, but you can still scroll and read. Hold <b>Navigate</b> to change page, open sections or read your notes. Navigation stays open for a few seconds, and each tap extends it, while ticks and changes stay locked the whole time. Hold <b>Unlock</b> to turn Rain lock off. Use it not only in rain, but whenever the phone is in a pocket or the pack with the app open. If you tap something while it is locked, the lock bar at the bottom flashes and says what you can do. In Settings (the gear at the top) you can let Rain lock come back on by itself 30 seconds after you unlock.</p><p><b>Battery:</b> Outdoor mode keeps the screen on, which drains the battery in a pocket. Press the power button before the phone goes in a pocket or the pack: the app is where you left it when you turn the screen on again, and Rain lock is still on.</p><p><b>Red night light</b> turns the app red so you keep your night vision; it is also the best light before sleep. <b>Green night light</b> is easier to read at low brightness, but costs a little more night vision. Hold either of them, or <b>Campfire</b>, to use the whole screen as a light; slide the handle at the bottom to unlock. Brightness is set on the phone.</p><p><b>Campfire</b> turns the screen into a small fire that crackles. The sound comes in slowly; set the volume with the phone’s buttons. The fire burns down to embers over 45 minutes: hold one finger still on the screen to add wood. When it has burned out, the sound fades, soft Z’s rise from the embers, and the phone may turn off the screen as usual; the embers are still there when you wake it. Sit long enough and you may get a visitor (set how often in Settings). Want the fire on the TV at the cabin? Turn the phone sideways and mirror the screen to the TV.</p>'],
       ['Emergency functions on your phone','<p>Your phone has its own emergency functions. Learn them at home, since they work a little differently from phone to phone.</p><p><b>Emergency SOS:</b> on most Android phones, five quick presses on the power button start Emergency SOS, which can call the emergency number, alert your emergency contacts and play an alarm. On iPhone, hold the side button and a volume button, or press the side button five times if that is turned on. Check the settings: some phones call after a short countdown, so five presses by accident can become an emergency call.</p><p><b>Emergency information on the lock screen:</b> add emergency contacts and medical information, in the settings under safety and emergency (Android) or as Medical ID in the Health app (iPhone), and turn on showing it when the screen is locked. Rescuers can then see it without unlocking the phone, but so can anyone else who finds it.</p><p><b>Torch:</b> in the quick settings (Android) and in Control Centre (iPhone). The light can be used for the signals in Emergency.</p><p><b>Emergency mode in this app:</b> open Emergency mode once at home and allow location when the phone asks. Emergency mode fetches your position as soon as it opens, so you do not meet the question for the first time when it matters.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Emergency: Signals ›</button></p>', 'sos']
     ],
     sunCond:['Snow / fog','Overcast','Partly sunny','Sun','Bright sun / glacier'], sunCat:'Cat.', sunVlt:'VLT is how much visible light the lens lets through. Many manufacturers publish an overview like this for their lenses: use it to choose lenses for the light conditions.',
@@ -1154,7 +1181,7 @@ appearance:'Appearance', tabCompass:'Compass', cStart:'Start compass', cHold:'Ho
     resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
     catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
     medNote:'Les pakningsvedlegget. Spør lege eller apotek hvis du er usikker, bruker andre medisiner, er gravid eller har en sykdom.', tripType:'Turtype', lightDay:'Lett dagstur',
-appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
+appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om ${APP_NAME}`, setLink:`Innstillinger og om ${APP_NAME}`, aboutApp:`Om ${APP_NAME}`, fgHint:'Hvor ofte noen kommer innom bålet.', fg:{off:'Av', rare:'Sjelden', some:'Av og til', often:'Ofte'}, photosTitle:'Bildene', photosTxt:'Bildene i appen er ekte foto, og flere av tegningene er laget etter foto. Alle er tatt av utvikleren av appen, om ikke annet er oppgitt.', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
     stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNone:'Ingen av disse står over horisonten akkurat nå.',
@@ -1181,7 +1208,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
     tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
-    sos:{title:'Nødmodus', exit:'Avslutt nødmodus', tap:'trykk', six:'6 i minuttet', hueG:'Grønt', hueR:'Rødt', hueN:'Vanlig', hueLbl:'Farger', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.',
+    sos:{title:'Nødmodus', exit:'Avslutt nødmodus', tap:'trykk', six:'6 i minuttet', hueG:'Grønt', hueR:'Rødt', hueN:'Vanlig', hueLbl:'Farger', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.', holdGrow:'Hold inne for å åpne',
       call:'Ring etter hjelp', aml:'De fleste nyere mobiler sender posisjonen din automatisk når du ringer.',
       pos:'Posisjon', posNone:'Ingen posisjon lagret. Trykk Hent posisjon, eller finn koordinatene i kartappen på mobilen.', sms:'Send posisjon på SMS',
       smsNote:'Meldingsappen åpnes med teksten skrevet. Den sendes bare når du selv trykker send.', smsText:(c, w) => `Min posisjon: ${c} (WGS84), målt ${w}`,
@@ -1202,7 +1229,7 @@ appearance:'Utseende', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Ho
       ['Kulde og batteri','<p>Kulde tapper batteriet raskt, og mobilen kan slå seg av selv med strøm igjen. Ha den i en innerlomme tett inntil kroppen, og hold powerbanken varm også. Strømsparemodus, lavere lysstyrke og flymodus når du ikke trenger dekning sparer batteri. Mørke skjermer bruker mindre strøm på de fleste mobiler, så <b>nattlyset</b> hjelper også.</p>', 'battery'],
       ['Hansker og kalde fingre','<p>Tynne hansker for berøringsskjerm fungerer på de fleste mobiler. Mange Android-mobiler har hanskemodus i skjerminnstillingene, som gjør skjermen mer følsom. I appen gir <b>Utemodus</b> større tekst og knapper.</p>'],
       ['Før turen','<p>Last ned offline kart og lad alt. Denne appen virker uten dekning når den er installert. Men vær aldri avhengig av mobilen for sikkerheten: ha med kart og kompass, og satellittkommunikator eller nødpeilesender der det ikke er dekning.</p>'],
-      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av. Bruk den ikke bare i regn, men hver gang mobilen ligger i lomma eller sekken med appen åpen. Trykker du på noe mens alt er låst, blinker låselinja nederst og sier hva du kan gjøre. Under Dine lister kan du la Regnlås slå seg på igjen av seg selv 30 sekunder etter at du har låst opp.</p><p><b>Batteri:</b> Utemodus holder skjermen på, og det tapper batteriet i lomma. Trykk av/på-knappen før mobilen går i lomma eller sekken: appen er der du forlot den når du slår på skjermen igjen, og Regnlås er fortsatt på.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk. Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
+      ['Utemodus i appen','<p><b>Utemodus</b> gir større tekst og knapper, holder skjermen påslått, og låser redigering så ingenting kan slettes ved et uhell. Bare tydelige enkelttrykk teller, så vanndråper krysser sjeldnere av noe. Et fjellmerke øverst viser at den er på.</p><p>Listen er samlet i én linje, <b>Pakkliste</b>, som viser hvor mye som er pakket. Trykk på den for å åpne listen. Turtypene vises ikke i Utemodus: velg dem før turen, med Utemodus av.</p><p><b>Lås listen</b> slås på sammen med Utemodus, så våt skjerm eller hansker ikke krysser av noe. Trykk Lås listen når du vil krysse av mens du pakker; den går tilbake til slik den var når Utemodus slås av.</p><p><b>Regnlås</b>, knappen med blå ramme øverst, stopper alle endringer, men du kan fortsatt rulle og lese. Hold <b>Naviger</b> for å bytte side, åpne seksjoner eller lese notatene. Navigeringen er åpen i noen sekunder, og hvert trykk forlenger den, mens avkrysning og endringer er låst hele tiden. Hold <b>Lås opp</b> for å slå Regnlås av. Bruk den ikke bare i regn, men hver gang mobilen ligger i lomma eller sekken med appen åpen. Trykker du på noe mens alt er låst, blinker låselinja nederst og sier hva du kan gjøre. Under Innstillinger (tannhjulet øverst) kan du la Regnlås slå seg på igjen av seg selv 30 sekunder etter at du har låst opp.</p><p><b>Batteri:</b> Utemodus holder skjermen på, og det tapper batteriet i lomma. Trykk av/på-knappen før mobilen går i lomma eller sekken: appen er der du forlot den når du slår på skjermen igjen, og Regnlås er fortsatt på.</p><p><b>Rødt nattlys</b> gjør appen rød, så du beholder nattsynet; det er også best før du skal sove. <b>Grønt nattlys</b> er lettere å lese ved lav lysstyrke, men koster litt mer av nattsynet. Hold en av dem, eller <b>Bål</b>, for å bruke hele skjermen som lys; dra knappen nederst for å låse opp. Lysstyrken stiller du på mobilen.</p><p><b>Bål</b> gjør skjermen til et lite bål som knitrer. Lyden kommer sakte; volumet stiller du med knappene på mobilen. Bålet brenner ned til glør i løpet av 45 minutter: hold en finger stille på skjermen for å legge på ved. Når bålet har brent ut, stilner lyden, myke Z-er stiger fra glørne, og mobilen kan slå av skjermen som vanlig; glørne er der fortsatt når du vekker den. Sitter du lenge nok, kan du få besøk (hvor ofte stiller du under Innstillinger). Vil du ha bålet på TV-en på hytta? Snu mobilen og speil skjermen til TV-en.</p>'],
       ['Nødfunksjoner på mobilen','<p>Mobilen har egne nødfunksjoner. Lær dem hjemme, for de virker litt ulikt fra mobil til mobil.</p><p><b>Nød-SOS:</b> på de fleste Android-mobiler starter fem raske trykk på av/på-knappen Nød-SOS, som kan ringe nødnummeret, varsle nødkontaktene dine og spille av en alarm. På iPhone holder du inne sideknappen og en volumknapp, eller trykker sideknappen fem ganger hvis det er slått på. Sjekk innstillingene: noen mobiler ringer etter en kort nedtelling, så fem trykk ved et uhell kan bli en nødsamtale.</p><p><b>Nødinformasjon på låseskjermen:</b> legg inn nødkontakter og medisinsk informasjon, i innstillingene under sikkerhet og nød (Android) eller som Medisinsk ID i Helse-appen (iPhone), og slå på at den vises når skjermen er låst. Da kan redningsfolk se den uten å låse opp mobilen, men det kan også alle andre som finner den.</p><p><b>Lommelykt:</b> ligger i hurtiginnstillingene (Android) og i Kontrollsenter (iPhone). Lyset kan brukes til signalene i Nødsituasjon.</p><p><b>Nødmodus i appen:</b> åpne Nødmodus én gang hjemme og tillat posisjon når mobilen spør. Nødmodus henter posisjonen med en gang den åpnes, og da slipper du å møte spørsmålet for første gang når det haster.</p><p><button class="btn small" data-nav data-act="openGuide" data-guide="emergency" data-sec="signals">Nødsituasjon: Signaler ›</button></p>', 'sos']
     ],
     sunCond:['Snø / tåke','Overskyet','Delvis sol','Sol','Sterk sol / bre'], sunCat:'Kat.', sunVlt:'VLT er hvor mye synlig lys glasset slipper gjennom. Mange produsenter har en oversikt som denne for sine glass: bruk den til å velge glass etter lysforholdene.',
@@ -1790,7 +1817,9 @@ function render(){
   $('lsLbl').textContent = T.yourLists;
   $('hdrRainTxt').textContent = T.lockScreen;
   $('hdrField').setAttribute('aria-label', T.fieldSign);
-  const listHeader = tab === 'list' && view !== 'lists' && view !== 'howto' && !(view && view.indexOf('edit:') === 0);
+  if (view === 'settings' && state.field) view = null; // 0.22.0: settings are made with Utemodus off
+  // 0.22.0: in Utemodus the header is a plain title (the page name), so Regnlås has room and a long list name never squeezes it
+  const listHeader = !state.field && tab === 'list' && view !== 'lists' && view !== 'howto' && view !== 'settings' && !(view && view.indexOf('edit:') === 0);
   $('listBtn').classList.toggle('plain', !listHeader);
   // 0.16.1: as a button its name is the list name plus «Dine lister»; elsewhere it is only the page title (h1)
   if (listHeader){ $('listBtn').removeAttribute('role'); $('listBtn').removeAttribute('tabindex'); } else { $('listBtn').setAttribute('role', 'none'); $('listBtn').setAttribute('tabindex', '-1'); }
@@ -1798,12 +1827,15 @@ function render(){
   document.body.classList.toggle('locked', rainLocked);
   document.body.classList.toggle('navopen', rainLocked && navOpen());
   $('hdrLock').setAttribute('aria-label', T.lockScreen);
+  $('hdrSet').setAttribute('aria-label', T.setTitle); $('hdrSet').title = T.setTitle;
+  if (view === 'settings') $('hdrSet').setAttribute('aria-current', 'page'); else $('hdrSet').removeAttribute('aria-current');
   if (rainLocked) renderLock();
   requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
-  if (tab !== 'compass') stopCompass();
+  if (tab !== 'compass' || view === 'settings') stopCompass();
   if (tab !== 'guide' && gSearch.open) gsReset();
   if (tab !== 'notes') noteEdit = null;
   if (tab !== 'list') main.classList.remove('editing');
+  if (view === 'settings') return renderSettings();
   if (tab === 'compass') return renderCompass();
   if (tab === 'notes') return renderNotes();
   if (tab !== 'list'){
@@ -1834,8 +1866,8 @@ function render(){
   if (view && !editL && !bag) view = null;
   const cats = editL ? l.cats : bag ? [bag] : visibleCats(l);
   const {t:tot, d} = countCats(cats);
-  $('listName').textContent = l.name;
-  $('listBtn').classList.toggle('long', l.name.length > 16);
+  $('listName').textContent = state.field ? T.tabList : l.name; // 0.22.0: the page name in Utemodus
+  $('listBtn').classList.toggle('long', !state.field && l.name.length > 16);
   document.title = l.name + ' · ' + T.app;
   $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
   $('progText').textContent = tot ? T.packed(d, tot) : T.noItems;
@@ -1851,8 +1883,9 @@ function render(){
     if (hasLight(bag)) html += `<button class="chip${state.listLock ? ' lk' : ''}" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
     html += `<button class="chip" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
   } else {
-    if (state.field) html += sosBtn(false); // 0.11.0: directly above the Utemodus button, only while Utemodus is on
+    // 0.22.0: Utemodus keeps its place and size in both modes; Nødmodus comes right under it while Utemodus is on
     html += `<button class="field-btn${state.field ? ' on' : ''}" data-act="fieldToggle" aria-pressed="${!!state.field}">${ICON_FIELD}<span>${T.field}</span><small>${state.field ? T.fieldOn : T.fieldOff}</small></button>`;
+    if (state.field) html += sosBtn(false);
     if (state.field){
       const hue = state.night ? (state.nightHue === 'green' ? 'green' : 'red') : null;
       const lb = (m, ic, lbl) => `<button class="chip lt-btn lt-${m}" data-light="${m}"${m === 'fire' ? '' : ` aria-pressed="${hue === m}"`}>${ic}<span>${lbl}</span><i class="fill"></i></button>`;
@@ -1860,6 +1893,8 @@ function render(){
     }
     // 0.10.0: in Utemodus the list is ready, so Turtype is left out and the list sits under one fold-out row
     if (state.field){
+      // 0.22.0: Dine lister moved out of the header in Utemodus: a row right above Pakkliste, with the list name
+      html += `<button class="modes-toggle lists-row" data-nav data-act="openLists"><span>${T.yourLists}</span><span class="mt-val">${esc(l.name)}</span>${CHEV_R}</button>`;
       html += `<button class="modes-toggle list-toggle" data-nav data-act="fieldList" aria-expanded="${!!state.fieldList}"><span>${T.listRow}</span><span class="mt-val">${tot ? T.packed(d, tot) : T.noItems}</span>${CHEV}</button>`;
       if (!state.fieldList){ main.innerHTML = html; return; }
     }
@@ -2006,7 +2041,18 @@ function renderLists(){
     html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>
       <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(last)}${dirty ? ` · ${T.bkChanged}` : ''}</p>`;
   }
-  // settings (v29): even sections with a thin line between
+  // 0.22.0: the settings and Om Varde have their own page (the gear in the header); one row here for those who look for them
+  if (!state.field) html += `<button class="modes-toggle set-row" data-nav data-act="openSettings"><span>${T.setLink}</span>${CHEV_R}</button>`;
+  main.innerHTML = html;
+}
+function renderSettings(){
+  const T = t();
+  $('listName').textContent = T.settings;
+  document.title = T.settings + ' · ' + T.app;
+  document.body.classList.add('notlist');
+  const backTo = {list:T.tabList, notes:T.tabNotes, plan:T.tabPlan, guide:T.tabGuide, compass:T.tabCompass}[tab] || T.tabList;
+  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${backTo}</button>`;
+  // even sections with a thin line between (as on Dine lister from v29); the first without the line
   const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
   html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
   html += sec(T.language, `<div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
@@ -2017,15 +2063,23 @@ function renderLists(){
   // 0.18.0: shown once a private password exists
   // build 72: a status line says whether they are open or locked, with Lås nå or Lås opp
   if (state.priv && CRYPTO_OK) html += sec(T.privSec, `<p class="priv-status">${privKey ? LOCK_OPEN_IC + T.privIsOpen : LOCK_IC + T.privIsLocked}</p><p class="tool-tip">${T.privSecHint}</p>${privKey || !state.field ? `<div class="row-btns">${privKey ? `<button class="btn" data-act="privLockNow">${T.privLockNow}</button>` : `<button class="btn" data-act="privOpen">${T.privUnlock}</button>`}${state.field ? '' : `<button class="btn" data-act="privChange">${T.privChange}</button>`}</div>` : ''}`);
-  html += sec(T.help, `<div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button></div>`);
+  // 0.22.0: how often a guest comes by the fire (a setting: not in backups, kept by Start på nytt)
+  const fg = fireGuests();
+  html += sec(T.campfire, `<p class="tool-tip">${T.fgHint}</p><div class="row-btns fg-row">${FG_MODES.map(v => `<button class="chip" data-act="fireGuests" data-v="${v}" aria-pressed="${fg === v}">${T.fg[v]}</button>`).join('')}</div>`);
   if (!state.field) html += sec(T.startOver, `<p class="tool-tip">${T.startOverHint}</p>
     <div class="row-btns"><button class="btn danger" data-la="startOver">${T.startOver}</button></div>`);
+  html += `<h2 class="part-lbl">${T.aboutApp}</h2>`;
+  html += sec(T.help, `<div class="row-btns"><button class="btn" data-la="howto">${T.howTool}</button></div>`);
   html += sec(T.privacy, `<p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`);
   html += sec(T.adviceTitle, `<p class="tool-tip">${T.adviceTxt}</p><p class="tool-tip em-call">${emMarks('[[call]]', state.lang, region(state.pos))}</p>
     <button class="link-btn g-health" data-nav data-act="openGuide" data-guide="meds" data-sec="help">${ICO_HEALTH}${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).meds.secs.find(x => x[2] === 'help')[0]}${CHEV_R}</button>`);
+  html += sec(T.photosTitle, `<p class="tool-tip">${T.photosTxt}</p>`);
   html += `<p class="app-ver">${T.versionLine(APP_VERSION, APP_BUILD)}</p>`;
   main.innerHTML = html;
+  const first = main.querySelector('.pg-sec'); if (first) first.classList.add('first');
 }
+const FG_MODES = ['off', 'rare', 'some', 'often'];
+const fireGuests = () => FG_MODES.indexOf(state.fireGuests) >= 0 ? state.fireGuests : 'some';
 function renderIndex(){
   const T = t();
   const isPlan = tab === 'plan';
@@ -2299,7 +2353,7 @@ const GUIDE_TXT = {
       ["Fortellinger: Melkeveien", "<ul><li>Vinterbrauta, «vintervegen», er et gammelt nordisk navn, som islandsk vetrarbrautin og svensk Vintergatan. Langt nord ses Melkeveien best om vinteren, fordi sommernettene er for lyse. I gammelnorske tekster heter den også mjólkhringr og vetrhringr.</li><li>Grekerne kalte den galaxias kyklos, «melkesirkelen»: i myten er den melk fra gudinnen Hera, spredt over himmelen. Ordet galakse kommer herfra.</li><li>I Finland heter den Linnunrata, «fuglenes vei»: trekkfuglene ble trodd å følge den til Lintukoto, fuglenes varme hjem. Esterne kaller den Linnutee. I samisk tradisjon er den Fuglestigen.</li><li>For māori er Melkeveien kanoen (waka) til Tama-rereti: Orion og Skorpionen er baug og akter, Sørkorset og pekerne anker og tau.</li><li>Mange aboriginske folk i Australia ser Melkeveien som en elv på himmelen, og leser figurer i de mørke flekkene, som Emuen.</li></ul>", "milkyst"],
       ["Lys som beveger seg", "<ul><li><b>Satellitt:</b> et jevnt, hvitt punkt som glir rolig over himmelen uten å blinke, på noen få minutter. Det kan forsvinne brått når det går inn i jordas skygge. Den internasjonale romstasjonen er den klareste, nesten like klar som Venus. En rad med like punkter etter hverandre er satellitter skutt opp sammen.</li><li><b>Fly:</b> blinkende lys, ofte rødt og grønt på vingespissene, og det kan endre retning.</li><li><b>Stjerneskudd (meteor):</b> en rask strek som er borte på et sekund eller to.</li><li><b>Store meteorsvermer hvert år:</b> Kvadrantidene rundt 3.–4. januar, Perseidene rundt 12.–13. august (i Norge ofte i lyse netter) og Geminidene rundt 14. desember. Månen avgjør hvor mange du ser.</li></ul>", "moving"],
       ["Planetene", "<ul><li><b>Venus:</b> klarest etter månen. Står aldri langt fra sola, så den ses i vest etter solnedgang («aftenstjerna») eller i øst før soloppgang («morgenstjerna»), aldri midt på natta.</li><li><b>Jupiter:</b> svært klar og rolig, kan være oppe hele natta.</li><li><b>Mars:</b> tydelig rødlig. Lysstyrken varierer mye; den er klarest når den står nærmest jorda, omtrent hvert annet år.</li><li><b>Saturn:</b> gulaktig og svakere. Lysstyrken følger også hvor mye vi ser av ringene.</li><li><b>Tommelfingerregel:</b> stjerner blinker, planeter lyser roligere. Nær horisonten kan begge blinke. Planetene står alltid langs samme bånd over himmelen som sola og månen. De flytter seg, så de finnes ikke på faste stjernekart.</li></ul><p>Fra norrøn tid er det nesten ikke bevart egne navn på planetene: middelalderens islandske skrivere brukte de latinske navnene.</p>", "planets"],
-      ["Månen", "<ul><li><b>Fasene:</b> halve månen er alltid opplyst av sola. Hvor mye av den lyse halvdelen vi ser, endrer seg gjennom omtrent 29,5 dager, fra nymåne til fullmåne og tilbake.</li><li><b>Den lyse siden peker mot sola:</b> derfor ligger månesigden ulikt gjennom året og fra sted til sted. I Norge står kveldssigden oftest på skrå eller på siden; nær ekvator kan den ligge som en båt. I Australia er sigden speilvendt: den lyser fra venstre.</li><li><b>Ansiktet snur seg:</b> månen viser oss alltid samme side, men den står ikke alltid likt. Gjennom natta dreier den sakte mens den går over himmelen, og gjennom året lener aksen seg skiftevis mot øst og vest. Sett fra Norge når fullmånen står høyest i sør, flytter krateret Tycho seg fra nede til venstre om høsten til rett ned, eller litt til høyre, om våren.</li><li><b>Vi ser litt mer enn halve månen:</b> månen vugger litt (librasjon), fordi banen er avlang og aksen står litt på skrå mot banen, rundt 6,7 grader. Over tid ser vi rundt 59 prosent av overflaten.</li><li><b>I sør står den på hodet:</b> fra Australia ser du de samme havene, men opp ned, fordi du ser nordover mot månen. Ved ekvator går fullmånen nesten rett over hodet, og hvordan den står da, avhenger av hvilken vei du snur deg. Når den står opp eller går ned, ligger den på siden.</li><li><b>Det du ser med det blotte øye:</b> de mørke flatene er «hav», størknet lava. Det klareste krateret ved fullmåne er Tycho, med lyse stråler ut over den sørlige delen.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div><p class='ma-credit'>Havene er tegnet etter et fullmånebilde tatt fra Stavanger 27. desember 2023.</p>", "moon"]]},
+      ["Månen", "<ul><li><b>Fasene:</b> halve månen er alltid opplyst av sola. Hvor mye av den lyse halvdelen vi ser, endrer seg gjennom omtrent 29,5 dager, fra nymåne til fullmåne og tilbake.</li><li><b>Den lyse siden peker mot sola:</b> derfor ligger månesigden ulikt gjennom året og fra sted til sted. I Norge står kveldssigden oftest på skrå eller på siden; nær ekvator kan den ligge som en båt. I Australia er sigden speilvendt: den lyser fra venstre.</li><li><b>Ansiktet snur seg:</b> månen viser oss alltid samme side, men den står ikke alltid likt. Gjennom natta dreier den sakte mens den går over himmelen, og gjennom året lener aksen seg skiftevis mot øst og vest. Sett fra Norge når fullmånen står høyest i sør, flytter krateret Tycho seg fra nede til venstre om høsten til rett ned, eller litt til høyre, om våren.</li><li><b>Vi ser litt mer enn halve månen:</b> månen vugger litt (librasjon), fordi banen er avlang og aksen står litt på skrå mot banen, rundt 6,7 grader. Over tid ser vi rundt 59 prosent av overflaten.</li><li><b>I sør står den på hodet:</b> fra Australia ser du de samme havene, men opp ned, fordi du ser nordover mot månen. Ved ekvator går fullmånen nesten rett over hodet, og hvordan den står da, avhenger av hvilken vei du snur deg. Når den står opp eller går ned, ligger den på siden.</li><li><b>Det du ser med det blotte øye:</b> de mørke flatene er «hav», størknet lava. Det klareste krateret ved fullmåne er Tycho, med lyse stråler ut over den sørlige delen.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
     aurora:{title:"Nordlys", short:"Hva det er, og når du ser det", sub:"Hva nordlyset er, hvor og når du ser det, og gamle fortellinger om det.", secs:[
       ["Hva nordlys er", "<ul><li>Sola sender hele tiden ut ladde partikler, solvinden. Jordas magnetfelt leder dem mot områdene rundt polene, der de kolliderer med gassene i den øvre atmosfæren, fra rundt 80 til sjelden over 500 km opp, og får dem til å lyse.</li><li><b>Farger:</b> grønt kommer fra oksygen rundt 100–150 km opp, og er det vanligste. Rødt er også oksygen, men høyere, og ses mest når nordlyset er sterkt. Blått og fiolett kommer fra nitrogen lenger nede.</li><li>Nordmannen Kristian Birkeland forklarte rundt 1900 at nordlyset skyldes partikler fra sola som fanges av jordas magnetfelt.</li></ul>", "what"],
       ["Hvor og når", "<ul><li>Nordlyset ligger i et belte rundt den magnetiske polen, nordlysovalen. Nord-Norge ligger under den, så der kan du se nordlys selv når aktiviteten er lav. Lenger sør trengs høyere aktivitet, og nordlyset står da lavere på himmelen mot nord.</li><li>Aktiviteten måles ofte med Kp-indeksen, fra 0 (lav) til 9 (høy). Jo høyere tall, jo lenger sør kan det ses.</li><li>Du trenger mørk, klar himmel. I Nord-Norge er sesongen omtrent fra slutten av september til begynnelsen av april; om sommeren er det for lyst. Ofte er det best mellom klokka 20 og 02, men nordlys kan komme når som helst i mørket.</li><li>Sola har en syklus på rundt 11 år. Toppen var i 2024–25. Aktiviteten avtar nå, men noen av de kraftigste utbruddene kommer ofte ett til tre år etter toppen.</li><li>Sjekk et nordlysvarsel og værmeldingen før turen. Det krever nett, så det er ikke i appen.</li></ul>", "when"],
@@ -2418,7 +2472,7 @@ const GUIDE_TXT = {
       ["Stories: the Milky Way", "<ul><li>Vinterbrauta, «the winter way», is an old Nordic name, like Icelandic vetrarbrautin and Swedish Vintergatan. Far north the Milky Way is best seen in winter, because summer nights are too light. Old Norwegian texts also call it mjólkhringr and vetrhringr.</li><li>The Greeks called it galaxias kyklos, «the milky circle»: in myth it is milk from the goddess Hera, sprayed across the sky. The word galaxy comes from this.</li><li>In Finland it is Linnunrata, «the birds' path»: migrating birds were believed to follow it to Lintukoto, the birds' warm home. Estonians call it Linnutee. In Sámi tradition it is the Birds' Ladder.</li><li>For Māori the Milky Way is the canoe (waka) of Tama-rereti: Orion and Scorpius are bow and stern, the Southern Cross and the Pointers the anchor and rope.</li><li>Many Aboriginal peoples in Australia see the Milky Way as a river in the sky, and read figures in its dark patches, such as the Emu.</li></ul>", "milkyst"],
       ["Moving lights", "<ul><li><b>Satellite:</b> a steady white point gliding smoothly across the sky without blinking, over a few minutes. It can vanish suddenly as it enters Earth's shadow. The International Space Station is the brightest, almost as bright as Venus. A row of similar points following each other is satellites launched together.</li><li><b>Aircraft:</b> blinking lights, often red and green on the wingtips, and it can change direction.</li><li><b>Shooting star (meteor):</b> a quick streak gone in a second or two.</li><li><b>Major meteor showers each year:</b> the Quadrantids around 3–4 January, the Perseids around 12–13 August (in Norway often in light nights) and the Geminids around 14 December. The Moon decides how many you see.</li></ul>", "moving"],
       ["The planets", "<ul><li><b>Venus:</b> brightest after the Moon. Never far from the Sun, so seen in the west after sunset («evening star») or in the east before sunrise («morning star»), never in the middle of the night.</li><li><b>Jupiter:</b> very bright and steady, can be up all night.</li><li><b>Mars:</b> clearly reddish. Its brightness varies a lot; it is brightest when closest to Earth, about every two years.</li><li><b>Saturn:</b> yellowish and fainter. Its brightness also follows how much of the rings we see.</li><li><b>Rule of thumb:</b> stars twinkle, planets shine more steadily. Near the horizon both can twinkle. The planets always lie along the same band across the sky as the Sun and Moon. They move, so they are not on fixed star charts.</li></ul><p>Almost no native Norse names for the planets survive: medieval Icelandic writers used the Latin names.</p>", "planets"],
-      ["The Moon", "<ul><li><b>The phases:</b> half of the Moon is always lit by the Sun. How much of the lit half we see changes over about 29.5 days, from new moon to full moon and back.</li><li><b>The lit side points to the Sun:</b> so the crescent lies differently through the year and from place to place. In Norway the evening crescent mostly stands slanted or on its side; near the equator it can lie like a boat. In Australia the crescent is mirrored: it is lit from the left.</li><li><b>The face turns:</b> the Moon always shows us the same side, but it does not always stand the same way. Through the night it turns slowly as it crosses the sky, and through the year its axis leans east and west in turn. Seen from Norway when the full moon stands highest in the south, the crater Tycho moves from lower left in autumn to straight down, or a little to the right, in spring.</li><li><b>We see a little more than half the Moon:</b> it rocks a little (libration), because its orbit is oval and its axis is tilted a little to its orbit, about 6.7 degrees. Over time we see about 59 per cent of its surface.</li><li><b>In the south it stands on its head:</b> from Australia you see the same seas, but upside down, because you look north to the Moon. At the equator the full moon passes almost straight overhead, and how it stands then depends on which way you face. As it rises or sets, it lies on its side.</li><li><b>What you see with the naked eye:</b> the dark patches are «seas», solidified lava. The clearest crater at full moon is Tycho, with bright rays across the southern part.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div><p class='ma-credit'>The seas are drawn from a photo of the full moon taken from Stavanger, 27 December 2023.</p>", "moon"]]},
+      ["The Moon", "<ul><li><b>The phases:</b> half of the Moon is always lit by the Sun. How much of the lit half we see changes over about 29.5 days, from new moon to full moon and back.</li><li><b>The lit side points to the Sun:</b> so the crescent lies differently through the year and from place to place. In Norway the evening crescent mostly stands slanted or on its side; near the equator it can lie like a boat. In Australia the crescent is mirrored: it is lit from the left.</li><li><b>The face turns:</b> the Moon always shows us the same side, but it does not always stand the same way. Through the night it turns slowly as it crosses the sky, and through the year its axis leans east and west in turn. Seen from Norway when the full moon stands highest in the south, the crater Tycho moves from lower left in autumn to straight down, or a little to the right, in spring.</li><li><b>We see a little more than half the Moon:</b> it rocks a little (libration), because its orbit is oval and its axis is tilted a little to its orbit, about 6.7 degrees. Over time we see about 59 per cent of its surface.</li><li><b>In the south it stands on its head:</b> from Australia you see the same seas, but upside down, because you look north to the Moon. At the equator the full moon passes almost straight overhead, and how it stands then depends on which way you face. As it rises or sets, it lies on its side.</li><li><b>What you see with the naked eye:</b> the dark patches are «seas», solidified lava. The clearest crater at full moon is Tycho, with bright rays across the southern part.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
     aurora:{title:"Northern lights", short:"What they are, and when to see them", sub:"What the northern lights are, where and when you see them, and old stories about them.", secs:[
       ["What the northern lights are", "<ul><li>The Sun constantly sends out charged particles, the solar wind. Earth's magnetic field guides them towards the regions around the poles, where they collide with the gases of the upper atmosphere, from about 80 to rarely above 500 km up, and make them glow.</li><li><b>Colours:</b> green comes from oxygen about 100–150 km up, and is the most common. Red is also oxygen, but higher, and is seen mostly when the aurora is strong. Blue and violet come from nitrogen lower down.</li><li>The Norwegian Kristian Birkeland explained around 1900 that the aurora is caused by particles from the Sun captured by Earth's magnetic field.</li></ul>", "what"],
       ["Where and when", "<ul><li>The aurora lies in a belt around the magnetic pole, the auroral oval. Northern Norway lies beneath it, so there you can see aurora even when activity is low. Further south, higher activity is needed, and the aurora then sits lower in the northern sky.</li><li>Activity is often measured with the Kp index, from 0 (low) to 9 (high). The higher the number, the further south it can be seen.</li><li>You need a dark, clear sky. In northern Norway the season runs from about late September to early April; in summer it is too light. It is often best between 20:00 and 02:00, but the aurora can appear any time in the dark.</li><li>The Sun has a cycle of about 11 years. The peak was in 2024–25. Activity is now declining, but some of the strongest eruptions often come one to three years after the peak.</li><li>Check an aurora forecast and the weather before the trip. That needs internet, so it is not in the app.</li></ul>", "when"],
@@ -4952,6 +5006,9 @@ main.addEventListener('click', async e => {
   if (act === 'sosReturn'){ sosBack = false; history.back(); return; } // 0.11.1: the Nødmodus entry is right below the guide
   if (act === 'modesToggle'){ modesOpen = !modesOpen; render(); return; }
   if (act === 'fieldList'){ state.fieldList = !state.fieldList; save(); render(); return; }
+  if (act === 'openLists'){ selList = null; go('list', 'lists'); return; }
+  if (act === 'openSettings'){ if (!state.field) go(tab, 'settings'); return; }
+  if (act === 'fireGuests'){ if (FG_MODES.indexOf(b.dataset.v) >= 0){ state.fireGuests = b.dataset.v; save(); render(); } return; }
   if (act === 'resetRate'){ const f = fuelState(); delete f.perLc[f.fuel]; save(); render(); return; }
   if (act === 'fuelSnow'){ const f = fuelState(); f.snow = !f.snow; save(); render(); return; }
   if (act === 'fuelDog'){ const f = fuelState(); f.dog = !f.dog; save(); render(); return; }
@@ -5106,6 +5163,7 @@ function addItem(catId){
 
 $('hdrLock').onclick = () => { if (!rainLocked && (!state.field || tapOk())) lockRain(); };
 $('listBtn').onclick = () => { if ($('listBtn').classList.contains('plain')) return; selList = null; go('list', 'lists'); };
+$('hdrSet').onclick = () => { if (state.field || view === 'settings') return; go(tab, 'settings'); };
 $('tabbar').addEventListener('click', e => {
   const b = e.target.closest('[data-tab]');
   if (!b) return;
@@ -6039,8 +6097,14 @@ const GUESTS = {
   troll:{ dur:15, draw:drawTroll }, nisse:{ dur:13, draw:drawNisse }, owl:{ dur:14, draw:drawOwl },
   fox:{ dur:12, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
 };
+/* 0.22.0: how often (Innstillinger → Bål): seconds to the first guest and between guests, as [from, spread] */
+const G_TIMES = { rare:[[240, 240], [720, 480]], some:[[90, 120], [240, 300]], often:[[30, 60], [90, 90]] };
+let gMode = 'some';
 function planNext(now, first){
-  nextVisitor = now + (first ? 90 + R() * 120 : 240 + R() * 300); // first after 1.5–3.5 min, then every 4–9 min
+  const g = G_TIMES[gMode];
+  if (!g){ nextVisitor = Infinity; return; } // Av: no guests
+  const [a, w] = g[first ? 0 : 1];
+  nextVisitor = now + a + R() * w; // Av og til: first after 1.5–3.5 min, then every 4–9 min (as before 0.22.0)
 }
 function guests(t){
   if (!visitor && t > nextVisitor && life > .2){
@@ -6149,7 +6213,8 @@ function drawStatic(){
 
 
 const BURN_MS = 45 * 60000; // burns down to embers over 45 minutes
-function start(canvas, sleepChanged){
+function start(canvas, sleepChanged, guestMode){
+  gMode = G_TIMES[guestMode] || guestMode === 'off' ? guestMode : 'some';
   cv = canvas; cx2 = cv.getContext('2d'); onSleep = sleepChanged || null; sleeping = false; outSince = 0;
   cv.hidden = false; size();
   burnMs = BURN_MS;
@@ -6199,7 +6264,7 @@ function openLight(m){
   else if (m === 'six') slSix();
   else el.style.background = SL_COL[m];
   el.hidden = false; slDragging = false; slShow(3000);
-  if (m === 'fire') Fire.start($('slFireCv'), updateWake); // after the light is shown, so the canvas has its size; tells us when it sleeps or wakes
+  if (m === 'fire') Fire.start($('slFireCv'), updateWake, fireGuests()); // after the light is shown, so the canvas has its size; tells us when it sleeps or wakes
   history.pushState(Object.assign({}, history.state || {}, {light:true}), '');
   slFs(); updateWake();
 }
@@ -6279,7 +6344,7 @@ let sosBack = false, sosBusy = false, sosFailed = false, sosTick = null;
 const SOS_OLD_MS = 15 * 60000, SOS_ROUGH_M = 100; // 0.11.3: older than 15 min = old; worse than ±100 m = uncertain
 function sosBtn(small){
   const T = t();
-  return `<button class="sos-btn${small ? ' small' : ''}" data-sos-hold aria-label="${esc(T.sos.title + ', ' + T.holdShort)}">${ICO_SOS}<span>${T.sos.title}</span><small>${T.holdShort}</small><i class="fill"></i></button>`;
+  return `<button class="sos-btn${small ? ' small' : ''}" data-sos-hold aria-label="${esc(T.sos.title + ', ' + T.holdShort)}">${ICO_SOS}<span>${T.sos.title}</span><small>${T.holdShort}</small><small class="g" aria-hidden="true">${T.sos.holdGrow}</small><i class="fill"></i></button>`;
 }
 function sosCoord(p){
   const no = state.lang === 'no';
@@ -6392,7 +6457,34 @@ sosEl.addEventListener('click', e => {
     timer = setTimeout(() => { held = true; cancel(); openSos(); }, 1000);
   };
   const move = e => { if (!btn) return; const p = pt(e); if (Math.hypot(p.clientX - sx, p.clientY - sy) > 12) cancel(); };
-  const end = () => { if (held){ held = false; return; } if (!btn) return; cancel(); showToast(t().sos.holdMsg); };
+  const end = () => { if (held){ held = false; return; } if (!btn) return; const b = btn; cancel(); grow(b); showToast(t().sos.holdMsg); };
+  /* 0.22.0: a tap (too short to open) grows the button to the size of two big buttons for about 3 s, over what is above it
+     (on Pakkliste in Utemodus: the Utemodus button), so nothing on the page moves; a hold on it opens Nødmodus as before.
+     Another tap starts the 3 s again. Reduce motion: the size changes at once (no transitions). */
+  let gBtn = null, gTimer = null, gEnd = null;
+  const GROW_H = 134, GROW_MS = 3000;
+  function shrink(){
+    const b = gBtn; gBtn = null; clearTimeout(gTimer);
+    if (!b || !b.isConnected) return;
+    b.classList.add('shrink'); b.style.height = b.dataset.gh + 'px'; b.style.marginTop = ''; b.style.marginBottom = '';
+    clearTimeout(gEnd); gEnd = setTimeout(() => { b.classList.remove('grow', 'shrink'); b.style.height = ''; delete b.dataset.gh; }, 650);
+  }
+  function grow(b){
+    if (gBtn && gBtn !== b) shrink();
+    clearTimeout(gTimer); clearTimeout(gEnd);
+    if (gBtn !== b){
+      b.classList.remove('shrink');
+      const h = b.offsetHeight; if (h >= GROW_H) return;
+      const cs = getComputedStyle(b), mt = parseFloat(cs.marginTop) || 0, mb = parseFloat(cs.marginBottom) || 0;
+      const prev = b.previousElementSibling, room = prev && prev.offsetHeight ? b.getBoundingClientRect().top - prev.getBoundingClientRect().top : 0;
+      const up = Math.min(GROW_H - h, Math.max(0, room)), down = GROW_H - h - up;
+      b.dataset.gh = h; b.style.height = h + 'px'; void b.offsetHeight; // start from its own height
+      b.classList.add('grow');
+      b.style.height = GROW_H + 'px'; b.style.marginTop = (mt - up) + 'px'; b.style.marginBottom = (mb - down) + 'px';
+      gBtn = b;
+    }
+    gTimer = setTimeout(shrink, GROW_MS);
+  }
   main.addEventListener('touchstart', e => { const b = e.target.closest('[data-sos-hold]'); if (b) start(b, e); }, {passive:false});
   main.addEventListener('touchmove', move, {passive:true});
   main.addEventListener('touchend', end);
