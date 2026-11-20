@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/U9Lpmzbgkws0qsbT856dz3MetyiKklxnwWaB9/lLLA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eg3mYCIj+zpe51rYuAwxkfxl84l4p7HnfP6cZxmOois='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -810,8 +810,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.20.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 78;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.21.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 79;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -5481,6 +5481,8 @@ function slSos(){
 /* ---------- Bål (from build 55, 0.12.0) ----------
    The campfire screen light: flames, sparks, breaking flame tips, generated crackle, burn-down to embers over 45 min,
    hold to add wood, and now and then a guest (dark silhouettes; the reindeer stands behind the flames, the ghosts glow).
+   0.21.0 (build 79): the guests sit in the firelight (a warm rim on the side facing the flames, a faint warm glow near them),
+   eyes shine or catch a glint, small movements, the troll pair, the nisse and the reindeer (traced from the owner's photo) redrawn.
    Kept in its own scope; the rest of the app uses only Fire.start(canvas), Fire.stop(), Fire.addWood() and Fire.resumeAudio().
    The background brightness keeps the old Bål limits (70–100 %, new level every 150–400 ms, no hard flashes).
    Reduce motion: a steady amber, no sparks or guests. */
@@ -5580,7 +5582,7 @@ function size(){
   DPR = Math.min(window.devicePixelRatio || 1, 2);
   W = cv.clientWidth; H = cv.clientHeight;
   cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
-  off.width = cv.width; off.height = cv.height;
+  off.width = cv.width; off.height = cv.height; lit.width = rimc.width = cv.width; lit.height = rimc.height = cv.height;
 }
 window.addEventListener('resize', () => { if (running){ size(); if (reduced()) drawStatic(); } });
 
@@ -5688,6 +5690,16 @@ function drawFire(t, dt, under){
 const INK = () => '#160600';
 let GA = 1;
 const off = document.createElement('canvas'), ox = off.getContext('2d');
+/* 0.21.0: firelight. lit = the guest with warm bounce light and a rim on the side that faces the fire; rimc = scratch sheet.
+   EYES: eyeshine points in device pixels, drawn after the light so they glow on top. */
+const lit = document.createElement('canvas'), lx = lit.getContext('2d');
+const rimc = document.createElement('canvas'), rx = rimc.getContext('2d');
+let FORCE = null, EYES = [], lastT = 0, foxX = 0, batX = 0, batY = 0; // FORCE: a guest asked for by Fire.show() (smoke test)
+// shine: eyes with a reflecting layer (fox, reindeer, owl) glow with a halo; otherwise just a small glint of the fire in the eye
+const eye = (c, x, y, r, rgb, a, glint) => { if (a <= .01) return; const m = c.getTransform(), q = m.transformPoint(new DOMPoint(x, y));
+  const k = Math.hypot(m.a, m.b); EYES.push({ x: q.x, y: q.y, r: Math.max(1.2 * DPR, r * k), rgb, a, h: glint ? 1.8 : 4 }); };
+// reindeer eyes reflect gold in summer and deep blue in the dark season (the tapetum changes colour with the season)
+const REIN_EYE = (() => { const mo = new Date().getMonth(); return mo >= 10 || mo <= 2 ? '110,165,255' : '255,205,110'; })();
 const env = (p, inn, out) => Math.min(1, p / inn, (1 - p) / out);
 function sitAt(c, side, s){ // origin on the bottom edge at the side, facing the fire
   const x = side < 0 ? s * .5 : W - s * .5;
@@ -5730,9 +5742,11 @@ function drawTroll(c, p, side, t){
     c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(cx, cy, x2, y2); c.stroke();
   });
   // tail with a tuft
+  const tw = .035 * Math.sin(t * .8) + .015 * Math.sin(t * 2.1); // the tail sways
   c.lineWidth = .035; c.lineCap = 'round';
-  c.beginPath(); c.moveTo(-.42, -.04); c.bezierCurveTo(-.62, -.02, -.72, -.12, -.68, -.24); c.stroke();
-  c.beginPath(); c.ellipse(-.68, -.27, .035, .055, -.3, 0, 6.283); c.fill();
+  c.beginPath(); c.moveTo(-.42, -.04); c.bezierCurveTo(-.62, -.02, -.72 + tw * .5, -.12, -.68 + tw, -.24 + tw * .3); c.stroke();
+  c.beginPath(); c.ellipse(-.68 + tw, -.27 + tw * .3, .035, .055, -.3 + tw * 2, 0, 6.283); c.fill();
+  { const bl = (t % 4.3) < .14 ? 0 : 1; eye(c, .11, -.675, .011, '255,225,180', .9 * a * bl, true); } // a glint of fire in the eye
   c.restore();
 }
 function drawNisse(c, p, side, t){
@@ -5743,8 +5757,11 @@ function drawNisse(c, p, side, t){
   c.beginPath(); c.ellipse(.13, -.06, .15, .07, 0, 0, 6.283); c.fill();
   c.beginPath(); c.arc(.03, -.45, .1, 0, 6.283); c.fill();
   c.beginPath(); c.moveTo(.0, -.44); c.lineTo(.16, -.38); c.lineTo(.04, -.27); c.closePath(); c.fill();
-  c.beginPath(); c.moveTo(-.1, -.47); c.quadraticCurveTo(-.08, -.72, -.3, -.7); c.quadraticCurveTo(-.04, -.84, .14, -.49); c.closePath(); c.fill();
-  c.beginPath(); c.arc(-.31, -.69, .035, 0, 6.283); c.fill();
+  c.beginPath(); c.ellipse(.135, -.455, .03, .024, .2, 0, 6.283); c.fill(); // a small round nose
+  const hb = .018 * Math.sin(t * 1.6), hx2 = .012 * Math.sin(t * .9); // the pompom bobs
+  c.beginPath(); c.moveTo(-.1, -.47); c.quadraticCurveTo(-.08, -.72, -.3 + hx2, -.7 + hb); c.quadraticCurveTo(-.04, -.84, .14, -.49); c.closePath(); c.fill();
+  c.beginPath(); c.arc(-.31 + hx2, -.69 + hb, .035, 0, 6.283); c.fill();
+  { const bl = (t % 3.7) < .13 ? 0 : 1; eye(c, .075, -.475, .012, '255,225,180', .85 * a * bl, true); }
   // arms in sleeves, mittens held out to the fire; they rise and sink slowly, like hands being warmed
   const lift = .015 * Math.sin(t * 1.2), turn = .08 * Math.sin(t * 1.2 + 1);
   [[.0, -.31, -.02, .9], [.03, -.29, .015, 1]].forEach(([sx, sy, oy, k]) => {
@@ -5767,18 +5784,25 @@ function drawOwl(c, p, side, t){
   c.lineWidth = s * .04; c.beginPath(); c.moveTo(ex + dir * W * .3, by + s * .02); c.lineTo(ex + dir * W * .38, by - s * .25); c.stroke();
   c.translate(ex + dir * W * .2, by); c.scale(s, s);
   c.beginPath(); c.ellipse(0, -.32, .2, .32, 0, 0, 6.283); c.fill();
+  { // a slow head tilt, and now and then a quick turn, the way owls look about
+    const q = (t % 6) / 6, quick = q > .55 && q < .75 ? Math.sin((q - .55) / .2 * Math.PI) : 0;
+    c.translate(0, -.6); c.rotate(.12 * Math.sin(t * .6) + .22 * quick * (side < 0 ? 1 : -1)); c.translate(0, .6);
+  }
   c.beginPath(); c.ellipse(0, -.64, .19, .15, 0, 0, 6.283); c.fill();
   c.beginPath(); c.moveTo(-.16, -.7); c.lineTo(-.21, -.87); c.lineTo(-.06, -.76); c.closePath(); c.fill();
   c.beginPath(); c.moveTo(.16, -.7); c.lineTo(.21, -.87); c.lineTo(.06, -.76); c.closePath(); c.fill();
   // eyes catching the firelight, blinking now and then
   const blink = (t % 3.1) < .16 ? 0 : 1;
-  if (blink){ c.fillStyle = '#ffb43c'; c.beginPath(); c.arc(-.075, -.63, .04, 0, 6.283); c.fill(); c.beginPath(); c.arc(.075, -.63, .04, 0, 6.283); c.fill(); }
+  eye(c, -.075, -.63, .04, '255,180,60', a * blink, true); eye(c, .075, -.63, .04, '255,180,60', a * blink, true);
   c.restore();
 }
 function drawFox(c, p, side, t){
   const s = Math.min(W, H) * .34, dir = side < 0 ? 1 : -1;
-  const x = side < 0 ? lerp(-s * 1.2, W + s * 1.2, p) : lerp(W + s * 1.2, -s * 1.2, p);
-  const ph = t * 8.5;
+  // 0.21.0: the walk is mapped so the fox stops near the middle for a few seconds (legs still, since the stride follows the distance)
+  const q = p < .35 ? p / .35 * .42 : p < .68 ? .42 : .42 + (p - .68) / .32 * .58;
+  const x = side < 0 ? lerp(-s * 1.2, W + s * 1.2, q) : lerp(W + s * 1.2, -s * 1.2, q);
+  const ph = q * 68; foxX = x;
+  const look = Math.max(0, Math.min(1, (p - .38) / .05, (.66 - p) / .05)); // 0 walking, 1 standing and looking
   c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
   c.translate(x, H * .99 + Math.abs(Math.sin(ph)) * -s * .012); c.scale(dir * s, s);
   // body, neck and head in one outline
@@ -5795,11 +5819,12 @@ function drawFox(c, p, side, t){
   c.bezierCurveTo(.05, -.2, -.12, -.22, -.22, -.24);
   c.bezierCurveTo(-.3, -.26, -.36, -.32, -.34, -.38);
   c.closePath(); c.fill();
+  if (look){ const bl = ((p - .38) * 11 % 1.6) < .1 ? 0 : 1; eye(c, .5, -.575, .026, '200,255,150', look * bl); }
   // ears
   c.beginPath(); c.moveTo(.35, -.55); c.lineTo(.4, -.75); c.lineTo(.47, -.56); c.closePath(); c.fill();
   c.beginPath(); c.moveTo(.42, -.56); c.lineTo(.49, -.76); c.lineTo(.54, -.55); c.closePath(); c.fill();
   // bushy tail, swaying a little
-  const tw = .03 * Math.sin(ph * .5);
+  const tw = .03 * Math.sin(ph * .5) + (look ? .05 * look * Math.sin(t * 3) : 0);
   c.beginPath(); c.moveTo(-.29, -.41);
   c.bezierCurveTo(-.45, -.5, -.64, -.44 + tw, -.8, -.34 + tw);
   c.quadraticCurveTo(-.9, -.27 + tw, -.8, -.2 + tw);
@@ -5820,7 +5845,7 @@ function drawBat(c, p, side, t, v){
   const s = Math.min(W, H) * .1, dir = side < 0 ? 1 : -1, ph = t * 2 * Math.PI * 2.6; // about 2.6 wing beats a second
   const x = side < 0 ? lerp(-s * 2, W + s * 2, p) : lerp(W + s * 2, -s * 2, p);
   const y = H * v.y + Math.sin(p * 7) * H * .035 - Math.sin(ph) * s * .12;
-  const up = Math.sin(ph), fold = .8 + .2 * Math.cos(ph); // wings raise and fold a little on the upstroke
+  const up = Math.sin(ph), fold = .8 + .2 * Math.cos(ph); batX = x; batY = y; // wings raise and fold a little on the upstroke
   c.save(); c.fillStyle = INK(); c.translate(x, y); c.scale(dir * s, s);
   c.beginPath(); c.ellipse(0, .02, .1, .17, 0, 0, 6.283); c.fill();                       // body
   c.beginPath(); c.arc(0, -.17, .08, 0, 6.283); c.fill();                                  // head
@@ -5844,6 +5869,8 @@ function drawCouple(c, p, side, t){
   const a = env(p, .18, .18), s = Math.min(W, H) * .42; GA = a;
   c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
   c.translate(side < 0 ? W * .28 : W * .72, H + s * .02); c.scale(s, s); c.rotate(.012 * Math.sin(t * .8));
+  if (side < 0) c.scale(-1, 1); // he faces the fire on either side; she leans on his outer shoulder
+  c.scale(1, 1 + .012 * Math.sin(t * 1.1)); // they breathe
   const ear = (x, y, ang, len) => { // a pointed troll ear, leaf-shaped, angled up and out
     const ca = Math.cos(ang), sa = Math.sin(ang), px = -sa, py = ca, w = len * .32;
     c.beginPath(); c.moveTo(x + px * w, y + py * w);
@@ -5854,15 +5881,49 @@ function drawCouple(c, p, side, t){
   // him: broad, sloping shoulders, head set low between them, curly mop of hair
   c.beginPath(); c.moveTo(-.46, .05); c.bezierCurveTo(-.46, -.22, -.4, -.4, -.2, -.42); c.bezierCurveTo(-.04, -.42, .02, -.25, .02, .05); c.closePath(); c.fill();
   c.beginPath(); c.ellipse(-.19, -.42, .1, .08, 0, 0, 6.283); c.fill();
-  c.beginPath(); c.arc(-.19, -.53, .125, 0, 6.283); c.fill();
-  [[-.29, -.6], [-.22, -.66], [-.14, -.65], [-.08, -.59], [-.3, -.51]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, .05, 0, 6.283); c.fill(); });
-  ear(-.3, -.53, -Math.PI * .8, .13);
+  c.beginPath(); c.arc(-.19, -.53, .115, 0, 6.283); c.fill();
+  // the nose: long, heavy and drooping, like the lone troll's
+  c.beginPath(); c.moveTo(-.27, -.6);
+  c.bezierCurveTo(-.35, -.62, -.45, -.58, -.48, -.5);
+  c.bezierCurveTo(-.5, -.45, -.45, -.43, -.4, -.46);
+  c.bezierCurveTo(-.36, -.48, -.32, -.47, -.28, -.44); c.closePath(); c.fill();
+  // wild hair: a big shaggy mop over the crown and the back of the head, its edge broken into tufts that stick out every way
+  const mx = -.18, my = -.6, mrx = .13, mry = .11;
+  c.beginPath(); c.ellipse(mx, my, mrx, mry, -.15, 0, 6.283); c.fill();
+  for (let k = 0; k < 17; k++){
+    const th = (-35 + k * 11) * Math.PI / 180, nx = Math.cos(th), ny = -Math.sin(th), px = -ny, py = nx;
+    const len = [.05, .08, .06, .1, .07, .09, .05, .08][k % 8] * (th > 1.9 ? .7 : 1.4), w = .03 + .01 * (k % 2);
+    const ex = mx + nx * mrx * .85, ey = my + ny * mry * .85, tx = ex + nx * len + .015 * (k % 3 - 1), ty = ey + ny * len + .02;
+    const bend = (k % 2 ? .4 : -.4) * len;
+    c.beginPath(); c.moveTo(ex + px * w, ey + py * w);
+    c.quadraticCurveTo((ex + tx) / 2 + px * (w * .6 + bend), (ey + ty) / 2 + py * (w * .6 + bend), tx, ty);
+    c.quadraticCurveTo((ex + tx) / 2 - px * (w * .6 - bend), (ey + ty) / 2 - py * (w * .6 - bend), ex - px * w, ey - py * w);
+    c.closePath(); c.fill();
+  }
+  // no eye: seen from behind they should feel calm, not watchful
   // her, leaning in with her head on his shoulder; hair in a bun and down her back
   c.beginPath(); c.moveTo(-.02, .05); c.bezierCurveTo(-.03, -.2, .0, -.38, .15, -.39); c.bezierCurveTo(.3, -.39, .36, -.2, .36, .05); c.closePath(); c.fill();
   c.beginPath(); c.moveTo(.0, -.36); c.lineTo(.08, -.48); c.lineTo(.17, -.42); c.lineTo(.16, -.33); c.closePath(); c.fill();
   c.beginPath(); c.arc(.03, -.48, .11, 0, 6.283); c.fill();
-  c.beginPath(); c.arc(.06, -.6, .055, 0, 6.283); c.fill();
-  c.beginPath(); c.moveTo(.08, -.55); c.bezierCurveTo(.19, -.5, .22, -.4, .21, -.27); c.lineTo(.13, -.33); c.closePath(); c.fill();
+  { const sw = .012 * Math.sin(t * .9); // the ends sway a little
+    c.beginPath(); c.moveTo(-.07, -.52);
+    c.bezierCurveTo(-.09, -.63, .0, -.7, .1, -.67);                    // full over the crown
+    c.bezierCurveTo(.2, -.64, .25, -.56, .27, -.48);                   // down the back of the head
+    c.bezierCurveTo(.29, -.41, .37, -.39, .38, -.32);                  // first wave, out over her shoulder
+    c.bezierCurveTo(.39, -.25, .43, -.22, .44 + sw, -.15);             // second wave
+    c.quadraticCurveTo(.45 + sw, -.09, .41 + sw, -.1);                 // curled end
+    c.quadraticCurveTo(.39 + sw, -.13, .38 + sw, -.15);
+    c.quadraticCurveTo(.36 + sw, -.1, .33 + sw, -.13);                 // a second, shorter curl
+    c.quadraticCurveTo(.31, -.2, .3, -.27);
+    c.bezierCurveTo(.26, -.33, .16, -.36, .1, -.42);                   // inner edge, along her neck
+    c.closePath(); c.fill();
+    // two separate locks hanging below the rest, with soft points
+    [[.36, -.2, .4, -.04, .33, -.12], [.41, -.17, .47, -.03, .4, -.08]].forEach(([x1, y1, x2, y2, x3, y3]) => {
+      c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(x1 + .04, (y1 + y2) / 2, x2 + sw, y2); c.quadraticCurveTo(x3 + .01, y3 - .03, x3, y3 - .1); c.closePath(); c.fill(); });
+    // a little flower over her ear: five round petals
+    const fx = .16, fy = -.67;
+    for (let k = 0; k < 5; k++){ const an = k * 1.2566 - .3; c.beginPath(); c.arc(fx + Math.cos(an) * .03, fy + Math.sin(an) * .03, .022, 0, 6.283); c.fill(); }
+  }
   ear(.13, -.5, -Math.PI * .2, .12);
   // sitting close: no light between them
   c.beginPath(); c.moveTo(-.08, .05); c.lineTo(-.08, -.36); c.quadraticCurveTo(0, -.42, .08, -.38); c.lineTo(.08, .05); c.closePath(); c.fill();
@@ -5877,52 +5938,77 @@ function drawCouple(c, p, side, t){
   c.bezierCurveTo(hx + 1.7 * h, hy - .1 * h, hx + .9 * h, hy - 1.5 * h, hx, hy - .4 * h); c.stroke();
   c.restore();
 }
-/* a reindeer far off behind the fire: grazing, then it lifts its head and shows its antlers */
+/* a reindeer far off behind the fire: grazing, then it lifts its head and shows its antlers.
+   0.21.0: drawn after the owner's own photo of a reindeer bull in profile; points are in the photo's pixels,
+   turned into reindeer units by RP (ground at y = 0, withers about 0.54 up). The antlers are 30 % larger than in the photo. */
+const RK = .54 / 1291, RP = (x, y) => [(x - 900) * RK, (y - 2200) * RK];
+const R_BODY = [[200,1070],[232,1000],[290,984],[500,952],[820,936],[1060,944],[1204,909],[1348,944],[1480,1030],[1545,1200],[1540,1440],[1480,1510],
+  [1300,1580],[1000,1630],[700,1605],[520,1590],[300,1560],[200,1440],[176,1250]];
+const R_TAIL = [[205,1075],[165,1060],[160,1110],[198,1120]];
+const R_THIGH = [[180,1300],[300,1420],[440,1560],[420,1650],[330,1720],[255,1790],[200,1720],[176,1560]]; // the near hind thigh down to the hock
+const R_ARM = [[1330,1420],[1520,1440],[1470,1640],[1420,1760],[1350,1760],[1320,1600]];                   // the near foreleg's upper part
+const R_LEGS = [ // hip/shoulder, knee or hock, fetlock, hoof; widths upper and lower (photo px); far legs first
+  [[[1300,1480],[1260,1770],[1290,2060],[1320,2190]], 100, 62],
+  [[[980,1590],[905,1800],[830,2050],[800,2190]], 105, 64],
+  [[[1410,1470],[1385,1760],[1395,2050],[1440,2185]], 120, 72],
+  [[[360,1480],[235,1760],[300,2000],[335,2190]], 130, 76]];
+const R_NECK = [[1380,1010],[1600,962],[1760,948],[1860,960],[1960,1290],[1800,1365],[1600,1425],[1500,1470],[1400,1330]];
+const R_HEAD = [[1830,958],[1900,962],[1975,1000],[2060,1060],[2150,1128],[2222,1170],[2252,1205],[2255,1240],[2236,1275],[2210,1300],
+  [2196,1336],[2150,1332],[2080,1312],[1990,1292],[1920,1290],[1860,1180],[1820,1040]];
+const R_EAR = [[1795,965],[1690,878],[1585,856],[1640,950],[1735,1035]];
+const R_EAR2 = [[1795,965],[1765,878],[1830,905]]; // the far ear, standing up behind the antlers
+const R_ANT = [ // each antler a beam with tines: polylines in photo px, with stroke width
+  [[[1810,900],[1680,818],[1560,750],[1516,670],[1514,560],[1548,462],[1606,388],[1662,318],[1700,302],[1748,352]], 44], // far beam, the arch
+  [[[1690,716],[1560,700],[1440,684],[1364,660]], 34],     // long tine pointing back
+  [[[1514,520],[1470,470],[1428,424]], 30],                // tine up and back
+  [[[1832,912],[1760,780],[1716,650],[1728,540],[1770,440],[1806,350],[1808,280]], 46], // near beam, rising to the top
+  [[[1724,570],[1650,505],[1576,462]], 32],                // tine into the arch
+  [[[1785,415],[1722,335],[1676,308]], 32],                // top tine
+  [[[1880,905],[1940,840],[1964,776],[1930,720],[1908,696]], 32], // forward tine, curling up
+  [[[1900,930],[2050,882],[2180,852],[2172,800],[2140,764]], 34], // bez tine, the long one forward
+  [[[1912,950],[2000,976],[2080,966]], 28]];               // brow tine, low over the face
+const R_PIV = [1450, 1230], R_POLL = [1850, 990], R_ABASE = [1850, 930], R_EYE = [1990, 1054];
+function rPoly(c, pts){ c.beginPath(); pts.forEach(([x, y], i) => { const [X, Y] = RP(x, y); i ? c.lineTo(X, Y) : c.moveTo(X, Y); }); c.closePath(); c.fill(); }
+function rSmooth(c, pts){ // a closed shape through the points, with soft corners
+  const P = pts.map(([x, y]) => RP(x, y)), n = P.length;
+  c.beginPath(); c.moveTo((P[n - 1][0] + P[0][0]) / 2, (P[n - 1][1] + P[0][1]) / 2);
+  for (let i = 0; i < n; i++){ const a = P[i], b = P[(i + 1) % n]; c.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); }
+  c.closePath(); c.fill();
+}
+function rLine(c, pts, w){ // an open line through the points, with soft bends
+  const P = pts.map(([x, y]) => RP(x, y));
+  c.lineWidth = w * RK; c.beginPath(); c.moveTo(P[0][0], P[0][1]);
+  for (let i = 1; i < P.length - 1; i++) c.quadraticCurveTo(P[i][0], P[i][1], (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2);
+  c.lineTo(P[P.length - 1][0], P[P.length - 1][1]); c.stroke();
+}
+const rAbout = (c, pt, ang, k) => { const [X, Y] = RP(pt[0], pt[1]); c.translate(X, Y); c.rotate(ang); if (k) c.scale(k, k); c.translate(-X, -Y); };
 function drawReindeer(c, p, side, t){
   GA = env(p, .15, .15) * .7; // behind the fire, so a little fainter than the others
-  const s = Math.min(W, H) * .38, dir = side < 0 ? -1 : 1; // faces away from the fire, so the antlers stand clear of the flames
+  const s = Math.min(W, H) * .4, dir = side < 0 ? -1 : 1; // faces away from the fire, so the antlers stand clear of the flames
   const ss = x => x * x * (3 - 2 * x), raise = ss(Math.max(0, Math.min(1, (p - .22) / .15)));
   c.save(); c.fillStyle = INK(); c.strokeStyle = INK(); c.lineCap = 'round'; c.lineJoin = 'round';
-  const rx = Math.max(W * .3, s * .72 + W * .05); // 0.12.2: far enough in that muzzle and antlers stay on the screen
+  const rx = Math.max(W * .3, s * .82 + W * .04); // far enough in that muzzle and antlers stay on the screen
   c.translate(side < 0 ? rx : W - rx, H * .985); c.scale(dir * s, s);
-  // legs with knees, hocks and hooves; far legs first
-  const leg = (pts, w1, w2) => {
-    c.lineWidth = w1; c.beginPath(); c.moveTo(pts[0][0], pts[0][1]); c.lineTo(pts[1][0], pts[1][1]); c.stroke();
-    c.lineWidth = w2; c.beginPath(); c.moveTo(pts[1][0], pts[1][1]); c.lineTo(pts[2][0], pts[2][1]); c.lineTo(pts[3][0], pts[3][1]); c.stroke();
-    c.beginPath(); c.ellipse(pts[3][0] + .015, -.012, .03, .016, 0, 0, 6.283); c.fill();
-  };
-  leg([[.27, -.32], [.29, -.16], [.3, -.05], [.31, -.015]], .06, .032);       // front, far
-  leg([[-.28, -.34], [-.33, -.17], [-.3, -.05], [-.29, -.015]], .07, .032);   // hind, far
-  leg([[.22, -.32], [.22, -.16], [.23, -.05], [.24, -.015]], .065, .034);     // front, near
-  leg([[-.33, -.34], [-.39, -.17], [-.36, -.05], [-.35, -.015]], .08, .034);  // hind, near
-  // body: rump, back rising to the withers, deep chest, belly; the short tail grows out of the rump
-  c.beginPath(); c.moveTo(-.41, -.37);
-  c.quadraticCurveTo(-.46, -.37, -.48, -.41);                 // short tail, tipped slightly down,
-  c.quadraticCurveTo(-.47, -.45, -.41, -.45);                 // growing out of the rump
-  c.bezierCurveTo(-.36, -.49, -.28, -.5, -.15, -.48);
-  c.bezierCurveTo(0, -.47, .12, -.5, .2, -.54);
-  c.bezierCurveTo(.26, -.56, .3, -.52, .32, -.46);
-  c.bezierCurveTo(.36, -.38, .34, -.3, .28, -.26);
-  c.bezierCurveTo(.15, -.23, -.05, -.26, -.2, -.27);
-  c.bezierCurveTo(-.3, -.28, -.38, -.3, -.42, -.35);
-  c.closePath(); c.fill();
-  c.beginPath(); c.ellipse(-.31, -.35, .1, .11, .3, 0, 6.283); c.fill();     // haunch
-  // neck from down (grazing) to up, head following, a slow proud toss once it is up
-  const th = lerp(-.7, .95, raise), toss = raise * .1 * Math.sin(Math.max(0, p - .4) * 14);
-  const px = .26, py = -.45, ex = px + Math.cos(th) * .22, ey = py - Math.sin(th) * .22;
-  c.lineWidth = .15; c.beginPath(); c.moveTo(px, py); c.lineTo(ex, ey); c.stroke();
-  c.beginPath(); c.moveTo(px + .04, py + .06); c.quadraticCurveTo((px + ex) / 2 + .08, (py + ey) / 2 + .08, ex + .02, ey + .03); c.lineTo(ex, ey); c.lineTo(px, py); c.closePath(); c.fill(); // the hanging neck mane
-  c.translate(ex, ey); c.rotate(-(lerp(-1.25, -.35, raise) + toss));
-  c.beginPath(); c.ellipse(.08, -.005, .1, .062, 0, 0, 6.283); c.fill(); c.beginPath(); c.ellipse(.17, .015, .065, .042, .15, 0, 6.283); c.fill(); // head and muzzle
-  c.beginPath(); c.moveTo(-.02, -.03); c.lineTo(-.1, -.08); c.lineTo(-.03, .01); c.closePath(); c.fill();
-  [[0, 0, .034], [.04, .012, .028]].forEach(([ox, oy, lw]) => { // near and far antler
-    c.save(); c.translate(ox, oy); c.lineWidth = lw;
-    c.beginPath(); c.moveTo(-.01, -.05); c.bezierCurveTo(-.12, -.15, -.15, -.35, -.07, -.48); c.quadraticCurveTo(-.02, -.55, .05, -.56); c.stroke();
-    c.lineWidth = lw * .75;
-    [[-.11, -.2, -.22, -.27], [-.12, -.3, -.23, -.38], [-.11, -.4, -.17, -.5], [-.07, -.47, -.06, -.61], [-.03, -.1, .08, -.16], [-.06, -.14, .04, -.24]].forEach(([x1, y1, x2, y2]) => {
-      c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo((x1 + x2) / 2 - .02, (y1 + y2) / 2 - .02, x2, y2); c.stroke(); });
-    c.restore();
+  R_LEGS.forEach(([pts, w1, w2]) => {
+    rLine(c, pts.slice(0, 2), w1); rLine(c, pts.slice(1), w2);
+    const [hx, hy] = RP(pts[3][0], pts[3][1]); c.beginPath(); c.ellipse(hx + .012, hy - .006, .036, .02, 0, 0, 6.283); c.fill();
   });
+  rSmooth(c, R_BODY); rPoly(c, R_TAIL); rSmooth(c, R_THIGH); rSmooth(c, R_ARM);
+  // neck, head and antlers turn as one about the shoulder (grazing: down), the head nods about the poll; a slow toss once it is up
+  const toss = raise * .08 * Math.sin(Math.max(0, p - .4) * 14);
+  c.save(); rAbout(c, R_PIV, 1.0 * (1 - raise));
+  { const [X, Y] = RP(R_PIV[0], R_PIV[1]); c.beginPath(); c.arc(X, Y, .075, 0, 6.283); c.fill(); } // fills the joint as the neck turns
+  rSmooth(c, R_NECK);
+  rAbout(c, R_POLL, .4 * (1 - raise) + toss);
+  rSmooth(c, R_HEAD);
+  const fl = raise > .9 ? Math.max(0, Math.sin((p * 14 % 1) * Math.PI * 6)) * ((p * 14 % 1) < .17 ? 1 : 0) : 0; // a quick ear flick now and then
+  c.save(); rAbout(c, [1745, 1000], -.35 * fl); rPoly(c, R_EAR); c.restore();
+  rPoly(c, R_EAR2);
+  // the antlers grow from the top of the skull: moved down onto the head, with a short thick base (pedicle) into it
+  c.save(); c.translate(0, 45 * RK); rAbout(c, R_ABASE, 0, 1.3); R_ANT.forEach(([pts, w]) => rLine(c, pts, w * 1.35)); c.restore();
+  rLine(c, [[1825, 990], [1838, 960], [1850, 935]], 64); rLine(c, [[1880, 1000], [1888, 968], [1896, 945]], 58);
+  if (raise > .3){ const bl = ((p * 20) % 1) < .05 ? 0 : 1, [ex, ey] = RP(R_EYE[0], R_EYE[1]); eye(c, ex, ey, .012, REIN_EYE, Math.min(1, (raise - .3) / .4) * bl); }
+  c.restore();
   c.restore();
 }
 /* sparks rising from the fire that turn into little glowing ghosts and drift away */
@@ -5951,33 +6037,84 @@ const GUESTS = {
   reindeer:{ dur:14, draw:drawReindeer, behind:true }, ghosts:{ dur:22, draw:drawGhosts },
   couple:{ dur:16, draw:drawCouple },
   troll:{ dur:15, draw:drawTroll }, nisse:{ dur:13, draw:drawNisse }, owl:{ dur:14, draw:drawOwl },
-  fox:{ dur:8, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
+  fox:{ dur:12, draw:drawFox }, bat:{ dur:4.5, draw:drawBat }
 };
 function planNext(now, first){
   nextVisitor = now + (first ? 90 + R() * 120 : 240 + R() * 300); // first after 1.5–3.5 min, then every 4–9 min
 }
 function guests(t){
   if (!visitor && t > nextVisitor && life > .2){
-    const kinds = Object.keys(GUESTS).filter(k => k !== lastKind), kind = kinds[R() * kinds.length | 0];
+    const kinds = Object.keys(GUESTS).filter(k => k !== lastKind), kind = FORCE || kinds[R() * kinds.length | 0];
     visitor = { kind, start: t, side: R() < .5 ? -1 : 1, y: .12 + R() * .2 }; lastKind = kind;
   }
   if (!visitor) return;
   const g = GUESTS[visitor.kind], p = (t - visitor.start) / g.dur;
-  if (p >= 1){ visitor = null; planNext(t, false); return; }
-  GA = 1;
+  if (p >= 1){ visitor = null; if (FORCE) nextVisitor = t + 1.2; else planNext(t, false); return; }
+  GA = 1; EYES = [];
   ox.setTransform(1, 0, 0, 1, 0, 0); ox.clearRect(0, 0, off.width, off.height);
   ox.setTransform(DPR, 0, 0, DPR, 0, 0);
   g.draw(ox, p, visitor.side, t, visitor);
   cx2.setTransform(1, 0, 0, 1, 0, 0);
-  cx2.globalAlpha = .92 * GA; cx2.drawImage(off, 0, 0); cx2.globalAlpha = 1;
+  const sheet = visitor.kind !== 'ghosts' ? firelight(visitor, p) : off;
+  cx2.globalAlpha = .92 * GA; cx2.drawImage(sheet, 0, 0); cx2.globalAlpha = 1;
+  if (EYES.length){ // eyeshine glows on top of everything, a soft halo and a bright core
+    cx2.globalCompositeOperation = 'lighter';
+    EYES.forEach(e => {
+      const a = e.a * GA * (.75 + .25 * Math.min(1, life * 1.5)), gr = cx2.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * e.h);
+      gr.addColorStop(0, `rgba(${e.rgb},${.95 * a})`); gr.addColorStop(.25, `rgba(${e.rgb},${.55 * a})`); gr.addColorStop(1, `rgba(${e.rgb},0)`);
+      cx2.fillStyle = gr; cx2.beginPath(); cx2.arc(e.x, e.y, e.r * e.h, 0, 6.283); cx2.fill();
+      cx2.fillStyle = `rgba(255,255,235,${.9 * a})`; cx2.beginPath(); cx2.arc(e.x, e.y, e.r * .45, 0, 6.283); cx2.fill();
+    });
+    cx2.globalCompositeOperation = 'source-over';
+  }
 }
-
+/* where the guest is, roughly (CSS px), to know which side the fire lights */
+function guestAt(v, p){
+  const u = Math.min(W, H), sd = v.side;
+  switch (v.kind){
+    case 'troll': return [sd < 0 ? u * .29 : W - u * .29, H - u * .25];
+    case 'nisse': return [sd < 0 ? u * .17 : W - u * .17, H - u * .12];
+    case 'couple': return [sd < 0 ? W * .28 : W * .72, H - u * .18];
+    case 'owl': return [sd < 0 ? W * .2 : W * .8, H * .2 - u * .07];
+    case 'fox': return [foxX, H - u * .12];
+    case 'bat': return [batX, batY];
+    default: return [sd < 0 ? W * .3 : W * .7, H * .75];
+  }
+}
+function firelight(v, p){
+  const u = Math.min(W, H), [gx, gy] = guestAt(v, p);
+  const fxp = W / 2, fyp = H * (W > H ? .78 : .86); // the brightest part of the flames
+  let dx = fxp - gx, dy = fyp - gy; const dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
+  const flick = Math.min(1, Math.max(0, (bri - .7) / .3)), amp = life * (.6 + .4 * flick);
+  const near = Math.max(.35, 1 - dl / (Math.max(W, H) * 1.1)); // closer to the fire, more light
+  lx.setTransform(1, 0, 0, 1, 0, 0); lx.globalCompositeOperation = 'source-over'; lx.clearRect(0, 0, lit.width, lit.height);
+  lx.drawImage(off, 0, 0);
+  // 1. warm bounce light over the whole figure, strongest towards the fire
+  lx.globalCompositeOperation = 'source-atop';
+  // the guests mostly sit between us and the fire, so their near side stays dark; only the reindeer, across the fire, is lit from the front
+  const fr = Math.max(W, H) * DPR, rein = v.kind === 'reindeer', gb = lx.createRadialGradient(fxp * DPR, fyp * DPR, 0, fxp * DPR, fyp * DPR, fr * (rein ? .8 : .5));
+  const bk = rein ? 1.1 : .45;
+  gb.addColorStop(0, `rgba(150,55,12,${bk * amp})`); gb.addColorStop(.5, `rgba(80,24,5,${bk * .5 * amp})`); gb.addColorStop(1, 'rgba(22,6,0,0)');
+  lx.fillStyle = gb; lx.fillRect(0, 0, lit.width, lit.height);
+  // 2. rim light: the figure minus itself moved away from the fire leaves a thin edge on the side that faces the flames
+  if (v.kind !== 'reindeer'){
+    [[.012, '255,120,30', .22], [.0065, '255,160,70', .45], [.003, '255,215,150', .95]].forEach(([d, rgb, a]) => { // wide and faint to thin and bright: a soft edge without a blur filter
+      rx.setTransform(1, 0, 0, 1, 0, 0); rx.globalCompositeOperation = 'source-over'; rx.clearRect(0, 0, rimc.width, rimc.height);
+      rx.drawImage(off, 0, 0);
+      rx.globalCompositeOperation = 'source-in'; rx.fillStyle = `rgba(${rgb},${a * amp * near})`; rx.fillRect(0, 0, rimc.width, rimc.height);
+      rx.globalCompositeOperation = 'destination-out'; rx.drawImage(off, -dx * d * u * DPR, -dy * d * u * DPR);
+      lx.globalCompositeOperation = 'source-atop'; lx.drawImage(rimc, 0, 0);
+    });
+  }
+  lx.globalCompositeOperation = 'source-over';
+  return lit;
+}
 function loop(now){
   if (!running) return;
   raf = requestAnimationFrame(loop);
   if (now - lastFrame < 31) return; // about 30 frames a second, kinder to the battery
   const dt = Math.min(.1, (now - (lastFrame || now)) / 1000); lastFrame = now;
-  const t = (now - t0) / 1000;
+  const t = (now - t0) / 1000; lastT = t;
   const burnL = burnMs ? Math.max(0, 1 - Math.pow(Math.min(1, Math.max(0, now - burnStart) / burnMs), 1.4)) : 1;
   const wk = Math.min(1, Math.max(0, now - woodAt) / 10000), rampL = lerp(woodFrom, 1, 1 - Math.pow(1 - wk, 2));
   life = Math.min(burnL, rampL);
@@ -6044,8 +6181,12 @@ document.addEventListener('visibilitychange', () => {
   if (!ac) return;
   try { if (document.visibilityState === 'hidden') ac.suspend(); else if (!sleeping) ac.resume(); } catch(e){}
 });
-return { start, stop, addWood, resumeAudio, get running(){ return running; }, get sleeping(){ return sleeping; } };
+// for the smoke test: Fire.show(kind) brings that guest now and again after each visit; Fire.show() goes back to chance
+function show(kind){ FORCE = GUESTS[kind] ? kind : null; visitor = null; if (FORCE) nextVisitor = lastT + .3; else planNext(lastT, false); }
+return { start, stop, addWood, resumeAudio, show, get guest(){ return visitor && visitor.kind; }, get running(){ return running; }, get sleeping(){ return sleeping; } };
 })();
+// smoke test only: a test sets window.__vardeTest before the app starts and gets the fire's handle; nothing else is exposed
+try { if (window.__vardeTest && typeof window.__vardeTest === 'object') window.__vardeTest.Fire = Fire; } catch(e){}
 function openLight(m){
   const T = t(), el = $('slight');
   slStop(); slMode = m;

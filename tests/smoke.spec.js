@@ -929,6 +929,34 @@ test.describe('bål', () => {
   });
 });
 
+/* ---------- From build 79 (0.21.0): Bål guests in the firelight ----------
+   Every guest is brought in turn with Fire.show(kind) (reached through window.__vardeTest, set only by the test) and drawn through its visit with the firelight on, on the
+   fire's canvas, with the page clock run forward; any script error fails it. Then Fire.show() goes back to chance. */
+test.describe('bål gjester', () => {
+  test('every guest is drawn with the firelight', async ({browser}) => {
+    const ctx = await browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage();
+    const err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { window.__vardeTest = {}; try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, {lists:[], hidePacked:false, introDone:true, lang:'no', field:true}]);
+    await p.clock.install();
+    await p.goto('./');
+    const b = await p.locator('#main .lt-btn[data-light="fire"]').boundingBox();
+    await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down(); await p.waitForTimeout(1200); await p.mouse.up();
+    await expect(p.locator('#slFireCv')).toBeVisible();
+    const pic = () => p.locator('#slFireCv').evaluate(c => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let h = 0; for (let i = 0; i < d.length; i += 97) h = (h * 31 + d[i]) | 0; return h; });
+    for (const [kind, dur] of [['troll', 15], ['nisse', 13], ['couple', 16], ['owl', 14], ['fox', 12], ['bat', 4.5], ['reindeer', 14], ['ghosts', 22]]){
+      await p.evaluate(k => window.__vardeTest.Fire.show(k), kind);
+      await p.clock.runFor(1000);
+      expect(await p.evaluate(() => window.__vardeTest.Fire.guest), kind).toBe(kind);
+      for (let k = 0; k < 4; k++){ const a = await pic(); await p.clock.runFor(dur * 250); expect(await pic(), kind).not.toBe(a); }
+    }
+    await p.evaluate(() => window.__vardeTest.Fire.show());
+    await p.clock.runFor(30000);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
 /* ---------- From build 56 (0.12.1): Bål sleeps when burned out ----------
    With the page clock fast-forwarded: after 45 min the fire is out and soft Z's rise; two minutes later it sleeps,
    the picture stands still and the screen is let go (wake lock released, even in Utemodus); holding the screen to add
