@@ -2261,3 +2261,167 @@ test.describe('privat', () => {
     await ctx.close();
   });
 });
+
+/* ---------- 0.22.1 (build 81): notes save themselves ---------- */
+test.describe('notater lagrer 0.22.1', () => {
+  test.use({locale:'nb-NO'});
+  const stored = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+  const noteBy = async (p, ti) => (await stored(p)).notes.filter(n => n.title === ti);
+  const toast = p => p.locator('#toast');
+  const undo = p => p.locator('#toast button');
+  // the phone sends the app to the background (or brings it back)
+  const hidden = (p, on) => p.evaluate(on => { Object.defineProperty(document, 'hidden', {configurable:true, get:() => on}); Object.defineProperty(document, 'visibilityState', {configurable:true, get:() => on ? 'hidden' : 'visible'}); if (on) document.dispatchEvent(new Event('visibilitychange')); }, on);
+  async function newNote(p, ti, tx){
+    await p.locator('#main [data-act="newNote"]').click();
+    // the sheet moves focus to the title 30 ms after it opens; filling before that can land the text in the title
+    await expect(p.locator('#noteTitle')).toBeFocused();
+    await p.locator('#noteTitle').fill(ti);
+    await p.locator('#noteText').fill(tx);
+  }
+  async function openNote(p, ti){
+    if (await p.locator('#main [data-act="back"]').count()) await p.locator('#main [data-act="back"]').click();
+    await p.locator('#main .notes-ix [data-act="openNote"]', {hasText: ti}).click();
+    await expect(p.locator('#main .note-full h2')).toContainText(ti);
+  }
+  async function editText(p, tx){
+    await p.locator('#main .note-body').click();
+    await p.locator('#neText').fill(tx);
+  }
+
+  test('back, a tab and the background save an edit; Avbryt throws it away with Angre', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await goTab(page, 'notes');
+    await newNote(page, 'Alpha', 'første');
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect(page.locator('#main .note-body')).toHaveText('første');
+    // the phone's back button saves, with Angre
+    await editText(page, 'endret tekst');
+    await page.goBack();
+    await expect(page.locator('#main .notes-ix')).toBeVisible();
+    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('endret tekst');
+    await undo(page).click();
+    await expect.poll(async () => (await noteBy(page, 'Alpha'))[0].text).toBe('første');
+    // another tab saves too
+    await openNote(page, 'Alpha');
+    await editText(page, 'via fane');
+    await goTab(page, 'list');
+    await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('via fane');
+    // the page's own back button saves
+    await goTab(page, 'notes');
+    await openNote(page, 'Alpha');
+    await editText(page, 'tilbakeknapp');
+    await page.locator('#main [data-act="back"]').click();
+    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('tilbakeknapp');
+    // Avbryt throws the change away; Angre saves it after all
+    await openNote(page, 'Alpha');
+    await editText(page, 'kastes');
+    await page.locator('#main [data-act="noteCancel"]').click();
+    await expect(page.locator('#main .note-body')).toHaveText('tilbakeknapp');
+    await expect(toast(page)).toContainText('Endringene er forkastet');
+    await undo(page).click();
+    await expect(page.locator('#main .note-body')).toHaveText('kastes');
+    // Avbryt with nothing changed says nothing
+    await page.locator('#main .note-body').click();
+    await page.locator('#main [data-act="noteCancel"]').click();
+    await expect(toast(page)).toBeHidden();
+    // the background saves at once and the edit stays open
+    await editText(page, 'bakgrunn');
+    await hidden(page, true);
+    await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('bakgrunn');
+    await hidden(page, false);
+    await expect(page.locator('#neText')).toHaveValue('bakgrunn');
+    await page.locator('#main [data-act="noteSave"]').click();
+    await expect(page.locator('#main .note-body')).toHaveText('bakgrunn');
+    await settle(page, errors);
+  });
+
+  test('Nytt notat: back, ✕ and a tap outside save; Avbryt throws away with Angre; the background writes it once', async ({page}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await goTab(page, 'notes');
+    // back saves and stays on the overview, Angre removes it
+    await newNote(page, 'Beta', 'ny');
+    await page.goBack();
+    await expect(page.locator('#overlay')).toBeHidden();
+    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect(page.locator('#main .notes-ix')).toContainText('Beta');
+    await expect.poll(() => noteBy(page, 'Beta').then(a => a.length)).toBe(1);
+    await undo(page).click();
+    await expect(page.locator('#main .notes-ix')).toHaveCount(0);
+    await expect.poll(() => noteBy(page, 'Beta').then(a => a.length)).toBe(0);
+    // ✕ and a tap outside save
+    await newNote(page, 'Gamma', 'kryss');
+    await page.locator('#overlay .sheet-x').click();
+    await expect.poll(() => noteBy(page, 'Gamma').then(a => a.length)).toBe(1);
+    await newNote(page, 'Omega', 'utenfor');
+    await page.locator('#overlay').click({position:{x:10, y:10}});
+    await expect(page.locator('#overlay')).toBeHidden();
+    await expect.poll(() => noteBy(page, 'Omega').then(a => a.length)).toBe(1);
+    // an empty sheet closed by back makes nothing
+    const before = (await stored(page)).notes.length;
+    await page.locator('#main [data-act="newNote"]').click();
+    await page.goBack();
+    await expect(page.locator('#overlay')).toBeHidden();
+    await page.waitForTimeout(200);
+    expect((await stored(page)).notes.length).toBe(before);
+    // Avbryt throws it away; Angre makes the note and opens it
+    await newNote(page, 'Delta', 'angret');
+    await page.locator('#overlay [data-s="cancel"]').click();
+    await expect.poll(() => noteBy(page, 'Delta').then(a => a.length)).toBe(0);
+    await expect(toast(page)).toContainText('Endringene er forkastet');
+    await undo(page).click();
+    await expect(page.locator('#main .note-full h2')).toContainText('Delta');
+    await expect.poll(() => noteBy(page, 'Delta').then(a => a.length)).toBe(1);
+    // the background writes the note while the sheet stays open; Lagre then keeps one note
+    await page.locator('#main [data-act="back"]').click();
+    await newNote(page, 'Epsilon', 'først');
+    await hidden(page, true);
+    await expect.poll(() => noteBy(page, 'Epsilon').then(a => a.length)).toBe(1);
+    await hidden(page, false);
+    await expect(page.locator('#overlay')).toBeVisible();
+    await page.locator('#noteText').fill('først og sist');
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect(page.locator('#main .note-body')).toHaveText('først og sist');
+    await expect.poll(() => noteBy(page, 'Epsilon').then(a => a.map(n => n.text))).toEqual(['først og sist']);
+    // Avbryt after the background wrote it removes that copy too
+    await page.locator('#main [data-act="back"]').click();
+    await newNote(page, 'Zeta', 'bort');
+    await hidden(page, true);
+    await hidden(page, false);
+    await expect.poll(() => noteBy(page, 'Zeta').then(a => a.length)).toBe(1);
+    await page.locator('#overlay [data-s="cancel"]').click();
+    await expect.poll(() => noteBy(page, 'Zeta').then(a => a.length)).toBe(0);
+    await settle(page, errors);
+  });
+
+  test('a private note saved by back is sealed again, with no plain text in storage', async ({page}) => {
+    const errors = watchErrors(page);
+    const PW = 'blåbær-hytte-7';
+    await openApp(page);
+    await goTab(page, 'notes');
+    await newNote(page, 'Hemmelig', 'gammel tekst');
+    await page.locator('#overlay [data-s="ok"]').click();
+    await page.locator('#main [data-act="notePriv"]').click();
+    await expect(async () => {
+      await page.locator('#pw1').fill(PW); await page.locator('#pw2').fill(PW);
+      await expect(page.locator('#pw1')).toHaveValue(PW, {timeout:1000});
+      await expect(page.locator('#pw2')).toHaveValue(PW, {timeout:1000});
+    }).toPass({timeout:10000});
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect(toast(page)).toContainText('privat og kryptert');
+    const ct0 = (await stored(page)).notes[0].ct;
+    await editText(page, 'ny hemmelig tekst');
+    await page.goBack();
+    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect.poll(async () => (await stored(page)).notes[0].ct).not.toBe(ct0);
+    const raw = await page.evaluate(k => localStorage.getItem(k), KEY);
+    expect(raw).not.toContain('ny hemmelig');
+    expect(raw).not.toContain('Hemmelig');
+    await page.locator('#main .notes-ix [data-act="openNote"]').first().click();
+    await expect(page.locator('#main .note-body')).toHaveText('ny hemmelig tekst');
+    await settle(page, errors);
+  });
+});

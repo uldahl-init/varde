@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-gqcam3fj04mdqkFwZ3fkEqcBLkyiEmlMh2RS0bZMOoQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-mlwuM3EmKsFUQ8XlbOSHIpJf0ZPGOKq5HUFo+Chh9yQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -837,8 +837,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.22.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 80;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.22.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 81;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -963,7 +963,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     shPw:'Password for the link (optional)', shPwHint:'Give the password another way than the link, for example in person.', shPwReq:'Password for the link', shPwReqHint:'A private note is only shared with a password.', lnkLockedT:'This note is locked with a password', lnkLockedMsg:'Type the password you got from the sender.', lnkOpen:'Open',
     bkPwOn:'Protect the backup with a password (optional)', bkPwHint:'The backup cannot be restored without the password. Private notes are always encrypted in the backup.', bkPwLock:'Lock the backup', bkPwDone:'The backup is locked with a password. Share, save or copy it now.', bkPwFirst:'Tap Lock the backup first, or turn the password off.',
     bkLockedMsg:'The backup is locked with a password', bkPrivOther:'The backup holds private notes with a different password. Type that password to include them.', bkSkipPriv:'Skip private ones', bkRPwOk:'Unlock and add', privAdded:n=>`${n} private note${n === 1 ? '' : 's'} added.`, privSkipped:'The private notes were not added.',
-    tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
+    tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteSaved:'Note saved', noteDiscarded:'Changes discarded', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
@@ -1203,7 +1203,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
     shPw:'Passord for lenken (valgfritt)', shPwHint:'Gi passordet på en annen måte enn lenken, for eksempel muntlig.', shPwReq:'Passord for lenken', shPwReqHint:'Et privat notat deles bare med passord.', lnkLockedT:'Notatet er låst med passord', lnkLockedMsg:'Skriv passordet du fikk fra avsenderen.', lnkOpen:'Åpne',
     bkPwOn:'Beskytt sikkerhetskopien med passord (valgfritt)', bkPwHint:'Uten passordet kan ikke kopien gjenopprettes. Private notater er alltid kryptert i kopien.', bkPwLock:'Lås kopien', bkPwDone:'Kopien er låst med passord. Del, lagre eller kopier den nå.', bkPwFirst:'Trykk Lås kopien først, eller slå av passordet.',
     bkLockedMsg:'Sikkerhetskopien er låst med passord', bkPrivOther:'Kopien har private notater med et annet passord. Skriv det passordet for å ta dem med.', bkSkipPriv:'Hopp over private', bkRPwOk:'Lås opp og legg til', privAdded:n=>`${n} ${n === 1 ? 'privat notat' : 'private notater'} lagt til.`, privSkipped:'De private notatene ble ikke lagt til.',
-    tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
+    tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteSaved:'Notatet er lagret', noteDiscarded:'Endringene er forkastet', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
@@ -1833,7 +1833,8 @@ function render(){
   requestAnimationFrame(() => { main.style.paddingBottom = rainLocked ? ($('rainlock').offsetHeight + $('tabbar').offsetHeight + 24) + 'px' : ''; });
   if (tab !== 'compass' || view === 'settings') stopCompass();
   if (tab !== 'guide' && gSearch.open) gsReset();
-  if (tab !== 'notes') noteEdit = null;
+  // 0.22.1: leaving an edit in place (back, another tab, Utemodus) saves it, with Angre
+  if (noteEdit && (tab !== 'notes' || view !== 'note:' + noteEdit.id || state.field)){ const ed = noteEdit; noteEdit = null; const old = noteCommit(ed); if (old) noteUndo(old); }
   if (tab !== 'list') main.classList.remove('editing');
   if (view === 'settings') return renderSettings();
   if (tab === 'compass') return renderCompass();
@@ -2591,19 +2592,81 @@ function renderTextGuide(k){
   }
 }
 /* ---------- notes (v18) ---------- */
-function askNote(title, n){
+/* 0.22.1: Nytt notat saves itself. Back, ✕ or a tap outside the sheet saves (how 'auto'); only Avbryt throws the text away,
+   with Angre. If the phone sends the app to the background, the note is written at once (draftFlush) and the sheet goes on
+   editing that same note, so nothing is lost if the phone closes the app. newDraft = {id} while the sheet is open. */
+let newDraft = null;
+function askNote(title){
   const T = t();
   return new Promise(res => {
     sheetResolve = res;
+    newDraft = {id:null};
     openSheet(`<h3>${esc(title)}</h3>
-      <input type="text" id="noteTitle" placeholder="${esc(T.noteTitlePh)}" value="${esc(n ? n.title : '')}">
-      <textarea class="plain note-area" id="noteText" placeholder="${esc(T.noteTextPh)}">${esc(n ? n.text : '')}</textarea>
+      <input type="text" id="noteTitle" placeholder="${esc(T.noteTitlePh)}" value="">
+      <textarea class="plain note-area" id="noteText" placeholder="${esc(T.noteTextPh)}"></textarea>
       <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
-    panel.querySelector('[data-s=ok]').onclick = () => {
-      const ti = $('noteTitle').value.trim(), tx = $('noteText').value;
-      closeSheet(ti || tx.trim() ? {title:ti, text:tx} : null);
-    };
-    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    panel.dataset.newnote = '1';
+    sheetOnDismiss = () => Object.assign(draftVals(), {how:'auto'});
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet(Object.assign(draftVals(), {how:'ok'}));
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(Object.assign(draftVals(), {how:'cancel'}));
+  });
+}
+function draftVals(){ const a = $('noteTitle'), b = $('noteText'); return {title:a ? a.value.trim() : '', text:b ? b.value : ''}; }
+// writes the sheet's text into its note (made the first time there is text); an emptied draft removes the note again
+function draftFlush(d, v){
+  let n = d.id ? state.notes.find(x => x.id === d.id) : null;
+  if (!(v.title || v.text.trim())){
+    if (n){ state.notes = state.notes.filter(x => x.id !== n.id); save(); }
+    d.id = null; return null;
+  }
+  if (!n){ n = {id:uid(), title:v.title, text:v.text, t:Date.now()}; noteAddTop(n); d.id = n.id; }
+  else if (n.title !== v.title || n.text !== v.text){ n.title = v.title; n.text = v.text; n.t = Date.now(); }
+  save();
+  return n;
+}
+/* 0.22.1: an edit in place saves itself when you leave it any way but Avbryt (back, a tab, the header): noteCommit()
+   writes it, and noteUndo() offers Angre with the note as it was. The background saves too and keeps the edit open.
+   Returns the note as it was before, or null when nothing changed. A private note is sealed again (plain text never
+   reaches state). */
+function noteCommit(ed){
+  const n = ed && state.notes.find(x => x.id === ed.id);
+  if (!n) return null;
+  const old = {note:JSON.parse(JSON.stringify(n)), open:privOpen.get(n.id)};
+  const ti = ed.title.trim(), tx = ed.text;
+  let changed = false;
+  if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; changed = true; }
+  if (n.priv){
+    const o = privOpen.get(n.id);
+    if (o && privKey && (ti || tx.trim()) && (ti !== o.title || tx !== o.text)){
+      changed = true;
+      privOpen.set(n.id, {title:ti, text:tx});   // shown at once; the sealed copy follows
+      noteSeal(n, ti, tx).then(() => { n.t = Date.now(); save(); }).catch(() => {});
+    }
+  } else if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); changed = true; }
+  if (changed) save();
+  return changed ? old : null;
+}
+function noteChanged(ed){
+  const n = ed && state.notes.find(x => x.id === ed.id);
+  if (!n) return false;
+  const o = n.priv ? (privOpen.get(n.id) || {title:'', text:''}) : n;
+  return ed.title.trim() !== o.title || ed.text !== o.text || (ed.c || 0) !== (n.c || 0);
+}
+function noteToast(msg, undo){
+  const el = $('toast');
+  el.innerHTML = `<span>${esc(msg)}</span><button>${t().undo}</button>`;
+  el.hidden = false;
+  el.querySelector('button').onclick = () => { el.hidden = true; undo(); };
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
+}
+function noteUndo(old){
+  noteToast(t().noteSaved, () => {
+    const i = state.notes.findIndex(x => x.id === old.note.id);
+    if (i < 0) return;
+    state.notes[i] = old.note;
+    if (old.note.priv && old.open && privKey) privOpen.set(old.note.id, old.open);
+    save(); render();
   });
 }
 const noteDate = ms => { try { return new Date(ms).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}); } catch(e){ return ''; } };
@@ -3048,6 +3111,12 @@ async function privLock(){
 function privTouch(){ privLastT = Date.now(); }
 ['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if (privKey) privTouch(); }, true));
 setInterval(() => { if (privKey && Date.now() - privLastT > PRIV_IDLE_MS) privLock(); }, 5000);
+// 0.22.1: the phone sending the app to the background saves an open note at once (the edit stays open)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) return;
+  if (noteEdit) noteCommit(noteEdit);
+  if (newDraft && !overlay.hidden && panel.dataset.newnote) draftFlush(newDraft, draftVals());
+});
 document.addEventListener('visibilitychange', () => {
   if (!privKey) return;
   if (document.hidden){ privHiddenT = Date.now(); clearTimeout(privBgTimer); privBgTimer = setTimeout(() => { if (document.hidden) privLock(); }, PRIV_BG_MS); }
@@ -4613,23 +4682,27 @@ function openSheet(html, noFocus){
   const title = m ? m[1] : '';
   const rest = m ? html.slice(m[0].length) : html;
   panel.innerHTML = `<div class="sheet-top"><h3>${title}</h3><button class="sheet-x" data-sheet-close aria-label="${t().close}">✕</button></div>` + rest;
-  panel.querySelector('[data-sheet-close]').onclick = () => closeSheet(null);
+  panel.querySelector('[data-sheet-close]').onclick = () => dismissSheet();
   overlay.hidden = false;
   if (!sheetPushed){ sheetPushed = true; history.pushState(Object.assign({}, history.state || {}, {sheet:true}), ''); }
   const f = noFocus ? null : panel.querySelector('input,textarea');
   if (f) setTimeout(() => f.focus(), 30);
 }
+// 0.22.1: a sheet closed without its own buttons (✕, a tap outside, Escape, back) gives sheetOnDismiss() when it has one, else null
+let sheetOnDismiss = null;
+function dismissSheet(){ const f = sheetOnDismiss; closeSheet(f ? f() : null); }
 function closeSheet(val){
   overlay.hidden = true;
-  delete panel.dataset.priv;
+  sheetOnDismiss = null;
+  delete panel.dataset.priv; delete panel.dataset.newnote;
   panel.innerHTML = '';
   if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
   setTimeout(() => {
     if (overlay.hidden && sheetPushed){ sheetPushed = false; ignorePop = true; history.back(); }
   }, 0);
 }
-overlay.addEventListener('click', e => { if (e.target === overlay) closeSheet(null); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeSheet(null); });
+overlay.addEventListener('click', e => { if (e.target === overlay) dismissSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) dismissSheet(); });
 
 function askText(title, value, ok, allowEmpty){
   const T = t();
@@ -5016,9 +5089,21 @@ main.addEventListener('click', async e => {
   if (act === 'wAddList' || act === 'wAddOwn' || act === 'wEdit'){ weightAction(act, b.dataset.id); return; }
   if (act === 'newNote'){
     if (state.field) return;
-    const v = await askNote(T.newNote, null);
-    if (!v) return;
-    const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; noteAddTop(nn); save(); go('notes', 'note:' + nn.id);
+    const v = await askNote(T.newNote), d = newDraft;
+    newDraft = null;
+    if (!v || !d) return;
+    if (v.how === 'cancel'){
+      // 0.22.1: Avbryt throws it away (also a copy written when the app went to the background), with Angre
+      draftFlush(d, {title:'', text:''});
+      if (v.title || v.text.trim()){ render(); noteToast(T.noteDiscarded, () => { const nn = {id:uid(), title:v.title, text:v.text, t:Date.now()}; noteAddTop(nn); save(); go('notes', 'note:' + nn.id); }); }
+      return;
+    }
+    const nn = draftFlush(d, v);
+    if (!nn) return;
+    if (v.how === 'ok'){ go('notes', 'note:' + nn.id); return; }
+    // back, ✕ or a tap outside: saved, and you stay where you were
+    render();
+    noteToast(T.noteSaved, () => { state.notes = state.notes.filter(x => x.id !== nn.id); save(); render(); });
     return;
   }
   // 0.6.0: Rediger, the title or the text turns the note into fields in place; the pop-up is only for Nytt notat
@@ -5029,22 +5114,15 @@ main.addEventListener('click', async e => {
     noteEdit = {id:n.id, title:n.title, text:n.text, c:n.c || 0, focus:b.dataset.f === 'title' ? 'title' : 'text'}; render(); return;
   }
   if (act === 'noteSave' || act === 'noteCancel'){
-    const ed = noteEdit, n = ed && state.notes.find(x => x.id === ed.id);
+    const ed = noteEdit;
     noteEdit = null;
-    if (act === 'noteSave' && n && n.priv && !state.field){
-      // 0.18.0: a private note is sealed again with a fresh IV; plain text never reaches state
-      const o = privOpen.get(n.id), ti = ed.title.trim(), tx = ed.text;
-      if (o && privKey && (ti || tx.trim()) && (ti !== o.title || tx !== o.text)){ try { await noteSeal(n, ti, tx); n.t = Date.now(); } catch(e){} }
-      if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; }
-      save(); render(); return;
-    }
-    if (act === 'noteSave' && n && !state.field){
-      const ti = ed.title.trim(), tx = ed.text;
-      if ((ti || tx.trim()) && (ti !== n.title || tx !== n.text)){ n.title = ti; n.text = tx; n.t = Date.now(); }
-      if ((ed.c || 0) !== (n.c || 0)){ if (ed.c) n.c = ed.c; else delete n.c; }
-      save();
-    }
-    render(); return;
+    if (!ed || state.field){ render(); return; }
+    if (act === 'noteSave'){ noteCommit(ed); render(); return; }
+    // 0.22.1: Avbryt throws the changes away, with Angre (which saves them after all)
+    const lost = noteChanged(ed);
+    render();
+    if (lost) noteToast(T.noteDiscarded, () => { noteCommit(ed); render(); });
+    return;
   }
   if (act === 'noteC'){ if (noteEdit){ noteEdit.c = +b.dataset.c || 0; render(); } return; }
   if (act === 'noteCNames'){
@@ -5202,7 +5280,7 @@ window.addEventListener('popstate', e => {
   if (!sosEl.hidden){ closeSos(true); return; } // 0.11.0: back leaves Nødmodus
   if (e.state && e.state.sos && sosEl.hidden){ openSos(true); return; } // 0.11.1: back from a guide opened in Nødmodus
   if (!$('intro').hidden){ $('intro').hidden = true; state.introDone = true; save(); const f = introThen; introThen = null; if (f) f(); return; }
-  if (!overlay.hidden){ sheetPushed = false; closeSheet(null); return; }
+  if (!overlay.hidden){ sheetPushed = false; dismissSheet(); return; }
   if (rainLocked && !navOpen()){ history.pushState(Object.assign({}, history.state || {}, {lock:true}), ''); return; }
   if (rainLocked) extendNav();
   const st = e.state || {tab:'list', view:null};
