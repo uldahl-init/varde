@@ -634,9 +634,9 @@ for (const L of LANGS){
    or a shade of the night light. Catches skins, dark-mode rules or new colours that override Nattlys. */
 const SKINS = (HTML.match(/data-skin="([a-z]+)"/g) || []).map(m => m.slice(11, -1)).filter((v, i, a) => a.indexOf(v) === i);
 test.describe('nattlys', () => {
-  test('every colour follows the night light in all skins, light and dark mode', async ({browser}) => {
-    test.setTimeout(240000);
-    expect(SKINS.length, 'skins found in index.html').toBeGreaterThan(3);
+  // Build 84: one test per skin, so they run in parallel (all skins in one test took about 90 s)
+  test('the skins are found in index.html', () => { expect(SKINS.length, 'skins found in index.html').toBeGreaterThan(3); });
+  for (const skin of SKINS) test(`every colour follows the night light: ${skin}, light and dark mode`, async ({browser}) => {
     const audit = hue => {
       const bad = [];
       const parse = s => { const m = s && s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(',').map(parseFloat); return {r:p[0], g:p[1], b:p[2], a:p.length > 3 ? p[3] : 1}; };
@@ -655,7 +655,7 @@ test.describe('nattlys', () => {
     const notes = [{id:'a', title:'A', text:'x', t:1760000000000, rcv:{n:'Kari', t:1760000000000}, c:2}, {id:'b', title:'B', text:'y', t:1750000000000, pin:true, c:4},
       {id:'c', title:'C', text:'z', t:1740000000000, c:1}, {id:'d', title:'D', text:'w', t:1730000000000, c:3}, {id:'e', title:'E', text:'v', t:1720000000000, c:5},
       {id:'f', title:'', text:'', t:1710000000000, priv:1, iv:'AAAAAAAAAAAAAAAA', ct:'AAAAAAAAAAAAAAAAAAAAAAAA'}];   // build 70: a locked private note
-    for (const skin of SKINS) for (const scheme of ['light', 'dark']) for (const hue of ['red', 'green']){
+    for (const scheme of ['light', 'dark']) for (const hue of ['red', 'green']){
       const ctx = await browser.newContext({colorScheme: scheme, serviceWorkers: 'block', viewport: {width: 390, height: 780}, locale: 'nb-NO'});
       const p = await ctx.newPage();
       const st = {lists:[], introDone:true, lang:'no', skin, field:true, night:true, nightHue:hue, notes, noteOrder:1, noteColors:['Fiske', 'Turer', '', 'Ideer', ''], pos:{lat:58.97, lon:5.73, t:1760000000000}};
@@ -686,7 +686,7 @@ test.describe('nattlys', () => {
       // 0.16.0: Kompass and Stjerner og planeter (stars, planets and the moon on the ring)
       await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
       await p.locator('#main [data-act="cStars"]').click(); await check('stars');
-      // the Dine lister row in Utemodus (from build 80)
+      // the list heading in Utemodus (the Dine lister row until build 82)
       await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#tabbar [data-tab="list"]').click(); await check('list rows');
       expect(found, `${skin}, ${scheme} mode, ${hue} light`).toEqual({});
       await ctx.close();
@@ -936,7 +936,8 @@ test.describe('bål', () => {
    Every guest is brought in turn with Fire.show(kind) (reached through window.__vardeTest, set only by the test) and drawn through its visit with the firelight on, on the
    fire's canvas, with the page clock run forward; any script error fails it. Then Fire.show() goes back to chance. */
 test.describe('bål gjester', () => {
-  test('every guest is drawn with the firelight', async ({browser}) => {
+  // Build 84: one test per guest, so they run in parallel (all eight in one test took about 90 s)
+  const openFire = async browser => {
     const ctx = await browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
     const p = await ctx.newPage();
     const err = watchErrors(p);
@@ -946,13 +947,24 @@ test.describe('bål gjester', () => {
     const b = await p.locator('#main .lt-btn[data-light="fire"]').boundingBox();
     await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down(); await p.waitForTimeout(1200); await p.mouse.up();
     await expect(p.locator('#slFireCv')).toBeVisible();
-    const pic = () => p.locator('#slFireCv').evaluate(c => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let h = 0; for (let i = 0; i < d.length; i += 97) h = (h * 31 + d[i]) | 0; return h; });
-    for (const [kind, dur] of [['troll', 15], ['nisse', 13], ['couple', 16], ['owl', 14], ['fox', 12], ['bat', 4.5], ['reindeer', 14], ['ghosts', 22]]){
+    return {ctx, p, err};
+  };
+  const pic = p => p.locator('#slFireCv').evaluate(c => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let h = 0; for (let i = 0; i < d.length; i += 97) h = (h * 31 + d[i]) | 0; return h; });
+  for (const [kind, dur] of [['troll', 15], ['nisse', 13], ['couple', 16], ['owl', 14], ['fox', 12], ['bat', 4.5], ['reindeer', 14], ['ghosts', 22]]){
+    test(`the guest «${kind}» is drawn with the firelight`, async ({browser}) => {
+      const {ctx, p, err} = await openFire(browser);
       await p.evaluate(k => window.__vardeTest.Fire.show(k), kind);
       await p.clock.runFor(1000);
       expect(await p.evaluate(() => window.__vardeTest.Fire.guest), kind).toBe(kind);
-      for (let k = 0; k < 4; k++){ const a = await pic(); await p.clock.runFor(dur * 250); expect(await pic(), kind).not.toBe(a); }
-    }
+      for (let k = 0; k < 4; k++){ const a = await pic(p); await p.clock.runFor(dur * 250); expect(await pic(p), kind).not.toBe(a); }
+      expect(err).toEqual([]);
+      await ctx.close();
+    });
+  }
+  test('after a chosen guest, the guests go back to chance', async ({browser}) => {
+    const {ctx, p, err} = await openFire(browser);
+    await p.evaluate(() => window.__vardeTest.Fire.show('fox'));
+    await p.clock.runFor(4000);
     await p.evaluate(() => window.__vardeTest.Fire.show());
     await p.clock.runFor(30000);
     expect(err).toEqual([]);
@@ -2569,7 +2581,7 @@ test.describe('fra testing 0.23', () => {
     await ctx.close();
   });
 
-  test('the list name breathes each time Pakkliste comes on screen, also in Utemodus, not on redraws (0.23.1)', async ({browser}) => {
+  test('the list name breathes each time Pakkliste comes on screen and when the mode changes, not on redraws (0.23.1, 0.23.2)', async ({browser}) => {
     const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
     const on = () => expect(p.locator('#listName.breathe')).toHaveCount(1);
     const off = () => expect(p.locator('#listName.breathe')).toHaveCount(0, {timeout:4500});
@@ -2597,19 +2609,45 @@ test.describe('fra testing 0.23', () => {
     await p.locator('#main [data-act="fieldToggle"]').click();
     await p.waitForTimeout(100);
     await expect(p.locator('#listName.breathe')).toHaveCount(0);
-    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(0);   // switching Utemodus on is not «coming to» the page
+    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(1);   // 0.23.2: switching mode shows the name anew, so it breathes
+    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(0, {timeout:4500});
     await p.locator('#tabbar [data-tab="notes"]').click();
     await p.locator('#tabbar [data-tab="list"]').click();
     await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(1);
     await expect(p.locator('#listName.breathe')).toHaveCount(0);
     await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(0, {timeout:4500});
-    // the app back from the background: no breath
+    // Utemodus off again: the header breathes (0.23.2); then the app back from the background: no breath
     await p.locator('#main [data-act="fieldToggle"]').click();
-    await off();
+    await on(); await off();
     await p.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); });
     await p.waitForTimeout(100);
     await expect(p.locator('#listName.breathe')).toHaveCount(0);
     expect(err).toEqual([]);
     await ctx.close();
+  });
+});
+
+/* ---------- 0.23.2 (build 84): every note asks before it is deleted ---------- */
+test.describe('notater slettes 0.23.2', () => {
+  test.use({locale:'nb-NO'});
+  test('an ordinary note asks before it is deleted; Avbryt keeps it, Slett deletes with Angre', async ({page}) => {
+    const errors = watchErrors(page);
+    await page.addInitScript(k => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify({v:2, introDone:true, lang:'no', lists:[], notes:[{id:'n1', title:'Handleliste', text:'gass', t:Date.UTC(2026, 10, 20)}]})); }, KEY);
+    await page.goto('./');
+    await page.locator('#tabbar [data-tab="notes"]').click();
+    await page.locator('#main .notes-ix [data-act="openNote"]').first().click();
+    await page.locator('#main [data-act="delNote"]').click();
+    await expect(page.locator('#overlay h3')).toHaveText('Slette notatet?');
+    await expect(page.locator('#overlay p')).toHaveText('Du kan angre rett etterpå, men ikke senere.');
+    await page.locator('#overlay [data-s="cancel"]').click();
+    await expect(page.locator('#main .note-full h2')).toContainText('Handleliste');
+    expect((await page.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY)).notes).toHaveLength(1);
+    await page.locator('#main [data-act="delNote"]').click();
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect(page.locator('#toast')).toContainText('slettet');
+    await expect.poll(async () => (await page.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY)).notes.length).toBe(0);
+    await page.locator('#toast button').click();
+    await expect(page.locator('#main .notes-ix [data-act="openNote"]')).toHaveCount(1);
+    await settle(page, errors);
   });
 });
