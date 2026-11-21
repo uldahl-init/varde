@@ -303,6 +303,7 @@ for (const L of LANGS){
       await goTab(page, 'notes');
       for (const [ti, tx] of [['Alpha', 'first text'], ['Beta', 'second text']]){
         await page.locator('#main [data-act="newNote"]').click();
+        await expect(page.locator('#noteTitle')).toBeFocused();   // the sheet focuses the title 30 ms after opening (build 82)
         await page.locator('#noteTitle').fill(ti);
         await page.locator('#noteText').fill(tx);
         await sheetOk.click();
@@ -993,13 +994,14 @@ test.describe('innstillinger 0.22', () => {
     await expect(p.locator('#main [data-act="fireGuests"][aria-pressed="true"]')).toHaveText('Av og til');
     await p.locator('#main [data-act="back"]').click();
     await expect(p.locator('#listName')).toHaveText('Guider');
-    // Dine lister: the lists and the backup, no settings, one row to the page
+    // Dine lister: the lists and the backup, no settings; from build 82 in sections, and no row to Innstillinger (the gear is it)
     await p.locator('#tabbar [data-tab="list"]').click();
     await p.locator('#listBtn').click();
-    await expect(p.locator('#main .sec-lbl')).toHaveCount(0);
+    expect((await p.locator('#main .sec-lbl').allTextContents()).map(x => x.trim())).toEqual(['Hovedliste', 'Dine egne lister', 'Delte lister', 'Sikkerhetskopi']);
     await expect(p.locator('#main .app-ver')).toHaveCount(0);
     await expect(p.locator('#main [data-la="backup"]')).toBeVisible();
-    await p.locator('#main [data-act="openSettings"]').click();
+    await expect(p.locator('#main [data-act="openSettings"]')).toHaveCount(0);
+    await p.locator('#hdrSet').click();
     await expect(p.locator('#listName')).toHaveText('Innstillinger');
     // Besøk is a setting: stored, and kept by Start på nytt
     await p.locator('#main [data-act="fireGuests"][data-v="often"]').click();
@@ -1029,16 +1031,14 @@ test.describe('innstillinger 0.22', () => {
     fieldOn = await p.locator('#main .field-btn').boundingBox();
     await expect(p.locator('#hdrSet')).toBeHidden();
     await expect(p.locator('#listName')).toHaveText('Pakkliste');
-    const order = await p.locator('#main > *').evaluateAll(els => els.map(e => e.classList[0] + (e.classList.contains('lists-row') ? '+lists' : '')));
-    expect(order.slice(0, 6)).toEqual(['field-btn', 'sos-btn', 'field-tools', 'field-hint', 'modes-toggle+lists', 'modes-toggle']);
+    const order = await p.locator('#main > *').evaluateAll(els => els.map(e => e.classList[0]));
+    expect(order.slice(0, 6)).toEqual(['field-btn', 'sos-btn', 'field-tools', 'field-hint', 'field-listhead', 'modes-toggle']);
     const sos = await p.locator('#main .sos-btn').boundingBox();
     expect(Math.abs(sos.height - fieldOn.height)).toBeLessThan(2);
-    await expect(p.locator('#main .lists-row')).toContainText(LONG);
+    await expect(p.locator('#main .field-listhead h2')).toHaveText(LONG);   // build 82: a plain heading
     const rain = await p.locator('#hdrLock').boundingBox(), sign = await p.locator('#hdrField').boundingBox();
     expect(rain.height).toBeGreaterThanOrEqual(47.5);
     expect(sign.x).toBeGreaterThan(rain.x + rain.width);
-    await p.locator('#main .lists-row').click();
-    await expect(p.locator('#main [data-sel]').first()).toBeVisible();
     expect(err).toEqual([]);
     await ctx.close();
   });
@@ -2423,5 +2423,170 @@ test.describe('notater lagrer 0.22.1', () => {
     await page.locator('#main .notes-ix [data-act="openNote"]').first().click();
     await expect(page.locator('#main .note-body')).toHaveText('ny hemmelig tekst');
     await settle(page, errors);
+  });
+});
+
+/* ---------- 0.23.0 (build 82): from testing ----------
+   The Utemodus sign grows into «Avslutt utemodus» over Regnlås (ends Utemodus on any page, not on a double tap, shrinks
+   after 3 s, locked in Regnlås); in Utemodus the list name is a plain heading with a share button for own lists; the note
+   overview has cards of one height with date, colour name and «Delt n×» / «Mottatt»; Dine lister in sections with the main
+   list first; a colour wave through the list name when the app opens and after the main list changes. */
+test.describe('fra testing 0.23', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+  };
+  const stored = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+  const own = (id, name, extra) => Object.assign({id, name, notes:'', modes:{}, cats:[{id:'k' + id, name:'K', open:true, items:[{id:'a' + id, text:'A', done:false}]}]}, extra || {});
+  const BASE = {v:2, std:{done:{}, modes:{}, light:{}, open:{}}, introDone:true, lang:'no'};
+
+  test('Avslutt utemodus grows over Regnlås and ends Utemodus on any page', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[], field:true, listLock:true}));
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    const pill = p.locator('#fieldEndBtn');
+    await expect(pill).toBeHidden();
+    await p.locator('#hdrField').click();
+    await expect(pill).toBeVisible();
+    await expect(pill).toHaveText('Avslutt utemodus');
+    await expect(p.locator('#hdrField')).toHaveAttribute('aria-expanded', 'true');
+    // it covers Regnlås and the sign, no further
+    const rain = await p.locator('#hdrLock').boundingBox(), sign = await p.locator('#hdrField').boundingBox(), pb = await pill.boundingBox();
+    expect(Math.abs(pb.x - rain.x)).toBeLessThan(2);
+    expect(pb.x + pb.width).toBeGreaterThanOrEqual(sign.x + sign.width);
+    // a double tap does not end it
+    expect((await stored(p)).field).toBe(true);
+    // it shrinks back after about 3 s
+    await expect(pill).toBeHidden({timeout:5000});
+    await expect(p.locator('#hdrField')).toHaveAttribute('aria-expanded', 'false');
+    // a tap elsewhere closes it too
+    await p.locator('#hdrField').click();
+    await expect(pill).toBeVisible();
+    await p.locator('#main').click({position:{x:20, y:300}});
+    await expect(pill).toBeHidden();
+    // the second tap ends Utemodus and stays on Guider
+    await p.locator('#hdrField').click();
+    await p.waitForTimeout(500);
+    await pill.click();
+    await expect.poll(async () => (await stored(p)).field).toBe(false);
+    await expect(p.locator('#tabbar [data-tab="guide"]')).toHaveAttribute('aria-current', 'page');
+    await expect(p.locator('#hdrSet')).toBeVisible();
+    await expect(p.locator('#hdrField')).toBeHidden();
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('a fast second tap and Regnlås never end Utemodus', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[], field:true, listLock:true}));
+    await p.locator('#hdrField').dblclick();
+    await p.waitForTimeout(100);
+    expect((await stored(p)).field).toBe(true);
+    await expect(p.locator('#fieldEndBtn')).toBeVisible();
+    await p.keyboard.press('Escape');
+    await expect(p.locator('#fieldEndBtn')).toBeHidden();
+    // Regnlås: the sign does nothing
+    await p.locator('#hdrLock').click();
+    await expect(p.locator('body')).toHaveClass(/locked/);
+    await p.locator('#hdrField').click({force:true});
+    await p.waitForTimeout(300);
+    await expect(p.locator('#fieldEndBtn')).toBeHidden();
+    expect((await stored(p)).field).toBe(true);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('Utemodus: the list name is a heading with a share button for own lists', async ({browser}) => {
+    let ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[own('L1', 'Påsketur')], main:'L1', field:true, listLock:true}));
+    await expect(p.locator('#main .field-listhead h2')).toHaveText('Påsketur');
+    await expect(p.locator('#main .lists-row')).toHaveCount(0);
+    const sh = p.locator('#main .field-listhead .share-btn');
+    await expect(sh).toHaveAccessibleName('Del Påsketur');
+    const box = await sh.boundingBox();
+    expect(box.width).toBeGreaterThanOrEqual(48); expect(box.height).toBeGreaterThanOrEqual(48);
+    await p.evaluate(() => { window.__shared = null; navigator.share = async d => { window.__shared = d.url || d.text; }; });
+    await sh.click();
+    await expect.poll(() => p.evaluate(() => window.__shared)).toContain('#share=');
+    expect(err).toEqual([]);
+    await ctx.close();
+    // the standard list cannot be shared: no button
+    ctx = await ctxFor(browser); p = await ctx.newPage(); err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[], field:true, listLock:true}));
+    await expect(p.locator('#main .field-listhead h2')).toHaveText('Friluftsliv');
+    await expect(p.locator('#main .field-listhead .share-btn')).toHaveCount(0);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('note overview: one height, date, colour name, Delt n× and Mottatt; sharing counts', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    const t0 = Date.UTC(2026, 10, 20);
+    await start(p, Object.assign({}, BASE, {lists:[], noteColors:['Fiske', '', '', '', ''], notes:[
+      {id:'n1', title:'En veldig lang tittel som ikke får plass på én linje i oversikten over notatene', text:'kort', t:t0},
+      {id:'n2', title:'Fiskeplasser', text:'Ørret ved utløpet.\nPrøv flue om kvelden.\nHusk fiskekort.', t:t0, c:1, shT:t0, shN:3},
+      {id:'n3', title:'Turplan', text:'Dag 1', t:t0, rcv:{n:'Kari', t:t0}},
+      {id:'n4', title:'', text:'Kjøp plaster\nog sølvfolie', t:t0},
+      {id:'n5', title:'Gammelt delt', text:'x', t:t0, shT:t0}
+    ]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    const cards = p.locator('#main .notes-ix [data-act="openNote"]');
+    await expect(cards).toHaveCount(5);
+    const hs = await cards.evaluateAll(els => els.map(e => Math.round(e.getBoundingClientRect().height)));
+    expect(Math.max(...hs) - Math.min(...hs)).toBeLessThanOrEqual(1);
+    await expect(p.locator('#main .notes-ix .note-prev')).toHaveCount(0);
+    await expect(cards.nth(1).locator('.note-meta')).toContainText('Fiske');
+    await expect(cards.nth(1).locator('.note-meta')).toContainText('Delt 3×');
+    await expect(cards.nth(2).locator('.note-meta')).toContainText('Mottatt');
+    await expect(cards.nth(3).locator('.ix-t')).toHaveText('Kjøp plaster');
+    await expect(cards.nth(4).locator('.note-meta')).toContainText('Delt');
+    await expect(cards.nth(4).locator('.note-meta')).not.toContainText('×');
+    // sharing counts up: Delt 3× becomes 4×
+    await p.evaluate(() => { navigator.share = async () => {}; });
+    await cards.nth(1).click();
+    await p.locator('#main [data-act="noteShare"]').click();
+    await p.locator('#overlay [data-s="ok"]').click();
+    await expect.poll(async () => (await stored(p)).notes.find(n => n.id === 'n2').shN).toBe(4);
+    await p.locator('#main [data-act="back"]').click();
+    await expect(cards.nth(1).locator('.note-meta')).toContainText('Delt 4×');
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('Dine lister in sections, the main list first and not repeated', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[own('L1', 'Påsketur'), own('L2', 'Dagstur'), own('L3', 'Fra Kari', {sharedIn:true})], main:'L1'}));
+    await p.locator('#listBtn').click();
+    expect((await p.locator('#main .sec-lbl').allTextContents()).map(x => x.trim())).toEqual(['Hovedliste', 'Standardliste', 'Dine egne lister', 'Delte lister', 'Sikkerhetskopi']);
+    await expect(p.locator('#main .pg-sec').first().locator('.lc-name')).toHaveText('Påsketur');
+    await expect(p.locator('#main .lc-name', {hasText:'Påsketur'})).toHaveCount(1);
+    await expect(p.locator('#main .pg-sec').nth(2).locator('[data-la="new"]')).toBeVisible();
+    await expect(p.locator('#main .pg-sec').last().locator('[data-la="backup"]')).toHaveText('Ta kopi eller gjenopprett');
+    await expect(p.locator('#main [data-act="openSettings"]')).toHaveCount(0);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+
+  test('the list name gets a colour wave at start and after the main list changes', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[own('L1', 'Påsketur')]}));
+    await expect(p.locator('#listName.breathe')).toHaveCount(1);
+    await expect(p.locator('#listName.breathe')).toHaveCount(0, {timeout:4000});
+    // ticking an item does not start it again
+    await p.locator('#main .cat-head').first().click();
+    await p.locator('#main .item .check').first().click();
+    await p.waitForTimeout(100);
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
+    // a new main list: the wave when Pakkliste shows it
+    await p.locator('#listBtn').click();
+    await p.locator('#main [data-sel="L1"]').click();
+    await p.locator('#main [data-role="main"][data-id="L1"]').click();
+    await p.locator('#main [data-act="back"]').click();
+    await expect(p.locator('#listName')).toHaveText('Påsketur');
+    await expect(p.locator('#listName.breathe')).toHaveCount(1);
+    expect(err).toEqual([]);
+    await ctx.close();
   });
 });

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-mlwuM3EmKsFUQ8XlbOSHIpJf0ZPGOKq5HUFo+Chh9yQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-QBpemxj/d3yw9DkNjbYvTSBdX3sQwv7XjSGT8qIW6T4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -206,6 +206,10 @@ body.notlist .list-switch svg{display:none}
 .note-date{margin:2px 0 10px;color:var(--muted);font-size:.85rem}
 .note-body{white-space:pre-wrap;line-height:1.55;overflow-wrap:anywhere}
 .notes-ix .note-prev{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+/* 0.23.0: every note card the same height: the title on one line, one line under it with date, colour name and shared/received */
+.notes-ix .ix-txt{min-width:0}
+.notes-ix .ix-t,.notes-ix .note-meta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notes-ix .note-meta{margin:4px 0 0;font-size:.85rem}
 .notes-ix .note-date{margin:4px 0 0;font-size:.8rem}
 .notes-ix .ix-t{font-size:1.15rem}
 .note-area{min-height:40vh}
@@ -371,7 +375,28 @@ header .list-switch.long .ls-lbl{display:none}
 header .list-switch.plain{background:none;padding:4px 0;pointer-events:none}
 header .list-switch.plain .ls-ic,header .list-switch.plain .ls-lbl,header .list-switch.plain .ls-chev{display:none}
 header .list-switch.plain h1{font-size:1.9rem}
-.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:10px;border-radius:50%;border:2px solid var(--red);color:var(--red);align-items:center;justify-content:center;pointer-events:none}
+.hdr-field{display:none;flex:none;width:36px;height:36px;margin-left:10px;border-radius:50%;border:2px solid var(--red);color:var(--red);background:none;padding:0;align-items:center;justify-content:center;cursor:pointer;position:relative}
+/* 0.23.0: the sign is a button (48 px target) that opens a small panel with Avslutt utemodus */
+.hdr-field::after{content:'';position:absolute;inset:-8px}
+.hdr-field[aria-expanded="true"]{background:var(--red);color:var(--on-red,#fff)}
+.title-row{position:relative}
+.field-end{position:absolute;z-index:6;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 6px 0 18px;border:0;border-radius:999px;background:var(--red);color:var(--on-red,#fff);font-weight:600;font-size:1rem;line-height:1.1;text-align:right;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);clip-path:inset(0 0 0 calc(100% - 48px) round 999px);transition:clip-path .28s ease-out}
+.field-end[hidden]{display:none}
+.field-end.open{clip-path:inset(0 round 999px)}
+.field-end span{flex:1;min-width:0}
+.field-end i{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:2px solid currentColor}
+.field-end svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
+@media (prefers-reduced-motion: reduce){.field-end{transition:none}}
+/* 0.23.0: in Utemodus the list name is a plain heading, with a share button for lists that can be shared */
+.field-listhead{display:flex;align-items:center;gap:10px;margin-top:20px}
+.field-listhead h2{flex:1;min-width:0;margin:0;font-family:var(--head);font-weight:600;font-size:1.45rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.field-listhead + .list-toggle{margin-top:10px}
+.share-btn{flex:none;width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:14px;background:var(--surface);color:var(--ink);cursor:pointer}
+.share-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* 0.23.0: a short wave of colour through the list name when the app opens on Pakkliste and when the main list changes */
+@keyframes breathe{from{background-position:120% 0}to{background-position:-20% 0}}
+#listName.breathe{background-image:linear-gradient(100deg,var(--hdt,var(--ink)) 0 38%,color-mix(in srgb,var(--red) 55%,#fff) 50%,var(--hdt,var(--ink)) 62% 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:breathe 1.6s ease-in-out 1}
+@media (prefers-reduced-motion: reduce){#listName.breathe{animation:none;background:none;-webkit-text-fill-color:currentColor}}
 body.field .hdr-field{display:flex}
 .hdr-field svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
 .hdr-rain{display:none;flex:none;align-items:center;gap:8px;margin-left:12px;padding:10px 20px;min-height:48px;border-radius:999px;border:2px solid var(--rain,#74B4EA);background:none;color:inherit;font-weight:600;font-size:1rem;cursor:pointer;opacity:.95}
@@ -524,6 +549,9 @@ body.night .lt-btn{--lc:currentColor}
 .lists-row .mt-val{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .lists-row + .list-toggle{margin-top:10px}
 .set-row{margin-top:28px}
+.pg-sec .lcard:first-of-type{margin-top:12px}
+.tool-sub + .pg-sec.first,.calc-warn + .pg-sec.first,.bk-banner + .pg-sec.first{margin-top:22px}
+.pg-sec .row-btns.lists-new{margin-top:12px}
 .set-row .mt-val{white-space:normal}
 .set-row svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .part-lbl{margin:40px 0 0;padding-top:18px;border-top:2px solid var(--line-strong);font-family:var(--head);font-weight:600;font-size:1.6rem;line-height:1.2;color:var(--ink)}
@@ -807,7 +835,8 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
         <svg class="ls-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
       <button class="hdr-rain" id="hdrLock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 7.5a3.75 3.75 0 0 1 .5 7.47"/><path d="M9 18l-1 2.5M13 18l-1 2.5M17 18l-1 2.5"/></svg><span id="hdrRainTxt"></span></button>
-      <span class="hdr-field" id="hdrField" role="img"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></span>
+      <button class="hdr-field" id="hdrField" aria-expanded="false" aria-controls="fieldEndBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></button>
+      <button class="field-end" id="fieldEndBtn" hidden><span id="fieldEndTxt"></span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 20l7-11 4 6 3-4 6 9z"/><circle cx="17" cy="6" r="2.5"/></svg></i></button>
       <button class="hdr-set" id="hdrSet" data-nav><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.48 10.47 L21.48 13.53 L19.07 13.38 L17.97 16.02 L19.78 17.62 L17.62 19.78 L16.02 17.97 L13.38 19.07 L13.53 21.48 L10.47 21.48 L10.62 19.07 L7.98 17.97 L6.38 19.78 L4.22 17.62 L6.03 16.02 L4.93 13.38 L2.52 13.53 L2.52 10.47 L4.93 10.62 L6.03 7.98 L4.22 6.38 L6.38 4.22 L7.98 6.03 L10.62 4.93 L10.47 2.52 L13.53 2.52 L13.38 4.93 L16.02 6.03 L17.62 4.22 L19.78 6.38 L17.97 7.98 L19.07 10.62Z"/><circle cx="12" cy="12" r="3"/></svg></button>
     </div>
     <div class="progress">
@@ -837,8 +866,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.22.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 81;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.23.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 82;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -967,7 +996,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
-    tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
+    tagFrom:(n, d)=>`Shared by ${n} · ${d}`, tagRcv:d=>`Received ${d}`, tagShared:d=>`Shared ${d}`, tagSharedN:n=>n > 1 ? `Shared ${n}×` : 'Shared', tagRcv0:'Received', fieldEnd:'End outdoor mode', fieldMenu:'Outdoor mode is on. Tap to end it', mainSec:'Main list', bkSec:'Backup', bkBtn:'Back up or restore', shareThis:n=>`Share ${n}`, noteDeleted:'Note deleted.', notesField:'Outdoor mode is on: notes can be read, not changed.', backNotes:'Notes', tabPlan:'Plan', tabGuide:'Guides', planSub:'Calculate what you need before the trip.', guideSub:'Short reminders for the trip.', gsLabel:'Search the guides', gsClose:'Close search', gsCount:n => n === 1 ? '1 result' : n + ' results', gsNone:'No results. Try a shorter word or part of a word.', gsMore:n => 'Showing the first ' + n + '. Type more to narrow it down.',
     sos:{title:'Emergency mode', exit:'Exit emergency mode', tap:'tap', six:'6 a minute', hueG:'Green', hueR:'Red', hueN:'Normal', hueLbl:'Colours', holdMsg:'Hold Emergency mode for 1 second to open it.', holdGrow:'Hold to open',
       call:'Call for help', aml:'Most newer phones send your position automatically when you call.',
       pos:'Position', posNone:'No position saved. Tap Get position, or find the coordinates in your phone’s map app.', sms:'Send position by SMS',
@@ -1207,7 +1236,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
-    tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
+    tagFrom:(n, d)=>`Delt fra ${n} · ${d}`, tagRcv:d=>`Mottatt ${d}`, tagShared:d=>`Delt ${d}`, tagSharedN:n=>n > 1 ? `Delt ${n}×` : 'Delt', tagRcv0:'Mottatt', fieldEnd:'Avslutt utemodus', fieldMenu:'Utemodus er på. Trykk for å avslutte', mainSec:'Hovedliste', bkSec:'Sikkerhetskopi', bkBtn:'Ta kopi eller gjenopprett', shareThis:n=>`Del ${n}`, noteDeleted:'Notatet er slettet.', notesField:'Utemodus er på: notatene kan leses, men ikke endres.', backNotes:'Notater', tabPlan:'Planlegg', tabGuide:'Guider', planSub:'Regn ut hva du trenger før turen.', guideSub:'Korte påminnelser til turen.', gsLabel:'Søk i guidene', gsClose:'Lukk søket', gsCount:n => n + ' treff', gsNone:'Ingen treff. Prøv et kortere ord eller en del av et ord.', gsMore:n => 'Viser de ' + n + ' første. Skriv mer for å snevre inn.',
     sos:{title:'Nødmodus', exit:'Avslutt nødmodus', tap:'trykk', six:'6 i minuttet', hueG:'Grønt', hueR:'Rødt', hueN:'Vanlig', hueLbl:'Farger', holdMsg:'Hold Nødmodus inne i 1 sekund for å åpne.', holdGrow:'Hold inne for å åpne',
       call:'Ring etter hjelp', aml:'De fleste nyere mobiler sender posisjonen din automatisk når du ringer.',
       pos:'Posisjon', posNone:'Ingen posisjon lagret. Trykk Hent posisjon, eller finn koordinatene i kartappen på mobilen.', sms:'Send posisjon på SMS',
@@ -1523,6 +1552,7 @@ function noteMeta(nn, src){
   if (src.pin) nn.pin = true;
   if (src.rcv && typeof src.rcv === 'object') nn.rcv = {n:String(src.rcv.n || '').slice(0, 40), t:+src.rcv.t || nn.t};
   if (+src.shT) nn.shT = +src.shT;
+  if (+src.shN >= 1) nn.shN = Math.min(9999, Math.floor(+src.shN));
   if (+src.c >= 1 && +src.c <= 5) nn.c = +src.c;
   return nn;
 }
@@ -1816,7 +1846,8 @@ function render(){
   renderTabs();
   $('lsLbl').textContent = T.yourLists;
   $('hdrRainTxt').textContent = T.lockScreen;
-  $('hdrField').setAttribute('aria-label', T.fieldSign);
+  $('hdrField').setAttribute('aria-label', T.fieldMenu); $('fieldEndTxt').textContent = T.fieldEnd;
+  if (!state.field) fieldPopShow(false);
   if (view === 'settings' && state.field) view = null; // 0.22.0: settings are made with Utemodus off
   // 0.22.0: in Utemodus the header is a plain title (the page name), so Regnlås has room and a long list name never squeezes it
   const listHeader = !state.field && tab === 'list' && view !== 'lists' && view !== 'howto' && view !== 'settings' && !(view && view.indexOf('edit:') === 0);
@@ -1868,6 +1899,7 @@ function render(){
   const cats = editL ? l.cats : bag ? [bag] : visibleCats(l);
   const {t:tot, d} = countCats(cats);
   $('listName').textContent = state.field ? T.tabList : l.name; // 0.22.0: the page name in Utemodus
+  if (breathePending && !editL && !view && !state.field){ breathePending = false; requestAnimationFrame(breatheTitle); }
   $('listBtn').classList.toggle('long', !state.field && l.name.length > 16);
   document.title = l.name + ' · ' + T.app;
   $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
@@ -1895,7 +1927,8 @@ function render(){
     // 0.10.0: in Utemodus the list is ready, so Turtype is left out and the list sits under one fold-out row
     if (state.field){
       // 0.22.0: Dine lister moved out of the header in Utemodus: a row right above Pakkliste, with the list name
-      html += `<button class="modes-toggle lists-row" data-nav data-act="openLists"><span>${T.yourLists}</span><span class="mt-val">${esc(l.name)}</span>${CHEV_R}</button>`;
+      // 0.23.0: the list name is a plain heading (the list is chosen with Utemodus off); a share button for lists that can be shared
+      html += `<div class="field-listhead"><h2>${esc(l.name)}</h2>${l.std ? '' : `<button class="share-btn" data-la="share" data-id="${l.id}" aria-label="${esc(T.shareThis(l.name))}">${SHARE_IC}</button>`}</div>`;
       html += `<button class="modes-toggle list-toggle" data-nav data-act="fieldList" aria-expanded="${!!state.fieldList}"><span>${T.listRow}</span><span class="mt-val">${tot ? T.packed(d, tot) : T.noItems}</span>${CHEV}</button>`;
       if (!state.fieldList){ main.innerHTML = html; return; }
     }
@@ -1982,6 +2015,48 @@ function render(){
   main.innerHTML = html;
 }
 
+/* ---------- 0.23.0: Utemodus on/off, the header panel, the title wave ---------- */
+function setField(on){
+  state.field = on;
+  // v30: Lås listen is on in Utemodus and goes back to how it was afterwards
+  if (state.field){ state.lockPrev = !!state.listLock; state.listLock = true; }
+  else { rainLocked = false; state.rainLocked = false; state.listLock = !!state.lockPrev; delete state.lockPrev; }
+  editing = false; save(); render(); updateWake();
+  // v31: no toast; Lås listen pulses for about 3 s when Utemodus locked it
+  if (state.field && !state.lockPrev) pulseLock();
+}
+// 0.23.0: a tap on the sign grows it into a pill over Regnlås («Avslutt utemodus»), as Nødmodus grows over Utemodus;
+// a tap on the pill ends Utemodus; it shrinks back after 3 s, on a tap elsewhere, Escape or back
+let fieldEndT = null, fieldEndAt = 0;   // a second tap within 400 ms (a double tap) does not end Utemodus
+function fieldPopShow(on){
+  const p = $('fieldEndBtn'), b = $('hdrField'), r = $('hdrLock');
+  if (!p) return;
+  clearTimeout(fieldEndT);
+  if (on){
+    const left = Math.min(r.offsetLeft, b.offsetLeft), right = b.offsetLeft + b.offsetWidth + 6;
+    const h = Math.max(r.offsetHeight, 48);
+    Object.assign(p.style, {left:left + 'px', width:(right - left) + 'px', height:h + 'px', top:(b.offsetTop + b.offsetHeight / 2 - h / 2) + 'px'});
+    p.hidden = false; b.setAttribute('aria-expanded', 'true'); fieldEndAt = Date.now();
+    requestAnimationFrame(() => requestAnimationFrame(() => p.classList.add('open')));
+    fieldEndT = setTimeout(() => fieldPopShow(false), 3000);
+  } else if (!p.hidden){
+    p.classList.remove('open'); b.setAttribute('aria-expanded', 'false');
+    fieldEndT = setTimeout(() => { if (!p.classList.contains('open')) p.hidden = true; }, 300);
+  }
+}
+const fieldEndOpen = () => { const p = $('fieldEndBtn'); return !!p && !p.hidden && p.classList.contains('open'); };
+document.addEventListener('click', e => { if (fieldEndOpen() && !e.target.closest('#fieldEndBtn, #hdrField')) fieldPopShow(false); }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fieldPopShow(false); });
+window.addEventListener('popstate', () => fieldPopShow(false));
+let breathePending = true;   // the first time Pakkliste is shown after start, and after the main list changes
+function breatheTitle(){
+  const h = $('listName');
+  if (!h || tab !== 'list' || view || state.field) return;
+  h.classList.remove('breathe'); void h.offsetWidth; h.classList.add('breathe');
+  h.addEventListener('animationend', () => h.classList.remove('breathe'), {once:true});
+}
+const SHARE_IC = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+
 /* ---------- lists page ---------- */
 let selList = null;
 function listCard(L){
@@ -2026,25 +2101,26 @@ function renderLists(){
   $('listName').textContent = T.yourLists;
   document.title = T.yourLists + ' · ' + T.app;
   document.body.classList.add('notlist');
-  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${esc(mainList().name)}</button>
-    <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}${bkRemindDue() ? `<div class="bk-banner" role="status"><p>${T.bkRemind}</p><div class="row-btns"><button class="btn primary" data-la="backup">${T.bkTake}</button><button class="btn" data-la="bkLater">${T.bkLater}</button></div></div>` : ''}
-    <div class="section-label">${T.stdList}</div>${listCard(stdList())}
-    <div class="section-label">${T.ownLists}</div>`;
-  const own = state.lists.filter(L => !L.sharedIn), shared = state.lists.filter(L => L.sharedIn);
-  if (!own.length) html += `<p class="empty-own">${T.noOwn}</p>`;
-  own.forEach(L => { html += listCard(L); });
-  html += `<div class="section-label">${T.sharedLists}</div>`;
-  if (!shared.length) html += `<p class="empty-own">${T.noShared}</p>`;
-  shared.forEach(L => { html += listCard(L); });
+  // 0.23.0: sections as in Innstillinger; the main list first (not repeated below); backup last; the settings row is gone
+  const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
+  const ml = mainList(), isMain = L => L.id === ml.id;
+  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${esc(ml.name)}</button>
+    <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}${bkRemindDue() ? `<div class="bk-banner" role="status"><p>${T.bkRemind}</p><div class="row-btns"><button class="btn primary" data-la="backup">${T.bkTake}</button><button class="btn" data-la="bkLater">${T.bkLater}</button></div></div>` : ''}`;
+  html += sec(T.mainSec, listCard(ml));
+  const std = stdList();
+  if (!isMain(std)) html += sec(T.stdList, listCard(std));
+  const own = state.lists.filter(L => !L.sharedIn && !isMain(L)), shared = state.lists.filter(L => L.sharedIn && !isMain(L));
+  html += sec(T.ownLists, (own.length ? own.map(listCard).join('') : `<p class="empty-own">${T.noOwn}</p>`) +
+    (state.field ? '' : `<div class="row-btns lists-new"><button class="btn primary" data-la="new">${T.newList}</button></div>`));
+  html += sec(T.sharedLists, shared.length ? shared.map(listCard).join('') : `<p class="empty-own">${T.noShared}</p>`);
   if (!state.field){
     const dirty = bkDirty();
     const last = state.bkLast ? new Date(state.bkLast).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}) : T.bkNever;
-    html += `<div class="row-btns"><button class="btn primary" data-la="new">${T.newList}</button><button class="btn" data-la="backup">${T.backup}</button></div>
-      <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(last)}${dirty ? ` · ${T.bkChanged}` : ''}</p>`;
+    html += sec(T.bkSec, `<div class="row-btns"><button class="btn" data-la="backup">${T.bkBtn}</button></div>
+      <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(last)}${dirty ? ` · ${T.bkChanged}` : ''}</p>`);
   }
-  // 0.22.0: the settings and Om Varde have their own page (the gear in the header); one row here for those who look for them
-  if (!state.field) html += `<button class="modes-toggle set-row" data-nav data-act="openSettings"><span>${T.setLink}</span>${CHEV_R}</button>`;
   main.innerHTML = html;
+  const f = main.querySelector('.pg-sec'); if (f) f.classList.add('first');
 }
 function renderSettings(){
   const T = t();
@@ -2676,6 +2752,14 @@ let noteEdit = null;
 const LOCK_OPEN_IC = '<svg class="lock-ic lock-open" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
 const LOCK_IC = '<svg class="lock-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const PIN_IC = '<svg class="pin-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 7 4 3H6l4-3z"/><path d="M12 13v8"/></svg>';
+// 0.23.0: the one line under the title in the overview: date (last edited) · colour name · Delt 3× or Mottatt
+function noteLine(n){
+  const T = t(), p = [noteDate(n.t)];
+  if (n.c && ncName(n.c)) p.push(`<span class="nc-name">${esc(ncName(n.c))}</span>`);
+  if (n.rcv) p.push(T.tagRcv0);
+  if (n.shN || n.shT) p.push(T.tagSharedN(+n.shN || 1));
+  return p.join(' · ');
+}
 function noteTags(n){
   const T = t(), tags = [];
   if (n.c && ncName(n.c)) tags.push(`<span class="nc-name">${esc(ncName(n.c))}</span>`);
@@ -2752,7 +2836,7 @@ function renderNotes(){
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
   else h += '<div class="index notes-ix">' + list.map(x0 => { const x = noteView(x0);
     if (!x) return `<button class="priv-locked${x0.c ? ` has-nc nc-${x0.c}` : ''}" data-act="openNote" data-id="${x0.id}"${x0.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x0.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${LOCK_IC}${T.privNote}</span><span class="ix-d note-date">${noteDate(x0.t)}</span></span>${CHEV_R}</button>`;
-    const tg = noteTags(x); return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${x.priv ? `<span role="img" aria-label="${esc(T.privOpenNote)}">${LOCK_OPEN_IC}</span>` : ''}${esc(x.title || T.untitled)}</span><span class="ix-d note-prev">${esc(x.text.trim().slice(0, 160))}</span><span class="ix-d note-date">${noteDate(x.t)}</span>${tg ? `<span class="ix-d note-tags">${tg}</span>` : ''}</span>${CHEV_R}</button>`; }).join('') + '</div>';
+    return `<button class="${x.rcv ? 'rcv' : ''}${x.c ? ` has-nc nc-${x.c}` : ''}" data-act="openNote" data-id="${x.id}"${x.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${x.priv ? `<span role="img" aria-label="${esc(T.privOpenNote)}">${LOCK_OPEN_IC}</span>` : ''}${esc(x.title || x.text.trim().split('\n')[0].slice(0, 80) || T.untitled)}</span><span class="ix-d note-meta">${noteLine(x)}</span></span>${CHEV_R}</button>`; }).join('') + '</div>';
   main.innerHTML = h;
 }
 /* 0.6.0: share one note. Step 1 shows exactly what is sent (title, text and the optional name, empty by default);
@@ -2793,7 +2877,7 @@ async function shareNote(n0){
   if (r.name) pk.n = r.name;
   if (n0.priv && !r.pw) return;
   const url = location.origin + location.pathname + '#note=' + (r.pw ? await sealLink(pk, r.pw) : await encodePacked(pk));
-  const done = () => { n0.shT = Date.now(); save(); if (tab === 'notes') render(); };
+  const done = () => { n0.shT = Date.now(); n0.shN = (+n0.shN || 0) + 1; save(); if (tab === 'notes') render(); };
   if (navigator.share){
     // build 71: with a password, the message beside the link names nothing from the note
     const sh = r.pw ? {title:T.noteShareLocked, text:T.noteShareLocked, url} : {title:n.title || T.untitled, text:T.noteShareText(n.title || T.untitled), url};
@@ -5007,6 +5091,7 @@ main.addEventListener('click', async e => {
       // the two roles rule each other out; switching an own list off falls back to the standard list
       if (L && state.main === id) state.main = 'std';
       else { state.main = id; dropTrip(); }
+      breathePending = true;   // 0.23.0: the wave runs when Pakkliste shows the new main list
     } else if (L){
       if (L.tripType) dropTrip();
       else { L.tripType = true; if (state.main === id) state.main = 'std'; }
@@ -5061,15 +5146,7 @@ main.addEventListener('click', async e => {
   if (act === 'autoRelock'){ state.autoRelock = !state.autoRelock; save(); if (!state.autoRelock) clearTimeout(relockTimer); render(); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }
-  if (act === 'fieldToggle'){
-    state.field = !state.field;
-    // v30: Lås listen is on in Utemodus and goes back to how it was afterwards
-    if (state.field){ state.lockPrev = !!state.listLock; state.listLock = true; }
-    else { rainLocked = false; state.rainLocked = false; state.listLock = !!state.lockPrev; delete state.lockPrev; }
-    editing = false; save(); render(); updateWake();
-    // v31: no toast; Lås listen pulses for about 3 s when Utemodus locked it
-    if (state.field && !state.lockPrev) pulseLock();
-    return; }
+  if (act === 'fieldToggle'){ setField(!state.field); return; }
   if (act === 'foldAll'){ const cs = visibleCats(mainList()), all = cs.every(c => c.open); cs.forEach(c => setOpen(c, !all)); if (all) modesOpen = false; save(); render(); return; }
   if (act === 'openPlan'){ planFrom = b.dataset.from || null; go('plan', 'tool:' + b.dataset.tool); return; }
   if (act === 'windStep'){ const w = windState(), k = b.dataset.k; w[k] = Math.round((w[k] + (+b.dataset.d)) * 10) / 10; if (k === 'v' && w.v < 0) w.v = 0; save(); renderWind(); return; }
@@ -5240,6 +5317,9 @@ function addItem(catId){
 }
 
 $('hdrLock').onclick = () => { if (!rainLocked && (!state.field || tapOk())) lockRain(); };
+// 0.23.0: the Utemodus sign opens a small panel with Avslutt utemodus, from every page; both are locked in Regnlås
+$('hdrField').onclick = () => { if (rainLocked || !state.field) return; fieldPopShow(!fieldEndOpen()); };
+$('fieldEndBtn').onclick = () => { if (Date.now() - fieldEndAt < 400) return; fieldPopShow(false); if (state.field && !rainLocked) setField(false); };
 $('listBtn').onclick = () => { if ($('listBtn').classList.contains('plain')) return; selList = null; go('list', 'lists'); };
 $('hdrSet').onclick = () => { if (state.field || view === 'settings') return; go(tab, 'settings'); };
 $('tabbar').addEventListener('click', e => {
