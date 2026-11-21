@@ -2651,3 +2651,32 @@ test.describe('notater slettes 0.23.2', () => {
     await settle(page, errors);
   });
 });
+
+/* ---------- 0.23.3 (build 85): the app icon ----------
+   The icons are built by tools/make-icons.js from a landscape in design/icons; this checks the files are in place. */
+test.describe('appikon 0.23.3', () => {
+  const ROOT = require('path').join(__dirname, '..');
+  const pngSize = f => { const b = require('fs').readFileSync(require('path').join(ROOT, f)); expect(b.slice(1, 4).toString(), f + ' is a PNG').toBe('PNG'); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
+  test('the manifest icons and the Apple icon exist with the right sizes', () => {
+    const m = JSON.parse(require('fs').readFileSync(require('path').join(ROOT, 'manifest.webmanifest'), 'utf8'));
+    expect(m.icons.length).toBeGreaterThanOrEqual(3);
+    for (const ic of m.icons){ const [w, h] = pngSize(ic.src); expect(`${w}x${h}`, ic.src).toBe(ic.sizes); }
+    expect(m.icons.some(ic => ic.purpose === 'maskable')).toBe(true);
+    expect(pngSize('apple-touch-icon.png')).toEqual([180, 180]);
+  });
+  test('icon.svg is the tab icon and loads', async ({page}) => {
+    const errors = watchErrors(page);
+    await page.goto('./');
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', 'icon.svg');
+    const r = await page.request.get('./icon.svg');
+    expect(r.status()).toBe(200);
+    expect(await r.text()).toContain('<svg');
+    await settle(page, errors);
+  });
+  test('every icon variant has its landscape file', () => {
+    const src = require('fs').readFileSync(require('path').join(ROOT, 'tools', 'make-icons.js'), 'utf8');
+    const names = Object.keys(eval('(' + src.match(/const VARIANTS = (\{[^}]*\})/)[1] + ')'));
+    expect(names).toContain(src.match(/const ACTIVE = '([a-z]+)'/)[1]);
+    for (const n of names) expect(require('fs').existsSync(require('path').join(ROOT, 'design', 'icons', `landscape-${n}.svg`)), n).toBe(true);
+  });
+});
