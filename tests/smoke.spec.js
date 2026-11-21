@@ -2569,23 +2569,46 @@ test.describe('fra testing 0.23', () => {
     await ctx.close();
   });
 
-  test('the list name gets a colour wave at start and after the main list changes', async ({browser}) => {
+  test('the list name breathes each time Pakkliste comes on screen, also in Utemodus, not on redraws (0.23.1)', async ({browser}) => {
     const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    const on = () => expect(p.locator('#listName.breathe')).toHaveCount(1);
+    const off = () => expect(p.locator('#listName.breathe')).toHaveCount(0, {timeout:4500});
     await start(p, Object.assign({}, BASE, {lists:[own('L1', 'Påsketur')]}));
-    await expect(p.locator('#listName.breathe')).toHaveCount(1);
-    await expect(p.locator('#listName.breathe')).toHaveCount(0, {timeout:4000});
-    // ticking an item does not start it again
+    await on(); await off();
+    // ticking an item redraws the page: no breath
     await p.locator('#main .cat-head').first().click();
     await p.locator('#main .item .check').first().click();
     await p.waitForTimeout(100);
     await expect(p.locator('#listName.breathe')).toHaveCount(0);
-    // a new main list: the wave when Pakkliste shows it
+    // the Pakkliste tab from another tab
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
+    await p.locator('#tabbar [data-tab="list"]').click();
+    await on(); await off();
+    // a new main list: the breath when Pakkliste shows it
     await p.locator('#listBtn').click();
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
     await p.locator('#main [data-sel="L1"]').click();
     await p.locator('#main [data-role="main"][data-id="L1"]').click();
     await p.locator('#main [data-act="back"]').click();
     await expect(p.locator('#listName')).toHaveText('Påsketur');
-    await expect(p.locator('#listName.breathe')).toHaveCount(1);
+    await on(); await off();
+    // in Utemodus the header says Pakkliste, and the list name heading on the page breathes instead
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    await p.waitForTimeout(100);
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
+    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(0);   // switching Utemodus on is not «coming to» the page
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#tabbar [data-tab="list"]').click();
+    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(1);
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
+    await expect(p.locator('#main .field-listhead h2.breathe')).toHaveCount(0, {timeout:4500});
+    // the app back from the background: no breath
+    await p.locator('#main [data-act="fieldToggle"]').click();
+    await off();
+    await p.evaluate(() => { document.dispatchEvent(new Event('visibilitychange')); });
+    await p.waitForTimeout(100);
+    await expect(p.locator('#listName.breathe')).toHaveCount(0);
     expect(err).toEqual([]);
     await ctx.close();
   });

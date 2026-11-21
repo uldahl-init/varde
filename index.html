@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-QBpemxj/d3yw9DkNjbYvTSBdX3sQwv7XjSGT8qIW6T4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ZNnkyvP7Ldfgc/ZUDmOHnlD1GJWiaQ8INzXYbmb94pY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -394,9 +394,9 @@ header .list-switch.plain h1{font-size:1.9rem}
 .share-btn{flex:none;width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:14px;background:var(--surface);color:var(--ink);cursor:pointer}
 .share-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 /* 0.23.0: a short wave of colour through the list name when the app opens on Pakkliste and when the main list changes */
-@keyframes breathe{from{background-position:120% 0}to{background-position:-20% 0}}
-#listName.breathe{background-image:linear-gradient(100deg,var(--hdt,var(--ink)) 0 38%,color-mix(in srgb,var(--red) 55%,#fff) 50%,var(--hdt,var(--ink)) 62% 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:breathe 1.6s ease-in-out 1}
-@media (prefers-reduced-motion: reduce){#listName.breathe{animation:none;background:none;-webkit-text-fill-color:currentColor}}
+@keyframes breathe{30%,55%{color:color-mix(in srgb,var(--red) 45%,#ffe0a3);text-shadow:0 0 14px color-mix(in srgb,var(--red) 50%,transparent)}}
+#listName.breathe,.field-listhead h2.breathe{animation:breathe 2.6s ease-in-out 1}
+@media (prefers-reduced-motion: reduce){#listName.breathe,.field-listhead h2.breathe{animation:none}}
 body.field .hdr-field{display:flex}
 .hdr-field svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linejoin:round}
 .hdr-rain{display:none;flex:none;align-items:center;gap:8px;margin-left:12px;padding:10px 20px;min-height:48px;border-radius:999px;border:2px solid var(--rain,#74B4EA);background:none;color:inherit;font-weight:600;font-size:1rem;cursor:pointer;opacity:.95}
@@ -866,8 +866,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.23.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 82;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.23.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 83;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1837,6 +1837,7 @@ function bodyClasses(){
   if (meta) meta.setAttribute('content', night ? '#000000' : getComputedStyle(document.body).getPropertyValue('--hd').trim() || '#1F3532');
 }
 function render(){
+  titleWas = titleNow; titleNow = false;
   const T = t();
   state.lastNav = {tab, view};
   if (!(tab === 'guide' && view && view.indexOf('tool:') === 0)) sosBack = false;
@@ -1899,7 +1900,9 @@ function render(){
   const cats = editL ? l.cats : bag ? [bag] : visibleCats(l);
   const {t:tot, d} = countCats(cats);
   $('listName').textContent = state.field ? T.tabList : l.name; // 0.22.0: the page name in Utemodus
-  if (breathePending && !editL && !view && !state.field){ breathePending = false; requestAnimationFrame(breatheTitle); }
+  // 0.23.1: the breath runs each time Pakkliste with the list name comes on screen from somewhere else
+  // (start, the Pakkliste tab, back from Dine lister or Innstillinger), not on redraws while you are on it
+  if (!editL && !view){ if (!titleWas) breathAt = Date.now(); titleNow = true; if (!state.field && !titleWas) requestAnimationFrame(breatheTitle); }
   $('listBtn').classList.toggle('long', !state.field && l.name.length > 16);
   document.title = l.name + ' · ' + T.app;
   $('barFill').style.width = tot ? (d / tot * 100) + '%' : '0';
@@ -1928,7 +1931,8 @@ function render(){
     if (state.field){
       // 0.22.0: Dine lister moved out of the header in Utemodus: a row right above Pakkliste, with the list name
       // 0.23.0: the list name is a plain heading (the list is chosen with Utemodus off); a share button for lists that can be shared
-      html += `<div class="field-listhead"><h2>${esc(l.name)}</h2>${l.std ? '' : `<button class="share-btn" data-la="share" data-id="${l.id}" aria-label="${esc(T.shareThis(l.name))}">${SHARE_IC}</button>`}</div>`;
+      const bw = Date.now() - breathAt, br = bw < 2600 ? ` class="breathe" style="animation-delay:-${bw}ms"` : '';
+      html += `<div class="field-listhead"><h2${br}>${esc(l.name)}</h2>${l.std ? '' : `<button class="share-btn" data-la="share" data-id="${l.id}" aria-label="${esc(T.shareThis(l.name))}">${SHARE_IC}</button>`}</div>`;
       html += `<button class="modes-toggle list-toggle" data-nav data-act="fieldList" aria-expanded="${!!state.fieldList}"><span>${T.listRow}</span><span class="mt-val">${tot ? T.packed(d, tot) : T.noItems}</span>${CHEV}</button>`;
       if (!state.fieldList){ main.innerHTML = html; return; }
     }
@@ -2048,10 +2052,11 @@ const fieldEndOpen = () => { const p = $('fieldEndBtn'); return !!p && !p.hidden
 document.addEventListener('click', e => { if (fieldEndOpen() && !e.target.closest('#fieldEndBtn, #hdrField')) fieldPopShow(false); }, true);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fieldPopShow(false); });
 window.addEventListener('popstate', () => fieldPopShow(false));
-let breathePending = true;   // the first time Pakkliste is shown after start, and after the main list changes
+let titleWas = false, titleNow = false, breathAt = 0;   // breathAt: when the breath started (Utemodus heading)   // 0.23.1: was Pakkliste with the list name on screen at the last render
+document.addEventListener('animationend', e => { if (e.animationName === 'breathe') e.target.classList.remove('breathe'); });
 function breatheTitle(){
   const h = $('listName');
-  if (!h || tab !== 'list' || view || state.field) return;
+  if (!h || tab !== 'list' || view || state.field) return;   // in Utemodus the heading on the page breathes (render)
   h.classList.remove('breathe'); void h.offsetWidth; h.classList.add('breathe');
   h.addEventListener('animationend', () => h.classList.remove('breathe'), {once:true});
 }
@@ -5091,7 +5096,6 @@ main.addEventListener('click', async e => {
       // the two roles rule each other out; switching an own list off falls back to the standard list
       if (L && state.main === id) state.main = 'std';
       else { state.main = id; dropTrip(); }
-      breathePending = true;   // 0.23.0: the wave runs when Pakkliste shows the new main list
     } else if (L){
       if (L.tripType) dropTrip();
       else { L.tripType = true; if (state.main === id) state.main = 'std'; }
