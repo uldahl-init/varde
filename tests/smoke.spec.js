@@ -2895,3 +2895,33 @@ test.describe('fra testing 0.24', () => {
     await settle(p, err); await ctx.close();
   });
 });
+
+/* ---------- 0.24.1 (build 88): the landscape that closes Innstillinger ---------- */
+test.describe('landskap 0.24.1', () => {
+  for (const L of [{lang:'no', locale:'nb-NO', txt:'Bakgrunnen nederst viser Rondeslottet sett fra Tron.'}, {lang:'en', locale:'en-GB', txt:'The landscape at the bottom shows Rondeslottet seen from Tron.'}]){
+    test(`Innstillinger ends with the ridges, under the version line, with no text over them (${L.locale})`, async ({browser}) => {
+      const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}}), p = await ctx.newPage(), err = watchErrors(p);
+      await p.addInitScript(([k, lang]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify({v:2, introDone:true, lang, lists:[]})); }, [KEY, L.lang]);
+      await p.goto('./');
+      await p.locator('#hdrSet').click();
+      const land = p.locator('#main .land');
+      await expect(land).toHaveCount(1);
+      await expect(land).toHaveAttribute('aria-hidden', 'true');
+      await expect(land.locator('path')).toHaveCount(6);
+      await expect(p.locator('#main')).toContainText(L.txt);
+      // the last thing on the page, below the version line; the page does not get wider than the screen
+      expect(await p.evaluate(() => document.querySelector('#main').lastElementChild.classList.contains('land'))).toBe(true);
+      await land.scrollIntoViewIfNeeded();
+      const v = await p.locator('#main .app-ver').boundingBox(), b = await land.boundingBox();
+      expect(b.y).toBeGreaterThanOrEqual(v.y + v.height);
+      expect(b.x).toBeLessThanOrEqual(1);
+      expect(b.width).toBeGreaterThanOrEqual(388);
+      expect(b.height).toBeGreaterThan(180);
+      expect(await p.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+      // every peak is whole: the top of the drawing is inside the box
+      const top = await land.locator('svg').evaluate(svg => { const g = svg.querySelector('g'), bb = g.getBBox(), m = g.transform.baseVal.consolidate().matrix; return [svg.viewBox.baseVal.y, bb.y * m.d + m.f]; });
+      expect(top[1]).toBeGreaterThan(top[0]);
+      await settle(p, err); await ctx.close();
+    });
+  }
+});
