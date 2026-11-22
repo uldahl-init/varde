@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-2HlLJvFg6Xdr1uzBhXRq6JUMSsQoabhD5JYca3zE3bs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-QlzcDPUrukgbkYSa2QR6vBIGBYQdxBZb+fE4SP6ug/U='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -353,10 +353,17 @@ body.field .item .plan-link{padding:10px 12px}
 .wind-lbl{display:block;color:var(--muted);font-size:.9rem}
 .wind-risk{margin:12px 0 0;font-weight:600}
 .wind-risk.hi{color:var(--red)}
-.toast{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:15;max-width:608px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600}
+.toast{position:fixed;left:16px;right:16px;top:calc(80px + env(safe-area-inset-top,0px));z-index:15;max-width:608px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;transition:background-color .8s,color .8s}
 .toast[hidden]{display:none}
-.toast span{flex:1}
-.toast button{border:0;border-radius:8px;padding:10px 14px;background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer}
+.toast span{flex:1;transition:background-color .8s}
+.toast button{border:1.5px solid transparent;border-radius:8px;padding:10px 14px;background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer;transition:border-color .8s,background-color .8s}
+.toast .ok-ic{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+/* 0.24.0: messages sit under the header; after a moment the box fades, leaving the words on a small pill and Angre, and taps pass through to the page */
+.toast.faded{background:transparent;color:var(--ink);pointer-events:none;justify-content:flex-end;gap:8px}
+.toast.faded span{flex:none;padding:4px 10px;border-radius:8px;background:var(--bg);background:color-mix(in srgb,var(--bg) 88%,transparent)}
+.toast.faded .ok-ic{display:none}
+.toast.faded button{pointer-events:auto;background:var(--surface);border-color:var(--line-strong)}
+@media (prefers-reduced-motion: reduce){.toast,.toast span,.toast button{transition:none}}
 .rainlock{position:fixed;left:0;right:0;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:25;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px 16px 12px;background:var(--surface);border-top:2px solid var(--red);pointer-events:auto}
 .lock-btns{display:flex;gap:10px;max-width:520px;width:100%;margin:0 auto}
 .lock-btns .unlock{flex:1;padding:14px 10px}
@@ -658,6 +665,14 @@ body.listlock .items .mark{opacity:.55}
 .role-hint{margin:12px 0 0;color:var(--muted);font-size:.9rem}
 .lc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .row-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+/* 0.24.0: the note's buttons, one even row, an icon over a short word */
+.note-acts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-top:14px}
+.note-acts button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:64px;min-width:0;border:1.5px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;padding:6px 2px}
+.note-acts button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-acts button svg{width:26px;height:26px;margin:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.note-acts button[aria-pressed=true]{background:var(--line);border-color:var(--ink)}
+.note-acts button.danger{color:var(--red);color:color-mix(in srgb,var(--red) 75%,var(--ink))}
+.note-ph{color:var(--muted)}
 .empty-own{color:var(--muted);margin:4px 2px 0}
 .bk-status{color:var(--muted);font-size:.9rem;margin:10px 2px 0}
 .bk-status.warn{color:var(--ink);padding:8px 10px;border-left:3px solid var(--red);background:var(--bg)}
@@ -761,6 +776,13 @@ body.night.ngreen .knot-img.photo img{filter:grayscale(1) brightness(.55) sepia(
 .sky-lbl{display:inline-flex;align-items:center;gap:6px}
 .sky-lbl svg{width:18px;height:18px;flex:none}
 .c-sky-note{color:var(--muted);font-size:.9rem;text-align:center;margin:8px 0 0}
+/* 0.24.0: the position button and line on Kompass */
+.c-sky .chip.c-pos{background:var(--surface);color:var(--ink)}
+.c-sky .chip.c-pos.old{border-color:var(--red);color:var(--red)}
+.c-sky .chip.c-pos[aria-busy=true] svg{opacity:.45}
+.c-pos-line{color:var(--muted);font-size:.9rem;text-align:center;margin:8px 0 0}
+.c-pos-line.old{color:var(--red);color:color-mix(in srgb,var(--red) 75%,var(--ink));font-weight:600}
+.c-pos-line .ico-in svg{width:1.1em;height:1.1em;vertical-align:-.2em}
 .own-link{display:flex;align-items:center;gap:4px}
 /* v29: even page sections (Dine lister settings, Kompass): same label, same spacing, thin line between */
 .pg-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
@@ -866,8 +888,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.23.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 86;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.24.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 87;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -970,7 +992,7 @@ const UI = {
     resetOk:'Clear ticks', newItem:c=>`New item in ${c}`, renameX:x=>`Rename ${x}`, deleteX:x=>`Delete ${x}`,
     catNote:'Note', editCatNote:'Category note', notesEmpty:'No notes yet. Write down lessons from your trips here.', indent:'Make sub-item', outdent:'Make main item',
     medNote:'Read the package leaflet. Ask a doctor or pharmacist if you are unsure, take other medicines, are pregnant or have an illness.', tripType:'Trip type', lightDay:'Light day hike',
-appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP_NAME}`, setLink:`Settings and about ${APP_NAME}`, aboutApp:`About ${APP_NAME}`, fgHint:'How often someone drops by the fire.', fg:{off:'Off', rare:'Rarely', some:'Now and then', often:'Often'}, photosTitle:'The pictures', photosTxt:'The pictures in the app are real photos, and several drawings are made from photos. All are by the app\'s maker unless stated otherwise.', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
+appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP_NAME}`, setLink:`Settings and about ${APP_NAME}`, aboutApp:`About ${APP_NAME}`, fgHint:'How often someone drops by the fire.', fg:{off:'Off', rare:'Rarely', some:'Now and then', often:'Often'}, photosTitle:'The pictures', photosTxt:'The pictures in the app are real photos, and several drawings are made from photos. All are by the app\'s maker unless stated otherwise.', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cPosNone:ic => `No position. Tap ${ic} for sun, moon and true north.`, cPosAt:w => `Position from ${w}`, cPosToday:'today', cPosYday:'yesterday', cPosOld:(d, n) => `Position from ${d} · ${n} ${n === 1 ? 'day' : 'days'} old`, cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
     stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNone:'None of these are above the horizon right now.',
@@ -985,14 +1007,14 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
       ['True north','<p>With your position saved, the compass shows <b>true north</b>, the north of maps and of the sky, so the sun, the moon and the stars line up with the dial. A phone measures magnetic north, so the app adds the declination where you are, calculated on the phone with the World Magnetic Model 2025. The line under the direction says which north you see and gives the declination. Without a position the compass shows magnetic north, like a baseplate compass.</p><p>In Norway the declination is about 3–5° east in the south and up to 15–18° east in Finnmark (2026). It changes slowly from year to year.</p>'],
       ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The band inside the compass is the Milky Way: the middle of the compass is straight overhead, and the edge is the horizon. It is strongest where it stands highest and towards its bright centre in Sagittarius. The two triangles on the outer edge show where the Milky Way meets the horizon. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
-    notePriv:'Make private', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
+    notePriv:'Make private', notePrivS:'Private', notePinS:'Pin', noteTapPh:'Tap to write', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
     pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
     privUnlockT:'Unlock private notes', privUnlock:'Unlock', pwForgot:'Forgot the password?', pwForgotT:'Forgot the password?', pwForgotMsg:'The password cannot be recovered. You can delete the private notes and start again. Ordinary notes and lists are not affected.', privDelAll:'Delete private notes', privDeleted:'Private notes deleted', privField:'Private notes open outside Outdoor mode.', privMade:'The note is private and encrypted.',
     privSec:'Private notes', privIsOpen:'Private notes are open.', privIsLocked:'Private notes are locked.', privOpenNote:'Private note, open', noteDelQ:'Delete the note?', noteDelMsg:'You can undo it straight afterwards, but not later.', privDelQ:'Delete the private note?', privDelMsg:'It can only be brought back from a backup.', privLockNow:'Lock now', privChange:'Change password', privSecHint:'Locks again after 5 minutes without use, and after a minute in the background.', privChanged:'The password has been changed. Older backups still open with the old password.', noteShareLocked:`A locked note from ${APP_NAME}`, bkPrivAsk:'The backup holds private notes. Type their password to include them.', noteImportPriv:'Add as a private note', noteImportPrivHint:'The note was locked with a password. As a private note it stays encrypted on this phone too.',
     shPw:'Password for the link (optional)', shPwHint:'Give the password another way than the link, for example in person.', shPwReq:'Password for the link', shPwReqHint:'A private note is only shared with a password.', lnkLockedT:'This note is locked with a password', lnkLockedMsg:'Type the password you got from the sender.', lnkOpen:'Open',
     bkPwOn:'Protect the backup with a password (optional)', bkPwHint:'The backup cannot be restored without the password. Private notes are always encrypted in the backup.', bkPwLock:'Lock the backup', bkPwDone:'The backup is locked with a password. Share, save or copy it now.', bkPwFirst:'Tap Lock the backup first, or turn the password off.',
     bkLockedMsg:'The backup is locked with a password', bkPrivOther:'The backup holds private notes with a different password. Type that password to include them.', bkSkipPriv:'Skip private ones', bkRPwOk:'Unlock and add', privAdded:n=>`${n} private note${n === 1 ? '' : 's'} added.`, privSkipped:'The private notes were not added.',
-    tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', noteSaved:'Note saved', noteDiscarded:'Changes discarded', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
+    tabList:'Packing', listRow:'Packing list', tabNotes:'Notes', notesSub:'Lessons, ideas and reminders from your trips.', newNote:'New note', noteTitlePh:'Title', noteTextPh:'Write your note here', untitled:'Untitled', noteEdit:'Edit', noteDel:'Delete', saved:'Saved', noteDiscarded:'Changes discarded', noteColor:'Colour', noColor:'No colour', colorN:n=>`Colour ${n}`, nameColors:'Name colours', nameColorsTitle:'Name the colours', nameColorsHint:'Give a colour a name, for example Fishing or Trip plans. The name shows on the notes, also in Nattlys.', notePin:'Pin to top', noteUnpin:'Unpin', notePinned:'Pinned', noteShare:'Share', noteShareTitle:'Share note', noteShareIntro:'This is exactly what will be sent:',
     noteShareWarn:'Check that the note contains no personal information (phone numbers, addresses, position, codes).', noteShareName:'Your name (optional)', noteShareNameHint:'Shown to the person who gets the note. Leave it empty to send no name.',
     noteShareEdit:'Edit first', noteShareText:n=>`Note "${n}" from ${APP_NAME}`, noteShareFallback:'Copy the link and send it to the person you want to share the note with.',
     noteImportQ:'Add to your notes?', noteImportFrom:n=>`${n} has shared a note with you.`, noteImportAnon:'Someone has shared a note with you.', noteImportOk:'Add note', noteHave:'You already have this note.', noteBad:'This note link could not be read. Ask for a new link.',
@@ -1210,7 +1232,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     resetOk:'Fjern avkrysninger', newItem:c=>`Ny ting i ${c}`, renameX:x=>`Gi ${x} nytt navn`, deleteX:x=>`Slett ${x}`,
     catNote:'Notat', editCatNote:'Notat til kategorien', notesEmpty:'Ingen notater ennå. Skriv ned erfaringer fra turene her.', indent:'Gjør til underpunkt', outdent:'Gjør til hovedpunkt',
     medNote:'Les pakningsvedlegget. Spør lege eller apotek hvis du er usikker, bruker andre medisiner, er gravid eller har en sykdom.', tripType:'Turtype', lightDay:'Lett dagstur',
-appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om ${APP_NAME}`, setLink:`Innstillinger og om ${APP_NAME}`, aboutApp:`Om ${APP_NAME}`, fgHint:'Hvor ofte noen kommer innom bålet.', fg:{off:'Av', rare:'Sjelden', some:'Av og til', often:'Ofte'}, photosTitle:'Bildene', photosTxt:'Bildene i appen er ekte foto, og flere av tegningene er laget etter foto. Alle er tatt av utvikleren av appen, om ikke annet er oppgitt.', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
+appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om ${APP_NAME}`, setLink:`Innstillinger og om ${APP_NAME}`, aboutApp:`Om ${APP_NAME}`, fgHint:'Hvor ofte noen kommer innom bålet.', fg:{off:'Av', rare:'Sjelden', some:'Av og til', often:'Ofte'}, photosTitle:'Bildene', photosTxt:'Bildene i appen er ekte foto, og flere av tegningene er laget etter foto. Alle er tatt av utvikleren av appen, om ikke annet er oppgitt.', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cPosNone:ic => `Ingen posisjon. Trykk ${ic} for sol, måne og sann nord.`, cPosAt:w => `Posisjon hentet ${w}`, cPosToday:'i dag', cPosYday:'i går', cPosOld:(d, n) => `Posisjon fra ${d} · ${n} døgn gammel`, cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
     stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNone:'Ingen av disse står over horisonten akkurat nå.',
@@ -1225,14 +1247,14 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
       ['Sann nord','<p>Med posisjonen lagret viser kompasset <b>sann nord</b>, nord på kartet og på himmelen, så sola, månen og stjernene stemmer med skiva. Mobilen måler magnetisk nord, så appen legger til misvisningen der du er, regnet ut på mobilen med verdens magnetiske modell (World Magnetic Model 2025). Linja under retningen sier hvilket nord du ser, og viser misvisningen. Uten posisjon viser kompasset magnetisk nord, som et vanlig kompass.</p><p>I Norge er misvisningen omtrent 3–5° østlig i sør og opptil 15–18° østlig i Finnmark (2026). Den endrer seg sakte fra år til år.</p>'],
       ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Båndet inne i kompasset er Melkeveien: midten av kompasset er rett over deg, og kanten er horisonten. Det er sterkest der det står høyest og mot det klare sentrum i Skytten. De to trekantene på ytterkanten viser hvor Melkeveien møter horisonten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
-    notePriv:'Gjør privat', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
+    notePriv:'Gjør privat', notePrivS:'Privat', notePinS:'Fest', noteTapPh:'Trykk for å skrive', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
     pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
     privUnlockT:'Lås opp private notater', privUnlock:'Lås opp', pwForgot:'Glemt passordet?', pwForgotT:'Glemt passordet?', pwForgotMsg:'Passordet kan ikke hentes fram. Du kan slette de private notatene og begynne på nytt. Vanlige notater og lister berøres ikke.', privDelAll:'Slett private notater', privDeleted:'Private notater slettet', privField:'Private notater åpnes utenfor Utemodus.', privMade:'Notatet er privat og kryptert.',
     privSec:'Private notater', privIsOpen:'Private notater er åpne.', privIsLocked:'Private notater er låst.', privOpenNote:'Privat notat, åpent', noteDelQ:'Slette notatet?', noteDelMsg:'Du kan angre rett etterpå, men ikke senere.', privDelQ:'Slette det private notatet?', privDelMsg:'Det kan bare hentes tilbake fra en sikkerhetskopi.', privLockNow:'Lås nå', privChange:'Bytt passord', privSecHint:'Låses igjen etter 5 minutter uten bruk, og når appen har vært i bakgrunnen et minutt.', privChanged:'Passordet er byttet. Eldre sikkerhetskopier åpnes fortsatt med det gamle passordet.', noteShareLocked:`Et låst notat fra ${APP_NAME}`, bkPrivAsk:'Kopien har private notater. Skriv passordet deres for å ta dem med.', noteImportPriv:'Legg til som privat notat', noteImportPrivHint:'Notatet var låst med passord. Som privat notat blir det kryptert på denne telefonen også.',
     shPw:'Passord for lenken (valgfritt)', shPwHint:'Gi passordet på en annen måte enn lenken, for eksempel muntlig.', shPwReq:'Passord for lenken', shPwReqHint:'Et privat notat deles bare med passord.', lnkLockedT:'Notatet er låst med passord', lnkLockedMsg:'Skriv passordet du fikk fra avsenderen.', lnkOpen:'Åpne',
     bkPwOn:'Beskytt sikkerhetskopien med passord (valgfritt)', bkPwHint:'Uten passordet kan ikke kopien gjenopprettes. Private notater er alltid kryptert i kopien.', bkPwLock:'Lås kopien', bkPwDone:'Kopien er låst med passord. Del, lagre eller kopier den nå.', bkPwFirst:'Trykk Lås kopien først, eller slå av passordet.',
     bkLockedMsg:'Sikkerhetskopien er låst med passord', bkPrivOther:'Kopien har private notater med et annet passord. Skriv det passordet for å ta dem med.', bkSkipPriv:'Hopp over private', bkRPwOk:'Lås opp og legg til', privAdded:n=>`${n} ${n === 1 ? 'privat notat' : 'private notater'} lagt til.`, privSkipped:'De private notatene ble ikke lagt til.',
-    tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', noteSaved:'Notatet er lagret', noteDiscarded:'Endringene er forkastet', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
+    tabList:'Pakkliste', listRow:'Pakkliste', tabNotes:'Notater', notesSub:'Erfaringer, ideer og huskelapper fra turene.', newNote:'Nytt notat', noteTitlePh:'Tittel', noteTextPh:'Skriv notatet her', untitled:'Uten tittel', noteEdit:'Rediger', noteDel:'Slett', saved:'Lagret', noteDiscarded:'Endringene er forkastet', noteColor:'Farge', noColor:'Ingen farge', colorN:n=>`Farge ${n}`, nameColors:'Navngi farger', nameColorsTitle:'Navngi fargene', nameColorsHint:'Gi en farge et navn, for eksempel Fiske eller Turplaner. Navnet vises på notatene, også i nattlys.', notePin:'Fest øverst', noteUnpin:'Løsne', notePinned:'Festet', noteShare:'Del', noteShareTitle:'Del notat', noteShareIntro:'Dette er nøyaktig det som sendes:',
     noteShareWarn:'Sjekk at notatet ikke inneholder personlige opplysninger (telefonnummer, adresser, posisjon, koder).', noteShareName:'Navnet ditt (valgfritt)', noteShareNameHint:'Vises for den som får notatet. La feltet stå tomt for å sende uten navn.',
     noteShareEdit:'Rediger først', noteShareText:n=>`Notat «${n}» fra ${APP_NAME}`, noteShareFallback:'Kopier lenken og send den til den du vil dele notatet med.',
     noteImportQ:'Legg til i notatene dine?', noteImportFrom:n=>`${n} har delt et notat med deg.`, noteImportAnon:'Noen har delt et notat med deg.', noteImportOk:'Legg til notat', noteHave:'Du har allerede dette notatet.', noteBad:'Denne notatlenken kunne ikke leses. Be om en ny lenke.',
@@ -1867,6 +1889,8 @@ function render(){
   if (tab !== 'guide' && gSearch.open) gsReset();
   // 0.22.1: leaving an edit in place (back, another tab, Utemodus) saves it, with Angre
   if (noteEdit && (tab !== 'notes' || view !== 'note:' + noteEdit.id || state.field)){ const ed = noteEdit; noteEdit = null; const old = noteCommit(ed); if (old) noteUndo(old); }
+  // 0.24.0: «Legg til en ting» text survives a redraw in Rediger and is added when you leave it
+  if (editing){ const d = addDraftsTake(); if (d){ if (tab === 'list' && view === editView && !state.field) addKeep = d; else addFlush(d); } }
   if (tab !== 'list') main.classList.remove('editing');
   if (view === 'settings') return renderSettings();
   if (tab === 'compass') return renderCompass();
@@ -2017,6 +2041,34 @@ function render(){
     html += `<button class="add-cat" data-act="addCat">${T.addCat}</button>`;
   }
   main.innerHTML = html;
+  // 0.24.0: put back what was typed in «Legg til en ting» before the redraw
+  if (editing && addKeep) Object.keys(addKeep).forEach(id => {
+    const inp = main.querySelector(`[data-add="${id}"]`);
+    if (inp){ inp.value = addKeep[id].v; if (addKeep[id].f){ inp.focus(); try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch(e){} } }
+  });
+  addKeep = null;
+  if (editing) editView = view;
+}
+/* 0.24.0 (standing rule: typing saves itself): text typed in a «Legg til en ting» field but not added yet is kept through
+   redraws in Rediger and added to its category when you leave Rediger (Ferdig, back, another tab, Utemodus) or when the
+   app goes to the background, with «Lagret» and Angre. */
+let addKeep = null, editView = null;
+function addDraftsTake(){
+  const d = {};
+  main.querySelectorAll('input[data-add]').forEach(i => { if (i.value.trim()) d[i.dataset.add] = {v:i.value, f:document.activeElement === i}; });
+  return Object.keys(d).length ? d : null;
+}
+function addFlush(d){
+  if (!d) return false;
+  const snap = JSON.stringify(state); let n = 0;
+  Object.keys(d).forEach(id => {
+    const c = id.indexOf('std:') === 0 ? null : findCat(id);
+    if (c){ c.items.push({id:uid(), text:d[id].v.trim(), done:false, sub:false, link:null, light:false}); n++; }
+  });
+  if (!n) return false;
+  save();
+  toastShow(t().saved, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, true);
+  return true;
 }
 
 /* ---------- 0.23.0: Utemodus on/off, the header panel, the title wave ---------- */
@@ -2734,22 +2786,15 @@ function noteChanged(ed){
   const o = n.priv ? (privOpen.get(n.id) || {title:'', text:''}) : n;
   return ed.title.trim() !== o.title || ed.text !== o.text || (ed.c || 0) !== (n.c || 0);
 }
-function noteToast(msg, undo){
-  const el = $('toast');
-  el.innerHTML = `<span>${esc(msg)}</span><button>${t().undo}</button>`;
-  el.hidden = false;
-  el.querySelector('button').onclick = () => { el.hidden = true; undo(); };
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
-}
+function noteToast(msg, undo, ok){ toastShow(msg, undo, 7000, ok); }
 function noteUndo(old){
-  noteToast(t().noteSaved, () => {
+  noteToast(t().saved, () => {
     const i = state.notes.findIndex(x => x.id === old.note.id);
     if (i < 0) return;
     state.notes[i] = old.note;
     if (old.note.priv && old.open && privKey) privOpen.set(old.note.id, old.open);
     save(); render();
-  });
+  }, true);
 }
 const noteDate = ms => { try { return new Date(ms).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}); } catch(e){ return ''; } };
 /* 0.6.0: edit in place (noteEdit, never stored), Fest øverst (n.pin), Del (n.shT = when you shared it; n.rcv = {n:name, t} on a received note) */
@@ -2757,6 +2802,7 @@ let noteEdit = null;
 // build 72: the open lock (shackle lifted) while the private notes are open, the closed one while they are locked
 const LOCK_OPEN_IC = '<svg class="lock-ic lock-open" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
 const LOCK_IC = '<svg class="lock-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const TRASH_IC = '<svg class="trash-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
 const PIN_IC = '<svg class="pin-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1 7 4 3H6l4-3z"/><path d="M12 13v8"/></svg>';
 // 0.23.0: the one line under the title in the overview: date (last edited) · colour name · Delt 3× or Mottatt
 function noteLine(n){
@@ -2783,8 +2829,10 @@ function askColorNames(){
     sheetResolve = res;
     openSheet(`<h3>${T.nameColorsTitle}</h3><p class="sh-hint">${T.nameColorsHint}</p><div class="nc-names">${[1, 2, 3, 4, 5].map(k => `<label><span class="nc-dot nc-${k}" aria-hidden="true"></span><input type="text" maxlength="20" data-nc="${k}" placeholder="${esc(T.colorN(k))}" value="${esc(ncName(k))}" aria-label="${esc(T.colorN(k))}"></label>`).join('')}</div>
       <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`, true);
-    panel.querySelector('[data-s=ok]').onclick = () => closeSheet([...panel.querySelectorAll('[data-nc]')].map(i => i.value.trim().slice(0, 20)));
-    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    const vals = () => [...panel.querySelectorAll('[data-nc]')].map(i => i.value.trim().slice(0, 20));
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet({how:'ok', val:vals()});
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet({how:'cancel', val:vals()});
+    panel.dataset.auto = '1'; sheetOnDismiss = () => ({how:'auto', val:vals()});
   });
 }
 function growArea(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
@@ -2828,8 +2876,15 @@ function renderNotes(){
       return;
     }
     const tap = f => state.field ? '' : ` class="note-tap" data-act="editNote" data-f="${f}" data-id="${n.id}"`;
-    h += `<article class="note-full${rcv}"><h2${tap('title')}>${pin}${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}<div class="note-body${state.field ? '' : ' note-tap'}"${state.field ? '' : ` data-act="editNote" data-f="text" data-id="${n.id}"`}>${esc(n.text)}</div></article>`;
-    h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="row-btns"><button class="btn" data-act="editNote" data-id="${n.id}">${T.noteEdit}</button><button class="btn" data-act="notePin" data-id="${n.id}">${n.pin ? T.noteUnpin : T.notePin}</button><button class="btn" data-act="noteShare" data-id="${n.id}">${T.noteShare}</button>${n.priv ? `<button class="btn" data-act="notePubl" data-id="${n.id}">${T.notePubl}</button>` : CRYPTO_OK ? `<button class="btn" data-act="notePriv" data-id="${n.id}">${T.notePriv}</button>` : ''}<button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
+    h += `<article class="note-full${rcv}"><h2${tap('title')}>${pin}${esc(n.title || T.untitled)}</h2><p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}<div class="note-body${state.field ? '' : ' note-tap'}"${state.field ? '' : ` data-act="editNote" data-f="text" data-id="${n.id}"`}>${n.text || state.field ? esc(n.text) : `<span class="note-ph">${T.noteTapPh}</span>`}</div></article>`;
+    // 0.24.0: no Rediger (tap the title or the text); one even row of icon buttons with a short word under each
+    const nb = (act, ic, lbl, aria, extra) => `<button data-act="${act}" data-id="${n.id}" aria-label="${esc(aria)}"${extra || ''}>${ic}<span aria-hidden="true">${esc(lbl)}</span></button>`;
+    h += state.field ? `<p class="tool-sub">${T.notesField}</p>` : `<div class="note-acts">`
+      + nb('notePin', PIN_IC, n.pin ? T.noteUnpin : T.notePinS, n.pin ? T.noteUnpin : T.notePin, ` aria-pressed="${!!n.pin}"`)
+      + nb('noteShare', SHARE_IC, T.noteShare, T.noteShare)
+      + (n.priv ? nb('notePubl', LOCK_IC, T.notePrivS, T.notePubl, ' aria-pressed="true"') : CRYPTO_OK ? nb('notePriv', LOCK_OPEN_IC, T.notePrivS, T.notePriv, ' aria-pressed="false"') : '')
+      + nb('delNote', TRASH_IC, T.noteDel, T.noteDel, ' class="danger"')
+      + `</div>`;
     main.innerHTML = h;
     return;
   }
@@ -3012,8 +3067,9 @@ function renderCompass(){
       <div class="c-sky">
         <button class="chip ico" data-act="cSkyNow" aria-pressed="${skyOn('now')}" aria-label="${T.cSkyNow}" title="${T.cSkyNow}">${ICO_SKYNOW}</button>
         <button class="chip ico" data-act="cRiseSet" aria-pressed="${skyOn('rs')}" aria-label="${T.cRiseSet}" title="${T.cRiseSet}">${ICO_RISESET}</button>
+        <button class="chip ico c-pos${posOld() ? ' old' : ''}" data-act="getPos" aria-label="${state.pos ? T.updPos : T.getPos}" title="${state.pos ? T.updPos : T.getPos}"${posBusy ? ' aria-busy="true"' : ''}>${ICO_POS}</button>
       </div>
-      ${!state.pos && (skyOn('now') || skyOn('rs')) ? `<p class="c-sky-note">${T.cSkyNoPos}</p>` : ''}
+      <p class="c-pos-line${posOld() && !posBusy ? ' old' : ''}" id="cPosLine">${posLine()}</p>
       <div class="c-btns"><button class="chip st-open" data-nav data-act="cStars">${ICO_STARS}<span>${T.cStars}</span></button></div>
       <p class="c-msg" id="cMsg"></p>
     </div>
@@ -3206,6 +3262,9 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) return;
   if (noteEdit) noteCommit(noteEdit);
   if (newDraft && !overlay.hidden && panel.dataset.newnote) draftFlush(newDraft, draftVals());
+  // 0.24.0: an open typing sheet saves itself as if closed with ✕, and «Legg til en ting» text is added
+  if (!overlay.hidden && panel.dataset.auto) dismissSheet();
+  if (editing){ const d = addDraftsTake(); if (d){ main.querySelectorAll('input[data-add]').forEach(i => { i.value = ''; }); if (addFlush(d)) render(); } }
 });
 document.addEventListener('visibilitychange', () => {
   if (!privKey) return;
@@ -4223,6 +4282,22 @@ main.addEventListener('toggle', e => {
   if (foldOpen(d.dataset.fold) === d.open) return;
   state.folds[d.dataset.fold] = d.open; save();
 }, true);
+/* 0.24.0: the position at a glance on Kompass: a ⌖ button beside the sun and moon buttons (fetches, like Oppdater posisjon)
+   and a line saying how old the saved position is, in warning colour once it is older than POS_OLD_MS. Drawn as an icon,
+   since the app's font has no U+2316. Stores data, so it is locked in Regnlås. */
+const POS_OLD_MS = 24 * 3600e3;
+const ICO_POS = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>';
+const posOld = () => !!(state.pos && Date.now() - (state.pos.t || 0) > POS_OLD_MS);
+function posLine(){
+  const T = t(), p = state.pos;
+  if (posBusy) return esc(T.posWait);
+  if (!p) return T.cPosNone(`<span class="ico-in">${ICO_POS}</span>`);
+  const d = new Date(p.t || 0), loc = state.lang === 'no' ? 'nb-NO' : 'en-GB';
+  if (posOld()) return esc(T.cPosOld(d.toLocaleDateString(loc, {day:'numeric', month:'short'}), Math.floor((Date.now() - d) / 864e5)));
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const day = d.toDateString() === new Date().toDateString() ? T.cPosToday : d.toDateString() === y.toDateString() ? T.cPosYday : d.toLocaleDateString(loc, {day:'numeric', month:'short'});
+  return esc(T.cPosAt(day + ' ' + hm(d)));
+}
 function getPos(){
   const T = t();
   if (!navigator.geolocation){ posMsg = T.posErr; renderCompass(); return; }
@@ -4709,13 +4784,16 @@ function askWeightItem(title, it){
       <div class="chips" style="margin-top:12px"><button class="chip" id="wCons" aria-pressed="${!!(it && it.cons)}">${T.wConsLbl}</button><button class="chip" id="wDogC" aria-pressed="${!!(it && it.dog)}">${T.wDogLbl}</button></div>
       <div class="row">${it ? `<button class="btn danger" data-s="del">${T.del}</button>` : ''}<button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${T.save}</button></div>`);
     ['wCons', 'wDogC'].forEach(k => $(k).onclick = () => $(k).setAttribute('aria-pressed', $(k).getAttribute('aria-pressed') !== 'true'));
-    panel.querySelector('[data-s=ok]').onclick = () => {
-      const name = $('wName').value.trim(); if (!name) return $('wName').focus();
+    // 0.24.0: the sheet saves itself (see settleTyped); an item needs a name
+    const vals = () => {
+      const name = $('wName').value.trim(); if (!name) return null;
       const v = num($('wG').value);
-      closeSheet({name, g: isNaN(v) ? 0 : Math.max(0, w.unit === 'kg' ? v * 1000 : v), cat:$('wCat').value, cons:$('wCons').getAttribute('aria-pressed') === 'true', dog:$('wDogC').getAttribute('aria-pressed') === 'true'});
+      return {name, g: isNaN(v) ? 0 : Math.max(0, w.unit === 'kg' ? v * 1000 : v), cat:$('wCat').value, cons:$('wCons').getAttribute('aria-pressed') === 'true', dog:$('wDogC').getAttribute('aria-pressed') === 'true'};
     };
-    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
-    const d = panel.querySelector('[data-s=del]'); if (d) d.onclick = () => closeSheet('delete');
+    panel.querySelector('[data-s=ok]').onclick = () => { const v = vals(); if (!v) return $('wName').focus(); closeSheet({how:'ok', val:v}); };
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet({how:'cancel', val:vals()});
+    panel.dataset.auto = '1'; sheetOnDismiss = () => ({how:'auto', val:vals()});
+    const d = panel.querySelector('[data-s=del]'); if (d) d.onclick = () => closeSheet({how:'delete'});
   });
 }
 function pickFromList(){
@@ -4745,16 +4823,16 @@ async function weightAction(act, id){
     save(); render(); return;
   }
   if (act === 'wAddOwn'){
-    const v = await askWeightItem(T.wAddOwn, null);
-    if (!v || v === 'delete') return;
-    w.items.push(Object.assign({id:uid()}, v)); save(); render(); return;
+    const r = await askWeightItem(T.wAddOwn, null);
+    await settleTyped(r, () => true, v => { packW().items.push(Object.assign({id:uid()}, v)); save(); render(); });
+    return;
   }
   if (act === 'wEdit'){
     const it = w.items.find(x => x.id === id); if (!it) return;
-    const v = await askWeightItem(it.name, it);
-    if (!v) return;
-    if (v === 'delete'){ withUndo(T.wDeleted, () => { const pw = packW(); pw.items = pw.items.filter(x => x.id !== id); }); return; }
-    Object.assign(it, v); save(); render();
+    const r = await askWeightItem(it.name, it);
+    if (r && r.how === 'delete'){ withUndo(T.wDeleted, () => { const pw = packW(); pw.items = pw.items.filter(x => x.id !== id); }); return; }
+    const same = v => ['name', 'g', 'cat'].every(k => v[k] === it[k]) && !!v.cons === !!it.cons && !!v.dog === !!it.dog;
+    await settleTyped(r, v => !same(v), v => { const x = packW().items.find(y => y.id === id); if (x) Object.assign(x, v); save(); render(); });
   }
 }
 function top(){ try { window.scrollTo(0,0); } catch(e){} }
@@ -4784,7 +4862,7 @@ function dismissSheet(){ const f = sheetOnDismiss; closeSheet(f ? f() : null); }
 function closeSheet(val){
   overlay.hidden = true;
   sheetOnDismiss = null;
-  delete panel.dataset.priv; delete panel.dataset.newnote;
+  delete panel.dataset.priv; delete panel.dataset.newnote; delete panel.dataset.auto;
   panel.innerHTML = '';
   if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
   setTimeout(() => {
@@ -4794,7 +4872,8 @@ function closeSheet(val){
 overlay.addEventListener('click', e => { if (e.target === overlay) dismissSheet(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) dismissSheet(); });
 
-function askText(title, value, ok, allowEmpty){
+// full (0.24.0): resolves {how:'ok'|'auto'|'cancel', val}; 'auto' = closed with ✕, a tap outside, Escape, back or the background
+function askText(title, value, ok, allowEmpty, full){
   const T = t();
   return new Promise(res => {
     sheetResolve = res;
@@ -4802,12 +4881,35 @@ function askText(title, value, ok, allowEmpty){
       <input type="text" id="askInput" value="${esc(value || '')}">
       <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${esc(ok || T.save)}</button></div>`);
     const inp = $('askInput');
-    const done = () => { const v = inp.value.trim(); closeSheet(allowEmpty ? v : (v || null)); };
+    const val = () => { const v = inp.value.trim(); return allowEmpty ? v : (v || null); };
+    const done = () => closeSheet(full ? {how:'ok', val:val()} : val());
     panel.querySelector('[data-s=ok]').onclick = done;
-    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(null);
+    panel.querySelector('[data-s=cancel]').onclick = () => closeSheet(full ? {how:'cancel', val:val()} : null);
+    if (full){ panel.dataset.auto = '1'; sheetOnDismiss = () => ({how:'auto', val:val()}); }
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(); });
     setTimeout(() => inp.select(), 40);
   });
+}
+/* 0.24.0, standing rule: typing saves itself. Lagre (or Enter) applies as before. Closing the sheet any other way but
+   Avbryt applies a changed text with «Lagret» and Angre; Avbryt with a change says «Endringene er forkastet», and its
+   Angre applies it after all. apply(val) changes state and draws (save + render or go). */
+async function settleTyped(r, changed, apply){
+  const T = t();
+  if (!r) return false;
+  if (r.how === 'ok'){ if (r.val === null || r.val === undefined) return false; await apply(r.val); return true; }
+  if (r.val === null || r.val === undefined || !changed(r.val)) return false;
+  if (r.how === 'auto'){
+    const snap = JSON.stringify(state);
+    await apply(r.val);
+    toastShow(T.saved, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, true);
+    return true;
+  }
+  toastShow(T.noteDiscarded, () => { apply(r.val); }, 7000);
+  return false;
+}
+async function askEdit(title, value, ok, allowEmpty, apply){
+  const r = await askText(title, value, ok, allowEmpty, true);
+  return settleTyped(r, v => v !== (value || '').trim(), apply);
 }
 function confirmBox(title, msg, ok){
   const T = t();
@@ -4833,26 +4935,24 @@ async function listAction(a, id){
       panel.querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => closeSheet(b.dataset.tpl));
     });
     if (!choice) return;
-    const name = await askText(T.nameList, choice === 'blank' ? T.myList : stdList().name, T.create);
-    if (!name) return;
-    const nl = choice === 'blank' ? {id:uid(), name, notes:'', modes:{}, cats:[]} : cloneList(stdList(), false);
-    nl.name = name; nl.tripType = false;
-    state.lists.push(nl); selList = nl.id; save();
-    go('list', 'edit:' + nl.id);
+    await askEdit(T.nameList, choice === 'blank' ? T.myList : stdList().name, T.create, false, name => {
+      const nl = choice === 'blank' ? {id:uid(), name, notes:'', modes:{}, cats:[]} : cloneList(stdList(), false);
+      nl.name = name; nl.tripType = false;
+      state.lists.push(nl); selList = nl.id; save();
+      go('list', 'edit:' + nl.id);
+    });
   } else if (a === 'copy'){
-    const name = await askText(T.nameList, stdList().name, T.create);
-    if (!name) return;
-    const nl = cloneList(stdList(), false); nl.name = name; nl.tripType = false;
-    state.lists.push(nl); selList = nl.id; save();
-    go('list', 'edit:' + nl.id);
+    await askEdit(T.nameList, stdList().name, T.create, false, name => {
+      const nl = cloneList(stdList(), false); nl.name = name; nl.tripType = false;
+      state.lists.push(nl); selList = nl.id; save();
+      go('list', 'edit:' + nl.id);
+    });
   } else if (a === 'edit' && L){
     go('list', 'edit:' + L.id);
   } else if (a === 'rename' && L){
-    const v = await askText(T.renameList, L.name, T.rename);
-    if (v){ L.name = v; save(); render(); }
+    await askEdit(T.renameList, L.name, T.rename, false, v => { L.name = v; save(); render(); });
   } else if (a === 'dup' && L){
-    const v = await askText(T.copyName, L.name + T.copySuffix, T.duplicate);
-    if (v){ const c = cloneList(L, false); c.name = v; c.tripType = false; state.lists.push(c); selList = c.id; save(); render(); }
+    await askEdit(T.copyName, L.name + T.copySuffix, T.duplicate, false, v => { const c = cloneList(L, false); c.name = v; c.tripType = false; state.lists.push(c); selList = c.id; save(); render(); });
   } else if (a === 'share' && L){
     shareList(L);
   } else if (a === 'startOver'){
@@ -5129,11 +5229,17 @@ main.addEventListener('click', async e => {
   if (act === 'addLink' || act === 'sugLink'){
     // sugLink (v29): a suggested link from a guide, filled in; the user confirms or edits it
     const sug = act === 'sugLink';
+    // 0.24.0: two steps, so closing saves only once a real address is typed (step 2); Lagre works as before
     const name = await askText(T.linkName, sug ? b.dataset.n : '', T.add); if (!name) return;
-    const url = await askText(T.linkUrl, sug ? b.dataset.u : 'https://', T.add); if (!url) return;
-    if (!/^https?:\/\/\S+\.\S+/.test(url)){ await confirmBox(T.addLink, T.linkBad, T.ok); return; }
-    if (!(state.links || []).some(l => l.u === url)) state.links = (state.links || []).concat([{n:name, u:url}]);
-    save(); if (sug) render(); else renderCompass(); return;
+    const okUrl = u => /^https?:\/\/\S+\.\S+/.test(u);
+    const r = await askText(T.linkUrl, sug ? b.dataset.u : 'https://', T.add, false, true);
+    if (r && r.how === 'ok' && r.val && !okUrl(r.val)){ await confirmBox(T.addLink, T.linkBad, T.ok); return; }
+    await settleTyped(r, okUrl, url => {
+      if (!okUrl(url)) return;
+      if (!(state.links || []).some(l => l.u === url)) state.links = (state.links || []).concat([{n:name, u:url}]);
+      save(); if (tab === 'compass' && !view) renderCompass(); else render();
+    });
+    return;
   }
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
@@ -5185,7 +5291,7 @@ main.addEventListener('click', async e => {
     if (v.how === 'ok'){ go('notes', 'note:' + nn.id); return; }
     // back, ✕ or a tap outside: saved, and you stay where you were
     render();
-    noteToast(T.noteSaved, () => { state.notes = state.notes.filter(x => x.id !== nn.id); save(); render(); });
+    noteToast(T.saved, () => { state.notes = state.notes.filter(x => x.id !== nn.id); save(); render(); }, true);
     return;
   }
   // 0.6.0: Rediger, the title or the text turns the note into fields in place; the pop-up is only for Nytt notat
@@ -5208,8 +5314,9 @@ main.addEventListener('click', async e => {
   }
   if (act === 'noteC'){ if (noteEdit){ noteEdit.c = +b.dataset.c || 0; render(); } return; }
   if (act === 'noteCNames'){
-    const v = await askColorNames();
-    if (v){ state.noteColors = v; save(); render(); }
+    const r = await askColorNames();
+    const cur5 = [1, 2, 3, 4, 5].map(ncName);
+    await settleTyped(r, v => v.some((x, i) => x !== cur5[i]), v => { state.noteColors = v; save(); render(); });
     return;
   }
   if (act === 'notePin'){
@@ -5282,18 +5389,15 @@ main.addEventListener('click', async e => {
   }
   else if (act === 'indentItem'){ item.sub = !item.sub; save(); render(); }
   else if (act === 'noteCat'){
-    const v = await askText(T.editCatNote, cat.note || '', T.save, true);
-    if (v !== null && v !== undefined){ cat.note = v; save(); render(); }
+    await askEdit(T.editCatNote, cat.note || '', T.save, true, v => { cat.note = v; save(); render(); });
   }
   else if (act === 'renameItem'){
-    const v = await askText(T.renameItem, item.text, T.save);
-    if (v){ item.text = v; save(); render(); }
+    await askEdit(T.renameItem, item.text, T.save, false, v => { item.text = v; save(); render(); });
   }
   else if (act === 'deleteItem'){ withUndo(T.itemDeleted, () => { cat.items = cat.items.filter(i => i.id !== item.id); }); }
   else if (act === 'addItem'){ addItem(cat.id); }
   else if (act === 'renameCat'){
-    const v = await askText(T.renameCat, cat.name, T.save);
-    if (v){ cat.name = v; save(); render(); }
+    await askEdit(T.renameCat, cat.name, T.save, false, v => { cat.name = v; save(); render(); });
   }
   else if (act === 'deleteCat'){
     if (await confirmBox(T.delCatQ, T.delCatMsg(cat.name, cat.items.length), T.delCat)){
@@ -5301,12 +5405,11 @@ main.addEventListener('click', async e => {
     }
   }
   else if (act === 'addCat'){
-    const v = await askText(T.newCat, '', T.addCat);
-    if (v){
+    await askEdit(T.newCat, '', T.addCat, false, v => {
       const nc = {id:uid(), name:v, note:'', mode:null, bag:false, open:true, items:[]};
       cur().cats.push(nc); save(); render();
       const inp = main.querySelector(`[data-add="${nc.id}"]`); if (inp) inp.focus();
-    }
+    });
   }
 });
 main.addEventListener('keydown', e => {
@@ -5375,23 +5478,32 @@ window.addEventListener('popstate', e => {
 });
 
 /* ---------- undo ---------- */
-let toastTimer = null;
-function showToast(msg){
-  const el = $('toast');
-  el.innerHTML = `<span>${esc(msg)}</span>`;
-  el.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 3000);
+/* 0.24.0: one way to show a message. It sits just under the header; after TOAST_FADE_MS the box fades and only the
+   words (with a halo) and Angre stay, and taps reach the page under it. ok = a check mark (Lagret). */
+let toastTimer = null, toastFadeT = null;
+const TOAST_FADE_MS = 1200;
+const OK_IC = '<svg class="ok-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function toastHide(){ const el = $('toast'); el.hidden = true; el.classList.remove('faded'); clearTimeout(toastTimer); clearTimeout(toastFadeT); }
+function toastPlace(){
+  const h = document.querySelector('header.top'), b = h ? h.getBoundingClientRect().bottom : 0;
+  $('toast').style.top = Math.max(0, Math.round(b)) + 8 + 'px';
 }
-function withUndo(msg, fn){
+function toastShow(msg, undo, ms, ok){
+  const el = $('toast');
+  clearTimeout(toastTimer); clearTimeout(toastFadeT);
+  el.innerHTML = `${ok ? OK_IC : ''}<span>${esc(msg)}</span>${undo ? `<button>${t().undo}</button>` : ''}`;
+  el.classList.remove('faded');
+  toastPlace();
+  el.hidden = false;
+  if (undo) el.querySelector('button').onclick = () => { toastHide(); undo(); };
+  toastFadeT = setTimeout(() => el.classList.add('faded'), TOAST_FADE_MS);
+  toastTimer = setTimeout(toastHide, ms || 3000);
+}
+function showToast(msg){ toastShow(msg, null, 3000); }
+function withUndo(msg, fn, ok){
   const snap = JSON.stringify(state);
   fn(); stdCache = null; save(); render();
-  const el = $('toast');
-  el.innerHTML = `<span>${esc(msg)}</span><button>${t().undo}</button>`;
-  el.hidden = false;
-  el.querySelector('button').onclick = () => { state = JSON.parse(snap); stdCache = null; save(); el.hidden = true; render(); };
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
+  toastShow(msg, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, ok);
 }
 
 /* ---------- 0.9.0: sorting in Rediger ----------
@@ -6621,7 +6733,7 @@ sosEl.addEventListener('click', e => {
     timer = setTimeout(() => { held = true; cancel(); openSos(); }, 1000);
   };
   const move = e => { if (!btn) return; const p = pt(e); if (Math.hypot(p.clientX - sx, p.clientY - sy) > 12) cancel(); };
-  const end = () => { if (held){ held = false; return; } if (!btn) return; const b = btn; cancel(); grow(b); showToast(t().sos.holdMsg); };
+  const end = () => { if (held){ held = false; return; } if (!btn) return; const b = btn; cancel(); grow(b); };   // 0.24.0: no toast; it would sit over the grown button, which says the same
   /* 0.22.0: a tap (too short to open) grows the button to the size of two big buttons for about 3 s, over what is above it
      (on Pakkliste in Utemodus: the Utemodus button), so nothing on the page moves; a hold on it opens Nødmodus as before.
      Another tap starts the 3 s again. Reduce motion: the size changes at once (no transitions). */
