@@ -2132,6 +2132,161 @@ test.describe('privat', () => {
     await settle(page, errors);
   });
 
+  // 0.25.0: the three crypto items from 17 Nov. Old-format data is made here in Node with Web Crypto, exactly as builds
+  // 70–90 made it, so the test shows that old notes, links and backups still open.
+  const wc = globalThis.crypto.subtle, enc8 = x => new TextEncoder().encode(x), b64 = u => Buffer.from(u).toString('base64url');
+  const rand = n => globalThis.crypto.getRandomValues(new Uint8Array(n));
+  const kdf = async (pw, salt) => wc.deriveKey({name:'PBKDF2', hash:'SHA-256', salt, iterations:600000},
+    await wc.importKey('raw', enc8(pw.normalize('NFKC')), 'PBKDF2', false, ['deriveKey']), {name:'AES-GCM', length:256}, false, ['encrypt']);
+  const gcm = async (key, bytes) => { const iv = rand(12); return {iv, ct:new Uint8Array(await wc.encrypt({name:'AES-GCM', iv}, key, bytes))}; };
+
+  test('the strength line where a new password is chosen (0.25.0)', async ({page, browser}) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await newNote(page, 'Styrke', 'tekst');
+    // making the private password: from 8 characters, weak, fair, strong; a weak one is still accepted
+    await page.locator('#main [data-act="notePriv"]').click();
+    const m = page.locator('#pw1M');
+    await expect(m).toBeHidden();
+    await page.locator('#pw1').fill('abc'); await expect(m).toBeHidden();
+    await page.locator('#pw1').fill('passord1'); await expect(m).toContainText('Svakt'); await expect(m).toHaveAttribute('data-l', '1');
+    await page.locator('#pw1').fill('Kx7#mQ2vLp'); await expect(m).toContainText('Middels');
+    await page.locator('#pw1').fill('blåbær hytte sekk regn'); await expect(m).toHaveText('Sterkt.'); await expect(m).toHaveAttribute('data-l', '3');
+    await pwOk(page, 'passord1', true);
+    await expect(page.locator('#toast')).toContainText('privat og kryptert');
+    // the share link's password
+    await page.locator('#main [data-act="noteShare"]').click();
+    await page.locator('#shPw').fill('sommer2024!');
+    await expect(page.locator('#shPwM')).toContainText('Svakt');
+    await page.locator('#overlay [data-sheet-close]').click();
+    await expect(sheet(page)).toBeHidden();
+    // no line when a password is only typed to unlock
+    await page.locator('#main [data-act="back"]').click();
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await page.locator('#main .row-btns [data-act="privOpen"]').click();
+    await expect(page.locator('#pw1')).toBeVisible();
+    await expect(page.locator('#pw1M')).toHaveCount(0);
+    await page.locator('#overlay [data-s="cancel"]').click();
+    // the backup's password
+    await goTab(page, 'list'); await page.locator('#listBtn').click();
+    await page.locator('[data-la="backup"]').click();
+    await page.locator('#bkPwOn').check();
+    await page.locator('#bkPw1').fill('Tr0llstigen!x');
+    await expect(page.locator('#bkPw1M')).toContainText('Middels');
+    // English
+    const ctx = await browser.newContext({locale:'en-GB', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p2 = await ctx.newPage(), err2 = watchErrors(p2);
+    await openApp(p2);
+    await newNote(p2, 'Strength', 'text');
+    await p2.locator('#main [data-act="noteShare"]').click();
+    await p2.locator('#shPw').fill('password1');
+    await expect(p2.locator('#shPwM')).toContainText('Weak: easy to guess.');
+    await p2.locator('#shPw').fill('correct horse battery staple');
+    await expect(p2.locator('#shPwM')).toHaveText('Strong.');
+    expect(err2).toEqual([]);
+    await ctx.close();
+    await settle(page, errors);
+  });
+
+  test('old private notes open and are upgraded; texts cannot be swapped; the sender\'s name is encrypted (0.25.0)', async ({page}) => {
+    const errors = watchErrors(page);
+    // as builds 70–90 stored them: a v 1 wrap, notes without ck, and the sender's name in plain form
+    const raw = rand(32), wsalt = rand(16), w = await gcm(await kdf(PW, wsalt), raw);
+    const dk = await wc.importKey('raw', raw, 'AES-GCM', false, ['encrypt']);
+    const t0 = Date.UTC(2026, 10, 18, 12);
+    const old = async (id, ti, tx, rcv) => { const e = await gcm(dk, enc8(JSON.stringify({ti, tx}))); return Object.assign({id, t:t0, priv:1, iv:b64(e.iv), ct:b64(e.ct), title:'', text:''}, rcv ? {rcv} : {}); };
+    const st0 = {lists:[], introDone:true, notes:[await old('nA', 'Gammel A', 'tekst A', {n:'Kari Fjellstad', t:t0}), await old('nB', 'Gammel B', 'tekst B')],
+      priv:{v:1, kdf:'pbkdf2-sha256', iter:600000, salt:b64(wsalt), iv:b64(w.iv), wrap:b64(w.ct)}};
+    await page.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st0]);
+    await page.goto('./');
+    await goTab(page, 'notes');
+    await expect(page.locator('#main .notes-ix .priv-locked')).toHaveCount(2);
+    expect(await page.evaluate(k => localStorage.getItem(k), KEY)).toContain('Kari Fjellstad');
+    // the first unlock opens them and upgrades: v 2 wrap, a tag on each note, the name inside the encryption
+    await page.locator('#main .row-btns [data-act="privOpen"]').click();
+    await pwOk(page, PW);
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel B');
+    await expect.poll(async () => (await stored(page)).priv.v).toBe(2);
+    const st1 = await stored(page), rawText = await page.evaluate(k => localStorage.getItem(k), KEY);
+    expect(st1.notes.every(n => typeof n.ck === 'string' && n.ck.length >= 16)).toBe(true);
+    expect(st1.notes.find(n => n.rcv).rcv.n).toBeUndefined();
+    expect(rawText).not.toContain('Kari Fjellstad');
+    expect(rawText).not.toContain('Gammel');
+    await page.locator('#main .notes-ix [data-act="openNote"]', {hasText:'Gammel A'}).click();
+    await expect(page.locator('#main .note-full')).toContainText('Delt fra Kari Fjellstad');
+    // a second unlock opens the upgraded notes
+    await page.locator('#main [data-act="back"]').click();
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await page.locator('#main .row-btns [data-act="privOpen"]').click();
+    await pwOk(page, PW);
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
+    // swapping the encrypted texts of two notes: neither opens; swapped back, both open again
+    // the app writes its state when the page goes away, so the swap is made by an init script before the app starts
+    await page.addInitScript(([k]) => { try { if (localStorage.getItem('swap-now')){ localStorage.removeItem('swap-now'); const s = JSON.parse(localStorage.getItem(k)), [a, b] = s.notes; [a.iv, b.iv] = [b.iv, a.iv]; [a.ct, b.ct] = [b.ct, a.ct]; localStorage.setItem(k, JSON.stringify(s)); } } catch(e){} }, [KEY]);
+    const swap = () => page.evaluate(() => localStorage.setItem('swap-now', '1'));
+    const reopen = async () => { await page.reload(); await goTab(page, 'notes'); await page.locator('#main .row-btns [data-act="privOpen"]').click(); await pwOk(page, PW); await expect(sheet(page)).toBeHidden(); };
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await swap(); await reopen();
+    await expect(page.locator('#main .notes-ix .priv-locked')).toHaveCount(2);
+    await expect(page.locator('#main .notes-ix')).not.toContainText('Gammel');
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await swap(); await reopen();
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel B');
+    await settle(page, errors);
+  });
+
+  test('links and backups: version 2 checks the header; old ones still open (0.25.0)', async ({page, browser}) => {
+    const errors = watchErrors(page);
+    const ctxFor = () => browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const fresh = async ctx => { const p = await ctx.newPage(); await p.addInitScript(([key]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({lists:[], introDone:true})); } catch(e){} }, [KEY]); return p; };
+    // a new link is version 2
+    await openApp(page);
+    await newNote(page, 'Ny lenke', 'kartet ligger i sekken');
+    await page.evaluate(() => { navigator.share = async d => { window.__shared = d.url; }; });
+    await page.locator('#main [data-act="noteShare"]').click();
+    await page.locator('#shPw').fill('lenke-passord-2');
+    await page.locator('#overlay [data-s="ok"]').click();
+    await expect.poll(() => page.evaluate(() => String(window.__shared))).toContain('#note=e');
+    const url = await page.evaluate(() => window.__shared), code = url.split('#note=e')[1];
+    const bytes = Buffer.from(code, 'base64url');
+    expect(bytes[0]).toBe(2);
+    const ctx = await ctxFor(), p2 = await fresh(ctx), err2 = watchErrors(p2);
+    // a changed header (the compression flag) is refused as a wrong password, never read as other content
+    const bent = Buffer.from(bytes); bent[1] ^= 1;
+    await p2.goto(url.split('#')[0] + '#note=e' + bent.toString('base64url'));
+    await pwOk(p2, 'lenke-passord-2');
+    await expect(p2.locator('#pwSt')).toHaveText('Feil passord.');
+    await p2.locator('#overlay [data-s="cancel"]').click();
+    // the real link opens
+    await p2.goto('about:blank'); await p2.goto(url);
+    await pwOk(p2, 'lenke-passord-2');
+    await expect(p2.locator('#overlay .sh-prev')).toContainText('kartet ligger i sekken');
+    await p2.locator('#overlay [data-s="cancel"]').click();
+    // an old version 1 link, made as builds 70–90 made it, still opens
+    const lsalt = rand(16), le = await gcm(await kdf('lenke-passord-1', lsalt), enc8(JSON.stringify({v:1, k:'note', ti:'Gammel lenke', tx:'fra før', n:'Per'})));
+    const v1 = Buffer.concat([Buffer.from([1, 0]), Buffer.from(lsalt), Buffer.from(le.iv), Buffer.from(le.ct)]).toString('base64url');
+    await p2.goto('about:blank'); await p2.goto(url.split('#')[0] + '#note=e' + v1);
+    await pwOk(p2, 'lenke-passord-1');
+    await expect(p2.locator('#overlay .sh-prev')).toContainText('fra før');
+    await p2.locator('#overlay [data-s="ok"]').click();
+    await expect(p2.locator('#main .note-full')).toContainText('Delt fra Per');
+    // an old enc 1 backup with a password still restores
+    const bk = JSON.stringify({app:'trip-checklist', version:3, t:Date.now(), lists:[], notes:[{id:'x', title:'Fra gammel kopi', text:'hei', t:Date.now()}]});
+    const bsalt = rand(16), be = await gcm(await kdf('kopi-passord-1', bsalt), enc8(bk));
+    const old = JSON.stringify({app:'trip-checklist', enc:1, kdf:'pbkdf2-sha256', iter:600000, salt:b64(bsalt), iv:b64(be.iv), ct:b64(be.ct)});
+    await goTab(p2, 'list'); await p2.locator('#listBtn').click();
+    await p2.locator('[data-la="backup"]').click();
+    await p2.locator('#bkIn').fill(old);
+    await p2.locator('#bkRestore').click();
+    await p2.locator('#bkRPw').fill('kopi-passord-1'); await p2.locator('#bkRPwOk').click();
+    await expect(p2.locator('#bkRStatus')).toContainText('1 notat');
+    expect(err2).toEqual([]);
+    await ctx.close();
+    await settle(page, errors);
+  });
+
   test('five wrong passwords give a wait that survives a reload', async ({page}) => {
     const errors = watchErrors(page);
     await page.clock.install();
@@ -2251,7 +2406,7 @@ test.describe('privat', () => {
     await page.locator('#bkPwLock').click();
     await expect(page.locator('#bkStatus')).toContainText('låst med passord');
     const locked = await page.locator('#bkOut').inputValue();
-    expect(JSON.parse(locked).enc).toBe(1);
+    expect(JSON.parse(locked).enc).toBe(2);   // 0.25.0: enc 2 checks its plain fields
     expect(locked).not.toContain('innhold B');
     // a new phone: the locked backup needs its password; private notes come with the old private password
     const ctx = await browser.newContext({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-wnRbC4ZBoKVZMsTaoGfMZkmV7Z1NJuXSaax+oryIwQk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-OKFdkKPwKWSCqFHZ+plWqok3Rk74p1xdOw9RBu/lZR8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -267,6 +267,14 @@ body{--nc1:#2F6FB0;--nc2:#2E8B57;--nc3:#B8861B;--nc4:#7B4FB0;--nc5:#1E8C8C}
 .pw-show{display:flex;align-items:center;gap:10px;min-height:44px;margin:6px 0 0;font-weight:600;cursor:pointer}
 .pw-show input{width:22px;height:22px;margin:0;accent-color:var(--accent)}
 .pw-st,#panel .pw-st{min-height:1.3em;margin:4px 0 0;color:var(--red);font-weight:600}
+/* 0.25.0: password strength under a new password; the words carry the meaning, the bars only repeat it */
+.pw-m{display:flex;gap:10px;align-items:flex-start;margin:6px 0 0;color:var(--ink);font-size:.95rem;line-height:1.35}
+.pw-m[hidden]{display:none}
+.pw-m .pw-bars{display:flex;gap:3px;flex:none;margin-top:.35em}
+.pw-m .pw-bars i{display:block;width:16px;height:6px;border-radius:3px;background:var(--line)}
+.pw-m[data-l="1"] .pw-bars i:nth-child(1){background:var(--red)}
+.pw-m[data-l="2"] .pw-bars i:nth-child(-n+2){background:var(--muted)}
+.pw-m[data-l="3"] .pw-bars i{background:var(--lichen)}
 .pw-forgot{min-height:44px;padding:0;border:0;background:none;color:var(--link);text-decoration:underline;font:inherit;cursor:pointer}
 .bk-pw{margin:8px 0 4px}
 #bkPwBox{margin-bottom:14px}
@@ -912,8 +920,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.24.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 90;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.25.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 91;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1032,7 +1040,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
       ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The band inside the compass is the Milky Way: the middle of the compass is straight overhead, and the edge is the horizon. It is strongest where it stands highest and towards its bright centre in Sagittarius. The two triangles on the outer edge show where the Milky Way meets the horizon. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     notePriv:'Make private', notePrivS:'Private', notePinS:'Pin', noteTapPh:'Tap to write', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
-    pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
+    pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwWeak:'Weak: easy to guess. Three or four ordinary words that don’t belong together are stronger and easier to remember.', pwFair:'Fair. One more word makes it much stronger.', pwStrong:'Strong.', pwMeterL:'Password strength', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
     privUnlockT:'Unlock private notes', privUnlock:'Unlock', pwForgot:'Forgot the password?', pwForgotT:'Forgot the password?', pwForgotMsg:'The password cannot be recovered. You can delete the private notes and start again. Ordinary notes and lists are not affected.', privDelAll:'Delete private notes', privDeleted:'Private notes deleted', privField:'Private notes open outside Outdoor mode.', privMade:'The note is private and encrypted.',
     privSec:'Private notes', privIsOpen:'Private notes are open.', privIsLocked:'Private notes are locked.', privOpenNote:'Private note, open', noteDelQ:'Delete the note?', noteDelMsg:'You can undo it straight afterwards, but not later.', privDelQ:'Delete the private note?', privDelMsg:'It can only be brought back from a backup.', privLockNow:'Lock now', privChange:'Change password', privSecHint:'Locks again after 5 minutes without use, and after a minute in the background.', privChanged:'The password has been changed. Older backups still open with the old password.', noteShareLocked:`A locked note from ${APP_NAME}`, bkPrivAsk:'The backup holds private notes. Type their password to include them.', noteImportPriv:'Add as a private note', noteImportPrivHint:'The note was locked with a password. As a private note it stays encrypted on this phone too.',
     shPw:'Password for the link (optional)', shPwHint:'Give the password another way than the link, for example in person.', shPwReq:'Password for the link', shPwReqHint:'A private note is only shared with a password.', lnkLockedT:'This note is locked with a password', lnkLockedMsg:'Type the password you got from the sender.', lnkOpen:'Open',
@@ -1272,7 +1280,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
       ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Båndet inne i kompasset er Melkeveien: midten av kompasset er rett over deg, og kanten er horisonten. Det er sterkest der det står høyest og mot det klare sentrum i Skytten. De to trekantene på ytterkanten viser hvor Melkeveien møter horisonten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     notePriv:'Gjør privat', notePrivS:'Privat', notePinS:'Fest', noteTapPh:'Trykk for å skrive', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
-    pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
+    pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwWeak:'Svakt: lett å gjette. Tre eller fire vanlige ord som ikke hører sammen, er sterkere og lettere å huske.', pwFair:'Middels. Ett ord til gjør det mye sterkere.', pwStrong:'Sterkt.', pwMeterL:'Passordstyrke', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
     privUnlockT:'Lås opp private notater', privUnlock:'Lås opp', pwForgot:'Glemt passordet?', pwForgotT:'Glemt passordet?', pwForgotMsg:'Passordet kan ikke hentes fram. Du kan slette de private notatene og begynne på nytt. Vanlige notater og lister berøres ikke.', privDelAll:'Slett private notater', privDeleted:'Private notater slettet', privField:'Private notater åpnes utenfor Utemodus.', privMade:'Notatet er privat og kryptert.',
     privSec:'Private notater', privIsOpen:'Private notater er åpne.', privIsLocked:'Private notater er låst.', privOpenNote:'Privat notat, åpent', noteDelQ:'Slette notatet?', noteDelMsg:'Du kan angre rett etterpå, men ikke senere.', privDelQ:'Slette det private notatet?', privDelMsg:'Det kan bare hentes tilbake fra en sikkerhetskopi.', privLockNow:'Lås nå', privChange:'Bytt passord', privSecHint:'Låses igjen etter 5 minutter uten bruk, og når appen har vært i bakgrunnen et minutt.', privChanged:'Passordet er byttet. Eldre sikkerhetskopier åpnes fortsatt med det gamle passordet.', noteShareLocked:`Et låst notat fra ${APP_NAME}`, bkPrivAsk:'Kopien har private notater. Skriv passordet deres for å ta dem med.', noteImportPriv:'Legg til som privat notat', noteImportPrivHint:'Notatet var låst med passord. Som privat notat blir det kryptert på denne telefonen også.',
     shPw:'Passord for lenken (valgfritt)', shPwHint:'Gi passordet på en annen måte enn lenken, for eksempel muntlig.', shPwReq:'Passord for lenken', shPwReqHint:'Et privat notat deles bare med passord.', lnkLockedT:'Notatet er låst med passord', lnkLockedMsg:'Skriv passordet du fikk fra avsenderen.', lnkOpen:'Åpne',
@@ -1633,7 +1641,7 @@ function bkRestore(text){
   // password adds them at once; another password leaves them in a.pend for the restore sheet to ask for it.
   const pn = Array.isArray(obj.notes) ? obj.notes.filter(n => n && n.priv && b64ok(n.iv) && b64ok(n.ct)) : [], fp = privClean(obj.priv);
   if (pn.length && fp && CRYPTO_OK){
-    const clean = pn.map(n => noteMeta({id:uid(), title:'', text:'', t:+n.t || Date.now(), priv:1, iv:n.iv, ct:n.ct}, n));
+    const clean = pn.map(n => { const c = noteMeta({id:uid(), title:'', text:'', t:+n.t || Date.now(), priv:1, iv:n.iv, ct:n.ct}, n); if (b64ok(n.ck)) c.ck = n.ck; return c; });
     // build 71: the file's key is never taken over; without the same key here, the file's password is asked for
     if (state.priv && state.priv.salt === fp.salt && state.priv.wrap === fp.wrap){
       clean.forEach(n => { if (!state.notes.some(x => x.priv && x.ct === n.ct)){ state.notes.push(n); a.n++; } });
@@ -2968,12 +2976,12 @@ function askShareNote(n, req){
       <div class="bk-warn"><p>${T.noteShareWarn}</p></div>
       <label class="sh-lbl" for="shName">${T.noteShareName}</label><input type="text" id="shName" maxlength="40" autocomplete="off" value="">
       <p class="sh-hint">${T.noteShareNameHint}</p>
-      ${CRYPTO_OK ? `<label class="sh-lbl" for="shPw">${req ? T.shPwReq : T.shPw}</label><input type="password" id="shPw" maxlength="200" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" value="">
+      ${CRYPTO_OK ? `<label class="sh-lbl" for="shPw">${req ? T.shPwReq : T.shPw}</label><input type="password" id="shPw" maxlength="200" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" value="">${pwMeterHtml('shPwM')}
       <label class="pw-show"><input type="checkbox" id="shPwShow"> ${T.pwShow}</label>
       <p class="sh-hint">${req ? T.shPwReqHint : T.shPwHint}</p><p class="pw-st" id="shPwSt" role="alert"></p>` : ''}
       <div class="row"><button class="btn" data-s="edit">${T.noteShareEdit}</button><button class="btn primary" data-s="ok">${T.noteShare}</button></div>`, true);
     if (req) panel.dataset.priv = '1';
-    if (CRYPTO_OK) $('shPwShow').onchange = e => { $('shPw').type = e.target.checked ? 'text' : 'password'; };
+    if (CRYPTO_OK){ $('shPwShow').onchange = e => { $('shPw').type = e.target.checked ? 'text' : 'password'; }; pwMeter($('shPw'), $('shPwM')); }
     panel.querySelector('[data-s=edit]').onclick = () => closeSheet('edit');
     panel.querySelector('[data-s=ok]').onclick = () => {
       const pw = CRYPTO_OK ? $('shPw').value : '';
@@ -3225,30 +3233,85 @@ const privOpen = new Map();
 const rnd = n => crypto.getRandomValues(new Uint8Array(n));
 const pwNorm = pw => String(pw || '').normalize('NFKC');
 const pwLen = pw => [...pwNorm(pw)].length;
+/* 0.25.0: a rough, offline strength guess for a new password: 1 weak, 2 fair, 3 strong (0 = too short to judge).
+   Weak: a common password (also with digits or symbols round it, or simple swaps like 0 for o), the same or running
+   characters, a keyboard row. Then length, separate words and kinds of characters. A hint only, never a block. */
+const PW_COMMON = new Set(('password passord passw0rd qwerty qwertz azerty asdf asdfgh zxcvbn letmein welcome velkommen admin '
+  + 'administrator login hello hallo heisann hei iloveyou jegelskerdeg elskerdeg loveyou secret hemmelig hemmelighet privat '
+  + 'private dragon monkey master shadow sunshine solskinn princess prinsesse football fotball soccer baseball superman '
+  + 'batman trustno1 freedom whatever starwars pokemon minecraft summer sommer winter vinter spring autumn host varen '
+  + 'norge norway noreg oslo bergen stavanger trondheim tromso tromsø alta bodo bodø drammen kristiansand rosenborg brann '
+  + 'viking molde lillehammer kjaereste kjæreste mamma pappa familie bestemor bestefar katt hund kattepus pusekatt fjellet '
+  + 'fjell hytta hytte tur turen sekk telt varde notater notat dagbok kode passordet changeme default test testing '
+  + 'abc abcdef abcd1234 qwerty123 password1 passord1 123456 1234567 12345678 123456789 1234567890 111111 000000 654321 '
+  + 'michael jennifer thomas andreas kristian martin henrik ingrid nora emma sofie sara jonas lars ole kari per anne').split(' '));
+const PW_ROWS = ['abcdefghijklmnopqrstuvwxyzæøå', '0123456789', 'qwertyuiopå', 'asdfghjkløæ', 'zxcvbnm', 'qazwsxedcrfvtgbyhnujmikolp'];
+function pwStrength(pw){
+  const a = pwNorm(pw), len = [...a].length;
+  if (len < PW_MIN) return 0;
+  const low = a.toLowerCase(), plain = low.replace(/[\s._\-]+/g, '');
+  const leet = x => x.replace(/0/g, 'o').replace(/[1!|]/g, 'i').replace(/3/g, 'e').replace(/[4@]/g, 'a').replace(/[5$]/g, 's').replace(/7/g, 't');
+  const core = x => x.replace(/^[^a-zæøå]+|[^a-zæøå]+$/g, '');
+  const cands = [plain, core(plain), leet(plain), core(leet(plain))];
+  if (cands.some(x => PW_COMMON.has(x))) return 1;
+  // the same few characters, or mostly running characters or a keyboard row, forwards or backwards (abcd, 4321, qwerty)
+  if (new Set(plain).size <= 3) return 1;
+  let runLen = 0;
+  for (let i = 0; i < plain.length; i++) for (let j = plain.length; j >= i + 4; j--){
+    const piece = plain.slice(i, j), back = piece.split('').reverse().join('');
+    if (PW_ROWS.some(r => r.includes(piece) || r.includes(back))){ runLen = Math.max(runLen, j - i); break; }
+  }
+  if (runLen >= plain.length * 0.6) return 1;
+  // a common word with only digits or symbols added counts as weak too (sommer2024!, Passord#1)
+  const glued = leet(low.replace(/\s+/g, ''));
+  if (PW_COMMON.has(glued.replace(/[^a-zæøå]+$/, '').replace(/^[^a-zæøå]+/, ''))) return 1;
+  const words = low.split(/[\s._\-]+/).filter(w => /[a-zæøå]{3,}/.test(w)).length;
+  const kinds = [/[a-zæøå]/, /[A-ZÆØÅ]/, /[0-9]/, /[^a-zA-Z0-9æøåÆØÅ\s]/].filter(r => r.test(a)).length;
+  if (len >= 20 || words >= 4 || (len >= 16 && kinds >= 3)) return 3;
+  if (len >= 13 || words >= 3 || (len >= 10 && kinds >= 3)) return 2;
+  return 1;
+}
+// The line under a new password field; call pwMeter(input, line) once, it follows the typing.
+const pwMeterHtml = id => `<div class="pw-m" id="${id}" hidden aria-live="polite"><span class="pw-bars" role="img" aria-hidden="true"><i></i><i></i><i></i></span><span class="pw-mt"></span></div>`;
+function pwMeter(inp, box){
+  if (!inp || !box) return;
+  const T = t();
+  const up = () => {
+    const l = pwStrength(inp.value);
+    box.hidden = !l; box.dataset.l = l;
+    box.querySelector('.pw-mt').textContent = l ? [T.pwWeak, T.pwFair, T.pwStrong][l - 1] : '';
+  };
+  inp.addEventListener('input', up); up();
+}
 const b64ok = s => typeof s === 'string' && s.length >= 8 && s.length < 4e6 && /^[A-Za-z0-9_-]+$/.test(s);
 async function pwKey(pw, salt, iter){
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pwNorm(pw)), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey({name:'PBKDF2', hash:'SHA-256', salt, iterations:iter}, base, {name:'AES-GCM', length:256}, false, ['encrypt', 'decrypt']);
 }
-async function gcmEnc(key, bytes){ const iv = rnd(12); return {iv, ct:new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, bytes))}; }
-async function gcmDec(key, iv, ct){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, ct)); }
+// 0.25.0: aad = plain fields checked together with the content (AES-GCM additional data); a change to them fails the check
+const aadOf = a => a === undefined ? {} : {additionalData:typeof a === 'string' ? new TextEncoder().encode(a) : a};
+async function gcmEnc(key, bytes, aad){ const iv = rnd(12); return {iv, ct:new Uint8Array(await crypto.subtle.encrypt(Object.assign({name:'AES-GCM', iv}, aadOf(aad)), key, bytes))}; }
+async function gcmDec(key, iv, ct, aad){ return new Uint8Array(await crypto.subtle.decrypt(Object.assign({name:'AES-GCM', iv}, aadOf(aad)), key, ct)); }
 const dkImport = raw => crypto.subtle.importKey('raw', raw, {name:'AES-GCM'}, false, ['encrypt', 'decrypt']);
 // The data key wrapped with a password: a fresh salt every time (new password, raised round count).
+// 0.25.0: v 2 checks its method, round count and salt with the key (v 1 wraps still open and are upgraded at unlock)
+const wrapAad = p => `varde-priv|${p.v}|${p.kdf}|${p.iter}|${p.salt}`;
 async function privWrap(raw, pw){
-  const salt = rnd(16), w = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), raw);
-  return {v:1, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt), iv:b64u(w.iv), wrap:b64u(w.ct)};
+  const salt = rnd(16), p = {v:2, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt)};
+  const w = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), raw, wrapAad(p));
+  return Object.assign(p, {iv:b64u(w.iv), wrap:b64u(w.ct)});
 }
 // The raw data key, or null for a wrong password (or damaged data).
 async function privUnwrap(p, pw){
-  try { const raw = await gcmDec(await pwKey(pw, unb64u(p.salt), p.iter), unb64u(p.iv), unb64u(p.wrap)); return raw.length === 32 ? raw : null; }
+  try { const raw = await gcmDec(await pwKey(pw, unb64u(p.salt), p.iter), unb64u(p.iv), unb64u(p.wrap), p.v === 2 ? wrapAad(p) : undefined); return raw.length === 32 ? raw : null; }
   catch(e){ return null; }
 }
 // state.priv from a file: only the known fields, in their known form.
 function privClean(p){
-  if (!p || typeof p !== 'object' || p.v !== 1 || p.kdf !== 'pbkdf2-sha256') return null;
+  if (!p || typeof p !== 'object' || (p.v !== 1 && p.v !== 2) || p.kdf !== 'pbkdf2-sha256') return null;
   const iter = +p.iter;
   if (!Number.isInteger(iter) || iter < 100000 || iter > 10000000 || !b64ok(p.salt) || !b64ok(p.iv) || !b64ok(p.wrap)) return null;
-  return {v:1, kdf:'pbkdf2-sha256', iter, salt:p.salt, iv:p.iv, wrap:p.wrap};
+  return {v:p.v, kdf:'pbkdf2-sha256', iter, salt:p.salt, iv:p.iv, wrap:p.wrap};
 }
 async function privSetKey(raw){ privRaw = raw; privKey = await dkImport(raw); privTouch(); }
 // build 71: a new password gets a new data key; every private note is sealed again with it, all or nothing.
@@ -3257,9 +3320,9 @@ async function privRekey(pw){
   const all = state.notes.filter(n => n.priv);
   if (!all.every(n => privOpen.has(n.id))){ state.priv = await privWrap(privRaw, pw); return; }
   const raw = rnd(32), key = await dkImport(raw), sealed = [];
-  for (const n of all){ const o = privOpen.get(n.id), c = {}; await noteSeal(c, o.title, o.text, key); sealed.push([n, c]); }
+  for (const n of all){ const o = privOpen.get(n.id), c = {}; await noteSeal(c, o.title, o.text, key, o.rn || ''); sealed.push([n, c]); }
   const wrap = await privWrap(raw, pw);
-  sealed.forEach(([n, c]) => { n.iv = c.iv; n.ct = c.ct; });
+  sealed.forEach(([n, c]) => { n.iv = c.iv; n.ct = c.ct; n.ck = c.ck; if (n.rcv) n.rcv = {t:n.rcv.t}; });
   state.priv = wrap;
   if (privRaw) privRaw.fill(0);
   await privSetKey(raw);
@@ -3269,29 +3332,54 @@ async function privCreate(pw){
   state.priv = await privWrap(raw, pw);
   await privSetKey(raw); save();
 }
-const noteBytes = (title, text) => new TextEncoder().encode(JSON.stringify({ti:title, tx:text}));
+// 0.25.0: the sender's name of a received note (rn) travels inside the encrypted part, and each note has its own random
+// tag (ck) checked with its text, so encrypted texts cannot be swapped between notes. Notes without ck open as before.
+const noteBytes = (title, text, rn) => new TextEncoder().encode(JSON.stringify(rn ? {ti:title, tx:text, rn} : {ti:title, tx:text}));
+const noteAad = n => n.ck ? 'varde-note|' + n.ck : undefined;
 async function noteOpenWith(key, n){
-  try { const o = JSON.parse(new TextDecoder().decode(await gcmDec(key, unb64u(n.iv), unb64u(n.ct)))); return {title:String(o.ti || ''), text:String(o.tx || '')}; }
+  try {
+    const o = JSON.parse(new TextDecoder().decode(await gcmDec(key, unb64u(n.iv), unb64u(n.ct), noteAad(n))));
+    const r = {title:String(o.ti || ''), text:String(o.tx || '')};
+    const rn = String(o.rn || (n.rcv && n.rcv.n) || '').slice(0, 40);
+    if (rn) r.rn = rn;
+    return r;
+  }
   catch(e){ return null; }
 }
-// Encrypts a note in place: title and text are emptied in state and kept only in privOpen.
-async function noteSeal(n, title, text, key){
+// Encrypts a note in place: title, text and the sender's name are emptied in state and kept only in privOpen.
+async function noteSeal(n, title, text, key, rn){
   key = key || privKey;
   if (!key) throw new Error('locked');
-  const e = await gcmEnc(key, noteBytes(title, text));
-  n.priv = 1; n.iv = b64u(e.iv); n.ct = b64u(e.ct); n.title = ''; n.text = '';
-  if (key === privKey) privOpen.set(n.id, {title, text});
+  if (rn === undefined) rn = (n.rcv && n.rcv.n) || ((n.id && privOpen.get(n.id)) || {}).rn || '';
+  rn = String(rn || '').slice(0, 40);
+  const ck = b64u(rnd(12)), e = await gcmEnc(key, noteBytes(title, text, rn), 'varde-note|' + ck);
+  n.priv = 1; n.ck = ck; n.iv = b64u(e.iv); n.ct = b64u(e.ct); n.title = ''; n.text = '';
+  if (n.rcv) n.rcv = {t:n.rcv.t};
+  if (key === privKey) privOpen.set(n.id, rn ? {title, text, rn} : {title, text});
 }
-// What a note shows: itself, the opened copy of a private note, or null while it is locked.
-const noteView = n => !n.priv ? n : (privOpen.has(n.id) ? Object.assign({}, n, privOpen.get(n.id)) : null);
+// What a note shows: itself, the opened copy of a private note (with the sender's name back in rcv), or null while locked.
+const noteView = n => {
+  if (!n.priv) return n;
+  if (!privOpen.has(n.id)) return null;
+  const o = privOpen.get(n.id), v = Object.assign({}, n, {title:o.title, text:o.text});
+  if (n.rcv) v.rcv = {n:o.rn || '', t:n.rcv.t};
+  return v;
+};
 async function privUnlock(pw){
   if (!state.priv) return false;
   const raw = await privUnwrap(state.priv, pw);
   if (!raw) return false;
-  if (state.priv.iter < PRIV_ITER) state.priv = await privWrap(raw, pw);   // a raised round count takes effect here
+  if (state.priv.iter < PRIV_ITER || state.priv.v !== 2) state.priv = await privWrap(raw, pw);   // a raised round count, or v 1 (0.25.0), is upgraded here
   await privSetKey(raw);
   privOpen.clear();
-  for (const n of state.notes){ if (n.priv){ const o = await noteOpenWith(privKey, n); if (o) privOpen.set(n.id, o); } }
+  for (const n of state.notes){
+    if (!n.priv) continue;
+    const o = await noteOpenWith(privKey, n);
+    if (!o) continue;
+    privOpen.set(n.id, o);
+    // 0.25.0: older notes get their tag, and a sender's name stored in plain form moves inside
+    if (!n.ck || (n.rcv && n.rcv.n)) await noteSeal(n, o.title, o.text, privKey, o.rn || '');
+  }
   delete state.privFail; save();
   return true;
 }
@@ -3347,7 +3435,7 @@ function pwSheet(o){
     sheetResolve = res;
     const inp = (id, ac) => `<input type="password" id="${id}" autocomplete="${ac}" autocapitalize="off" autocorrect="off" spellcheck="false">`;
     openSheet(`<h3>${esc(o.title)}</h3>${o.msg ? `<p>${esc(o.msg)}</p>` : ''}${o.warn ? `<div class="bk-warn"><p>${esc(o.warn)}</p></div>` : ''}
-      <label class="sh-lbl" for="pw1">${T.pwLbl}</label>${inp('pw1', o.twice ? 'new-password' : 'current-password')}
+      <label class="sh-lbl" for="pw1">${T.pwLbl}</label>${inp('pw1', o.twice ? 'new-password' : 'current-password')}${o.twice ? pwMeterHtml('pw1M') : ''}
       ${o.twice ? `<label class="sh-lbl" for="pw2">${T.pwAgain}</label>${inp('pw2', 'new-password')}` : ''}
       <label class="pw-show"><input type="checkbox" id="pwShow"> ${T.pwShow}</label>
       <p class="pw-st" id="pwSt" role="alert"></p>
@@ -3355,6 +3443,7 @@ function pwSheet(o){
       <div class="row"><button class="btn" data-s="cancel">${T.cancel}</button><button class="btn primary" data-s="ok">${esc(o.ok)}</button></div>`);
     const p1 = $('pw1'), p2 = $('pw2'), st = $('pwSt'), okB = panel.querySelector('[data-s=ok]');
     let busy = false;
+    if (o.twice) pwMeter(p1, $('pw1M'));
     $('pwShow').onchange = e => { [p1, p2].forEach(x => { if (x) x.type = e.target.checked ? 'text' : 'password'; }); };
     const go = async () => {
       if (busy) return;
@@ -3405,7 +3494,7 @@ async function privForgot(){
 }
 /* A note link with a password: 'e' + base64url(version 1 | z flag | salt 16 | IV 12 | ciphertext of the packed note).
    Version 1 = PBKDF2-SHA-256 with 600,000 rounds; a later version byte can raise it. */
-const LINK_ITER = {1:600000};
+const LINK_ITER = {1:600000, 2:600000};   // 0.25.0: version 2 checks the header (version, z flag, salt, IV) with the note
 async function packBytes(obj){
   const json = new TextEncoder().encode(JSON.stringify(obj));
   if (typeof CompressionStream !== 'undefined'){
@@ -3418,9 +3507,12 @@ async function unpackBytes(z, bytes){
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 async function sealLink(obj, pw){
-  const p = await packBytes(obj), salt = rnd(16), e = await gcmEnc(await pwKey(pw, salt, LINK_ITER[1]), p.bytes);
-  const out = new Uint8Array(2 + 16 + 12 + e.ct.length);
-  out[0] = 1; out[1] = p.z; out.set(salt, 2); out.set(e.iv, 18); out.set(e.ct, 30);
+  const p = await packBytes(obj), salt = rnd(16);
+  const head = new Uint8Array(30), iv = rnd(12);
+  head[0] = 2; head[1] = p.z; head.set(salt, 2); head.set(iv, 18);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv, additionalData:head}, await pwKey(pw, salt, LINK_ITER[2]), p.bytes));
+  const out = new Uint8Array(30 + ct.length);
+  out.set(head, 0); out.set(ct, 30);
   return 'e' + b64u(out);
 }
 // The packed note, or null for a wrong password; throws on a link that is not readable at all.
@@ -3428,17 +3520,20 @@ async function openLink(code, pw){
   const b = unb64u(code.slice(1));
   if (b.length < 31 || !LINK_ITER[b[0]]) throw new Error('bad');
   let bytes;
-  try { bytes = await gcmDec(await pwKey(pw, b.slice(2, 18), LINK_ITER[b[0]]), b.slice(18, 30), b.slice(30)); } catch(e){ return null; }
+  try { bytes = await gcmDec(await pwKey(pw, b.slice(2, 18), LINK_ITER[b[0]]), b.slice(18, 30), b.slice(30), b[0] >= 2 ? b.slice(0, 30) : undefined); } catch(e){ return null; }
   return unpackBytes(b[1], bytes);
 }
 // A backup with a password: a wrapper around the normal backup text. Old backups without one restore as before.
+// 0.25.0: enc 2 checks app, method, round count and salt with the content (enc 1 backups still restore)
+const bkAad = o => `${o.app}|${o.enc}|${o.kdf}|${o.iter}|${o.salt}`;
 async function bkSeal(text, pw){
-  const salt = rnd(16), e = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), new TextEncoder().encode(text));
-  return JSON.stringify({app:'trip-checklist', enc:1, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt), iv:b64u(e.iv), ct:b64u(e.ct)});
+  const salt = rnd(16), o = {app:'trip-checklist', enc:2, kdf:'pbkdf2-sha256', iter:PRIV_ITER, salt:b64u(salt)};
+  const e = await gcmEnc(await pwKey(pw, salt, PRIV_ITER), new TextEncoder().encode(text), bkAad(o));
+  return JSON.stringify(Object.assign(o, {iv:b64u(e.iv), ct:b64u(e.ct)}));
 }
-const bkIsSealed = o => !!(o && o.app === 'trip-checklist' && o.enc === 1 && o.kdf === 'pbkdf2-sha256' && Number.isInteger(o.iter) && o.iter >= 100000 && o.iter <= 10000000 && b64ok(o.salt) && b64ok(o.iv) && b64ok(o.ct));
+const bkIsSealed = o => !!(o && o.app === 'trip-checklist' && (o.enc === 1 || o.enc === 2) && o.kdf === 'pbkdf2-sha256' && Number.isInteger(o.iter) && o.iter >= 100000 && o.iter <= 10000000 && b64ok(o.salt) && b64ok(o.iv) && b64ok(o.ct));
 async function bkUnseal(o, pw){
-  try { return new TextDecoder().decode(await gcmDec(await pwKey(pw, unb64u(o.salt), o.iter), unb64u(o.iv), unb64u(o.ct))); }
+  try { return new TextDecoder().decode(await gcmDec(await pwKey(pw, unb64u(o.salt), o.iter), unb64u(o.iv), unb64u(o.ct), o.enc === 2 ? bkAad(o) : undefined)); }
   catch(e){ return null; }
 }
 // Private notes from a backup with another password: opened with that password, sealed again with this phone's key.
@@ -3455,7 +3550,7 @@ async function privStoreOpened(list){
   for (const {n, o} of list){
     if ([...privOpen.values()].some(x => x.title === o.title && x.text === o.text)) continue;
     const nn = noteMeta({id:uid(), title:'', text:'', t:n.t || Date.now()}, n);
-    await noteSeal(nn, o.title, o.text); state.notes.push(nn); k++;
+    await noteSeal(nn, o.title, o.text, undefined, o.rn || ''); state.notes.push(nn); k++;
   }
   if (k) save();
   return k;
@@ -5065,7 +5160,7 @@ function backupSheet(){
     <p class="bk-covers">${T.bkCovers}</p>
     ${CRYPTO_OK ? `<label class="pw-show bk-pw"><input type="checkbox" id="bkPwOn"> ${T.bkPwOn}</label>
     <div id="bkPwBox" hidden><p class="sh-hint">${T.bkPwHint}</p>
-      <label class="sh-lbl" for="bkPw1">${T.pwLbl}</label><input type="password" id="bkPw1" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <label class="sh-lbl" for="bkPw1">${T.pwLbl}</label><input type="password" id="bkPw1" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">${pwMeterHtml('bkPw1M')}
       <label class="sh-lbl" for="bkPw2">${T.pwAgain}</label><input type="password" id="bkPw2" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
       <label class="pw-show"><input type="checkbox" id="bkPwShow"> ${T.pwShow}</label>
       <p class="pw-st" id="bkPwSt" role="alert"></p>
@@ -5114,6 +5209,7 @@ function backupSheet(){
   const unseal = () => { sealed = false; data = plain; $('bkOut').value = plain; };
   if (CRYPTO_OK){
     $('bkPwOn').onchange = e => { $('bkPwBox').hidden = !e.target.checked; unseal(); say('', false); if (e.target.checked) $('bkPw1').focus(); };
+    pwMeter($('bkPw1'), $('bkPw1M'));
     $('bkPwShow').onchange = e => { ['bkPw1', 'bkPw2'].forEach(id => { $(id).type = e.target.checked ? 'text' : 'password'; }); };
     ['bkPw1', 'bkPw2'].forEach(id => $(id).addEventListener('input', () => { if (sealed){ unseal(); say('', false); } }));
     $('bkPwLock').onclick = async () => {
@@ -5408,7 +5504,7 @@ main.addEventListener('click', async e => {
     if (!(await privEnsure())) return;
     const n = state.notes.find(x => x.id === id), o = n && privOpen.get(id);
     if (!n || !n.priv || !o) return;
-    n.title = o.title; n.text = o.text; delete n.priv; delete n.iv; delete n.ct; privOpen.delete(id);
+    n.title = o.title; n.text = o.text; if (n.rcv) n.rcv = {n:o.rn || '', t:n.rcv.t}; delete n.priv; delete n.iv; delete n.ct; delete n.ck; privOpen.delete(id);
     save(); render(); return;
   }
   if (act === 'privChange'){
