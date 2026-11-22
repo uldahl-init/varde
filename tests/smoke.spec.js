@@ -2926,3 +2926,73 @@ test.describe('landskap 0.24.1', () => {
     });
   }
 });
+
+/* ---------- 0.24.2 (build 89): the ridges in the right order, rising one by one, and the landscape under a note ---------- */
+test.describe('landskap 0.24.2', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [KEY, st]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+  };
+  const BASE = {v:2, introDone:true, lang:'no', lists:[]};
+  const lum = c => { const m = c.match(/[\d.]+/g).map(Number); return .2126 * m[0] + .7152 * m[1] + .0722 * m[2]; };
+  const fills = land => land.locator('path').evaluateAll(ps => ps.map(x => getComputedStyle(x).fill));
+
+  for (const scheme of ['light', 'dark']){
+    test(`the near ridges are the darkest, as in the icon (${scheme})`, async ({browser}) => {
+      const ctx = await ctxFor(browser, {colorScheme:scheme, reducedMotion:'reduce'}), p = await ctx.newPage(), err = watchErrors(p);
+      await start(p, BASE);
+      await p.locator('#hdrSet').click();
+      const f = (await fills(p.locator('#main .land'))).map(lum);
+      // from Rondeslottet (back) to the foreground the ridges get darker, step by step
+      for (let i = 1; i < f.length; i++) expect(f[i], `ridge ${i} darker than ridge ${i - 1}: ${f}`).toBeLessThan(f[i - 1]);
+      await settle(p, err); await ctx.close();
+    });
+  }
+
+  test('Innstillinger: only the two back ridges until the landscape is on screen, then the four in front rise one by one', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, BASE);
+    await p.locator('#hdrSet').click();
+    const land = p.locator('#main .land.rise'), op = () => land.locator('.lr').evaluateAll(gs => gs.map(g => +getComputedStyle(g).opacity));
+    await expect(land).toHaveCount(1);
+    expect(await op()).toEqual([1, 1, 0, 0, 0, 0]);
+    await p.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+    await expect(land).toHaveClass(/\bup\b/);
+    // one after another: soon after, the first in front is on its way while the last has not started
+    await p.waitForTimeout(700);
+    let o = await op(); expect(o[2]).toBeGreaterThan(.5); expect(o[5]).toBeLessThan(.2);
+    await expect.poll(async () => (await op()).every(x => x > .99), {timeout:6000}).toBe(true);
+    // out of view, they sink back, so it plays again next time
+    await p.evaluate(() => scrollTo(0, 0));
+    await expect(land).not.toHaveClass(/\bup\b/);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('with reduce motion all ridges stand from the start', async ({browser}) => {
+    const ctx = await ctxFor(browser, {reducedMotion:'reduce'}), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, BASE);
+    await p.locator('#hdrSet').click();
+    expect(await p.locator('#main .land .lr').evaluateAll(gs => gs.map(g => +getComputedStyle(g).opacity))).toEqual([1, 1, 1, 1, 1, 1]);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('a note ends with the landscape, still; the edit has none', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {notes:[{id:'n1', title:'Fiske', text:'Ørret', t:Date.UTC(2026, 10, 20)}]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#main .notes-ix [data-act="openNote"]').click();
+    const land = p.locator('#main .land');
+    await expect(land).toHaveCount(1);
+    await expect(land).not.toHaveClass(/rise/);
+    expect(await land.locator('.lr').evaluateAll(gs => gs.map(g => +getComputedStyle(g).opacity))).toEqual([1, 1, 1, 1, 1, 1]);
+    expect(await p.evaluate(() => document.querySelector('#main').lastElementChild.classList.contains('land'))).toBe(true);
+    const a = await p.locator('#main .note-acts').boundingBox(), b = await land.boundingBox();
+    expect(b.y).toBeGreaterThanOrEqual(a.y + a.height);
+    await p.locator('#main .note-body').click();
+    await expect(p.locator('#neText')).toBeVisible();
+    await expect(land).toHaveCount(0);
+    await settle(p, err); await ctx.close();
+  });
+});
