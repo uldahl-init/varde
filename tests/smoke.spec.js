@@ -2311,7 +2311,7 @@ test.describe('notater lagrer 0.22.1', () => {
     await editText(page, 'endret tekst');
     await page.goBack();
     await expect(page.locator('#main .notes-ix')).toBeVisible();
-    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect(toast(page)).toContainText('Lagret');
     await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('endret tekst');
     await undo(page).click();
     await expect.poll(async () => (await noteBy(page, 'Alpha'))[0].text).toBe('første');
@@ -2325,7 +2325,7 @@ test.describe('notater lagrer 0.22.1', () => {
     await openNote(page, 'Alpha');
     await editText(page, 'tilbakeknapp');
     await page.locator('#main [data-act="back"]').click();
-    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect(toast(page)).toContainText('Lagret');
     await expect.poll(() => noteBy(page, 'Alpha').then(a => a[0] && a[0].text)).toBe('tilbakeknapp');
     // Avbryt throws the change away; Angre saves it after all
     await openNote(page, 'Alpha');
@@ -2358,7 +2358,7 @@ test.describe('notater lagrer 0.22.1', () => {
     await newNote(page, 'Beta', 'ny');
     await page.goBack();
     await expect(page.locator('#overlay')).toBeHidden();
-    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect(toast(page)).toContainText('Lagret');
     await expect(page.locator('#main .notes-ix')).toContainText('Beta');
     await expect.poll(() => noteBy(page, 'Beta').then(a => a.length)).toBe(1);
     await undo(page).click();
@@ -2427,7 +2427,7 @@ test.describe('notater lagrer 0.22.1', () => {
     const ct0 = (await stored(page)).notes[0].ct;
     await editText(page, 'ny hemmelig tekst');
     await page.goBack();
-    await expect(toast(page)).toContainText('Notatet er lagret');
+    await expect(toast(page)).toContainText('Lagret');
     await expect.poll(async () => (await stored(page)).notes[0].ct).not.toBe(ct0);
     const raw = await page.evaluate(k => localStorage.getItem(k), KEY);
     expect(raw).not.toContain('ny hemmelig');
@@ -2678,5 +2678,220 @@ test.describe('appikon 0.23.3', () => {
     const names = Object.keys(eval('(' + src.match(/const VARIANTS = (\{[^}]*\})/)[1] + ')'));
     expect(names).toContain(src.match(/const ACTIVE = '([a-z]+)'/)[1]);
     for (const n of names) expect(require('fs').existsSync(require('path').join(ROOT, 'design', 'icons', `landscape-${n}.svg`)), n).toBe(true);
+  });
+});
+
+/* ---------- 0.24.0 (build 87): from testing, 22 Nov ----------
+   Typing saves itself everywhere (Rediger sheets, «Legg til en ting», Sekkvekt, links), the note's icon buttons,
+   «Lagret» at the top with a fading box, and the position button and its age line on Kompass. */
+test.describe('fra testing 0.24', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+  };
+  const stored = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+  const hidden = (p, on) => p.evaluate(on => { Object.defineProperty(document, 'hidden', {configurable:true, get:() => on}); Object.defineProperty(document, 'visibilityState', {configurable:true, get:() => on ? 'hidden' : 'visible'}); if (on) document.dispatchEvent(new Event('visibilitychange')); }, on);
+  const BASE = {v:2, std:{done:{}, modes:{}, light:{}, open:{}}, introDone:true, lang:'no'};
+  const LIST = () => Object.assign({}, BASE, {lists:[{id:'L1', name:'Test', notes:'', modes:{}, cats:[{id:'k1', name:'K1', open:true, items:[{id:'a', text:'A', done:false}, {id:'b', text:'B', done:false}]}]}]});
+  const items = async p => (await stored(p)).lists[0].cats[0].items.map(i => i.text);
+  const toast = p => p.locator('#toast');
+  async function rediger(p){
+    // from Pakkliste through the header; Ferdig returns to Dine lister, where the header is a plain title
+    if (!(await p.locator('#main [data-sel="L1"]').count())) await p.locator('#listBtn').click();
+    if (!(await p.locator('#main [data-la="edit"][data-id="L1"]').isVisible())) await p.locator('#main [data-sel="L1"]').click();
+    await p.locator('#main [data-la="edit"][data-id="L1"]').click();
+    await expect(p.locator('#main .edit-bar')).toBeVisible();
+  }
+
+  test('Rediger: a sheet closed with Escape or ✕ saves, Avbryt throws away, both with Angre', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, LIST());
+    await rediger(p);
+    const rename = async (id, v) => { await p.locator(`#main li.item[data-item="${id}"] [data-act="renameItem"]`).click(); await expect(p.locator('#askInput')).toBeFocused(); await p.locator('#askInput').fill(v); };
+    // Escape saves, with «Lagret», the check mark and Angre
+    await rename('a', 'Alfa'); await p.keyboard.press('Escape');
+    await expect.poll(() => items(p)).toEqual(['Alfa', 'B']);
+    await expect(toast(p)).toContainText('Lagret'); await expect(toast(p).locator('.ok-ic')).toHaveCount(1);
+    await toast(p).locator('button').click();
+    await expect.poll(() => items(p)).toEqual(['A', 'B']);
+    // ✕ saves too
+    await rename('a', 'Alfa'); await p.locator('#overlay [data-sheet-close]').click();
+    await expect.poll(() => items(p)).toEqual(['Alfa', 'B']);
+    // Avbryt with a change throws it away; its Angre applies it after all
+    await rename('b', 'Beta'); await p.locator('#overlay [data-s="cancel"]').click();
+    await expect(toast(p)).toContainText('Endringene er forkastet');
+    expect(await items(p)).toEqual(['Alfa', 'B']);
+    await toast(p).locator('button').click();
+    await expect.poll(() => items(p)).toEqual(['Alfa', 'Beta']);
+    // closing without a change makes no message and changes nothing
+    await p.waitForTimeout(100); await p.evaluate(() => { document.getElementById('toast').hidden = true; });
+    await rename('a', 'Alfa'); await p.keyboard.press('Escape');
+    await p.waitForTimeout(200);
+    await expect(toast(p)).toBeHidden();
+    // Ny kategori closed with Escape makes the category
+    await p.locator('#main [data-act="addCat"]').click(); await p.locator('#askInput').fill('Kjøkken'); await p.keyboard.press('Escape');
+    await expect.poll(async () => (await stored(p)).lists[0].cats.map(c => c.name)).toEqual(['K1', 'Kjøkken']);
+    // the background saves an open sheet as if it were closed
+    await p.locator('#main [data-act="renameCat"]').first().click(); await p.locator('#askInput').fill('Klær');
+    await hidden(p, true);
+    await expect.poll(async () => (await stored(p)).lists[0].cats[0].name).toBe('Klær');
+    await expect(p.locator('#overlay')).toBeHidden();
+    await hidden(p, false);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('Rediger: text in «Legg til en ting» survives redraws and is added on Ferdig, another tab and the background', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, LIST());
+    await rediger(p);
+    const add = p.locator('#main [data-add="k1"]');
+    await add.fill('Kniv');
+    // a redraw (indent another row) keeps the text
+    await p.locator('#main li.item[data-item="b"] [data-act="indentItem"]').click();
+    await expect(add).toHaveValue('Kniv');
+    expect(await items(p)).toEqual(['A', 'B']);
+    // Ferdig adds it, with Lagret and Angre
+    await p.locator('#main .edit-bar [data-act="back"]').click();
+    await expect.poll(() => items(p)).toEqual(['A', 'B', 'Kniv']);
+    await expect(toast(p)).toContainText('Lagret');
+    await toast(p).locator('button').click();
+    await expect.poll(() => items(p)).toEqual(['A', 'B']);
+    // another tab adds it
+    await rediger(p);
+    await add.fill('Sag');
+    await p.locator('#tabbar [data-tab="guide"]').click();
+    await expect.poll(() => items(p)).toEqual(['A', 'B', 'Sag']);
+    // the background adds it and Rediger stays open with an empty field
+    await p.locator('#tabbar [data-tab="list"]').click();
+    await rediger(p);
+    await add.fill('Øks');
+    await hidden(p, true);
+    await expect.poll(() => items(p)).toEqual(['A', 'B', 'Sag', 'Øks']);
+    await hidden(p, false);
+    await expect(p.locator('#main .edit-bar')).toBeVisible();
+    await expect(add).toHaveValue('');
+    await settle(p, err); await ctx.close();
+  });
+
+  test('Sekkvekt and links save themselves; a link needs a real address', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[]}));
+    await p.locator('#tabbar [data-tab="plan"]').click();
+    await p.locator('#main [data-open="weight"]').click();
+    await p.locator('#main [data-act="wAddOwn"]').click();
+    await p.locator('#wName').fill('Telt'); await p.locator('#wG').fill('1800');
+    await p.keyboard.press('Escape');
+    await expect.poll(async () => ((await stored(p)).packW || {items:[]}).items.map(i => i.name + ':' + i.g)).toEqual(['Telt:1800']);
+    await expect(toast(p)).toContainText('Lagret');
+    // a nameless item is never made
+    await p.locator('#main [data-act="wAddOwn"]').click(); await p.locator('#wG').fill('50'); await p.keyboard.press('Escape');
+    await p.waitForTimeout(200);
+    expect((await stored(p)).packW.items).toHaveLength(1);
+    // links: the address step closed with only «https://» saves nothing; with an address it saves
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="addLink"]').click(); await p.locator('#askInput').fill('Vær'); await p.locator('#overlay [data-s="ok"]').click();
+    await expect(p.locator('#askInput')).toHaveValue('https://'); await p.keyboard.press('Escape');
+    await p.waitForTimeout(200);
+    expect((await stored(p)).links || []).toHaveLength(0);
+    await p.locator('#main [data-act="addLink"]').click(); await p.locator('#askInput').fill('Vær'); await p.locator('#overlay [data-s="ok"]').click();
+    await p.locator('#askInput').fill('https://www.yr.no'); await p.keyboard.press('Escape');
+    await expect.poll(async () => ((await stored(p)).links || []).map(l => l.n + ' ' + l.u)).toEqual(['Vær https://www.yr.no']);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('a note: icon buttons in one row, no Rediger, a tap edits, an empty note invites writing', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[], notes:[{id:'n1', title:'Fiske', text:'Ørret', t:Date.UTC(2026, 10, 20)}, {id:'n2', title:'Tom', text:'', t:Date.UTC(2026, 10, 21)}]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#main .notes-ix [data-act="openNote"]', {hasText:'Fiske'}).click();
+    const acts = p.locator('#main .note-acts button');
+    await expect(acts).toHaveCount(4);
+    await expect(acts.locator('span')).toHaveText(['Fest', 'Del', 'Privat', 'Slett']);
+    await expect(p.locator('#main .note-acts [data-act="editNote"], #main .row-btns [data-act="editNote"]')).toHaveCount(0);
+    // one row, equal widths, each at least 48 px high
+    const boxes = await Promise.all([0, 1, 2, 3].map(i => acts.nth(i).boundingBox()));
+    expect(new Set(boxes.map(b => Math.round(b.y))).size).toBe(1);
+    expect(Math.max(...boxes.map(b => b.width)) - Math.min(...boxes.map(b => b.width))).toBeLessThan(2);
+    boxes.forEach(b => expect(b.height).toBeGreaterThanOrEqual(48));
+    await expect(acts.nth(2)).toHaveAttribute('aria-label', 'Gjør privat');
+    // Fest: pressed and «Løsne»
+    await acts.nth(0).click();
+    await expect(acts.nth(0)).toHaveAttribute('aria-pressed', 'true');
+    await expect(acts.nth(0).locator('span')).toHaveText('Løsne');
+    // a tap on the text edits in place
+    await p.locator('#main .note-body').click();
+    await expect(p.locator('#neText')).toBeVisible();
+    await p.locator('#main [data-act="back"]').click();
+    // an empty note says «Trykk for å skrive», and a tap opens the text field
+    await p.locator('#main .notes-ix [data-act="openNote"]', {hasText:'Tom'}).click();
+    await expect(p.locator('#main .note-body .note-ph')).toHaveText('Trykk for å skrive');
+    await p.locator('#main .note-body').click();
+    await expect(p.locator('#neText')).toBeFocused();
+    await expect(p.locator('#neText')).toHaveValue('');
+    await settle(p, err); await ctx.close();
+  });
+
+  test('«Lagret» sits under the header; the box fades, the words and Angre stay, and taps reach the page', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[], notes:[{id:'n1', title:'Fiske', text:'Ørret', t:Date.UTC(2026, 10, 20)}]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#main .notes-ix [data-act="openNote"]').click();
+    await p.locator('#main .note-body').click(); await p.locator('#neText').fill('Ørret og røye');
+    await p.locator('#main [data-act="back"]').click();
+    await expect(toast(p)).toHaveText(/^\s*Lagret\s*Angre\s*$/);
+    const hb = await p.locator('header.top').boundingBox(), tb = await toast(p).boundingBox();
+    expect(tb.y).toBeGreaterThanOrEqual(hb.y + hb.height);
+    expect(tb.y).toBeLessThan(hb.y + hb.height + 30);
+    await expect(toast(p)).not.toHaveClass(/faded/);
+    await expect(toast(p)).toHaveClass(/faded/, {timeout:3000});
+    // the box is gone: a tap on the page under it reaches the page; Angre still works
+    await expect.poll(() => toast(p).evaluate(el => getComputedStyle(el).backgroundColor)).toMatch(/rgba\(\d+, \d+, \d+, 0\)|transparent/);
+    const hit = await toast(p).evaluate(el => { const r = el.getBoundingClientRect(); const x = document.elementFromPoint(r.left + 10, r.top + r.height / 2); return !!(x && x.closest('#toast')); });
+    expect(hit).toBe(false);
+    await toast(p).locator('button').click();
+    await expect.poll(async () => (await stored(p)).notes[0].text).toBe('Ørret');
+    await settle(p, err); await ctx.close();
+  });
+  test('in English the message says «Saved»', async ({browser}) => {
+    const ctx = await ctxFor(browser, {locale:'en-GB'}), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lang:'en', lists:[], notes:[{id:'n1', title:'Fish', text:'Trout', t:Date.UTC(2026, 10, 20)}]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#main .notes-ix [data-act="openNote"]').click();
+    await p.locator('#main .note-body').click(); await p.locator('#neText').fill('Trout and char');
+    await p.locator('#main [data-act="back"]').click();
+    await expect(toast(p)).toContainText('Saved');
+    await settle(p, err); await ctx.close();
+  });
+
+  test('Kompass: the position button fetches, the line says how old the position is, red after 24 hours', async ({browser}) => {
+    const ctx = await ctxFor(browser, {geolocation:{latitude:58.97, longitude:5.73, accuracy:10}, permissions:['geolocation']}), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {lists:[]}));
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    const btn = p.locator('#main .c-sky .c-pos'), line = p.locator('#cPosLine');
+    await expect(line).toContainText('Ingen posisjon. Trykk');
+    await expect(line.locator('svg')).toHaveCount(1);
+    await expect(btn).toHaveAttribute('aria-label', 'Hent posisjon (GPS)');
+    await btn.click();
+    await expect(line).toContainText('Posisjon hentet i dag');
+    await expect(line).not.toHaveClass(/old/);
+    await expect(btn).toHaveAttribute('aria-label', 'Oppdater posisjon');
+    await settle(p, err); await ctx.close();
+  });
+  test('Kompass: a position older than 24 hours turns the line and the button red, and fetching makes it fresh', async ({browser}) => {
+    const ctx = await ctxFor(browser, {geolocation:{latitude:58.97, longitude:5.73, accuracy:10}, permissions:['geolocation']}), p = await ctx.newPage(), err = watchErrors(p);
+    const old = Date.now() - 4 * 864e5 - 3600e3;
+    await start(p, Object.assign({}, BASE, {lists:[], pos:{lat:60.39, lon:5.32, acc:12, t:old}}));
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    const btn = p.locator('#main .c-sky .c-pos'), line = p.locator('#cPosLine');
+    await expect(line).toContainText('4 døgn gammel');
+    await expect(line).toHaveClass(/old/);
+    await expect(btn).toHaveClass(/old/);
+    // fetching makes it fresh again
+    await btn.click();
+    await expect(line).toContainText('Posisjon hentet i dag');
+    await expect(btn).not.toHaveClass(/old/);
+    await settle(p, err); await ctx.close();
   });
 });
