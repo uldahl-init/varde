@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-OKFdkKPwKWSCqFHZ+plWqok3Rk74p1xdOw9RBu/lZR8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4rXgLTOw6oMGH/cmCxI85P1d+2ww0n1AXCuze9N3dys='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -920,8 +920,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.25.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 91;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.25.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 92;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1040,7 +1040,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
       ['Stars and planets','<p><b>Stars and planets</b> opens a large compass with the brightest stars, the planets Venus, Mars, Jupiter and Saturn, and the moon on an outer ring, each at its direction right now. Only what is above the horizon is shown. Below the compass a list gives each one\'s direction and height above the horizon. It needs your position.</p><p>The band inside the compass is the Milky Way: the middle of the compass is straight overhead, and the edge is the horizon. It is strongest where it stands highest and towards its bright centre in Sagittarius. The two triangles on the outer edge show where the Milky Way meets the horizon. The moon in the middle shows its phase right now.</p>'],
       ['Accuracy','<p>A phone compass is typically accurate to within 5–10 degrees: good for telling which peak is which, <b>not for navigation</b>. Use map and compass for that. With your position saved it shows true north (see True north), otherwise magnetic north. Metal, magnets in phone cases and electronics nearby disturb it. If it seems off, move the phone in a figure-of-eight a few times to recalibrate.</p>']],
     notePriv:'Make private', notePrivS:'Private', notePinS:'Pin', noteTapPh:'Tap to write', notePubl:'Remove private', privNote:'Private note', privNewT:'Create a password for private notes', privNewMsg:'One password opens all your private notes. They are encrypted on the phone, and the password is not stored anywhere.', privNewWarn:`Save the password in your password manager now. If you forget it, no one can open the private notes – not even ${APP_NAME}.`, privCreate:'Create password',
-    pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwWeak:'Weak: easy to guess. Three or four ordinary words that don’t belong together are stronger and easier to remember.', pwFair:'Fair. One more word makes it much stronger.', pwStrong:'Strong.', pwMeterL:'Password strength', pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
+    pwLbl:'Password', pwAgain:'Type it again', pwShow:'Show', pwShort:'At least 8 characters.', pwWeak:'Weak: easy to guess. Three or four ordinary words that don’t belong together are stronger and easier to remember.', pwFair:'Fair. One more word makes it much stronger.', pwStrong:'Strong.', pwMeterL:'Password strength', pwTip:'Tip: three or four ordinary words that don’t belong together are strong and easy to remember.', pwShortN:n=>`Too short: ${n} of 8 characters.`, pwDiff:'The passwords do not match.', pwWrong:'Wrong password.', pwBusy:'Unlocking …', pwWait:x=>`Too many wrong tries. Try again in ${x}.`, waitS:n=>`${n} seconds`, waitM:n=>`${n} minute${n === 1 ? '' : 's'}`,
     privUnlockT:'Unlock private notes', privUnlock:'Unlock', pwForgot:'Forgot the password?', pwForgotT:'Forgot the password?', pwForgotMsg:'The password cannot be recovered. You can delete the private notes and start again. Ordinary notes and lists are not affected.', privDelAll:'Delete private notes', privDeleted:'Private notes deleted', privField:'Private notes open outside Outdoor mode.', privMade:'The note is private and encrypted.',
     privSec:'Private notes', privIsOpen:'Private notes are open.', privIsLocked:'Private notes are locked.', privOpenNote:'Private note, open', noteDelQ:'Delete the note?', noteDelMsg:'You can undo it straight afterwards, but not later.', privDelQ:'Delete the private note?', privDelMsg:'It can only be brought back from a backup.', privLockNow:'Lock now', privChange:'Change password', privSecHint:'Locks again after 5 minutes without use, and after a minute in the background.', privChanged:'The password has been changed. Older backups still open with the old password.', noteShareLocked:`A locked note from ${APP_NAME}`, bkPrivAsk:'The backup holds private notes. Type their password to include them.', noteImportPriv:'Add as a private note', noteImportPrivHint:'The note was locked with a password. As a private note it stays encrypted on this phone too.',
     shPw:'Password for the link (optional)', shPwHint:'Give the password another way than the link, for example in person.', shPwReq:'Password for the link', shPwReqHint:'A private note is only shared with a password.', lnkLockedT:'This note is locked with a password', lnkLockedMsg:'Type the password you got from the sender.', lnkOpen:'Open',
@@ -1280,7 +1280,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
       ['Stjerner og planeter','<p><b>Stjerner og planeter</b> åpner et stort kompass med de klareste stjernene, planetene Venus, Mars, Jupiter og Saturn og månen på en ytre ring, hver i den retningen den står akkurat nå. Bare det som står over horisonten, vises. Under kompasset gir en liste retningen og høyden over horisonten for hver av dem. Trenger posisjonen din.</p><p>Båndet inne i kompasset er Melkeveien: midten av kompasset er rett over deg, og kanten er horisonten. Det er sterkest der det står høyest og mot det klare sentrum i Skytten. De to trekantene på ytterkanten viser hvor Melkeveien møter horisonten. Månen i midten viser fasen akkurat nå.</p>'],
       ['Nøyaktighet','<p>Et mobilkompass er typisk nøyaktig innenfor 5–10 grader: godt nok til å se hvilken topp som er hvilken, <b>ikke til navigasjon</b>. Bruk kart og kompass til det. Med posisjonen lagret viser det sann nord (se Sann nord), ellers magnetisk nord. Metall, magneter i mobiletuier og elektronikk i nærheten forstyrrer det. Virker det feil, beveg mobilen i et åttetall noen ganger for å kalibrere.</p>']],
     notePriv:'Gjør privat', notePrivS:'Privat', notePinS:'Fest', noteTapPh:'Trykk for å skrive', notePubl:'Fjern privat', privNote:'Privat notat', privNewT:'Lag passord for private notater', privNewMsg:'Ett passord åpner alle de private notatene. De krypteres på telefonen, og passordet lagres ikke noe sted.', privNewWarn:`Skriv passordet inn i passordbehandleren din nå. Glemmer du det, kan ingen åpne de private notatene – heller ikke ${APP_NAME}.`, privCreate:'Lag passord',
-    pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwWeak:'Svakt: lett å gjette. Tre eller fire vanlige ord som ikke hører sammen, er sterkere og lettere å huske.', pwFair:'Middels. Ett ord til gjør det mye sterkere.', pwStrong:'Sterkt.', pwMeterL:'Passordstyrke', pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
+    pwLbl:'Passord', pwAgain:'Skriv det igjen', pwShow:'Vis', pwShort:'Minst 8 tegn.', pwWeak:'Svakt: lett å gjette. Tre eller fire vanlige ord som ikke hører sammen, er sterkere og lettere å huske.', pwFair:'Middels. Ett ord til gjør det mye sterkere.', pwStrong:'Sterkt.', pwMeterL:'Passordstyrke', pwTip:'Tips: tre eller fire vanlige ord som ikke hører sammen, er sterke og lette å huske.', pwShortN:n=>`For kort: ${n} av 8 tegn.`, pwDiff:'Passordene er ikke like.', pwWrong:'Feil passord.', pwBusy:'Låser opp …', pwWait:x=>`For mange feil forsøk. Prøv igjen om ${x}.`, waitS:n=>`${n} sekunder`, waitM:n=>`${n} ${n === 1 ? 'minutt' : 'minutter'}`,
     privUnlockT:'Lås opp private notater', privUnlock:'Lås opp', pwForgot:'Glemt passordet?', pwForgotT:'Glemt passordet?', pwForgotMsg:'Passordet kan ikke hentes fram. Du kan slette de private notatene og begynne på nytt. Vanlige notater og lister berøres ikke.', privDelAll:'Slett private notater', privDeleted:'Private notater slettet', privField:'Private notater åpnes utenfor Utemodus.', privMade:'Notatet er privat og kryptert.',
     privSec:'Private notater', privIsOpen:'Private notater er åpne.', privIsLocked:'Private notater er låst.', privOpenNote:'Privat notat, åpent', noteDelQ:'Slette notatet?', noteDelMsg:'Du kan angre rett etterpå, men ikke senere.', privDelQ:'Slette det private notatet?', privDelMsg:'Det kan bare hentes tilbake fra en sikkerhetskopi.', privLockNow:'Lås nå', privChange:'Bytt passord', privSecHint:'Låses igjen etter 5 minutter uten bruk, og når appen har vært i bakgrunnen et minutt.', privChanged:'Passordet er byttet. Eldre sikkerhetskopier åpnes fortsatt med det gamle passordet.', noteShareLocked:`Et låst notat fra ${APP_NAME}`, bkPrivAsk:'Kopien har private notater. Skriv passordet deres for å ta dem med.', noteImportPriv:'Legg til som privat notat', noteImportPrivHint:'Notatet var låst med passord. Som privat notat blir det kryptert på denne telefonen også.',
     shPw:'Passord for lenken (valgfritt)', shPwHint:'Gi passordet på en annen måte enn lenken, for eksempel muntlig.', shPwReq:'Passord for lenken', shPwReqHint:'Et privat notat deles bare med passord.', lnkLockedT:'Notatet er låst med passord', lnkLockedMsg:'Skriv passordet du fikk fra avsenderen.', lnkOpen:'Åpne',
@@ -3257,7 +3257,9 @@ function pwStrength(pw){
   // the same few characters, or mostly running characters or a keyboard row, forwards or backwards (abcd, 4321, qwerty)
   if (new Set(plain).size <= 3) return 1;
   let runLen = 0;
-  for (let i = 0; i < plain.length; i++) for (let j = plain.length; j >= i + 4; j--){
+  // 0.25.1 (security review): no piece longer than the longest row is tried, so a long pasted text stays fast
+  const ROW_MAX = Math.max(...PW_ROWS.map(r => r.length));
+  for (let i = 0; i < plain.length; i++) for (let j = Math.min(plain.length, i + ROW_MAX); j >= i + 4; j--){
     const piece = plain.slice(i, j), back = piece.split('').reverse().join('');
     if (PW_ROWS.some(r => r.includes(piece) || r.includes(back))){ runLen = Math.max(runLen, j - i); break; }
   }
@@ -3272,14 +3274,15 @@ function pwStrength(pw){
   return 1;
 }
 // The line under a new password field; call pwMeter(input, line) once, it follows the typing.
-const pwMeterHtml = id => `<div class="pw-m" id="${id}" hidden aria-live="polite"><span class="pw-bars" role="img" aria-hidden="true"><i></i><i></i><i></i></span><span class="pw-mt"></span></div>`;
+const pwMeterHtml = id => `<div class="pw-m" id="${id}" data-l="0" aria-live="polite"><span class="pw-bars" role="img" aria-hidden="true"><i></i><i></i><i></i></span><span class="pw-mt"></span></div>`;
 function pwMeter(inp, box){
   if (!inp || !box) return;
   const T = t();
+  // 0.25.1: always on screen, so it is noticed: the tip before typing, a count up to PW_MIN, then the strength
   const up = () => {
-    const l = pwStrength(inp.value);
-    box.hidden = !l; box.dataset.l = l;
-    box.querySelector('.pw-mt').textContent = l ? [T.pwWeak, T.pwFair, T.pwStrong][l - 1] : '';
+    const n = pwLen(inp.value), l = pwStrength(inp.value);
+    box.dataset.l = l;
+    box.querySelector('.pw-mt').textContent = !n ? T.pwTip : n < PW_MIN ? T.pwShortN(n) : [T.pwWeak, T.pwFair, T.pwStrong][l - 1];
   };
   inp.addEventListener('input', up); up();
 }
@@ -5661,9 +5664,20 @@ function withUndo(msg, fn, ok){
 /* 0.24.3 (security review 22 Nov): Angre puts back the copy taken before the change, but never a milder wrong-password
    counter. It keeps the stricter of the two (higher count, later wait), so Angre cannot reset the lockout; not simply the
    current one, since Glemt passordet deletes the counter with the notes and its Angre must not bring them back without it. */
+/* 0.25.1 (security review of build 91): the private part never goes back either. The password wrap and every private
+   note stay as they are now, so Angre cannot undo an unlock upgrade, a new password or a note made private, and never
+   brings back a plain sender's name or plain text. A note that is gone now (deleted) comes back from the copy, and so do
+   the wrap and the private notes after Glemt passordet; private notes made after the copy are kept. */
 function undoRestore(snap){
-  const now = state.privFail;
+  const now = state.privFail, curPriv = state.priv, curNotes = state.notes || [];
+  const cur = new Map(curNotes.map(n => [n.id, n]));
   state = JSON.parse(snap);
+  if (curPriv) state.priv = curPriv;
+  if (Array.isArray(state.notes)){
+    const had = new Set(state.notes.map(n => n.id));
+    state.notes = state.notes.map(n => { const c = cur.get(n.id); return c && (c.priv || n.priv) ? c : n; });
+    curNotes.forEach(c => { if (c.priv && !had.has(c.id)) state.notes.push(c); });
+  }
   const was = state.privFail, ok = f => f && typeof f === 'object';
   if (ok(now) || ok(was)){
     const a = ok(now) ? now : {}, b = ok(was) ? was : {};

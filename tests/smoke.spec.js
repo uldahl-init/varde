@@ -2140,18 +2140,22 @@ test.describe('privat', () => {
     await wc.importKey('raw', enc8(pw.normalize('NFKC')), 'PBKDF2', false, ['deriveKey']), {name:'AES-GCM', length:256}, false, ['encrypt']);
   const gcm = async (key, bytes) => { const iv = rand(12); return {iv, ct:new Uint8Array(await wc.encrypt({name:'AES-GCM', iv}, key, bytes))}; };
 
-  test('the strength line where a new password is chosen (0.25.0)', async ({page, browser}) => {
+  test('the strength line where a new password is chosen, shown from the start (0.25.0, 0.25.1)', async ({page, browser}) => {
     const errors = watchErrors(page);
     await openApp(page);
     await newNote(page, 'Styrke', 'tekst');
     // making the private password: from 8 characters, weak, fair, strong; a weak one is still accepted
     await page.locator('#main [data-act="notePriv"]').click();
     const m = page.locator('#pw1M');
-    await expect(m).toBeHidden();
-    await page.locator('#pw1').fill('abc'); await expect(m).toBeHidden();
+    // 0.25.1: always on screen: the tip before typing, then a count up to 8 characters
+    await expect(m).toHaveText('Tips: tre eller fire vanlige ord som ikke hører sammen, er sterke og lette å huske.');
+    await page.locator('#pw1').fill('abc'); await expect(m).toHaveText('For kort: 3 av 8 tegn.'); await expect(m).toHaveAttribute('data-l', '0');
     await page.locator('#pw1').fill('passord1'); await expect(m).toContainText('Svakt'); await expect(m).toHaveAttribute('data-l', '1');
     await page.locator('#pw1').fill('Kx7#mQ2vLp'); await expect(m).toContainText('Middels');
     await page.locator('#pw1').fill('blåbær hytte sekk regn'); await expect(m).toHaveText('Sterkt.'); await expect(m).toHaveAttribute('data-l', '3');
+    // 0.25.1 (security review): a long pasted text is judged at once (it took seconds before)
+    const ms = await page.evaluate(() => { let x = ''; for (let i = 0; i < 3000; i++) x += String.fromCharCode(97 + (i * 7) % 26); const el = document.getElementById('pw1'); const t0 = performance.now(); el.value = x; el.dispatchEvent(new Event('input')); return performance.now() - t0; });
+    expect(ms).toBeLessThan(500);
     await pwOk(page, 'passord1', true);
     await expect(page.locator('#toast')).toContainText('privat og kryptert');
     // the share link's password
@@ -2179,6 +2183,8 @@ test.describe('privat', () => {
     await openApp(p2);
     await newNote(p2, 'Strength', 'text');
     await p2.locator('#main [data-act="noteShare"]').click();
+    await expect(p2.locator('#shPwM')).toContainText('Tip: three or four ordinary words');
+    await p2.locator('#shPw').fill('pass'); await expect(p2.locator('#shPwM')).toHaveText('Too short: 4 of 8 characters.');
     await p2.locator('#shPw').fill('password1');
     await expect(p2.locator('#shPwM')).toContainText('Weak: easy to guess.');
     await p2.locator('#shPw').fill('correct horse battery staple');
@@ -2232,6 +2238,53 @@ test.describe('privat', () => {
     await expect(page.locator('#main .notes-ix')).not.toContainText('Gammel');
     await page.locator('#main .row-btns [data-act="privLockNow"]').click();
     await swap(); await reopen();
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel B');
+    await settle(page, errors);
+  });
+
+  // 0.25.1, from the security review of build 91: Angre after an unlock must not put back the v 1 wrap, untagged notes or a
+  // plain sender's name. The clock is paused so the 7 s Angre stays through the slow unlock.
+  test('Angre after an unlock keeps the upgrade and the encrypted sender (0.25.1)', async ({page}) => {
+    const errors = watchErrors(page);
+    const raw = rand(32), wsalt = rand(16), w = await gcm(await kdf(PW, wsalt), raw);
+    const dk = await wc.importKey('raw', raw, 'AES-GCM', false, ['encrypt']);
+    const t0 = Date.UTC(2026, 10, 18, 12);
+    const old = async (id, ti, tx, rcv) => { const e = await gcm(dk, enc8(JSON.stringify({ti, tx}))); return Object.assign({id, t:t0, priv:1, iv:b64(e.iv), ct:b64(e.ct), title:'', text:''}, rcv ? {rcv} : {}); };
+    const st0 = {v:2, std:{done:{}, modes:{}, light:{}, open:{}}, hidePacked:false, introDone:true,
+      lists:[{id:'L1', name:'Tur', notes:'', modes:{}, cats:[{id:'k1', name:'K1', open:true, items:[{id:'a', text:'A', done:false}]}]}],
+      notes:[await old('nA', 'Gammel A', 'tekst A', {n:'Kari Fjellstad', t:t0}), await old('nB', 'Gammel B', 'tekst B')],
+      priv:{v:1, kdf:'pbkdf2-sha256', iter:600000, salt:b64(wsalt), iv:b64(w.iv), wrap:b64(w.ct)}};
+    await page.clock.install({time:new Date('2026-11-22T10:00:00')});
+    await page.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st0]);
+    await page.goto('./');
+    await expect(page.locator('#tabbar [data-tab]')).toHaveCount(5);
+    await page.clock.pauseAt(new Date('2026-11-22T11:00:00'));
+    const tick = ms => page.clock.runFor(ms || 150);
+    // a list renamed and closed with ✕: «Lagret» with Angre
+    await page.locator('#listBtn').click(); await tick();
+    if (!(await page.locator('#main [data-la="rename"][data-id="L1"]').isVisible())) await page.locator('#main [data-sel="L1"]').click();
+    await page.locator('#main [data-la="rename"][data-id="L1"]').click(); await tick();
+    await page.locator('#askInput').fill('Tur til hytta');
+    await page.locator('#overlay [data-sheet-close]').click(); await tick(300);
+    await expect(page.locator('#toast')).toContainText('Lagret');
+    await tick(1300);
+    // the unlock upgrades the wrap and the notes, then Angre
+    await goTab(page, 'notes'); await tick();
+    await page.locator('#main .row-btns [data-act="privOpen"]').click(); await tick();
+    await pwOk(page, PW); await tick(300);
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
+    await page.locator('#toast button').click(); await tick(300);
+    await expect.poll(async () => (await stored(page)).lists[0].name).toBe('Tur');
+    const st = await stored(page), rawText = await page.evaluate(k => localStorage.getItem(k), KEY);
+    expect(st.priv.v).toBe(2);
+    expect(st.notes.every(n => n.ck)).toBe(true);
+    expect(rawText).not.toContain('Kari Fjellstad');
+    // everything still opens with the same password
+    await expect(page.locator('#main .notes-ix')).toContainText('Gammel B');
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click(); await tick();
+    await page.locator('#main .row-btns [data-act="privOpen"]').click(); await tick();
+    await pwOk(page, PW); await tick(300);
     await expect(page.locator('#main .notes-ix')).toContainText('Gammel A');
     await expect(page.locator('#main .notes-ix')).toContainText('Gammel B');
     await settle(page, errors);
