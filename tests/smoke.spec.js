@@ -2780,13 +2780,14 @@ test.describe('fra testing 0.24', () => {
     await start(p, Object.assign({}, BASE, {lists:[]}));
     await p.locator('#tabbar [data-tab="plan"]').click();
     await p.locator('#main [data-open="weight"]').click();
-    await p.locator('#main [data-act="wAddOwn"]').click();
+    // the sheet moves focus to the name field 30 ms after it opens; filling before that can land the text in the name
+    await p.locator('#main [data-act="wAddOwn"]').click(); await expect(p.locator('#wName')).toBeFocused();
     await p.locator('#wName').fill('Telt'); await p.locator('#wG').fill('1800');
     await p.keyboard.press('Escape');
     await expect.poll(async () => ((await stored(p)).packW || {items:[]}).items.map(i => i.name + ':' + i.g)).toEqual(['Telt:1800']);
     await expect(toast(p)).toContainText('Lagret');
     // a nameless item is never made
-    await p.locator('#main [data-act="wAddOwn"]').click(); await p.locator('#wG').fill('50'); await p.keyboard.press('Escape');
+    await p.locator('#main [data-act="wAddOwn"]').click(); await expect(p.locator('#wName')).toBeFocused(); await p.locator('#wG').fill('50'); await p.keyboard.press('Escape');
     await p.waitForTimeout(200);
     expect((await stored(p)).packW.items).toHaveLength(1);
     // links: the address step closed with only «https://» saves nothing; with an address it saves
