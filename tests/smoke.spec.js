@@ -2062,6 +2062,76 @@ test.describe('privat', () => {
     await settle(page, errors);
   });
 
+  // 0.24.3, from the security review of 22 Nov: Angre puts back the copy taken before a change, but never a milder
+  // wrong-password counter. The clock is paused so the 7 s Angre stays on screen through five slow password checks.
+  test('Angre never resets the wrong-password wait (0.24.3)', async ({page}) => {
+    const errors = watchErrors(page);
+    await page.clock.install({time:new Date('2026-11-22T10:00:00')});
+    await page.addInitScript(([key]) => {
+      try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({v:2, std:{done:{}, modes:{}, light:{}, open:{}}, hidePacked:false, introDone:true,
+        lists:[{id:'L1', name:'Tur', notes:'', modes:{}, cats:[{id:'k1', name:'K1', open:true, items:[{id:'a', text:'A', done:false}]}]}]})); } catch(e){}
+    }, [KEY]);
+    await openApp(page);
+    await newNote(page, 'Låst notat', 'tekst');
+    await makePrivate(page, PW, true);
+    await page.locator('#main [data-act="back"]').click();
+    await page.locator('#main .row-btns [data-act="privLockNow"]').click();
+    await expect(page.locator('#main .notes-ix .priv-locked')).toHaveCount(1);
+    await page.clock.pauseAt(new Date('2026-11-22T11:00:00'));
+    const tick = ms => page.clock.runFor(ms || 150);
+    const openLock = async () => { await page.locator('#main .row-btns [data-act="privOpen"]').click(); await tick(); await expect(sheet(page)).toBeVisible(); };
+    const fiveWrong = async () => {
+      await openLock();
+      for (let i = 1; i <= 5; i++){
+        await pwOk(page, 'galt-passord-' + i);
+        await expect(page.locator('#pwSt')).toHaveText(i < 5 ? 'Feil passord.' : /For mange feil forsøk/);
+      }
+    };
+    const waiting = async () => {
+      const f = (await stored(page)).privFail;
+      expect(f.n).toBeGreaterThanOrEqual(5);
+      expect(f.until).toBeGreaterThan(new Date('2026-11-22T11:00:00').getTime());
+    };
+    // 1. a list renamed and closed with ✕ (Lagret, Angre), then five wrong passwords, then Angre: still waiting
+    await goTab(page, 'list');
+    await page.locator('#listBtn').click(); await tick();
+    if (!(await page.locator('#main [data-la="rename"][data-id="L1"]').isVisible())) await page.locator('#main [data-sel="L1"]').click();
+    await page.locator('#main [data-la="rename"][data-id="L1"]').click(); await tick();
+    await page.locator('#askInput').fill('Tur til hytta');
+    await page.locator('#overlay [data-sheet-close]').click(); await tick(300);
+    await expect(page.locator('#toast')).toContainText('Lagret');
+    await tick(1300);   // the toast fades and lets taps through; Angre stays
+    await goTab(page, 'notes'); await tick();
+    await fiveWrong();
+    await page.keyboard.press('Escape'); await tick(300);
+    await page.locator('#toast button').click(); await tick(300);
+    await expect.poll(async () => (await stored(page)).lists[0].name).toBe('Tur');
+    await waiting();
+    await openLock();
+    await pwOk(page, PW);
+    await expect(page.locator('#pwSt')).toContainText('For mange feil forsøk');
+    // 2. Glemt passordet deletes the notes and the counter; its Angre brings both back
+    await page.locator('#overlay [data-s="forgot"]').click(); await tick();
+    await expect(sheet(page)).toContainText('kan ikke hentes fram');
+    await page.locator('#overlay [data-s="ok"]').click(); await tick(300);
+    expect((await stored(page)).privFail).toBeUndefined();
+    await tick(1300);
+    await page.locator('#toast button').click(); await tick(300);
+    await expect(page.locator('#main .notes-ix .priv-locked')).toHaveCount(1);
+    await waiting();
+    await openLock();
+    await pwOk(page, PW);
+    await expect(page.locator('#pwSt')).toContainText('For mange feil forsøk');
+    // the wait still ends as before, and the right password then opens
+    await page.keyboard.press('Escape'); await tick(300);
+    await page.clock.runFor(31000);
+    await openLock();
+    await pwOk(page, PW);
+    await expect(page.locator('#main .notes-ix')).toContainText('Låst notat');
+    expect((await stored(page)).privFail).toBeUndefined();
+    await settle(page, errors);
+  });
+
   test('five wrong passwords give a wait that survives a reload', async ({page}) => {
     const errors = watchErrors(page);
     await page.clock.install();

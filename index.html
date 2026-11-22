@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ozTaqNwl/L7XsTLDHFiBp/c83Ci0SDnlu2A0P0uKQTw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-wnRbC4ZBoKVZMsTaoGfMZkmV7Z1NJuXSaax+oryIwQk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -912,8 +912,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.24.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 89;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.24.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 90;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -2091,7 +2091,7 @@ function addFlush(d){
   });
   if (!n) return false;
   save();
-  toastShow(t().saved, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, true);
+  toastShow(t().saved, () => undoRestore(snap), 7000, true);
   return true;
 }
 
@@ -4958,7 +4958,7 @@ async function settleTyped(r, changed, apply){
   if (r.how === 'auto'){
     const snap = JSON.stringify(state);
     await apply(r.val);
-    toastShow(T.saved, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, true);
+    toastShow(T.saved, () => undoRestore(snap), 7000, true);
     return true;
   }
   toastShow(T.noteDiscarded, () => { apply(r.val); }, 7000);
@@ -5560,7 +5560,20 @@ function showToast(msg){ toastShow(msg, null, 3000); }
 function withUndo(msg, fn, ok){
   const snap = JSON.stringify(state);
   fn(); stdCache = null; save(); render();
-  toastShow(msg, () => { state = JSON.parse(snap); stdCache = null; save(); render(); }, 7000, ok);
+  toastShow(msg, () => undoRestore(snap), 7000, ok);
+}
+/* 0.24.3 (security review 22 Nov): Angre puts back the copy taken before the change, but never a milder wrong-password
+   counter. It keeps the stricter of the two (higher count, later wait), so Angre cannot reset the lockout; not simply the
+   current one, since Glemt passordet deletes the counter with the notes and its Angre must not bring them back without it. */
+function undoRestore(snap){
+  const now = state.privFail;
+  state = JSON.parse(snap);
+  const was = state.privFail, ok = f => f && typeof f === 'object';
+  if (ok(now) || ok(was)){
+    const a = ok(now) ? now : {}, b = ok(was) ? was : {};
+    state.privFail = {n:Math.max(+a.n || 0, +b.n || 0), until:Math.max(+a.until || 0, +b.until || 0)};
+  }
+  stdCache = null; save(); render();
 }
 
 /* ---------- 0.9.0: sorting in Rediger ----------
