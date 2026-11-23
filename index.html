@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4rXgLTOw6oMGH/cmCxI85P1d+2ww0n1AXCuze9N3dys='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-FppzwbYDfWfbPNoTIJsOLhlNsnIk6v8Ht1/PSNsvhPg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -534,6 +534,10 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .st-list{list-style:none;margin:8px 0 0;padding:0}
 .st-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
 .st-row:last-child{border-bottom:0}
+.st-nav .st-row{border-bottom:1px solid var(--line)}
+.st-nm{flex:1;display:flex;flex-direction:column;min-width:0}
+.st-nm .st-name{flex:none}
+.st-tag{color:var(--muted);font-size:.85rem}
 .st-sym{flex:none;width:28px;height:28px}
 .st-name{flex:1;font-weight:600}
 .st-pos{text-align:right;font-variant-numeric:tabular-nums}
@@ -920,8 +924,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.25.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 92;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.25.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 93;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1027,7 +1031,7 @@ const UI = {
 appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP_NAME}`, setLink:`Settings and about ${APP_NAME}`, aboutApp:`About ${APP_NAME}`, fgHint:'How often someone drops by the fire.', fg:{off:'Off', rare:'Rarely', some:'Now and then', often:'Often'}, landTxt:'The landscape at the bottom shows Rondeslottet seen from Tron.', photosTitle:'The pictures', photosTxt:'The pictures in the app are real photos, and several drawings are made from photos. All are by the app\'s maker unless stated otherwise.', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cPosNone:ic => `No position. Tap ${ic} for sun, moon and true north.`, cPosAt:w => `Position from ${w}`, cPosToday:'today', cPosYday:'yesterday', cPosOld:(d, n) => `Position from ${d} · ${n} ${n === 1 ? 'day' : 'days'} old`, cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
-    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNone:'None of these are above the horizon right now.',
+    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNav:'Navigation star', stNone:'None of these are above the horizon right now.',
     stLow:'low on the horizon', stHigh:'nearly overhead', stAlt:(h, f) => `${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`,
     mwName:'Milky Way', mwFrom:(a, b) => `from ${a} to ${b}`, gcName:'Centre of the Milky Way (Sagittarius)', gcBelow:'below the horizon now', gcHighest:(h, d) => `highest ${h}° up in the ${d}`, gcBarely:h => `only just clears the horizon here (highest ${h}°)`, gcNever:'never rises above the horizon here', mwTop:(d, h, f) => `highest in the ${d} · ${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`, mwTopHigh:'highest nearly overhead', mwLow:'The Milky Way lies low along the horizon now, and is hard to see.', mwMoon:'The moon is bright now, so the Milky Way is hard to see.',
     stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>The ring shows only the direction of the stars and planets; their height is in the list. The Milky Way is a band right across the sky, so it is drawn inside the compass, where its height shows too: the middle of the compass is straight overhead, and the edge is the horizon. The two triangles on the outer edge point to where the Milky Way meets the horizon, the same directions as «from … to …» in the list.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
@@ -1267,7 +1271,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
 appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om ${APP_NAME}`, setLink:`Innstillinger og om ${APP_NAME}`, aboutApp:`Om ${APP_NAME}`, fgHint:'Hvor ofte noen kommer innom bålet.', fg:{off:'Av', rare:'Sjelden', some:'Av og til', often:'Ofte'}, photosTitle:'Bildene', landTxt:'Bakgrunnen nederst viser Rondeslottet sett fra Tron.', photosTxt:'Bildene i appen er ekte foto, og flere av tegningene er laget etter foto. Alle er tatt av utvikleren av appen, om ikke annet er oppgitt.', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cPosNone:ic => `Ingen posisjon. Trykk ${ic} for sol, måne og sann nord.`, cPosAt:w => `Posisjon hentet ${w}`, cPosToday:'i dag', cPosYday:'i går', cPosOld:(d, n) => `Posisjon fra ${d} · ${n} døgn gammel`, cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
-    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNone:'Ingen av disse står over horisonten akkurat nå.',
+    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNav:'Navigasjonsstjerne', stNone:'Ingen av disse står over horisonten akkurat nå.',
     stLow:'lavt over horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
     mwName:'Melkeveien', mwFrom:(a, b) => `fra ${a} til ${b}`, gcName:'Melkeveiens sentrum (Skytten)', gcBelow:'under horisonten nå', gcHighest:(h, d) => `høyest ${h}° opp i ${d}`, gcBarely:h => `kommer bare så vidt over horisonten her (høyest ${h}°)`, gcNever:'kommer aldri over horisonten her', mwTop:(d, h, f) => `høyest i ${d} · ${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`, mwTopHigh:'høyest nesten rett over deg', mwLow:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mwMoon:'Månen er lys nå, så Melkeveien er vanskelig å se.',
     stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Ringen viser bare retningen til stjernene og planetene; høyden står i listen. Melkeveien er et bånd tvers over himmelen, så den er tegnet inne i kompasset, slik at høyden også vises: midten av kompasset er rett over deg, og kanten er horisonten. De to trekantene på ytterkanten peker dit Melkeveien møter horisonten, i de samme retningene som «fra … til …» i listen.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
@@ -4194,20 +4198,26 @@ function placeStarLabels(){
   });
 }
 /* 0.19.0: the list in three groups (the moon and planets, stars, the Milky Way), each sorted by the switch above the
-   list: Lysest først (as before: the moon, then Venus, Jupiter, Mars, Saturn; stars by brightness) or Høyest først. */
+   list: Lysest først (as before: the moon, then Venus, Jupiter, Mars, Saturn; stars by brightness) or Høyest først.
+   0.25.2: Polaris is kept at the top on purpose, but on its own line labelled Navigasjonsstjerne (`ul.st-nav`,
+   data-g="nav") above the sorted stars, so the order below it is the true order by magnitude or by height. */
 const stHigh = () => state.stSort === 'high';
-function starRow(o){
+function starRow(o, tag){
   const T = t(), h = Math.round(o.alt), f = Math.round(o.alt / 10);
   const ht = h < 3 ? T.stLow : h > 80 ? T.stHigh : T.stAlt(h, Math.max(1, f));
-  return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg><span class="st-name">${esc(T.starN[o.k] || o.k)}</span>
+  const nm = `<span class="st-name">${esc(T.starN[o.k] || o.k)}</span>`;
+  return `<li class="st-row"><svg class="st-sym" viewBox="-14 -14 28 28" aria-hidden="true">${stSym(o, 0, 0)}</svg>${tag ? `<span class="st-nm">${nm}<small class="st-tag">${tag}</small></span>` : nm}
       <span class="st-pos">${T.cDirs[Math.round(o.az / 45) % 8]} · ${Math.round(o.az) % 360}°<small>${ht}</small></span></li>`;
 }
 function starList(objs, mw, now){
   const T = t(), ord = l => stHigh() ? l.slice().sort((a, b) => b.alt - a.alt) : l;
-  const grp = (k, head, rows) => rows ? `<h3 class="st-grp" data-g="${k}">${head}</h3><ul class="st-list" data-g="${k}">${rows}</ul>` : '';
-  const mp = ord(objs.filter(o => o.kind !== 'star')), st = ord(objs.filter(o => o.kind === 'star'));
+  const grp = (k, head, rows, pre) => rows || pre ? `<h3 class="st-grp" data-g="${k}">${head}</h3>${pre || ''}${rows ? `<ul class="st-list" data-g="${k}">${rows}</ul>` : ''}` : '';
+  const stars = objs.filter(o => o.kind === 'star'), pol = stars.find(o => o.k === 'polaris');
+  const mp = ord(objs.filter(o => o.kind !== 'star'));
+  const st = stHigh() ? ord(stars.filter(o => o !== pol)) : stars.filter(o => o !== pol).sort((a, b) => a.mag - b.mag);
+  const nav = pol ? `<ul class="st-list st-nav" data-g="nav">${starRow(pol, T.stNav)}</ul>` : '';
   return (objs.length ? '' : `<p class="tool-sub">${T.stNone}</p>`)
-    + grp('mp', T.stGrpMP, mp.map(starRow).join('')) + grp('st', T.stGrpSt, st.map(starRow).join(''))
+    + grp('mp', T.stGrpMP, mp.map(o => starRow(o)).join('')) + grp('st', T.stGrpSt, st.map(o => starRow(o)).join(''), nav)
     + (mw ? grp('mw', T.stGrpMW, mwRow(mw, now) + gcRow(galCentre(now))) : '');
 }
 function stSortBtns(){

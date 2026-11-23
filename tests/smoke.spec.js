@@ -1645,6 +1645,66 @@ test.describe('stjerner 0.19', () => {
   });
 });
 
+/* ---------- From build 93 (0.25.2): Polaris on its own line, the stars in true order ----------
+   Polaris stays at the top of the star group on purpose (it gives north), but on its own line labelled
+   Navigasjonsstjerne, so the list below it is honest: by magnitude (Lysest først) or by height (Høyest først).
+   The magnitudes in STARS are checked against reference values (Yale Bright Star Catalogue / SIMBAD, V band;
+   α Centauri and Acrux are the combined light of the pair). */
+const STAR_MAG = {sirius:-1.46, canopus:-0.74, acen:-0.27, arcturus:-0.05, vega:0.03, capella:0.08, rigel:0.13, procyon:0.34,
+  achernar:0.46, betelgeuse:0.50, altair:0.77, acrux:0.77, aldebaran:0.86, antares:0.96, spica:0.97, pollux:1.14, fomalhaut:1.16,
+  deneb:1.25, regulus:1.35, castor:1.58, polaris:1.98};
+test.describe('stjerner 0.25.2', () => {
+  test('the magnitudes in STARS match the reference values', () => {
+    const a = HTML.indexOf('const STARS = ['), b = HTML.indexOf('];', a);
+    const stars = new Function('return ' + HTML.slice(a + 'const STARS = '.length, b + 1))();
+    expect(stars.map(s => s[0]).sort()).toEqual(Object.keys(STAR_MAG).sort());
+    for (const s of stars) expect(Math.abs(s[3] - STAR_MAG[s[0]]), s[0]).toBeLessThan(0.015);
+  });
+  const TX = {no:{nav:'Navigasjonsstjerne', pol:'Polarstjernen', low:'lavt over horisonten'}, en:{nav:'Navigation star', pol:'Polaris', low:'low on the horizon'}};
+  for (const L of LANGS) test(`Polaris on its own line, the stars below in true order (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));  // Stavanger: Vega, Capella and Deneb up, all circumpolar
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang:L.lang, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main [data-act="cStars"]').click();
+    // Polaris: one row, on its own line under the Stjerner heading, labelled, and not in the sorted list
+    const nav = p.locator('#stList ul[data-g="nav"]');
+    await expect(nav.locator('.st-row')).toHaveCount(1);
+    await expect(nav.locator('.st-name')).toHaveText(X.pol);
+    await expect(nav.locator('.st-tag')).toHaveText(X.nav);
+    expect(await p.evaluate(() => { const h = document.querySelector('#stList h3.st-grp[data-g="st"]'), n = document.querySelector('#stList ul[data-g="nav"]');
+      return h.nextElementSibling === n && n.nextElementSibling === document.querySelector('#stList ul[data-g="st"]'); })).toBe(true);
+    const names = p.locator('#stList ul[data-g="st"] .st-name');
+    await expect(names.filter({hasText: X.pol})).toHaveCount(0);
+    // Lysest først: by magnitude, so Vega before Capella before Deneb, and every step non-decreasing
+    const keyOf = async () => {
+      const N = await p.evaluate(() => [...document.querySelectorAll('#stList ul[data-g="st"] .st-name')].map(e => e.textContent));
+      return N.map(n => Object.keys(STAR_MAG).find(k => k === n.toLowerCase().replace('alfa centauri', 'acen').replace('alpha centauri', 'acen')) || n);
+    };
+    await expect(p.locator('#main [data-act="stSort"][data-v="bright"]')).toHaveAttribute('aria-pressed', 'true');
+    let k = await keyOf();
+    for (const s of ['vega', 'capella', 'deneb']) expect(k).toContain(s);
+    expect(k.indexOf('vega')).toBeLessThan(k.indexOf('capella'));
+    expect(k.indexOf('capella')).toBeLessThan(k.indexOf('deneb'));
+    const mags = k.map(x => STAR_MAG[x]);
+    expect(mags.every(m => typeof m === 'number')).toBe(true);
+    expect(mags).toEqual(mags.slice().sort((a, b) => a - b));
+    // Høyest først: the sorted list by height, Polaris still on its own line above it
+    await p.locator('#main [data-act="stSort"][data-v="high"]').click();
+    await expect(nav.locator('.st-name')).toHaveText(X.pol);
+    await expect(names.filter({hasText: X.pol})).toHaveCount(0);
+    const alts = await p.evaluate(() => [...document.querySelectorAll('#stList ul[data-g="st"] .st-row small')].map(e => e.textContent));
+    const num = alts.map(a => /^(\d+)°/.test(a) ? +a.match(/^(\d+)/)[1] : (a === X.low ? 0 : 90));
+    expect(num).toEqual(num.slice().sort((a, b) => b - a));
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
 /* ---------- From build 76 (0.20.0): the Moon as it stands ----------
    Reference values from PyEphem with Meeus ch. 14, 48 and 53 (19 Nov 2026). The orientation also matches the owner's
    photo of 27 Dec 2023 05:42 (+01), Stavanger. Tycho from straight down when the full moon stands highest in Stavanger:
