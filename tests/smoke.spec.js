@@ -3698,8 +3698,8 @@ test.describe('melkeveien guide 0.26', () => {
     await p.locator('#main [data-act="back"]').first().click();
     await expect(p.locator('#listName')).toHaveText(X.title);
     // and back again, to Nattehimmelen
-    await openSec(p, 'photo');
-    await sec(p, 'photo').locator('[data-guide="nightsky"]').click();
+    await openSec(p, 'stories');   // 0.28.0: the links to the other sky guides end the guide, under Fortellinger
+    await sec(p, 'stories').locator('[data-guide="nightsky"]').click();
     await expect(p.locator('#listName')).not.toHaveText(X.title);
     expect(err).toEqual([]);
     await ctx.close();
@@ -3724,7 +3724,7 @@ test.describe('melkeveien nå 0.27', () => {
     return {ctx, p, err};
   };
   for (const L of LANGS) test(`a tap on the compass shows the Milky Way now, and the stars land where the sky code puts them (${L.lang})`, async ({browser}) => {
-    const X = L.lang === 'no' ? {title:'Melkeveien nå', guide:'Åpne Melkeveien-guiden', eso:'Bilde: ESO/S. Brunier (CC BY 4.0)', gtitle:'Melkeveien'} : {title:'The Milky Way now', guide:'Open the Milky Way guide', eso:'Image: ESO/S. Brunier (CC BY 4.0)', gtitle:'The Milky Way'};
+    const X = L.lang === 'no' ? {title:'Melkeveien nå', guide:'Om Melkeveien ›', eso:'Bilde: ESO/S. Brunier (CC BY 4.0)', gtitle:'Melkeveien'} : {title:'The Milky Way now', guide:'About the Milky Way ›', eso:'Image: ESO/S. Brunier (CC BY 4.0)', gtitle:'The Milky Way'};
     const {ctx, p, err} = await open(browser, L.lang, {pos:{lat, lon, t:at.getTime()}});
     // the compass ring shows Deneb, Vega and Altair in the directions the sky code gives
     const sky = SKY.skyObjects(at, lat, lon), o = k => sky.find(x => x.k === k);
@@ -3773,7 +3773,7 @@ test.describe('melkeveien nå 0.27', () => {
     await expect(p.locator('#main .mwm-cr a')).toHaveAttribute('href', 'https://www.eso.org/public/images/eso0932a/');
     await p.locator('#main [data-act="openGuide"][data-guide="milkyway"]').click();
     await expect(p.locator('#listName')).toHaveText(X.gtitle);
-    await expect(p.locator('#main details[data-sec="map"]')).toHaveAttribute('open', '');
+    await expect(p.locator('#main .g-toc')).toBeVisible();   // 0.28.0: «Om Melkeveien ›» opens the guide at its contents
     await p.locator('#main [data-act="back"]').first().click();
     await expect(p.locator('#listName')).toHaveText(X.title);
     expect(err).toEqual([]);
@@ -3870,7 +3870,7 @@ test.describe('tilbake 0.27.2', () => {
     await check('Kompass → Kart og kompass', () => goTab(p, 'compass'), () => p.locator('#main [data-guide="mapcompass"]').click());
     await check('Stjerner og planeter → Om Melkeveien', () => toStars(p), () => p.locator('#main .st-mwg [data-guide="milkyway"]').click());
     await check('Stjerner og planeter → Nattehimmelen', () => toStars(p), () => p.locator('#main .row-btns [data-guide="nightsky"]').click());
-    await check('Melkeveien nå → guide', async () => { await toStars(p); await p.locator('#main .mwsky-go button').click(); }, () => p.locator('#main [data-guide="milkyway"][data-sec="map"]').click());
+    await check('Melkeveien nå → guide', async () => { await toStars(p); await p.locator('#main .mwsky-go button').click(); }, () => p.locator('#main .row-btns [data-guide="milkyway"]').click());
     await check('Nattehimmelen → Melkeveien', inGuide('nightsky'), () => unfold('#main details [data-guide="milkyway"]'));
     await check('Retning om natta → Melkeveien', inGuide('nightdir'), () => unfold('#main details [data-guide="milkyway"]'));
     await check('Melkeveien → Stjerner og planeter', inGuide('milkyway'), () => unfold('#main details [data-act="cStars"]'));
@@ -3910,6 +3910,110 @@ test.describe('tilbake 0.27.2', () => {
     await expect(p.locator('#main button.back').first()).toHaveText(src);
     await p.locator('#main button.back').first().click();
     await expect(title(p)).toHaveText(src);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
+/* ---------- From build 100 (0.28.0): the Melkeveien guide is the one home for the Milky Way ----------
+   A contents list at the top, the sections in their new order, the parts moved in from Nattehimmelen (why it circles
+   the sky, the arms, the stories) found by search in their new sections, the centre's heights worked out (not written in),
+   one label for every link to the guide, and a short Nattehimmelen section. */
+test.describe('melkeveien 0.28', () => {
+  const ORDER = ['what', 'patterns', 'map', 'when', 'dark', 'photo', 'stories'];
+  const TX = {
+    no:{title:'Melkeveien', ns:'Nattehimmelen', toc:'Innhold', link:'Om Melkeveien ›', sky:'Se Melkeveien slik den står nå ›', skyT:'Melkeveien nå',
+      heads:['Hva båndet er', 'Mønstre å se etter', 'Hele båndet', 'Når og hvor', 'Mørkt nok?', 'For fotografer', 'Fortellinger'],
+      when:h => [`sør for omtrent ${h.lim}° nord`, `aldri høyere enn rundt ${h.n55}°`, `høyst rundt ${h.svg}° over horisonten`, `høyst rundt ${h.m24}° fra Stavanger`, 'Store Hund står lavt i sør'],
+      search:[['Orion-armen', 'what'], ['Hvorfor den går rundt hele himmelen', 'what'], ['Vinterbrauta', 'stories'], ['Linnunrata', 'stories'], ['Sommertrekanten', 'patterns'], ['Den store riften', 'what'], ['Store Hund', 'when'], ['M24', 'when'], ['Luftlys', 'dark'], ['Lukkertid', 'photo']],
+      gone:['Behold nattsynet', 'Fortellinger: Melkeveien', 'Orion-armen']},
+    en:{title:'The Milky Way', ns:'The night sky', toc:'Contents', link:'About the Milky Way ›', sky:'See the Milky Way as it stands now ›', skyT:'The Milky Way now',
+      heads:['What the band is', 'Patterns to look for', 'The whole band', 'When and where', 'Dark enough?', 'For photographers', 'Stories'],
+      when:h => [`south of about ${h.lim}° N`, `never gets higher than about ${h.n55}°`, `at most about ${h.svg}° above the horizon`, `at most about ${h.m24}° from Stavanger`, 'Canis Major is low in the south'],
+      search:[['Orion Arm', 'what'], ['Why it runs all round the sky', 'what'], ['Vinterbrauta', 'stories'], ['Linnunrata', 'stories'], ['Summer Triangle', 'patterns'], ['Great Rift', 'what'], ['Canis Major', 'when'], ['M24', 'when'], ['Airglow', 'dark'], ['Exposure', 'photo']],
+      gone:['Keep your night vision', 'Stories: the Milky Way', 'Orion Arm']}};
+  // the centre (Dec −29.008°) and M24 (Dec −18.48°): highest altitude = 90° − |latitude − declination|
+  const top = (dec, lat) => Math.round(90 - Math.abs(lat - dec));
+  const H = {lim: Math.round(90 - 29.008), n55: top(-29.008, 55), svg: top(-29.008, 58.97), m24: top(-18.48, 58.97)};
+  const open = async (browser, lang) => {
+    const ctx = await browser.newContext({locale: lang === 'en' ? 'en-GB' : 'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2025-09-26T19:30:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:{lat:62.2, lon:9.6, t:Date.parse('2025-09-26T19:30:00Z')}}]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+    return {ctx, p, err};
+  };
+  test('the heights the guide gives', () => {
+    expect(H).toEqual({lim: 61, n55: 6, svg: 2, m24: 13});
+  });
+  for (const L of LANGS) test(`contents, order, the heights worked out, the sky view button (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang], {ctx, p, err} = await open(browser, L.lang);
+    await goTab(p, 'guide'); await openRow(p, 'milkyway');
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    // the contents list: seven entries in the order asked for, the same as the sections
+    await expect(p.locator('#main .g-toc-h')).toHaveText(X.toc);
+    expect(await p.locator('#main .g-toc-b').evaluateAll(b => b.map(x => x.dataset.sec))).toEqual(ORDER);
+    expect(await p.locator('#main .g-toc-b').allInnerTexts()).toEqual(X.heads);
+    expect(await p.locator('#main details[data-sec]').evaluateAll(d => d.map(x => x.dataset.sec))).toEqual(ORDER);
+    // a tap unfolds its section and brings it into view
+    await p.locator('#main .g-toc-b[data-sec="stories"]').click();
+    const st = p.locator('#main details[data-sec="stories"]');
+    await expect(st).toHaveAttribute('open', '');
+    await expect(st.locator('> summary')).toBeInViewport();
+    // Når og hvor: the heights from the formula, the one winter description
+    await p.locator('#main .g-toc-b[data-sec="when"]').click();
+    const when = p.locator('#main details[data-sec="when"]');
+    for (const t of X.when(H)) await expect(when).toContainText(t);
+    await expect(p.locator('#main')).not.toContainText('[[mw:');
+    // moved out, not copied: the photo tips are camera tips only, dark adaptation sits in Mørkt nok?
+    await expect(p.locator('#main details[data-sec="photo"]')).not.toContainText(X.gone[0]);
+    await expect(p.locator('#main details[data-sec="dark"]')).toContainText(L.lang === 'no' ? '20–30 minutter' : '20–30 minutes');
+    // the button to the sky view, and back to the guide by its name
+    await when.locator('[data-act="mwSkyGo"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.skyT);
+    await expect(p.locator('#main button.back').first()).toHaveText(X.title);
+    await p.locator('#main button.back').first().click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  for (const L of LANGS) test(`Nattehimmelen is short, every link to the guide has one label, search finds the moved parts (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang], {ctx, p, err} = await open(browser, L.lang);
+    // Nattehimmelen: a short section with the link, and its own stories section gone
+    await goTab(p, 'guide'); await openRow(p, 'nightsky');
+    await expect(p.locator('#listName')).toHaveText(X.ns);
+    await expect(p.locator('#main details[data-sec="milkyst"]')).toHaveCount(0);
+    const ms = p.locator('#main details[data-sec="milky"]');
+    await ms.locator('> summary').click();
+    expect(await ms.locator('p').count()).toBeLessThanOrEqual(2);
+    await expect(ms).not.toContainText(X.gone[2]);
+    await expect(ms.locator('[data-guide="milkyway"]')).toHaveText(X.link);
+    // every link to the guide in the guides' own text uses the one label
+    const G = HTML.slice(HTML.indexOf('const GUIDE_TXT'), HTML.indexOf('const GUIDE_GROUPS'));
+    const labels = [...G.matchAll(/data-guide=\\"milkyway\\"[^>]*>([^<]*)</g)].map(m => m[1]);
+    expect(labels.length).toBe(4);
+    expect(new Set(labels)).toEqual(new Set(['Om Melkeveien ›', 'About the Milky Way ›']));
+    // and the two on Kompass: the star list and the sky view
+    await goTab(p, 'compass'); await p.locator('#main [data-act="cStars"]').click();
+    await expect(p.locator('#stList [data-guide="milkyway"]')).toHaveText(X.link);
+    await p.locator('#main .mwsky-go button').click();
+    await expect(p.locator('#main .row-btns [data-guide="milkyway"]')).toHaveText(X.link);
+    // search: each moved part opens its new section
+    await goTab(p, 'guide');
+    await p.locator('#main .gs-btn').click();
+    for (const [q, s] of X.search){
+      await p.locator('#gsInput').fill(q);
+      const head = X.heads[ORDER.indexOf(s)];
+      const hit = p.locator('#main .gs-hit[data-guide="milkyway"]').filter({hasText: head}).first();
+      await expect(hit, q).toBeVisible();
+      await hit.click();
+      await expect(p.locator('#listName'), q).toHaveText(X.title);
+      await expect(p.locator(`#main details[data-sec="${s}"]`), q).toHaveAttribute('open', '');
+      await p.goBack();
+      await expect(p.locator('#gsInput'), q).toBeVisible();
+    }
     expect(err).toEqual([]);
     await ctx.close();
   });
