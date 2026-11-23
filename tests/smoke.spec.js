@@ -3794,3 +3794,123 @@ test.describe('melkeveien nå 0.27', () => {
     await n.ctx.close();
   });
 });
+
+/* ---------- From build 99 (0.27.2): the sky view toggles, and every back button names where it goes ----------
+   The rule: the label on a back button is the name (the header title) of the page that both the button and the phone's
+   back lead to. Each way into a guide (and a few other pages) is checked: the label equals the title of the page it was
+   opened from, the button goes there, and the phone's back goes there too. */
+test.describe('tilbake 0.27.2', () => {
+  const at = new Date('2025-09-26T19:30:00Z'), lat = 62.2, lon = 9.6;
+  const open = async (browser, lang) => {
+    const ctx = await browser.newContext({locale: lang === 'en' ? 'en-GB' : 'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(at);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:{lat, lon, t:at.getTime()}}]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+    return {ctx, p, err};
+  };
+  const title = p => p.locator('#listName');
+  const toStars = async p => { await goTab(p, 'compass'); await p.locator('#main [data-act="cStars"]').click(); };
+  for (const L of LANGS) test(`a tap on the sky view goes back to the compass, and the button follows (${L.lang})`, async ({browser}) => {
+    const X = L.lang === 'no' ? {stars:'Stjerner og planeter', sky:'Melkeveien nå', see:'Se Melkeveien slik den står nå ›', back:'Tilbake til kompasset', compass:'Kompass'}
+      : {stars:'Stars and planets', sky:'The Milky Way now', see:'See the Milky Way as it stands now ›', back:'Back to the compass', compass:'Compass'};
+    const {ctx, p, err} = await open(browser, L.lang);
+    await toStars(p);
+    const btn = p.locator('#main .mwsky-go button'), rose = p.locator('#main svg.rose.big');
+    await expect(btn).toHaveText(X.see);
+    const tapRose = async () => { const b = await rose.boundingBox(); await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2 + 30); };
+    // tap, tap: there and back; the button says where it goes each time
+    await tapRose(); await expect(title(p)).toHaveText(X.sky); await expect(btn).toHaveText(X.back);
+    await tapRose(); await expect(title(p)).toHaveText(X.stars); await expect(btn).toHaveText(X.see);
+    // the button the same way
+    await btn.click(); await expect(title(p)).toHaveText(X.sky);
+    await btn.click(); await expect(title(p)).toHaveText(X.stars);
+    // no extra steps: the phone's back from Stjerner og planeter goes straight to Kompass
+    await p.goBack(); await expect(title(p)).toHaveText(X.compass);
+    // the phone's back from the sky view still goes to the compass
+    await p.locator('#main [data-act="cStars"]').click(); await tapRose(); await expect(title(p)).toHaveText(X.sky);
+    await p.goBack(); await expect(title(p)).toHaveText(X.stars); await expect(btn).toHaveText(X.see);
+    // after a reload in the sky view, the tap still returns to the compass, and back then goes to Kompass
+    await tapRose(); await expect(title(p)).toHaveText(X.sky);
+    await p.reload(); await expect(title(p)).toHaveText(X.sky);
+    await tapRose(); await expect(title(p)).toHaveText(X.stars);
+    await p.goBack(); await expect(title(p)).toHaveText(X.compass);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  for (const L of LANGS) test(`every way into a guide: the back label names where the button and the phone's back go (${L.lang})`, async ({browser}) => {
+    const no = L.lang === 'no';
+    const {ctx, p, err} = await open(browser, L.lang);
+    const unfold = async sel => { await p.evaluate(s => { const d = document.querySelector(s); const det = d && d.closest('details'); if (det && !det.open) det.open = true; d && d.scrollIntoView({block: 'center'}); }, sel); await p.locator(sel).first().click(); };
+    const checks = [];
+    const check = async (name, toSource, openIt) => {
+      await toSource();
+      const src = (await title(p).innerText()).trim();
+      await openIt();
+      await expect(title(p), name + ': opened').not.toHaveText(src);
+      const back = p.locator('#main button.back').first();
+      const lbl = (await back.innerText()).trim();
+      expect(lbl, name + ': the label names the page it came from').toBe(src);
+      await back.click();
+      await expect(title(p), name + ': the button').toHaveText(src);
+      await openIt();
+      await p.goBack();
+      await expect(title(p), name + ': the phone\'s back').toHaveText(src);
+      checks.push([name, src]);
+    };
+    const guider = async () => goTab(p, 'guide');
+    const inGuide = k => async () => { await goTab(p, 'guide'); if (await p.locator('#main button.back').count()) await p.locator('#main button.back').first().click(); await openRow(p, k); };
+    await check('Guider → guide', guider, () => openRow(p, 'milkyway'));
+    await check('search → guide', guider, async () => {
+      if (!(await p.locator('#gsInput').count())){ await p.locator('#main [data-act="gsOpen"]').click(); await p.locator('#gsInput').fill(no ? 'Melkeveien' : 'Milky Way'); }
+      await p.locator('#main .gs-hit').first().click();
+    });
+    await check('Kompass → Kart og kompass', () => goTab(p, 'compass'), () => p.locator('#main [data-guide="mapcompass"]').click());
+    await check('Stjerner og planeter → Om Melkeveien', () => toStars(p), () => p.locator('#main .st-mwg [data-guide="milkyway"]').click());
+    await check('Stjerner og planeter → Nattehimmelen', () => toStars(p), () => p.locator('#main .row-btns [data-guide="nightsky"]').click());
+    await check('Melkeveien nå → guide', async () => { await toStars(p); await p.locator('#main .mwsky-go button').click(); }, () => p.locator('#main [data-guide="milkyway"][data-sec="map"]').click());
+    await check('Nattehimmelen → Melkeveien', inGuide('nightsky'), () => unfold('#main details [data-guide="milkyway"]'));
+    await check('Retning om natta → Melkeveien', inGuide('nightdir'), () => unfold('#main details [data-guide="milkyway"]'));
+    await check('Melkeveien → Stjerner og planeter', inGuide('milkyway'), () => unfold('#main details [data-act="cStars"]'));
+    await check('Vinterråd → Mat', inGuide('winter'), () => unfold('#main details .plan-link[data-tool="food"]'));
+    await check('guide → Innstillinger', inGuide('milkyway'), () => p.locator('#hdrSet').click());
+    await check('Pakkliste → guide', async () => { await goTab(p, 'list'); }, async () => {
+      const vis = p.locator('#main .link-btn[data-act="openGuide"]:visible');
+      if (!(await vis.count())) await p.locator('#main [data-act="foldAll"]').click();
+      await vis.first().click();
+    });
+    expect(checks.length).toBe(12);
+    // Nødmodus: the guide's back button says Nødmodus, and both ways lead back to it
+    await goTab(p, 'guide');
+    if (await p.locator('#main button.back').count()) await p.locator('#main button.back').first().click();
+    const hold = async () => { const b = await p.locator('#main [data-sos-hold]').boundingBox(); await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down(); await p.waitForTimeout(1200); await p.mouse.up(); };
+    await hold(); await expect(p.locator('#sos')).toBeVisible();
+    await p.locator('#sos [data-sg]').first().click();
+    await expect(p.locator('#sos')).toBeHidden();
+    await expect(p.locator('#main button.back').first()).toHaveText(no ? 'Nødmodus' : 'Emergency mode');
+    await p.locator('#main button.back').first().click(); await expect(p.locator('#sos')).toBeVisible();
+    await p.locator('#sos [data-sg]').first().click(); await expect(p.locator('#sos')).toBeHidden();
+    await p.goBack(); await expect(p.locator('#sos')).toBeVisible();
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  // a shared note link: the app opens on its start page and then shows the note; Back leads to that start page
+  for (const L of LANGS) test(`a shared note link: the back label names the page under it (${L.lang})`, async ({browser}) => {
+    const {ctx, p: p0} = await open(browser, L.lang);
+    const code = 'j' + Buffer.from(JSON.stringify({v:1, k:'note', ti:'Delt tur', tx:'Hei'})).toString('base64url');
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p0.close();
+    await p.goto('./#note=' + code);
+    await expect(p.locator('#overlay .sh-prev')).toContainText('Delt tur');
+    const src = (await title(p).innerText()).trim();
+    await p.locator('#overlay [data-s="ok"]').click();
+    await expect(p.locator('#main .note-full h2')).toHaveText('Delt tur');
+    await expect(p.locator('#main button.back').first()).toHaveText(src);
+    await p.locator('#main button.back').first().click();
+    await expect(title(p)).toHaveText(src);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});

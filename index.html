@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-P0h/jSUQ0hro4gSWPNJzGt4mQgh/FPI8ee6XZlyNeOM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-hcSDR+c1hG8KEore8s/DxZdf4iOiv4q4hoGvIOKlz88='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -1002,8 +1002,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.27.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 98;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.27.2';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 99;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1117,7 +1117,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     mwg:{show:'Show labels', cap:'The Milky Way from Hjerkinn, Dovre, 26 September 2025, facing south', photoAlt:'The Milky Way as a band straight up from the horizon in the south, split by a dark lane, with three bright stars around it.',
       ph:{deneb:'Deneb (Cygnus)', cyg:'Cygnus Star Cloud', vega:'Vega (Lyra)', tri:'Summer Triangle', rift:'The Great Rift', altair:'Altair (Aquila)', tarazed:'Tarazed', sct:'Scutum Star Cloud, low and reddened near the horizon', m11:'M11'},
       m:{cas:'Cassiopeia (W)', cyg:'Northern Cross', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Summer Triangle', rift:'The Great Rift', sct:'Scutum Star Cloud', gc:'Centre (Sagittarius)', cru:'Southern Cross', coal:'Coalsack', lmc:'Large Magellanic Cloud', smc:'Small Magellanic Cloud', m31:'Andromeda Galaxy', aur:'Auriga (Capella)', per:'Perseus', gem:'Gemini', ori:'Orion'},
-      places:{sval:['Svalbard', '78° N'], nn:['Northern Norway', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Southern Norway', 'Stavanger, Oslo · 59–60° N'], se:['Southern Europe', 'about 40° N'], jp:['Japan', 'about 35° N'], can:['Canary Islands, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'about 14° N'], eq:['Equator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · about 23° S'], au:['Australia', 'about 31° S'], nz:['New Zealand', 'about 44° S'], pos:['My position']}, posGet:'My position: fetch', posBusy:'Finding your position …', posIn:'your position', esoCr:'Image: ESO/S. Brunier (CC BY 4.0)', esoChg:'Cropped, with labels added', skyChg:'Laid onto the sky over you', skyTitle:'The Milky Way now', skyBtn:'See the Milky Way as it stands now ›', skyGuide:'Open the Milky Way guide ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `The Milky Way as it stands ${w}, seen from ${p}.`, skyHow:'The middle is straight overhead, and the edge is the horizon. North is up; start the compass and the picture turns with the phone. The picture does not show light from the sun, the moon or towns: look for the Milky Way when it is fully dark.', skyNoPos:'Fetch your position to see the Milky Way as it stands over you right now.', esoSet:'The panorama of the whole Milky Way in the Milky Way guide is not ours: ', esoSet2:'. It is cropped, the labels are added in the app, and in «The Milky Way now» it is laid onto the sky over you.',
+      places:{sval:['Svalbard', '78° N'], nn:['Northern Norway', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Southern Norway', 'Stavanger, Oslo · 59–60° N'], se:['Southern Europe', 'about 40° N'], jp:['Japan', 'about 35° N'], can:['Canary Islands, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'about 14° N'], eq:['Equator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · about 23° S'], au:['Australia', 'about 31° S'], nz:['New Zealand', 'about 44° S'], pos:['My position']}, posGet:'My position: fetch', posBusy:'Finding your position …', posIn:'your position', esoCr:'Image: ESO/S. Brunier (CC BY 4.0)', esoChg:'Cropped, with labels added', skyChg:'Laid onto the sky over you', skyTitle:'The Milky Way now', skyBtn:'See the Milky Way as it stands now ›', skyBack:'Back to the compass', skyGuide:'Open the Milky Way guide ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `The Milky Way as it stands ${w}, seen from ${p}.`, skyHow:'The middle is straight overhead, and the edge is the horizon. North is up; start the compass and the picture turns with the phone. The picture does not show light from the sun, the moon or towns: look for the Milky Way when it is fully dark.', skyNoPos:'Fetch your position to see the Milky Way as it stands over you right now.', esoSet:'The panorama of the whole Milky Way in the Milky Way guide is not ours: ', esoSet2:'. It is cropped, the labels are added in the app, and in «The Milky Way now» it is laid onto the sky over you.',
       mapAria:'A panorama of the whole Milky Way with the names of well-known stars, constellations and dark clouds. Drag sideways or use the arrows to move along the band.', drag:'Drag sideways · pinch or double-tap to zoom', panL:'Move left along the band', panR:'Move right along the band', placeL:'Seen from',
       legend:(p, lat) => `Hatched: never rises above the horizon from ${p} (${lat}). Dashed line: its edge.`, legendNone:(p, lat) => `From ${p} (${lat}) the whole band rises above the horizon in the course of a day.`, dirS:'in the south', dirN:'in the north',
       gcNever:'The centre in Sagittarius never rises above the horizon here.', gcLow:(h, d) => `The centre in Sagittarius only just clears the horizon, at most ${h}° up, low ${d}.`, gcAlt:(h, d) => `The centre in Sagittarius reaches at most ${h}° above the horizon, ${d}.`, gcTop:'The centre in Sagittarius passes nearly overhead.',
@@ -1369,7 +1369,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
     mwg:{show:'Vis navn', cap:'Melkeveien fra Hjerkinn, Dovre, 26. september 2025, mot sør', photoAlt:'Melkeveien som et bånd rett opp fra horisonten mot sør, delt av en mørk stripe, med tre klare stjerner rundt.',
       ph:{deneb:'Deneb (Svanen)', cyg:'Svanens stjernesky', vega:'Vega (Lyren)', tri:'Sommertrekanten', rift:'Den store riften', altair:'Altair (Ørnen)', tarazed:'Tarazed', sct:'Skjoldets stjernesky, lavt og rødlig nær horisonten', m11:'M11'},
       m:{cas:'Kassiopeia (W)', cyg:'Nordkorset', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Sommertrekanten', rift:'Den store riften', sct:'Skjoldets stjernesky', gc:'Sentrum (Skytten)', cru:'Sørkorset', coal:'Kullsekken', lmc:'Den store magellanske sky', smc:'Den lille magellanske sky', m31:'Andromedagalaksen', aur:'Kusken (Capella)', per:'Perseus', gem:'Tvillingene', ori:'Orion'},
-      places:{sval:['Svalbard', '78° N'], nn:['Nord-Norge', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Sør-Norge', 'Stavanger, Oslo · 59–60° N'], se:['Sør-Europa', 'ca. 40° N'], jp:['Japan', 'ca. 35° N'], can:['Kanariøyene, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'ca. 14° N'], eq:['Ekvator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · ca. 23° S'], au:['Australia', 'ca. 31° S'], nz:['New Zealand', 'ca. 44° S'], pos:['Min posisjon']}, posGet:'Min posisjon: hent', posBusy:'Henter posisjon …', posIn:'posisjonen din', esoCr:'Bilde: ESO/S. Brunier (CC BY 4.0)', esoChg:'Beskåret, med navn lagt til', skyChg:'Lagt på himmelen over deg', skyTitle:'Melkeveien nå', skyBtn:'Se Melkeveien slik den står nå ›', skyGuide:'Åpne Melkeveien-guiden ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `Slik står Melkeveien ${w}, sett fra ${p}.`, skyHow:'Midten er rett over deg, og kanten er horisonten. Nord er opp; start kompasset, så dreier bildet med mobilen. Bildet viser ikke lys fra sola, månen eller byer: se etter Melkeveien når det er helt mørkt.', skyNoPos:'Hent posisjonen din for å se Melkeveien slik den står over deg akkurat nå.', esoSet:'Panoramaet av hele Melkeveien i guiden Melkeveien er ikke vårt: ', esoSet2:'. Det er beskåret, navnene er lagt til i appen, og i «Melkeveien nå» er det lagt på himmelen over deg.',
+      places:{sval:['Svalbard', '78° N'], nn:['Nord-Norge', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Sør-Norge', 'Stavanger, Oslo · 59–60° N'], se:['Sør-Europa', 'ca. 40° N'], jp:['Japan', 'ca. 35° N'], can:['Kanariøyene, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'ca. 14° N'], eq:['Ekvator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · ca. 23° S'], au:['Australia', 'ca. 31° S'], nz:['New Zealand', 'ca. 44° S'], pos:['Min posisjon']}, posGet:'Min posisjon: hent', posBusy:'Henter posisjon …', posIn:'posisjonen din', esoCr:'Bilde: ESO/S. Brunier (CC BY 4.0)', esoChg:'Beskåret, med navn lagt til', skyChg:'Lagt på himmelen over deg', skyTitle:'Melkeveien nå', skyBtn:'Se Melkeveien slik den står nå ›', skyBack:'Tilbake til kompasset', skyGuide:'Åpne Melkeveien-guiden ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `Slik står Melkeveien ${w}, sett fra ${p}.`, skyHow:'Midten er rett over deg, og kanten er horisonten. Nord er opp; start kompasset, så dreier bildet med mobilen. Bildet viser ikke lys fra sola, månen eller byer: se etter Melkeveien når det er helt mørkt.', skyNoPos:'Hent posisjonen din for å se Melkeveien slik den står over deg akkurat nå.', esoSet:'Panoramaet av hele Melkeveien i guiden Melkeveien er ikke vårt: ', esoSet2:'. Det er beskåret, navnene er lagt til i appen, og i «Melkeveien nå» er det lagt på himmelen over deg.',
       mapAria:'Panoramabilde av hele Melkeveien med navn på kjente stjerner, stjernebilder og mørke skyer. Dra sidelengs eller bruk pilene for å flytte langs båndet.', drag:'Dra sidelengs · knip eller dobbelttrykk for å zoome', panL:'Flytt mot venstre langs båndet', panR:'Flytt mot høyre langs båndet', placeL:'Sett fra',
       legend:(p, lat) => `Skravert: kommer aldri over horisonten fra ${p} (${lat}). Stiplet linje: kanten.`, legendNone:(p, lat) => `Fra ${p} (${lat}) kommer hele båndet over horisonten i løpet av døgnet.`, dirS:'i sør', dirN:'i nord',
       gcNever:'Sentrum i Skytten kommer aldri over horisonten herfra.', gcLow:(h, d) => `Sentrum i Skytten kommer bare så vidt over horisonten, høyst ${h}° opp, lavt ${d}.`, gcAlt:(h, d) => `Sentrum i Skytten står høyst ${h}° over horisonten, ${d}.`, gcTop:'Sentrum i Skytten går nesten rett over deg.',
@@ -2073,10 +2073,10 @@ function render(){
   if (editL) document.body.classList.add('notlist');
   let html = '';
   if (editL){
-    html += `<button class="back" data-nav data-act="back">${CHEV_L}${T.yourLists}</button>
+    html += `${backBtn(T.yourLists)}
       <div class="edit-bar"><span>${T.editing}</span><button class="chip field-on" data-act="back">${T.doneEdit}</button></div>`;
   } else if (bag){
-    html += `<button class="back" data-nav data-act="back">${CHEV_L}${esc(l.name)}</button>`;
+    html += `${backBtn(esc(l.name))}`;
     html += '<div class="toolbar">';
     if (hasLight(bag)) html += `<button class="chip${state.listLock ? ' lk' : ''}" data-act="lightToggle" aria-pressed="${!!bag.lightOnly}">${T.lightDay}</button>`;
     html += `<button class="chip" data-act="lockToggle" aria-pressed="${!!state.listLock}">${state.listLock ? '🔒 ' : ''}${T.lockList}</button><button class="chip" data-act="hideToggle" aria-pressed="${!!state.hidePacked}">${T.hide}</button></div>`;
@@ -2300,7 +2300,7 @@ function renderLists(){
   // 0.23.0: sections as in Innstillinger; the main list first (not repeated below); backup last; the settings row is gone
   const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
   const ml = mainList(), isMain = L => L.id === ml.id;
-  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${esc(ml.name)}</button>
+  let html = `${backBtn(esc(ml.name))}
     <p class="tool-sub">${T.listsSub}</p>${state.field ? `<p class="calc-warn">${T.editLocked}</p>` : ''}${bkRemindDue() ? `<div class="bk-banner" role="status"><p>${T.bkRemind}</p><div class="row-btns"><button class="btn primary" data-la="backup">${T.bkTake}</button><button class="btn" data-la="bkLater">${T.bkLater}</button></div></div>` : ''}`;
   html += sec(T.mainSec, listCard(ml));
   const std = stdList();
@@ -2354,7 +2354,7 @@ function renderSettings(){
   document.title = T.settings + ' · ' + T.app;
   document.body.classList.add('notlist');
   const backTo = {list:T.tabList, notes:T.tabNotes, plan:T.tabPlan, guide:T.tabGuide, compass:T.tabCompass}[tab] || T.tabList;
-  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${backTo}</button>`;
+  let html = `${backBtn(backTo)}`;
   // even sections with a thin line between (as on Dine lister from v29); the first without the line
   const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
   html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
@@ -2895,10 +2895,10 @@ function renderTextGuide(k){
   const T = t(), g = (GUIDE_TXT[state.lang] || GUIDE_TXT.en)[k];
   $('listName').textContent = g.title;
   document.title = g.title + ' · ' + T.app;
-  const backBtn = sosBack ? `<button class="back" data-nav data-act="sosReturn">${CHEV_L}${T.sos.title}</button>` : `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>`;
+  const backB = sosBack ? `<button class="back" data-nav data-act="sosReturn">${CHEV_L}${T.sos.title}</button>` : backBtn(T.tabGuide);
   // 0.13.0: Retning om natta and Nattehimmelen open the hemisphere of the saved position (no position: all folded)
   const hemi = !guideSec && (k === 'nightdir' || k === 'nightsky') && state.pos && isFinite(state.pos.lat) ? (state.pos.lat < 0 ? 'south' : 'north') : null;
-  main.innerHTML = `${backBtn}
+  main.innerHTML = `${backB}
     <p class="tool-sub">${g.sub}</p>${k === 'emergency' ? sosBtn(true) : ''}
     <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && (x[2] === guideSec || x[2] === hemi) ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(emMarks(x[1], state.lang, region(state.pos))))}</details>`).join('')}</section>`;
   loadSvgs();
@@ -3031,7 +3031,7 @@ function renderNotes(){
   // 0.18.0: a locked private note shows only the lock, «Privat notat» and the date
   if (n && !noteView(n)){
     noteEdit = null;
-    let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>
+    let h = `${backBtn(T.backNotes)}
       <article class="note-full priv-locked"><h2>${LOCK_IC}${T.privNote}</h2><p class="note-date">${noteDate(n.t)}</p></article>`;
     h += state.field ? `<p class="tool-sub">${T.privField}</p>` : `<div class="row-btns">${CRYPTO_OK ? `<button class="btn primary" data-act="privOpen">${T.privUnlock}</button>` : ''}<button class="btn danger" data-act="delNote" data-id="${n.id}">${T.noteDel}</button></div>`;
     main.innerHTML = h;
@@ -3040,7 +3040,7 @@ function renderNotes(){
   if (n){
     n = noteView(n);
     const tags = noteTags(n), rcv = (n.rcv ? ' rcv' : '') + (n.c ? ` has-nc nc-${n.c}` : ''), pin = (n.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : '') + (n.priv ? `<span role="img" aria-label="${esc(T.privOpenNote)}">${LOCK_OPEN_IC}</span>` : '');
-    let h = `<button class="back" data-nav data-act="back">${CHEV_L}${T.backNotes}</button>`;
+    let h = `${backBtn(T.backNotes)}`;
     if (noteEdit){
       h += `<article class="note-full note-edit${rcv}"><input type="text" id="neTitle" class="ne-title" placeholder="${esc(T.noteTitlePh)}" value="${esc(noteEdit.title)}">
         <p class="note-date">${noteDate(n.t)}</p>${tags ? `<p class="note-tags">${tags}</p>` : ''}
@@ -3195,7 +3195,7 @@ function renderPhone(){
   const T = t();
   $('listName').textContent = T.phoneTool;
   document.title = T.phoneTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `${backBtn(T.tabGuide)}
     <p class="tool-sub">${T.phoneSub}</p>
     <section class="manual guide">${T.phone.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && x[2] === guideSec ? ' open' : ''}><summary>${x[0]}</summary>${x[1]}</details>`).join('')}</section>`;
   // 0.11.0: a link can open one section (Spar batteri, Nødfunksjoner)
@@ -3779,7 +3779,7 @@ function renderStoveBoard(){
   $('listName').textContent = T.sbTool;
   document.title = T.sbTool + ' · ' + T.app;
   const dot = k => `<b class="fig-num">${k}</b>`;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `${backBtn(T.tabGuide)}
     <p class="tool-sub">${T.sbSub}</p>
     <figure class="sb-fig"><div data-svgsrc="guides/stove-board.svg"></div>
       <ul class="fig-legend">${T.sbFig1.map((x, n) => `<li>${dot(n + 1)}<span>${x}</span></li>`).join('')}</ul></figure>
@@ -3792,7 +3792,7 @@ function renderWinter(){
   const T = t();
   $('listName').textContent = T.winterTool;
   document.title = T.winterTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabGuide}</button>
+  main.innerHTML = `${backBtn(T.tabGuide)}
     <p class="tool-sub">${T.winterSub}</p>
     <section class="manual guide">${T.winterAdv.map(x => `<details><summary>${x[0]}</summary>${planLinks(x[1])}</details>`).join('')}</section>`;
 }
@@ -3801,7 +3801,7 @@ function renderHowto(){
   $('listName').textContent = T.howTool;
   document.title = T.howTool + ' · ' + T.app;
   document.body.classList.add('notlist');
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.yourLists}</button>
+  main.innerHTML = `${backBtn(T.yourLists)}
     <section class="manual guide">${T.intro.map(x => `<details open><summary>${x[0]}</summary><p>${x[1]}</p></details>`).join('')}</section>
     <div class="row-btns"><button class="btn" data-la="intro">${T.showIntro}</button></div>`;
 }
@@ -4498,9 +4498,9 @@ function renderMwSky(){
   const loc = state.lang === 'no' ? 'nb-NO' : 'en-GB';
   const when = now.toLocaleDateString(loc, {day: 'numeric', month: 'short', year: 'numeric'}) + ' ' + now.toLocaleTimeString(loc, {hour: '2-digit', minute: '2-digit'});
   const where = p ? M.skyWhere(Math.abs(p.lat).toFixed(1).replace('.', state.lang === 'no' ? ',' : '.') + '° ' + (p.lat >= 0 ? 'N' : 'S'), Math.abs(p.lon).toFixed(1).replace('.', state.lang === 'no' ? ',' : '.') + '° ' + (p.lon >= 0 ? (state.lang === 'no' ? 'Ø' : 'E') : (state.lang === 'no' ? 'V' : 'W'))) : '';
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.stTitle}</button>
+  main.innerHTML = `${backBtn(T.stTitle)}
     <div class="compass stars mwsky">
-      <svg class="rose big" viewBox="-4 -4 328 328" aria-hidden="true">
+      <svg class="rose big" viewBox="-4 -4 328 328" aria-hidden="true" data-nav data-act="mwSky">
         <defs><clipPath id="mwSkyClip"><circle cx="160" cy="160" r="150"/></clipPath></defs>
         <circle cx="160" cy="160" r="151" fill="#000" stroke="var(--line-strong)" stroke-width="2"/>
         <g class="dial" id="dial"><g clip-path="url(#mwSkyClip)"><image id="mwSkyImg" x="10" y="10" width="300" height="300" preserveAspectRatio="none"/><rect class="mwm-tint" x="10" y="10" width="300" height="300"/></g>${roseDial()}</g>
@@ -4510,6 +4510,7 @@ function renderMwSky(){
       <div class="c-btns">${cOn ? '' : `<button class="chip field-on" data-act="cStart">${T.cStart}</button>`}</div>
       <p class="c-msg" id="cMsg"></p>
     </div>
+    <p class="mwsky-go"><button class="btn small" data-nav data-act="mwSky">${M.skyBack}</button></p>
     <section class="pg-sec manual">
       ${p ? `<p class="mwsky-when" id="mwSkyWhen">${M.skyWhen(when, where)}</p>${posOld() ? `<p class="mwsky-old">${posLine()}</p>` : ''}<p>${M.skyHow}</p>`
           : `<p class="mwsky-nopos">${M.skyNoPos}</p><div class="row-btns"><button class="btn" data-act="getPos">${posBusy ? M.posBusy : M.posGet}</button></div>${posMsg ? `<p class="c-msg">${esc(posMsg)}</p>` : ''}`}
@@ -4839,7 +4840,7 @@ function renderStars(){
   $('listName').textContent = T.stTitle;
   document.title = T.stTitle + ' · ' + T.app;
   const now = new Date(), objs = state.pos ? skyVisible(now) : [], say = state.pos ? starSay(now) : '';
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${T.tabCompass}</button>
+  main.innerHTML = `${backBtn(T.tabCompass)}
     <div class="compass stars">
       <svg class="rose big" viewBox="-52 -52 424 424" aria-hidden="true" data-nav data-act="mwSky">
         <circle cx="160" cy="160" r="181" fill="none" stroke="var(--line)" stroke-width="62" opacity=".35"/>
@@ -5071,7 +5072,7 @@ function renderWind(){
   document.title = T.windTool + ' · ' + T.app;
   const back = planBack();
   const val = x => esc(fmt(x).replace(/\s/g, '').replace('−', '-'));
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${back}</button>
+  main.innerHTML = `${backBtn(back)}
     <p class="tool-sub">${T.windSub}</p>
     <div class="calc wind">
       <label class="cfield"><span>${T.windT}</span><span class="wind-row">
@@ -5117,7 +5118,7 @@ function renderWater(){
     $('listName').textContent = T.water;
   document.title = T.water + ' · ' + T.app;
   const field = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-calc="${k}" value="${esc(fmt(c[k]).replace(/\s/g,''))}"></label>`;
-  let html = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? planBack() : t().tabGuide}</button>
+  let html = `${backBtn(tab === 'plan' ? planBack() : t().tabGuide)}
     <p class="tool-sub">${T.waterSub}</p>
     <div class="modes"><div class="chips">
       <button class="chip" data-calcmode="mix" aria-pressed="${c.mode === 'mix'}">${T.findMix}</button>
@@ -5179,7 +5180,7 @@ function renderFuel(){
   const field = (k, label, v, extra) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-fuel="${k}" value="${esc(fmt2(v).replace(/\s/g,''))}">${extra || ''}</label>`;
   const custom = typeof f.perLc[f.fuel] === 'number';
   const day = f.mode === 'day';
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
+  main.innerHTML = `${backBtn(planBack())}
     <p class="tool-sub">${T.fuelSub}</p>
     <section class="sum-card" id="fuelOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.fuelType}</span><div class="chips">
@@ -5258,7 +5259,7 @@ function renderSun(){
   const T = t();
     $('listName').textContent = T.sunTool;
   document.title = T.sunTool + ' · ' + T.app;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? t().tabPlan : t().tabGuide}</button>
+  main.innerHTML = `${backBtn(tab === 'plan' ? t().tabPlan : t().tabGuide)}
     <p class="tool-sub">${T.sunSub}</p>
     <p class="key-rule">${T.sunKey}</p>
     <section class="manual guide">${T.sun.map((x, i) => `<details><summary>${x[0]}</summary>${i === 1 ? lensChart(T) : ''}${x[1]}</details>`).join('')}</section>`;
@@ -5296,7 +5297,7 @@ function renderKnots(set){
   const title = fish ? T.fishTool : T.knotTool;
   $('listName').textContent = title;
   document.title = title + ' · ' + T.app;
-  const back = `<button class="back" data-nav data-act="back">${CHEV_L}${tab === 'plan' ? T.tabPlan : T.tabGuide}</button>`;
+  const back = `${backBtn(tab === 'plan' ? T.tabPlan : T.tabGuide)}`;
   main.innerHTML = fish
     ? `${back}<p class="tool-sub">${T.fishSub}</p>
       <section class="manual"><h2>${T.fishHd}</h2>${knotCards(T.fishKnots, FISH_KNOT_FILES)}</section>
@@ -5333,7 +5334,7 @@ function renderFood(){
   document.title = T.foodTool + ' · ' + T.app;
   const inp = (k, label) => `<label class="cfield"><span>${label}</span><input type="text" inputmode="decimal" data-food="${k}" value="${esc(fmt(f[k]).replace(/\s/g,''))}"></label>`;
   const mrow = (name, kN, labN, kK, labK) => `<div class="mrow"><span class="m-name">${name}<small class="m-kcal" data-mk="${kN}"></small></span>${inp(kN, labN)}${inp(kK, labK)}</div>`;
-  main.innerHTML = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
+  main.innerHTML = `${backBtn(planBack())}
     <p class="tool-sub">${T.foodSub}</p>
     <section class="sum-card">
       <div class="chips"><button class="chip" data-foodseason="summer" aria-pressed="${f.season === 'summer'}">${T.summer}</button><button class="chip" data-foodseason="winter" aria-pressed="${f.season === 'winter'}">${T.winter}</button></div>
@@ -5414,7 +5415,7 @@ function renderWeight(){
   $('listName').textContent = T.weightTool;
   document.title = T.weightTool + ' · ' + T.app;
   const chip = (u, label) => `<button class="chip" data-wunit="${u}" aria-pressed="${w.unit === u}">${label}</button>`;
-  let h = `<button class="back" data-nav data-act="back">${CHEV_L}${planBack()}</button>
+  let h = `${backBtn(planBack())}
     <p class="tool-sub">${T.weightSub}</p>
     <section class="sum-card" id="wOut" aria-live="polite"></section>
     <div class="modes"><span class="modes-label">${T.wUnit}</span><div class="chips">${chip('g', 'g')}${chip('kg', 'kg')}</div></div>
@@ -5932,6 +5933,14 @@ main.addEventListener('click', async e => {
   if (act === 'mwSky'){
     // 0.27.0: a tap inside the compass (or its button) shows the Milky Way as it stands now
     if (b.tagName.toLowerCase() === 'svg'){ const m = b.getScreenCTM(); if (m){ const q = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse()); if (Math.hypot(q.x - 160, q.y - 160) > 212) return; } }
+    // 0.27.2: a toggle. In the sky view the same tap (or the button, now «Tilbake til kompasset») goes back to the compass:
+    // the history step back when the compass is below it, so the phone's back never takes an extra step
+    if (tab === 'compass' && view === 'mwsky'){
+      const st = history.state || {};
+      if (st.depth > 0 && st.from && st.from.tab === 'compass' && st.from.view === 'stars') goBack();
+      else { view = 'stars'; history.replaceState({tab, view, depth:st.depth || 0, from:st.from}, ''); render(); top(); }
+      return;
+    }
     go('compass', 'mwsky'); return;
   }
   if (act === 'mwGetPos'){ mwGetPos(); return; }
@@ -6134,9 +6143,39 @@ $('tabbar').addEventListener('click', e => {
   go(b.dataset.tab, null);
 });
 
-/* ---------- navigation history (Android back button) ---------- */
+/* ---------- navigation history (Android back button) ----------
+   0.27.2: every entry remembers the page it was opened from (from: {tab, view}), and every back button is named after
+   the page Back really leads to (backBtn(), pageTitle()): the page below in the history, or with nothing below, the
+   tab's main page (goBack()). The phone's back and the button go to the same place, so the label is true for both. */
+function pageTitle(tb, v){
+  const T = t(), G = GUIDE_TXT[state.lang] || GUIDE_TXT.en;
+  if (v === 'settings') return T.settings;
+  if (tb === 'compass') return v === 'stars' ? T.stTitle : v === 'mwsky' ? T.mwg.skyTitle : T.tabCompass;
+  if (tb === 'notes') return T.tabNotes;
+  if (tb === 'list'){
+    if (v === 'lists') return T.yourLists;
+    if (v === 'howto') return T.howTool;
+    if (state.field) return T.tabList;
+    const L = typeof v === 'string' && v.indexOf('edit:') === 0 ? ownList(v.slice(5)) : null;
+    return (L || mainList()).name;
+  }
+  if (typeof v === 'string' && v.indexOf('tool:') === 0){
+    const k = v.slice(5), old = {knots:T.knotTool, fishing:T.fishTool, sun:T.sunTool, winter:T.winterTool, stoveboard:T.sbTool, phone:T.phoneTool, water:T.water, wind:T.windTool, fuel:T.fuelTool, food:T.foodTool, weight:T.weightTool};
+    if (own(old, k)) return old[k];
+    if (own(G, k)) return G[k].title;
+  }
+  return tb === 'plan' ? T.tabPlan : T.tabGuide;
+}
+function backLabel(){
+  const st = history.state || {};
+  if ((st.depth || 0) > 0) return st.from ? pageTitle(st.from.tab, st.from.view) : null;
+  return pageTitle(tab, null);   // goBack() with nothing below: the tab's main page
+}
+// fallback: the old fixed label, only for an entry made before 0.27.2 (no from)
+const backBtn = fallback => { const l = backLabel(); return `<button class="back" data-nav data-act="back">${CHEV_L}${l != null ? esc(l) : fallback}</button>`; };
 function go(newTab, newView){
   if (rainLocked) extendNav();
+  const from = {tab, view};
   // 0.15.0: a guide opened from anywhere (index, link, search) leaves its group open for Back
   if (newTab === 'guide' && typeof newView === 'string' && newView.indexOf('tool:') === 0){ const g = guideGroup(newView.slice(5)); if (g) state.gOpen = Object.assign({}, state.gOpen, {[g]: true}); }
   tab = newTab; view = newView;
@@ -6145,9 +6184,9 @@ function go(newTab, newView){
   if (sheetPushed && overlay.hidden){
     // a closed sheet still owns the top history entry: reuse it for the new screen
     sheetPushed = false;
-    history.replaceState({tab, view, depth}, '');
+    history.replaceState({tab, view, depth, from}, '');   // the entry below is still the page we left
   } else {
-    history.pushState({tab, view, depth}, '');
+    history.pushState({tab, view, depth, from}, '');
   }
   render(); top();
 }
@@ -6155,10 +6194,12 @@ function goBack(){
   if (history.state && history.state.depth > 0) history.back();
   else { view = null; history.replaceState({tab, view:null, depth:0}, ''); render(); top(); }
 }
-history.replaceState({tab, view, depth:0}, '');
+{ const hs = history.state;   // 0.27.2: a reload on the same page keeps its place in the history
+  const keep = !freshStart && hs && hs.tab === tab && (hs.view || null) === view && hs.depth > 0;
+  history.replaceState(keep ? {tab, view, depth:hs.depth, from:hs.from} : {tab, view, depth:0}, ''); }
 window.addEventListener('popstate', e => {
   if (ignorePop){ ignorePop = false; return; }
-  if (sortDrag){ sortCancel(); history.pushState({tab, view, depth:(history.state && history.state.depth || 0) + 1}, ''); return; }
+  if (sortDrag){ sortCancel(); history.pushState({tab, view, depth:(history.state && history.state.depth || 0) + 1, from:{tab, view}}, ''); return; }
   if (slMode){ history.pushState(Object.assign({}, history.state || {}, {light:true}), ''); return; }
   if (!sosEl.hidden){ closeSos(true); return; } // 0.11.0: back leaves Nødmodus
   if (e.state && e.state.sos && sosEl.hidden){ openSos(true); return; } // 0.11.1: back from a guide opened in Nødmodus
