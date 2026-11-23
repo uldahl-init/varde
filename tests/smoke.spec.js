@@ -3378,7 +3378,7 @@ test.describe('landskap 0.24.2', () => {
    and the arrows, the places shade the right part, the dark-night line, and search finds its parts. */
 const MWG = (() => {
   const a = HTML.indexOf('/* ---------- Melkeveien guide (0.26.0): sky maths'), b = HTML.indexOf('/* ---------- end of the Melkeveien maths');
-  return new Function(HTML.slice(a, b) + '\nreturn {mwEqToGal, mwGalToEq, mwNever, mwMaxAlt, mwNoDark, mwPanoXY, MW_PANO};')();
+  return new Function(HTML.slice(a, b) + '\nreturn {mwEqToGal, mwGalToEq, mwNever, mwMaxAlt, mwNoDark, mwPanoXY, MW_PANO, MW_BAND};')();
 })();
 test.describe('melkeveien guide 0.26', () => {
   test('galactic coordinates, what never rises, and the nights with no full darkness', () => {
@@ -3415,28 +3415,41 @@ test.describe('melkeveien guide 0.26', () => {
     // the file is cropped to rows y0–y1 and still holds both Magellanic Clouds
     const P = MWG.MW_PANO; expect(P.y1 - P.y0).toBe(296);   // the band window shown at zoom 1
     expect(MWG.mwPanoXY(302.8, -44.3).y).toBeLessThan(P.y1); expect(MWG.mwPanoXY(0, 30).y).toBeGreaterThan(P.y0);
+    // 0.27.1: the band file is twice as wide and cut to the same window; its offset is the same share of the width
+    const B = MWG.MW_BAND; expect(B.w).toBe(2560); expect(B.h).toBe(1280);
+    expect(B.y0 / B.h).toBe(P.y0 / P.h); expect(B.y1 / B.h).toBe(P.y1 / P.h); expect(B.dx / B.w).toBe(P.dx / P.w);
   });
-  test('the stars in the panorama sit where the projection puts them (0.26.1)', async ({page}) => {
-    // bright stars, found in the picture itself; the app draws it MW_PANO.dx px further left. Measured 23 Nov 2026: the
-    // panorama's own placement varies a few px between stars (Capella, Antares and α Centauri sit 6–8 px off vertically),
-    // so the check uses the steady ones
-    const P = MWG.MW_PANO, stars = {Sirius: [227.23, -8.89], Vega: [67.45, 19.24], Deneb: [84.28, 2.0], Altair: [47.74, -8.91], Canopus: [261.21, -25.29], Rigel: [209.24, -25.25], Procyon: [213.70, 13.02]};
-    const want = Object.entries(stars).map(([n, [l, b]]) => { const q = MWG.mwPanoXY(l, b); return [n, q.x + P.dx, q.y]; });   // 0.27.0: the file is the whole 1280 × 640 picture
+  // 0.27.1: both files, the 1280 px one (sky view) and the 2560 px band (Hele båndet); the band has rows y0–y1 only.
+  // Tolerances scale with the width (4 px in the 1280 file). Each star must be the brightest point near its place,
+  // and in the sharper band Deneb is checked too: it now stands out from the Cygnus star cloud round it
+  for (const F of ['MW_PANO', 'MW_BAND']) test(`the stars in the panorama sit where the projection puts them (${F})`, async ({page}) => {
+    // bright stars, found in the picture itself; the app draws it dx px further left. Measured 23 Nov 2026: the
+    // panorama's own placement varies a few px between stars (Capella, Antares and α Centauri sit 6–8 px off vertically
+    // in the 1280 file), so the check uses the steady ones
+    const P = MWG[F], s = P.w / 1280, band = F === 'MW_BAND', y0 = band ? P.y0 : 0;
+    const stars = {Sirius: [227.23, -8.89], Vega: [67.45, 19.24], Deneb: [84.28, 2.0], Altair: [47.74, -8.91], Canopus: [261.21, -25.29], Rigel: [209.24, -25.25], Procyon: [213.70, 13.02]};
+    const want = Object.entries(stars).map(([n, [l, b]]) => { const q = MWG.mwPanoXY(l, b); return [n, q.x * s + P.dx, q.y * s - y0]; });
     await page.goto('./');
-    const got = await page.evaluate(async ([src, want]) => {
+    const got = await page.evaluate(async ([src, want, R]) => {
       const img = new Image(); img.src = src; await img.decode();
       const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
       const g = c.getContext('2d'); g.drawImage(img, 0, 0);
       const d = g.getImageData(0, 0, c.width, c.height).data, v = (x, y) => d[(y * c.width + x) * 4] + d[(y * c.width + x) * 4 + 1] + d[(y * c.width + x) * 4 + 2];
-      return want.map(([n, x, y]) => {
-        let best = [-1, 0, 0];
-        for (let j = Math.round(y) - 6; j <= Math.round(y) + 6; j++) for (let i = Math.round(x) - 6; i <= Math.round(x) + 6; i++){ const w = v(i, j); if (w > best[0]) best = [w, i, j]; }
-        return [n, best[1] - x, best[2] - y];
-      });
-    }, [MWG.MW_PANO.src, want]);
-    for (const [n, dx, dy] of got){ expect(Math.abs(dx), n).toBeLessThanOrEqual(4); expect(Math.abs(dy), n).toBeLessThanOrEqual(4); }
-    const mdx = got.map(x => x[1]).sort((a, b) => a - b)[3];
-    expect(Math.abs(mdx)).toBeLessThanOrEqual(2);   // the median sits on the projection
+      return [c.width, c.height, want.map(([n, x, y]) => {
+        let best = [-1, 0, 0]; const all = [];
+        for (let j = Math.round(y) - R; j <= Math.round(y) + R; j++) for (let i = Math.round(x) - R; i <= Math.round(x) + R; i++){ const w = v(i, j); all.push(w); if (w > best[0]) best = [w, i, j]; }
+        all.sort((a, b) => a - b);
+        return [n, best[1] - x, best[2] - y, best[0] / Math.max(1, all[all.length >> 1])];
+      })];
+    }, [P.src, want, Math.round(6 * s)]);
+    const [w, h, res] = got;
+    expect(w).toBe(P.w); expect(h).toBe(band ? P.y1 - P.y0 : P.h);
+    for (const [n, dx, dy, contrast] of res){
+      expect(Math.abs(dx), n).toBeLessThanOrEqual(4 * s); expect(Math.abs(dy), n).toBeLessThanOrEqual(4 * s);
+      if (band) expect(contrast, n + ': a clear point').toBeGreaterThan(3);
+    }
+    const mdx = res.map(x => x[1]).sort((a, b) => a - b)[3];
+    expect(Math.abs(mdx)).toBeLessThanOrEqual(2 * s);   // the median sits on the projection
   });
   const TX = {no:{eso:'Bilde: ESO/S. Brunier (CC BY 4.0)', chg:'Beskåret, med navn lagt til', can:'Kanariøyene, Nepal', se:'Sør-Europa', m:{lmc:'Den store magellanske sky', smc:'Den lille magellanske sky', m31:'Andromedagalaksen'}, title:'Melkeveien', guider:'Guider', show:'Vis navn', rift:'Den store riften', tri:'Sommertrekanten', sct:'Skjoldets stjernesky, lavt og rødlig', never:'aldri over horisonten', over:'nesten rett over deg', apr:'april', aug:'august', all:'hele året', search:['Melkeveien', 'Den store riften', 'Sommertrekanten'], cap:'Hjerkinn, Dovre, 26. september 2025'},
     en:{eso:'Image: ESO/S. Brunier (CC BY 4.0)', chg:'Cropped, with labels added', can:'Canary Islands, Nepal', se:'Southern Europe', m:{lmc:'Large Magellanic Cloud', smc:'Small Magellanic Cloud', m31:'Andromeda Galaxy'}, title:'The Milky Way', guider:'Guides', show:'Show labels', rift:'The Great Rift', tri:'Summer Triangle', sct:'Scutum Star Cloud, low and reddened', never:'never rises above the horizon', over:'passes nearly overhead', apr:'April', aug:'August', all:'all year', search:['Milky Way', 'Great Rift', 'Summer Triangle'], cap:'Hjerkinn, Dovre, 26 September 2025'}};
@@ -3541,7 +3554,7 @@ test.describe('melkeveien guide 0.26', () => {
     const crBox = await cr.boundingBox(), mapBox = await box.boundingBox();
     expect(crBox.y - (mapBox.y + mapBox.height)).toBeLessThan(16);
     await expect(p.locator('#main .mwm-box image')).toHaveCount(3);
-    await expect.poll(() => p.evaluate(() => { const i = new Image(); i.src = document.querySelector('.mwm-box image').getAttribute('href'); return i.decode().then(() => i.naturalWidth); })).toBe(1280);
+    await expect.poll(() => p.evaluate(() => { const i = new Image(); i.src = document.querySelector('.mwm-box image').getAttribute('href'); return i.decode().then(() => i.naturalWidth); })).toBe(2560);   // 0.27.1: the sharper band file
     for (const k of ['lmc', 'smc', 'm31']) await expect(p.locator(`#main .mwm-lm[data-k="${k}"] text`).first()).toHaveText(X.m[k]);
     const mtog = p.locator('#main [data-act="mwMapLabels"]');
     await expect(mtog).toHaveText(X.show);
@@ -3581,14 +3594,19 @@ test.describe('melkeveien guide 0.26', () => {
     const fs = () => p.evaluate(() => getComputedStyle(document.querySelectorAll('.mwm-lm[data-k="vega"] text')[1]).fontSize);
     const fs1 = await fs();
     const H1 = (await box.boundingBox()).height;
-    // a double tap zooms in to the limit, a second one back out
+    // 0.27.1: a double tap doubles the zoom up to the limit (4×), the next one goes back out
     let b = await box.boundingBox();
     await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
     await expect(box).toHaveAttribute('data-z', '2.00');
+    await p.waitForTimeout(400);
+    await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+    await expect(box).toHaveAttribute('data-z', '4.00');
+    // the 2560 px band (0.27.1) is the picture drawn
+    expect(await p.locator('#main .mwm-box image').first().getAttribute('href')).toBe('guides/milkyway-eso-band.webp');
     expect(await fs()).toBe(fs1);   // names keep their size
     expect(Math.abs((await box.boundingBox()).height - H1)).toBeLessThan(1);   // the box keeps its size
     await expect(box).toHaveClass(/zoomed/);
-    // while zoomed: a drag moves the band by half as many degrees, and the names follow
+    // while zoomed: a drag moves the band by a quarter as many degrees, and the names follow
     const lc0 = +(await box.getAttribute('data-lc')), W = b.width;
     const vx = () => p.evaluate(() => document.querySelectorAll('.mwm-lm[data-k="vega"] text')[1].getBoundingClientRect().x);
     const x0 = await vx();
@@ -3596,7 +3614,7 @@ test.describe('melkeveien guide 0.26', () => {
     await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await p.mouse.down();
     await p.mouse.move(b.x + b.width / 2 - 60, b.y + b.height / 2, {steps:4}); await p.mouse.move(b.x + b.width / 2 - 120, b.y + b.height / 2, {steps:4}); await p.mouse.up();
     const moved = ((lc0 - +(await box.getAttribute('data-lc'))) + 360) % 360;
-    expect(Math.abs(moved - 120 / (W / 110 * 2))).toBeLessThan(1);
+    expect(Math.abs(moved - 120 / (W / 110 * 4))).toBeLessThan(0.5);
     expect(Math.abs((x0 - await vx()) - 120)).toBeLessThan(3);
     // wraps all the way round while zoomed, and the hatching is still drawn
     const covered = () => p.evaluate(() => { const bx = document.querySelector('.mwm-box').getBoundingClientRect(); const r = [...document.querySelectorAll('.mwm-box image')].map(i => i.getBoundingClientRect()).filter(q => q.right > bx.left && q.left < bx.right).sort((a, c) => a.left - c.left);
@@ -3610,9 +3628,12 @@ test.describe('melkeveien guide 0.26', () => {
     // two fingers: pinching wide stops at the limit
     await box.evaluate(el => {
       const r = el.getBoundingClientRect(), ev = (type, id, x) => el.dispatchEvent(new PointerEvent(type, {pointerId: id, pointerType: 'touch', isPrimary: id === 11, clientX: r.left + x, clientY: r.top + r.height / 2, bubbles: true}));
-      ev('pointerdown', 11, 150); ev('pointerdown', 12, 190); ev('pointermove', 12, 230); ev('pointermove', 12, 380); ev('pointerup', 12, 380); ev('pointerup', 11, 150);
+      ev('pointerdown', 11, 150); ev('pointerdown', 12, 170); ev('pointermove', 12, 230); ev('pointermove', 12, 380); ev('pointerup', 12, 380); ev('pointerup', 11, 150);
     });
-    await expect(box).toHaveAttribute('data-z', '2.00');
+    await expect(box).toHaveAttribute('data-z', '4.00');
+    // at the limit, a drag up and down stays inside the band: the picture still covers the box
+    b = await box.boundingBox();
+    for (const dy of [-400, 400]){ await p.mouse.move(b.x + 100, b.y + b.height / 2); await p.mouse.down(); await p.mouse.move(b.x + 100, b.y + b.height / 2 + dy, {steps:6}); await p.mouse.up(); expect(await covered(), 'dy ' + dy).toBe(true); }
     expect(await covered()).toBe(true);
     expect(err).toEqual([]);
     await ctx.close();
