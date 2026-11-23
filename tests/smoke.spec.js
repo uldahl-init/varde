@@ -1653,6 +1653,8 @@ test.describe('stjerner 0.19', () => {
 const STAR_MAG = {sirius:-1.46, canopus:-0.74, acen:-0.27, arcturus:-0.05, vega:0.03, capella:0.08, rigel:0.13, procyon:0.34,
   achernar:0.46, betelgeuse:0.50, altair:0.77, acrux:0.77, aldebaran:0.86, antares:0.96, spica:0.97, pollux:1.14, fomalhaut:1.16,
   deneb:1.25, regulus:1.35, castor:1.58, polaris:1.98};
+/* 0.25.3: Polaris sits in its own soft block (`.st-pin`) with a pin and «· står alltid øverst», then a divider and a
+   small heading naming the sort (`h4.st-sorted`) above the sorted stars; the heading follows the sort switch. */
 test.describe('stjerner 0.25.2', () => {
   test('the magnitudes in STARS match the reference values', () => {
     const a = HTML.indexOf('const STARS = ['), b = HTML.indexOf('];', a);
@@ -1660,7 +1662,21 @@ test.describe('stjerner 0.25.2', () => {
     expect(stars.map(s => s[0]).sort()).toEqual(Object.keys(STAR_MAG).sort());
     for (const s of stars) expect(Math.abs(s[3] - STAR_MAG[s[0]]), s[0]).toBeLessThan(0.015);
   });
-  const TX = {no:{nav:'Navigasjonsstjerne', pol:'Polarstjernen', low:'lavt over horisonten'}, en:{nav:'Navigation star', pol:'Polaris', low:'low on the horizon'}};
+  const TX = {no:{nav:'Navigasjonsstjerne · står alltid øverst', pol:'Polarstjernen', low:'lavt over horisonten', sb:'Sortert etter lysstyrke', sh:'Sortert etter høyde'},
+    en:{nav:'Navigation star · always on top', pol:'Polaris', low:'low on the horizon', sb:'Sorted by brightness', sh:'Sorted by height'}};
+  // the pinned block: Stjerner heading, then .st-pin holding only Polaris (with a pin icon), then the sort heading with a
+  // divider and extra space above it, then the sorted list; the block has its own outline and no row line under Polaris
+  const layout = p => p.evaluate(() => {
+    const h = document.querySelector('#stList h3.st-grp[data-g="st"]'), pin = document.querySelector('#stList .st-pin');
+    const sub = document.querySelector('#stList h4.st-sorted'), ul = document.querySelector('#stList ul[data-g="st"]');
+    if (!h || !pin || !sub || !ul) return null;
+    const cs = e => getComputedStyle(e), pr = pin.getBoundingClientRect(), sr = sub.getBoundingClientRect(), row = pin.querySelector('.st-row');
+    return {order: h.nextElementSibling === pin && pin.nextElementSibling === sub && sub.nextElementSibling === ul,
+      onlyNav: pin.querySelectorAll('ul[data-g="nav"] .st-row').length === 1 && !pin.querySelector('ul[data-g="st"]'),
+      pinIcon: !!pin.querySelector('.st-name svg.pin-ic'), border: parseFloat(cs(pin).borderTopWidth), radius: parseFloat(cs(pin).borderTopLeftRadius),
+      rowLine: parseFloat(cs(row).borderBottomWidth), divider: parseFloat(cs(sub).borderTopWidth), gap: sr.top - pr.bottom,
+      subText: sub.textContent};
+  });
   for (const L of LANGS) test(`Polaris on its own line, the stars below in true order (${L.lang})`, async ({browser}) => {
     const X = TX[L.lang];
     const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
@@ -1676,8 +1692,15 @@ test.describe('stjerner 0.25.2', () => {
     await expect(nav.locator('.st-row')).toHaveCount(1);
     await expect(nav.locator('.st-name')).toHaveText(X.pol);
     await expect(nav.locator('.st-tag')).toHaveText(X.nav);
-    expect(await p.evaluate(() => { const h = document.querySelector('#stList h3.st-grp[data-g="st"]'), n = document.querySelector('#stList ul[data-g="nav"]');
-      return h.nextElementSibling === n && n.nextElementSibling === document.querySelector('#stList ul[data-g="st"]'); })).toBe(true);
+    let lay = await layout(p);
+    expect(lay).toBeTruthy();
+    expect(lay.order && lay.onlyNav && lay.pinIcon).toBe(true);
+    expect(lay.border).toBeGreaterThanOrEqual(1);
+    expect(lay.radius).toBeGreaterThan(0);
+    expect(lay.rowLine).toBe(0);
+    expect(lay.divider).toBeGreaterThanOrEqual(1);
+    expect(lay.gap).toBeGreaterThanOrEqual(12);
+    expect(lay.subText).toBe(X.sb);
     const names = p.locator('#stList ul[data-g="st"] .st-name');
     await expect(names.filter({hasText: X.pol})).toHaveCount(0);
     // Lysest først: by magnitude, so Vega before Capella before Deneb, and every step non-decreasing
@@ -1695,7 +1718,16 @@ test.describe('stjerner 0.25.2', () => {
     expect(mags).toEqual(mags.slice().sort((a, b) => a - b));
     // Høyest først: the sorted list by height, Polaris still on its own line above it
     await p.locator('#main [data-act="stSort"][data-v="high"]').click();
+    await expect(p.locator('#stList h4.st-sorted')).toHaveText(X.sh);
     await expect(nav.locator('.st-name')).toHaveText(X.pol);
+    await expect(nav.locator('.st-tag')).toHaveText(X.nav);
+    lay = await layout(p);
+    expect(lay.order && lay.onlyNav && lay.pinIcon).toBe(true);
+    expect(lay.divider).toBeGreaterThanOrEqual(1);
+    await p.locator('#main [data-act="stSort"][data-v="bright"]').click();
+    await expect(p.locator('#stList h4.st-sorted')).toHaveText(X.sb);
+    await p.locator('#main [data-act="stSort"][data-v="high"]').click();
+    await expect(p.locator('#stList h4.st-sorted')).toHaveText(X.sh);
     await expect(names.filter({hasText: X.pol})).toHaveCount(0);
     const alts = await p.evaluate(() => [...document.querySelectorAll('#stList ul[data-g="st"] .st-row small')].map(e => e.textContent));
     const num = alts.map(a => /^(\d+)°/.test(a) ? +a.match(/^(\d+)/)[1] : (a === X.low ? 0 : 90));
@@ -2365,22 +2397,26 @@ test.describe('privat', () => {
     const url = await page.evaluate(() => window.__shared), code = url.split('#note=e')[1];
     const bytes = Buffer.from(code, 'base64url');
     expect(bytes[0]).toBe(2);
-    const ctx = await ctxFor(), p2 = await fresh(ctx), err2 = watchErrors(p2);
+    // each link opens in a new tab of the same phone: closing a sheet calls history.back() a moment later, and in
+    // the same tab that back could interrupt the next goto (it once landed on «/» on GitHub)
+    const ctx = await ctxFor(), errs2 = [];
+    let p2 = null;
+    const openLink = async u => { if (p2) await p2.close(); p2 = await fresh(ctx); errs2.push(watchErrors(p2)); await p2.goto(u); };
     // a changed header (the compression flag) is refused as a wrong password, never read as other content
     const bent = Buffer.from(bytes); bent[1] ^= 1;
-    await p2.goto(url.split('#')[0] + '#note=e' + bent.toString('base64url'));
+    await openLink(url.split('#')[0] + '#note=e' + bent.toString('base64url'));
     await pwOk(p2, 'lenke-passord-2');
     await expect(p2.locator('#pwSt')).toHaveText('Feil passord.');
     await p2.locator('#overlay [data-s="cancel"]').click();
     // the real link opens
-    await p2.goto('about:blank'); await p2.goto(url);
+    await openLink(url);
     await pwOk(p2, 'lenke-passord-2');
     await expect(p2.locator('#overlay .sh-prev')).toContainText('kartet ligger i sekken');
     await p2.locator('#overlay [data-s="cancel"]').click();
     // an old version 1 link, made as builds 70–90 made it, still opens
     const lsalt = rand(16), le = await gcm(await kdf('lenke-passord-1', lsalt), enc8(JSON.stringify({v:1, k:'note', ti:'Gammel lenke', tx:'fra før', n:'Per'})));
     const v1 = Buffer.concat([Buffer.from([1, 0]), Buffer.from(lsalt), Buffer.from(le.iv), Buffer.from(le.ct)]).toString('base64url');
-    await p2.goto('about:blank'); await p2.goto(url.split('#')[0] + '#note=e' + v1);
+    await openLink(url.split('#')[0] + '#note=e' + v1);
     await pwOk(p2, 'lenke-passord-1');
     await expect(p2.locator('#overlay .sh-prev')).toContainText('fra før');
     await p2.locator('#overlay [data-s="ok"]').click();
@@ -2395,7 +2431,7 @@ test.describe('privat', () => {
     await p2.locator('#bkRestore').click();
     await p2.locator('#bkRPw').fill('kopi-passord-1'); await p2.locator('#bkRPwOk').click();
     await expect(p2.locator('#bkRStatus')).toContainText('1 notat');
-    expect(err2).toEqual([]);
+    expect(errs2.flat()).toEqual([]);
     await ctx.close();
     await settle(page, errors);
   });
