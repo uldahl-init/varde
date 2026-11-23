@@ -2397,22 +2397,26 @@ test.describe('privat', () => {
     const url = await page.evaluate(() => window.__shared), code = url.split('#note=e')[1];
     const bytes = Buffer.from(code, 'base64url');
     expect(bytes[0]).toBe(2);
-    const ctx = await ctxFor(), p2 = await fresh(ctx), err2 = watchErrors(p2);
+    // each link opens in a new tab of the same phone: closing a sheet calls history.back() a moment later, and in
+    // the same tab that back could interrupt the next goto (it once landed on «/» on GitHub)
+    const ctx = await ctxFor(), errs2 = [];
+    let p2 = null;
+    const openLink = async u => { if (p2) await p2.close(); p2 = await fresh(ctx); errs2.push(watchErrors(p2)); await p2.goto(u); };
     // a changed header (the compression flag) is refused as a wrong password, never read as other content
     const bent = Buffer.from(bytes); bent[1] ^= 1;
-    await p2.goto(url.split('#')[0] + '#note=e' + bent.toString('base64url'));
+    await openLink(url.split('#')[0] + '#note=e' + bent.toString('base64url'));
     await pwOk(p2, 'lenke-passord-2');
     await expect(p2.locator('#pwSt')).toHaveText('Feil passord.');
     await p2.locator('#overlay [data-s="cancel"]').click();
     // the real link opens
-    await p2.goto('about:blank'); await p2.goto(url);
+    await openLink(url);
     await pwOk(p2, 'lenke-passord-2');
     await expect(p2.locator('#overlay .sh-prev')).toContainText('kartet ligger i sekken');
     await p2.locator('#overlay [data-s="cancel"]').click();
     // an old version 1 link, made as builds 70–90 made it, still opens
     const lsalt = rand(16), le = await gcm(await kdf('lenke-passord-1', lsalt), enc8(JSON.stringify({v:1, k:'note', ti:'Gammel lenke', tx:'fra før', n:'Per'})));
     const v1 = Buffer.concat([Buffer.from([1, 0]), Buffer.from(lsalt), Buffer.from(le.iv), Buffer.from(le.ct)]).toString('base64url');
-    await p2.goto('about:blank'); await p2.goto(url.split('#')[0] + '#note=e' + v1);
+    await openLink(url.split('#')[0] + '#note=e' + v1);
     await pwOk(p2, 'lenke-passord-1');
     await expect(p2.locator('#overlay .sh-prev')).toContainText('fra før');
     await p2.locator('#overlay [data-s="ok"]').click();
@@ -2427,7 +2431,7 @@ test.describe('privat', () => {
     await p2.locator('#bkRestore').click();
     await p2.locator('#bkRPw').fill('kopi-passord-1'); await p2.locator('#bkRPwOk').click();
     await expect(p2.locator('#bkRStatus')).toContainText('1 notat');
-    expect(err2).toEqual([]);
+    expect(errs2.flat()).toEqual([]);
     await ctx.close();
     await settle(page, errors);
   });
