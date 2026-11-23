@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-pIQ/d6ops1HZ0FSXrQmG/kG1765UAr22DBkExrIq1Dk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Fx3ShCAOcVw19/yUvcMPQvsvmD6SSgaLPpOV9LHwgQY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -938,6 +938,15 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 .btn{font-weight:600;border-radius:10px;padding:10px 16px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;white-space:nowrap}
 .btn.small{padding:6px 12px;font-size:.9rem}
 .btn.primary{background:var(--red);border-color:var(--red);color:var(--on-red,#fff)}
+/* build 101: Nytt notat and Lås opp / Lås nå share the Notater row evenly; the lock button has its own colour (lichen),
+   darkened for white text in light mode, dark text in dark mode, an outline in Nattlys (contrast 4.5 : 1 in every skin) */
+.row-btns.notes-top{display:grid;grid-template-columns:1fr 1fr}
+.notes-top .btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;white-space:normal;text-align:center}
+.btn.priv-btn{background:var(--lichen);border-color:var(--lichen);color:#fff}
+@supports (background:color-mix(in srgb,red,blue)){.btn.priv-btn{background:color-mix(in srgb,var(--lichen) 82%,#000);border-color:color-mix(in srgb,var(--lichen) 82%,#000)}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.priv-btn{background:var(--lichen);border-color:var(--lichen);color:#111}}
+:root[data-theme="dark"] .btn.priv-btn{background:var(--lichen);border-color:var(--lichen);color:#111}
+.notes-top .btn .lock-ic{margin-right:0}
 .btn.danger{color:var(--red);color:color-mix(in srgb,var(--red) 62%,var(--ink))} /* 0.22.0: contrast on Innstillinger in every skin */
 .add-cat{display:block;width:100%;margin-top:20px;padding:14px;border:2px dashed var(--line-strong);background:none;border-radius:12px;font-weight:600;color:var(--muted);cursor:pointer}
 .empty{margin:48px 8px;text-align:center;color:var(--muted)}
@@ -964,6 +973,7 @@ textarea{font-size:.8rem;font-family:ui-monospace,Menlo,Consolas,monospace;min-h
 /* 0.9.2: Nattlys always wins. Skins and dark mode set --gsafe and --link with selectors as strong as the night rules
    (Lett bris in dark mode kept Vær og sikkerhet orange; web links stayed blue in dark mode). This rule is stronger and last.
    Every colour that means something must be listed here or built from --ink, --muted, --red or --lichen. */
+:root body.night.night .btn.priv-btn{background:var(--surface);border-color:var(--lichen);color:var(--ink)}
 :root body.night.night.night{--gsafe:var(--ink);--ghealth:var(--muted);--gsky:var(--ink);--link:var(--ink);--nc1:var(--ink);--nc2:var(--red);--nc3:var(--lichen);--nc4:var(--muted);--nc5:var(--line-strong)}
 </style>
 </head>
@@ -1009,8 +1019,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.28.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 100;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.28.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 101;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1093,7 +1103,7 @@ const UI = {
     emptyList:'Empty list', emptySub:'Build your own', nameList:'Name your list', myList:'My list', create:'Create list',
     bkWarn:`Everything you make in ${APP_NAME} is stored only in the browser on this phone. If you clear the app's site data, uninstall it or change phones, your own lists, notes and Pack weight items are gone for good. Take a backup and keep it somewhere else.`,
     bkWarnHow:'Clearing only the cache usually keeps your data. Clearing site data, cookies and site data, or storage deletes it.',
-    bkTake:'Take a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
+    bkTake:'Take a backup', bkPopQ:'Time for a backup', bkCovers:'The backup holds your own lists, notes, Pack weight, your links and the figures in Plan. Language and appearance are not included.',
     bkShare:'Share', bkSave:'Save as file', bkShared:'Backup shared.', bkSaved:'File made. Look in your downloads.', bkShow:'Show the backup as text',
     bkCopy:'Copy', bkCopied:'Backup copied. Paste it somewhere safe, for example in an e-mail to yourself.', bkManual:'Select the text and copy it manually.', bkShareFail:'Sharing did not work on this phone. Use Save as file or Copy instead.', bkDoneShare:'Shared', bkDoneSave:'Saved', bkDoneCopy:'Copied', restore:'Restore',
     bkPaste:'Paste a backup or a shared link here', bkFile:'Choose file', bkAdd:'Add from the text', bkCut:'The text seems to have been cut off. Use Choose file to read the backup straight from the file.', bkRestoreNote:'Restoring adds what is missing and never overwrites anything.',
@@ -1345,7 +1355,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     emptyList:'Tom liste', emptySub:'Lag din egen', nameList:'Gi listen et navn', myList:'Min liste', create:'Lag liste',
     bkWarn:`Alt du lager i ${APP_NAME} ligger bare i nettleseren på denne mobilen. Sletter du nettstedsdata for appen, avinstallerer den eller bytter mobil, forsvinner egne lister, notater og Sekkvekt for godt. Ta en sikkerhetskopi og lagre den et annet sted.`,
     bkWarnHow:'Å tømme bare bufferen sletter vanligvis ikke dataene. Det gjør «Nettstedsdata», «Informasjonskapsler og nettstedsdata» eller «Tøm lagring».',
-    bkTake:'Ta sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
+    bkTake:'Ta sikkerhetskopi', bkPopQ:'Tid for sikkerhetskopi', bkCovers:'Kopien tar med egne lister, notater, Sekkvekt, dine lenker og tallene i Planlegg. Språk og utseende tas ikke med.',
     bkShare:'Del', bkSave:'Lagre som fil', bkShared:'Sikkerhetskopien er delt.', bkSaved:'Filen er laget. Se i nedlastingene dine.', bkShow:'Vis sikkerhetskopien som tekst',
     bkCopy:'Kopier', bkCopied:'Sikkerhetskopien er kopiert. Lim den inn et trygt sted, for eksempel i en e-post til deg selv.', bkManual:'Merk teksten og kopier den manuelt.', bkShareFail:'Deling virket ikke på denne mobilen. Bruk Lagre som fil eller Kopier i stedet.', bkDoneShare:'Delt', bkDoneSave:'Lagret', bkDoneCopy:'Kopiert', restore:'Gjenopprett',
     bkPaste:'Lim inn en sikkerhetskopi eller en delt lenke her', bkFile:'Velg fil', bkAdd:'Legg til fra teksten', bkCut:'Teksten ser ut til å være kuttet av underveis. Bruk Velg fil og hent sikkerhetskopien rett fra filen.', bkRestoreNote:'Gjenoppretting legger til det som mangler, og overskriver aldri noe.',
@@ -1706,6 +1716,30 @@ function bkRemindDue(){
   const now = Date.now();
   return now - state.bkDirtyT > BK_REMIND_MS && !(state.bkSnooze > now);
 }
+/* build 101: the reminder also as a pop-up, so it is seen wherever the app opens (the banner stays on Dine lister).
+   Same rule as the banner (bkRemindDue: changes not backed up for 14 days, never in Utemodus). It stays until the user
+   answers: Ta sikkerhetskopi opens the backup sheet (no snooze, so it comes back until a backup is taken); Senere, ✕,
+   a tap outside or back hide it for 7 days (state.bkSnooze), as Senere on the banner. Never over another sheet, the
+   introduction, Nødmodus or the screen light; at start and on return to the app, at most once a day per session. */
+let bkPopT = 0;
+function bkRemindPop(){
+  if (!bkRemindDue() || Date.now() - bkPopT < 86400000) return;
+  if (!overlay.hidden || !$('intro').hidden || slMode || !sosEl.hidden || state.sosOpen) return;
+  const T = t();
+  bkPopT = Date.now();
+  new Promise(res => {
+    sheetResolve = res;
+    openSheet(`<h3>${esc(T.bkPopQ)}</h3><p>${esc(T.bkRemind)}</p><p class="bk-status warn">${esc(T.bkLast(bkLastTxt()))}</p>
+      <div class="row"><button class="btn" data-s="later">${T.bkLater}</button><button class="btn primary" data-s="ok">${T.bkTake}</button></div>`, true);
+    panel.dataset.bkpop = '1';
+    panel.querySelector('[data-s=ok]').onclick = () => closeSheet(true);
+    panel.querySelector('[data-s=later]').onclick = () => closeSheet(false);
+  }).then(ok => {
+    if (ok){ backupSheet(); return; }
+    state.bkSnooze = Date.now() + BK_SNOOZE_MS; save(); render();
+  });
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(bkRemindPop, 800); });
 function bkData(){
   const plan = {};
   BK_PLAN.forEach(k => { if (state[k]) plan[k] = state[k]; });
@@ -2299,6 +2333,13 @@ function listCard(L){
   }
   return h + '</div>';
 }
+// build 101: the Sikkerhetskopi section, the same on Dine lister and in Innstillinger
+function bkLastTxt(){ const T = t(); return state.bkLast ? new Date(state.bkLast).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}) : T.bkNever; }
+function bkSecBody(){
+  const T = t(), dirty = bkDirty();
+  return `<div class="row-btns"><button class="btn" data-la="backup">${T.bkBtn}</button></div>
+      <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(bkLastTxt())}${dirty ? ` · ${T.bkChanged}` : ''}</p>`;
+}
 function renderLists(){
   const T = t();
   $('listName').textContent = T.yourLists;
@@ -2316,12 +2357,7 @@ function renderLists(){
   html += sec(T.ownLists, (own.length ? own.map(listCard).join('') : `<p class="empty-own">${T.noOwn}</p>`) +
     (state.field ? '' : `<div class="row-btns lists-new"><button class="btn primary" data-la="new">${T.newList}</button></div>`));
   html += sec(T.sharedLists, shared.length ? shared.map(listCard).join('') : `<p class="empty-own">${T.noShared}</p>`);
-  if (!state.field){
-    const dirty = bkDirty();
-    const last = state.bkLast ? new Date(state.bkLast).toLocaleDateString(state.lang === 'no' ? 'nb-NO' : 'en-GB', {day:'numeric', month:'short', year:'numeric'}) : T.bkNever;
-    html += sec(T.bkSec, `<div class="row-btns"><button class="btn" data-la="backup">${T.bkBtn}</button></div>
-      <p class="bk-status${dirty ? ' warn' : ''}">${T.bkLast(last)}${dirty ? ` · ${T.bkChanged}` : ''}</p>`);
-  }
+  if (!state.field) html += sec(T.bkSec, bkSecBody());
   main.innerHTML = html;
   const f = main.querySelector('.pg-sec'); if (f) f.classList.add('first');
 }
@@ -2343,8 +2379,19 @@ function landSvg(){
    another (.land.up, CSS transitions with a growing delay). Out of view again, they sink back, so it plays again next
    time. Reduce motion: all in place from the start. */
 let landRaf = 0;
+/* build 101: under a short note the landscape stood just below the buttons, with an empty gap down to the tab bar.
+   .land.fill moves down by that gap (a larger top margin), so its foot always reaches the bottom of the screen;
+   a long note is untouched (no gap). Run after drawing the note, on resize and when the fonts are in. */
+function landFit(){
+  const land = main.querySelector('.land.fill');
+  if (!land) return;
+  land.style.marginTop = '';
+  const gap = Math.floor(innerHeight - (land.getBoundingClientRect().bottom + scrollY));
+  if (gap > 0) land.style.marginTop = (8 + gap) + 'px';
+}
 function landRise(){
   landRaf = 0;
+  landFit();
   const land = main.querySelector('.land.rise');
   if (!land) return;
   const r = land.getBoundingClientRect(), tb = $('tabbar').getBoundingClientRect().top;
@@ -2355,6 +2402,7 @@ function landRise(){
 function landWatch(){ if (!landRaf) landRaf = requestAnimationFrame(landRise); }
 addEventListener('scroll', landWatch, {passive:true});
 addEventListener('resize', landWatch);
+try { document.fonts.ready.then(landWatch); } catch(e){}
 function renderSettings(){
   const T = t();
   $('listName').textContent = T.settings;
@@ -2367,6 +2415,8 @@ function renderSettings(){
   html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
   html += sec(T.language, `<div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
     <p class="tool-tip">${T.langNote}</p>`);
+  // build 101: the backup also here (not only on Dine lister), right after Utseende and Språk: the data lives only on this phone
+  if (!state.field) html += sec(T.bkSec, bkSecBody());
   // 0.16.1: auto-relock, off by default (state.autoRelock); a setting, so kept out of the backup and Start på nytt
   html += sec(T.lockScreen, `<div class="role"><button class="switch" data-act="autoRelock" aria-pressed="${!!state.autoRelock}" aria-label="${T.relockOn}"><i></i></button>
     <div><b>${T.relockOn}</b><span>${T.relockHint}</span></div></div>`);
@@ -3078,16 +3128,18 @@ function renderNotes(){
       + (n.priv ? nb('notePubl', LOCK_IC, T.notePrivS, T.notePubl, ' aria-pressed="true"') : CRYPTO_OK ? nb('notePriv', LOCK_OPEN_IC, T.notePrivS, T.notePriv, ' aria-pressed="false"') : '')
       + nb('delNote', TRASH_IC, T.noteDel, T.noteDel, ' class="danger"')
       + `</div>`;
-    h += landSvg();   // 0.24.2: the landscape, still, under the note (never in the edit, where the keyboard needs the room)
+    h += landSvg().replace('class="land"', 'class="land fill"');   // 0.24.2: the landscape, still, under the note (never in the edit, where the keyboard needs the room)
     main.innerHTML = h;
+    landFit();   // build 101: a short note puts it down at the tab bar, with no gap under it
     return;
   }
   const list = notesSorted();
   let h = `<p class="tool-sub">${T.notesSub}</p>`;
   // build 72: once private notes exist, Lås nå (open) or Lås opp (locked) sits next to Nytt notat; Utemodus only locks
   const hasPriv = CRYPTO_OK && state.priv && state.notes.some(x => x.priv);
-  const privBtn = !hasPriv ? '' : privKey ? `<button class="btn" data-act="privLockNow">${LOCK_IC}${T.privLockNow}</button>` : state.field ? '' : `<button class="btn" data-act="privOpen">${LOCK_OPEN_IC}${T.privUnlock}</button>`;
-  h += state.field ? (privBtn ? `<div class="row-btns">${privBtn}</div>` : '') : `<div class="row-btns"><button class="btn primary" data-act="newNote">${T.newNote}</button>${privBtn}</div>`;
+  const privBtn = !hasPriv ? '' : privKey ? `<button class="btn priv-btn" data-act="privLockNow">${LOCK_IC}${T.privLockNow}</button>` : state.field ? '' : `<button class="btn priv-btn" data-act="privOpen">${LOCK_OPEN_IC}${T.privUnlock}</button>`;
+  // build 101: the two buttons share the row evenly; the lock button has its own colour (.btn.priv-btn)
+  h += state.field ? (privBtn ? `<div class="row-btns">${privBtn}</div>` : '') : `<div class="row-btns${privBtn ? ' notes-top' : ''}"><button class="btn primary" data-act="newNote">${T.newNote}</button>${privBtn}</div>`;
   if (!list.length) h += `<p class="empty">${T.notesEmpty}</p>`;
   else h += '<div class="index notes-ix">' + list.map(x0 => { const x = noteView(x0);
     if (!x) return `<button class="priv-locked${x0.c ? ` has-nc nc-${x0.c}` : ''}" data-act="openNote" data-id="${x0.id}"${x0.pin ? ' data-pin="1"' : ''} data-nav><span class="ix-txt"><span class="ix-t">${x0.pin ? `<span role="img" aria-label="${esc(T.notePinned)}">${PIN_IC}</span>` : ''}${LOCK_IC}${T.privNote}</span><span class="ix-d note-date">${noteDate(x0.t)}</span></span>${CHEV_R}</button>`;
@@ -5562,7 +5614,7 @@ function dismissSheet(){ const f = sheetOnDismiss; closeSheet(f ? f() : null); }
 function closeSheet(val){
   overlay.hidden = true;
   sheetOnDismiss = null;
-  delete panel.dataset.priv; delete panel.dataset.newnote; delete panel.dataset.auto;
+  delete panel.dataset.priv; delete panel.dataset.newnote; delete panel.dataset.auto; delete panel.dataset.bkpop;
   panel.innerHTML = '';
   if (sheetResolve){ const r = sheetResolve; sheetResolve = null; r(val); }
   setTimeout(() => {
@@ -6147,6 +6199,9 @@ function addItem(catId){
   const v = inp && inp.value.trim();
   if (!v) return;
   findCat(catId).items.push({id:uid(), text:v, done:false, sub:false, link:null, light:false});
+  // build 101: empty the field before the redraw, or the draft keeping (addKeep) put the added text back, and leaving
+  // Rediger then added it a second time
+  inp.value = '';
   save(); render();
   const again = main.querySelector(`[data-add="${catId}"]`);
   if (again) again.focus();
@@ -7569,7 +7624,7 @@ document.addEventListener('visibilitychange', updateWake);
 render();
 updateWake();
 // 0.14.1: tell once that stored data could not be read (a copy is kept, see the backup sheet)
-const startChecks = async () => { if (rescued){ rescued = false; const T = t(); if (await confirmBox(T.rescueQ, T.rescueMsg, T.backup)){ backupSheet(); return; } } checkShared(); };
+const startChecks = async () => { if (rescued){ rescued = false; const T = t(); if (await confirmBox(T.rescueQ, T.rescueMsg, T.backup)){ backupSheet(); return; } } await checkShared(); bkRemindPop(); };   // build 101: then the backup reminder
 if (!state.introDone) showIntro(0, startChecks); else startChecks();
 if (state.sosOpen) openSos(); // 0.11.0: closed while in Nødmodus → opens in Nødmodus again, no time limit
 // v32: ask the browser to keep the data when space runs low (installed app only; nothing is sent anywhere)

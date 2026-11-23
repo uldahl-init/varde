@@ -999,7 +999,7 @@ test.describe('innstillinger 0.22', () => {
     await expect(p.locator('#hdrSet')).toHaveAttribute('aria-current', 'page');
     await expect(p.locator('#tabbar [data-tab="guide"]')).toHaveAttribute('aria-current', /page|true/);
     const labels = (await p.locator('#main .sec-lbl').allTextContents()).map(x => x.trim());
-    expect(labels).toEqual(['Utseende', 'Språk', 'Regnlås', 'Bål', 'Start på nytt', 'Hjelp', 'Personvern', 'Om rådene', 'Bildene']);
+    expect(labels).toEqual(['Utseende', 'Språk', 'Sikkerhetskopi', 'Regnlås', 'Bål', 'Start på nytt', 'Hjelp', 'Personvern', 'Om rådene', 'Bildene']);   // build 101: Sikkerhetskopi after Språk
     await expect(p.locator('#main .part-lbl')).toHaveText('Om Varde');
     await expect(p.locator('#main .app-ver')).toContainText('bygg');
     await expect(p.locator('#main')).toContainText('Bildene i appen er ekte foto');
@@ -3116,6 +3116,26 @@ test.describe('fra testing 0.24', () => {
     await settle(p, err); await ctx.close();
   });
 
+  // build 101: after Legg til (button or Enter) the field is empty, and Ferdig adds nothing a second time
+  test('Rediger: Legg til empties the field and adds the thing once (0.28.1)', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, LIST());
+    await rediger(p);
+    const add = p.locator('#main [data-add="k1"]');
+    await add.fill('Kniv');
+    await p.locator('#main [data-add="k1"] + [data-act="addItem"]').click();
+    await expect.poll(() => items(p)).toEqual(['A', 'B', 'Kniv']);
+    await expect(add).toHaveValue('');
+    await add.fill('Sag'); await add.press('Enter');
+    await expect.poll(() => items(p)).toEqual(['A', 'B', 'Kniv', 'Sag']);
+    await expect(add).toHaveValue('');
+    await expect(add).toBeFocused();
+    await p.locator('#main .edit-bar [data-act="back"]').click();
+    await p.waitForTimeout(300);
+    expect(await items(p)).toEqual(['A', 'B', 'Kniv', 'Sag']);
+    await settle(p, err); await ctx.close();
+  });
+
   test('Rediger: text in «Legg til en ting» survives redraws and is added on Ferdig, another tab and the background', async ({browser}) => {
     const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
     await start(p, LIST());
@@ -4016,5 +4036,139 @@ test.describe('melkeveien 0.28', () => {
     }
     expect(err).toEqual([]);
     await ctx.close();
+  });
+});
+
+/* ---------- build 101 (0.28.1): the landscape down at the tab bar under a short note, the Notater buttons,
+   Sikkerhetskopi in Innstillinger and the backup reminder as a pop-up ---------- */
+test.describe('fra testing 0.28.1', () => {
+  const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
+  const start = async (p, st) => {
+    await p.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [KEY, st]);
+    await p.goto('./');
+    await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+  };
+  const stored = p => p.evaluate(k => JSON.parse(localStorage.getItem(k)), KEY);
+  const BASE = {v:2, introDone:true, lang:'no', lists:[]};
+  const DAY = 86400000;
+  const NOTE = {id:'n1', title:'Fiske', text:'Ørret', t:Date.UTC(2026, 10, 20)};
+
+  test('a short note has the landscape down at the tab bar; a long one keeps it under the text', async ({browser}) => {
+    const long = Array.from({length:60}, (_, i) => 'Linje ' + (i + 1)).join('\n');
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {notes:[NOTE, {id:'n2', title:'Lang', text:long, t:Date.UTC(2026, 10, 19)}]}));
+    await p.locator('#tabbar [data-tab="notes"]').click();
+    await p.locator('#main .notes-ix [data-id="n1"]').click();
+    const land = p.locator('#main .land');
+    await expect(land).toHaveClass(/fill/);
+    const foot = () => land.evaluate(el => [el.getBoundingClientRect().bottom, innerHeight, document.querySelector('#tabbar').getBoundingClientRect().top, el.getBoundingClientRect().top]);
+    let [bottom, h, tb, top] = await foot();
+    expect(Math.abs(bottom - h)).toBeLessThanOrEqual(2);       // no gap under it
+    expect(top).toBeLessThan(tb);                               // and still seen above the tab bar
+    const a = await p.locator('#main .note-acts').boundingBox();
+    expect(top).toBeGreaterThanOrEqual(a.y + a.height);
+    expect(await p.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1)).toBe(true);   // no scroll made by the move
+    // a taller screen: it follows
+    await p.setViewportSize({width:390, height:900});
+    await expect.poll(async () => { const f = await foot(); return Math.abs(f[0] - f[1]); }).toBeLessThanOrEqual(2);
+    // a long note: no added margin, the landscape after the buttons at the end of the page
+    await p.setViewportSize({width:390, height:780});
+    await p.locator('#main [data-act="back"]').click();
+    await p.locator('#main .notes-ix [data-id="n2"]').click();
+    expect(await land.evaluate(el => el.style.marginTop)).toBe('');
+    const a2 = await p.locator('#main .note-acts').boundingBox(), b2 = await land.boundingBox();
+    expect(b2.y).toBeGreaterThanOrEqual(a2.y + a2.height);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('Nytt notat and Lås opp share the row evenly, and Lås opp has its own colour', async ({browser}) => {
+    const lum = c => { const v = c.match(/[\d.]+/g).slice(0, 3).map(x => +x / 255).map(x => x <= .03928 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4); return .2126 * v[0] + .7152 * v[1] + .0722 * v[2]; };
+    const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+    for (const theme of ['light', 'dark']){
+      const ctx = await ctxFor(browser, {colorScheme:theme}), p = await ctx.newPage(), err = watchErrors(p);
+      // a locked private note is enough to draw Lås opp (nothing is opened here)
+      await start(p, Object.assign({}, BASE, {priv:{v:2, kdf:'pbkdf2-sha256', iter:600000, salt:'AAAAAAAAAAAAAAAAAAAAAA', iv:'AAAAAAAAAAAAAAAA', wrap:'AAAA'},
+        notes:[NOTE, {id:'p1', t:Date.UTC(2026, 10, 21), priv:1, iv:'AAAAAAAAAAAAAAAA', ct:'AAAA', title:'', text:''}]}));
+      await p.locator('#tabbar [data-tab="notes"]').click();
+      const row = p.locator('#main .row-btns.notes-top');
+      await expect(row).toHaveCount(1);
+      const nb = await row.locator('[data-act="newNote"]').boundingBox(), ub = await row.locator('[data-act="privOpen"]').boundingBox(), rb = await row.boundingBox();
+      expect(Math.abs(nb.width - ub.width)).toBeLessThanOrEqual(1);
+      expect(Math.abs(nb.y - ub.y)).toBeLessThanOrEqual(1);
+      expect(nb.x).toBeLessThanOrEqual(rb.x + 1);
+      expect(ub.x + ub.width).toBeGreaterThanOrEqual(rb.x + rb.width - 1);
+      const cs = await row.locator('[data-act="privOpen"], [data-act="newNote"]').evaluateAll(bs => bs.map(b => { const s = getComputedStyle(b); return [s.backgroundColor, s.color]; }));
+      const surface = await p.evaluate(() => getComputedStyle(document.querySelector('#tabbar')).backgroundColor);
+      const [newC, lockC] = cs;   // in page order: Nytt notat, then Lås opp
+      expect(lockC[0]).not.toBe(newC[0]);
+      expect(lockC[0]).not.toBe(surface);
+      expect(ratio(lockC[0], lockC[1])).toBeGreaterThanOrEqual(4.5);
+      await settle(p, err); await ctx.close();
+    }
+  });
+
+  test('Sikkerhetskopi is in Innstillinger too, after Språk, and opens the backup', async ({browser}) => {
+    const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, Object.assign({}, BASE, {notes:[NOTE]}));
+    await p.locator('#hdrSet').click();
+    const first = p.locator('#main .pg-sec').nth(2);
+    await expect(first.locator('.sec-lbl')).toHaveText('Sikkerhetskopi');
+    await expect(first.locator('.bk-status')).toContainText('Sist sikkerhetskopi: aldri');
+    await first.locator('[data-la="backup"]').click();
+    await expect(p.locator('#overlay .bk-warn')).toBeVisible();
+    await settle(p, err); await ctx.close();
+  });
+
+  test('the backup reminder pops up after 14 days, stays until answered, and Senere hides it for 7 days', async ({browser}) => {
+    const due = Object.assign({}, BASE, {notes:[NOTE], bkDirtyT:Date.now() - 20 * DAY});
+    // Senere
+    let ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+    await start(p, due);
+    const pop = p.locator('#panel[data-bkpop="1"]');
+    await expect(pop).toBeVisible();
+    await expect(pop.locator('h3')).toHaveText('Tid for sikkerhetskopi');
+    await expect(pop).toContainText('Sist sikkerhetskopi: aldri');
+    await p.waitForTimeout(1500);
+    await expect(pop).toBeVisible();                            // it does not go by itself
+    await pop.locator('[data-s="later"]').click();
+    await expect(p.locator('#overlay')).toBeHidden();
+    const snooze = (await stored(p)).bkSnooze;
+    expect(snooze - Date.now()).toBeGreaterThan(6.9 * DAY);
+    await p.reload(); await expect(p.locator('#tabbar [data-tab]')).toHaveCount(5);
+    await p.waitForTimeout(500);
+    await expect(p.locator('#overlay')).toBeHidden();
+    await settle(p, err); await ctx.close();
+    // Ta sikkerhetskopi opens the backup sheet, and ✕ there sets no snooze
+    ctx = await ctxFor(browser); p = await ctx.newPage(); err = watchErrors(p);
+    await start(p, due);
+    await p.locator('#panel[data-bkpop="1"] [data-s="ok"]').click();
+    await expect(p.locator('#overlay .bk-warn')).toBeVisible();
+    await p.locator('#overlay [data-sheet-close]').click();
+    await expect(p.locator('#overlay')).toBeHidden();
+    expect((await stored(p)).bkSnooze || 0).toBeLessThan(Date.now());
+    await settle(p, err); await ctx.close();
+    // ✕ on the pop-up counts as Senere; English text
+    ctx = await browser.newContext({locale:'en-GB', serviceWorkers:'block', viewport:{width:390, height:780}}); p = await ctx.newPage(); err = watchErrors(p);
+    await start(p, Object.assign({}, due, {lang:'en'}));
+    await expect(p.locator('#panel[data-bkpop="1"] h3')).toHaveText('Time for a backup');
+    await p.locator('#overlay [data-sheet-close]').click();
+    expect((await stored(p)).bkSnooze).toBeGreaterThan(Date.now() + 6 * DAY);
+    await settle(p, err); await ctx.close();
+  });
+
+  test('no backup pop-up when not due, in Utemodus, or while snoozed', async ({browser}) => {
+    const cases = [
+      Object.assign({}, BASE, {notes:[NOTE], bkDirtyT:Date.now() - 3 * DAY}),
+      Object.assign({}, BASE, {notes:[NOTE], bkDirtyT:Date.now() - 20 * DAY, field:true}),
+      Object.assign({}, BASE, {notes:[NOTE], bkDirtyT:Date.now() - 20 * DAY, bkSnooze:Date.now() + 2 * DAY}),
+      Object.assign({}, BASE, {bkDirtyT:Date.now() - 20 * DAY})
+    ];
+    for (const st of cases){
+      const ctx = await ctxFor(browser), p = await ctx.newPage(), err = watchErrors(p);
+      await start(p, st);
+      await p.waitForTimeout(600);
+      await expect(p.locator('#overlay')).toBeHidden();
+      await settle(p, err); await ctx.close();
+    }
   });
 });
