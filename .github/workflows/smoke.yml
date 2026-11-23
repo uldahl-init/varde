@@ -74,6 +74,23 @@ jobs:
         with:
           path: .
           name: github-pages-${{ github.run_attempt }}
+      # 23 Nov 2026: deploy-pages looks up the copy by name about half a second after the upload, and GitHub sometimes
+      # does not list it yet («Found 0 artifact(s)», «No artifacts named github-pages-1»; the runs after #37 and #38).
+      # Wait until the same API lists it, at most 60 s; if it never does, deploy-pages still tries and reports.
+      - name: Wait until GitHub lists the Pages copy
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          NAME: github-pages-${{ github.run_attempt }}
+        run: |
+          for i in $(seq 1 30); do
+            n=$(gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts?name=$NAME" --jq '.total_count' 2>/dev/null || echo 0)
+            if [ "${n:-0}" -ge 1 ]; then echo "$NAME is listed (check $i)"; exit 0; fi
+            echo "$NAME is not listed yet (check $i), waiting 2 s"
+            sleep 2
+          done
+          echo "::warning::$NAME was not listed after 60 s; deploying anyway"
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
         with:
