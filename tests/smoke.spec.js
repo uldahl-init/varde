@@ -3370,3 +3370,241 @@ test.describe('landskap 0.24.2', () => {
     await settle(p, err); await ctx.close();
   });
 });
+
+/* ---------- From build 95 (0.26.0): the Melkeveien guide ----------
+   The maths in Node (galactic coordinates, the never-rising limit, the period with no astronomical darkness, checked
+   against the owner's own calculations for 2026 within ±3 days); in the page, in both languages: the guide opens from
+   Guider and from its links, the photo and its labels with the «Vis navn» switch, the whole band moves with a drag
+   and the arrows, the places shade the right part, the dark-night line, and search finds its parts. */
+const MWG = (() => {
+  const a = HTML.indexOf('/* ---------- Melkeveien guide (0.26.0): sky maths'), b = HTML.indexOf('/* ---------- end of the Melkeveien maths');
+  return new Function(HTML.slice(a, b) + '\nreturn {mwEqToGal, mwGalToEq, mwNever, mwMaxAlt, mwNoDark, mwPanoXY, MW_PANO};')();
+})();
+test.describe('melkeveien guide 0.26', () => {
+  test('galactic coordinates, what never rises, and the nights with no full darkness', () => {
+    const gc = MWG.mwEqToGal(266.417, -29.008);   // Sagittarius A*
+    expect(Math.min(gc.l, 360 - gc.l)).toBeLessThan(0.2); expect(Math.abs(gc.b)).toBeLessThan(0.2);
+    const dn = MWG.mwEqToGal(20.6905 * 15, 45.280);   // Deneb: l 84.3, b 2.0
+    expect(Math.abs(dn.l - 84.28)).toBeLessThan(0.1); expect(Math.abs(dn.b - 2.0)).toBeLessThan(0.1);
+    const back = MWG.mwGalToEq(dn.l, dn.b); expect(Math.abs(back.ra - 20.6905 * 15)).toBeLessThan(1e-6); expect(Math.abs(back.dec - 45.28)).toBeLessThan(1e-6);
+    const cdec = MWG.mwGalToEq(0, 0).dec;
+    expect(Math.abs(cdec + 28.94)).toBeLessThan(0.05);
+    expect(MWG.mwNever(cdec, 62)).toBe(true); expect(MWG.mwNever(cdec, 70)).toBe(true);
+    expect(MWG.mwNever(cdec, 28)).toBe(false); expect(MWG.mwNever(cdec, 0)).toBe(false); expect(MWG.mwNever(cdec, -28)).toBe(false);
+    expect(MWG.mwMaxAlt(cdec, -28)).toBeGreaterThan(80);
+    // the owner's figures for 2026 (no astronomical darkness), within ±3 days
+    const ref = [['Stavanger', 58.97, '04-26', '08-19'], ['Oslo', 59.91, '04-23', '08-21'], ['Hjerkinn', 62.22, '04-16', '08-28'], ['Tromsø', 69.65, '03-28', '09-17'], ['Alta', 69.97, '03-27', '09-18']];
+    const days = (a, b) => Math.abs(Date.parse(a) - Date.parse(b)) / 864e5;
+    for (const [n, lat, from, to] of ref){
+      const r = MWG.mwNoDark(lat, 2026);
+      expect(r.from, n).toBeTruthy();
+      expect(days(r.from.toISOString().slice(0, 10), '2026-' + from), n + ' from').toBeLessThanOrEqual(3);
+      expect(days(r.to.toISOString().slice(0, 10), '2026-' + to), n + ' to').toBeLessThanOrEqual(3);
+    }
+    expect(MWG.mwNoDark(28.3, 2026).none).toBe(true);   // Tenerife: fully dark every night
+    const s = MWG.mwNoDark(-60, 2026); expect(s.from.getUTCMonth()).toBeGreaterThan(8); expect(s.to.getUTCMonth()).toBeLessThan(3);   // over New Year
+  });
+  // 0.26.1: the ESO panorama (eso0932a) is equirectangular in galactic coordinates: x = W·(0.5 − l/360), y = H·(0.5 − b/180)
+  // in the 1280 × 640 original, centre in the middle, l growing to the left. The owner's check values:
+  test('the panorama projection (0.26.1)', () => {
+    const near = (p, x, y) => { expect(Math.abs(p.x - x)).toBeLessThan(2); expect(Math.abs(p.y - y)).toBeLessThan(2); };
+    near(MWG.mwPanoXY(280.5, -32.9), 924, 437);   // Large Magellanic Cloud
+    near(MWG.mwPanoXY(302.8, -44.3), 843, 478);   // Small Magellanic Cloud
+    near(MWG.mwPanoXY(121.2, -21.6), 209, 397);   // Andromeda
+    near(MWG.mwPanoXY(0, 0), 640, 320); near(MWG.mwPanoXY(359.9, 0), 640.4, 320); near(MWG.mwPanoXY(180.01, 0), 1280, 320);
+    // the file is cropped to rows y0–y1 and still holds both Magellanic Clouds
+    const P = MWG.MW_PANO; expect(P.y1 - P.y0).toBe(296);
+    expect(MWG.mwPanoXY(302.8, -44.3).y).toBeLessThan(P.y1); expect(MWG.mwPanoXY(0, 30).y).toBeGreaterThan(P.y0);
+  });
+  test('the stars in the panorama sit where the projection puts them (0.26.1)', async ({page}) => {
+    // bright stars, found in the picture itself; the app draws it MW_PANO.dx px further left. Measured 23 Nov 2026: the
+    // panorama's own placement varies a few px between stars (Capella, Antares and α Centauri sit 6–8 px off vertically),
+    // so the check uses the steady ones
+    const P = MWG.MW_PANO, stars = {Sirius: [227.23, -8.89], Vega: [67.45, 19.24], Deneb: [84.28, 2.0], Altair: [47.74, -8.91], Canopus: [261.21, -25.29], Rigel: [209.24, -25.25], Procyon: [213.70, 13.02]};
+    const want = Object.entries(stars).map(([n, [l, b]]) => { const q = MWG.mwPanoXY(l, b); return [n, q.x + P.dx, q.y - P.y0]; });
+    await page.goto('./');
+    const got = await page.evaluate(async ([src, want]) => {
+      const img = new Image(); img.src = src; await img.decode();
+      const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      const d = g.getImageData(0, 0, c.width, c.height).data, v = (x, y) => d[(y * c.width + x) * 4] + d[(y * c.width + x) * 4 + 1] + d[(y * c.width + x) * 4 + 2];
+      return want.map(([n, x, y]) => {
+        let best = [-1, 0, 0];
+        for (let j = Math.round(y) - 6; j <= Math.round(y) + 6; j++) for (let i = Math.round(x) - 6; i <= Math.round(x) + 6; i++){ const w = v(i, j); if (w > best[0]) best = [w, i, j]; }
+        return [n, best[1] - x, best[2] - y];
+      });
+    }, [MWG.MW_PANO.src, want]);
+    for (const [n, dx, dy] of got){ expect(Math.abs(dx), n).toBeLessThanOrEqual(4); expect(Math.abs(dy), n).toBeLessThanOrEqual(4); }
+    const mdx = got.map(x => x[1]).sort((a, b) => a - b)[3];
+    expect(Math.abs(mdx)).toBeLessThanOrEqual(2);   // the median sits on the projection
+  });
+  const TX = {no:{eso:'Bilde: ESO/S. Brunier (CC BY 4.0)', chg:'Beskåret, med navn lagt til', can:'Kanariøyene (28° N)', se:'Sør-Europa (ca. 40° N)', m:{lmc:'Den store magellanske sky', smc:'Den lille magellanske sky', m31:'Andromedagalaksen'}, title:'Melkeveien', guider:'Guider', show:'Vis navn', rift:'Den store riften', tri:'Sommertrekanten', sct:'Trolig Skjoldets stjernesky', never:'aldri over horisonten', over:'nesten rett over deg', apr:'april', aug:'august', all:'hele året', search:['Melkeveien', 'Den store riften', 'Sommertrekanten'], cap:'Hjerkinn, Dovre, 26. september 2025'},
+    en:{eso:'Image: ESO/S. Brunier (CC BY 4.0)', chg:'Cropped, with labels added', can:'Canary Islands (28° N)', se:'Southern Europe (about 40° N)', m:{lmc:'Large Magellanic Cloud', smc:'Small Magellanic Cloud', m31:'Andromeda Galaxy'}, title:'The Milky Way', guider:'Guides', show:'Show labels', rift:'The Great Rift', tri:'Summer Triangle', sct:'Probably the Scutum Star Cloud', never:'never rises above the horizon', over:'passes nearly overhead', apr:'April', aug:'August', all:'all year', search:['Milky Way', 'Great Rift', 'Summer Triangle'], cap:'Hjerkinn, Dovre, 26 September 2025'}};
+  const sec = (p, k) => p.locator(`#main details[data-sec="${k}"]`);
+  const openSec = async (p, k) => { if (!(await sec(p, k).getAttribute('open') !== null)) await sec(p, k).locator('> summary').click(); };
+  for (const L of LANGS) test(`the guide: photo, labels, the whole band, places and darkness (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await openApp(p);
+    await goTab(p, 'guide');
+    await openRow(p, 'milkyway');
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    // the photo: loaded, eight labels, the caption with the place and date; the switch hides and shows the names
+    await openSec(p, 'patterns');
+    const img = p.locator('#main .mw-photo img');
+    await expect.poll(() => img.evaluate(i => i.complete && i.naturalWidth)).toBe(1200);
+    await expect(p.locator('#main .mwp-l')).toHaveCount(8);
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toHaveText(X.rift);
+    await expect(p.locator('#main .mwp-l[data-k="sct"]')).toContainText(X.sct);
+    await expect(p.locator('#main .mw-photo figcaption')).toContainText(X.cap);
+    await expect(p.locator('#main .mw-photo figcaption')).toContainText('Svein Atle Uldahl');
+    const tog = p.locator('#main [data-act="mwLabels"]');
+    await expect(tog).toHaveText(X.show); await expect(tog).toHaveAttribute('aria-pressed', 'true');
+    await tog.click();
+    await expect(tog).toHaveAttribute('aria-pressed', 'false');
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toBeHidden();
+    await expect(p.locator('#main .mwp-lines')).toBeHidden();
+    await tog.click();
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toBeVisible();
+    // labels stay inside the photo
+    const out = await p.evaluate(() => { const b = document.querySelector('.mwp-box').getBoundingClientRect(); return [...document.querySelectorAll('.mwp-l')].filter(e => { const r = e.getBoundingClientRect(); return r.left < b.left - 1 || r.right > b.right + 1 || r.top < b.top - 1 || r.bottom > b.bottom + 1; }).map(e => e.dataset.k); });
+    expect(out).toEqual([]);
+    // the whole band: a drag moves it, and the landmarks follow
+    await openSec(p, 'map');
+    const box = p.locator('#main .mwm-box');
+    await expect(box).toHaveAttribute('data-lc', /\d/);
+    const lc0 = +(await box.getAttribute('data-lc'));
+    const vx = () => p.evaluate(() => document.querySelectorAll('.mwm-lm[data-k="vega"] text')[1].getBoundingClientRect().x);   // the middle copy
+    const x0 = await vx();
+    const bb = await box.boundingBox(), W = bb.width;
+    await box.scrollIntoViewIfNeeded();
+    const b2 = await box.boundingBox();
+    await p.mouse.move(b2.x + b2.width / 2, b2.y + b2.height / 2);
+    await p.mouse.down(); await p.mouse.move(b2.x + b2.width / 2 - 60, b2.y + b2.height / 2, {steps:4}); await p.mouse.move(b2.x + b2.width / 2 - 120, b2.y + b2.height / 2, {steps:4}); await p.mouse.up();
+    const lc1 = +(await box.getAttribute('data-lc'));
+    const moved = ((lc0 - lc1) + 360) % 360;
+    expect(Math.abs(moved - 120 / (W / 110))).toBeLessThan(2);   // 120 px left = 120 / (px per degree) along the band (110° across the box)
+    const x1 = await vx();
+    expect(Math.abs((x0 - x1) - 120)).toBeLessThan(3);
+    // the arrows move it 45°
+    await p.locator('#main [data-act="mwPan"][data-d="45"]').click();
+    expect(Math.abs(((+(await box.getAttribute('data-lc')) - lc1) + 360) % 360 - 45)).toBeLessThan(0.2);
+    // the places: the centre (dec −29°) never rises from Dovre or Northern Norway, but does from 28° N and 28° S
+    const place = async k => { await p.locator(`#main [data-act="mwPlace"][data-p="${k}"]`).click(); await expect(p.locator(`#main [data-act="mwPlace"][data-p="${k}"]`)).toHaveAttribute('aria-pressed', 'true'); };
+    const gcUp = () => p.locator('#main .mwm-lm[data-k="gc"]').first().getAttribute('data-up');
+    await place('dovre');
+    expect(await gcUp()).toBe('0');
+    expect(await p.locator('#main .mwm-sh').count()).toBeGreaterThan(0);
+    expect(await p.locator('#main .mwm-hz').count()).toBeGreaterThan(0);
+    await expect(p.locator('#main .mwm-see li').first()).toContainText(X.never);
+    await place('nn');
+    expect(await gcUp()).toBe('0');
+    expect(await p.locator('#main .mwm-lm[data-k="cru"]').first().getAttribute('data-up')).toBe('0');
+    await place('se');   // 40° N
+    expect(await gcUp()).toBe('1');
+    await expect(p.locator('#main .mwm-see li').first()).toContainText('21°');
+    await place('can');   // 28° N
+    expect(await gcUp()).toBe('1');
+    await expect(p.locator('#main [data-act="mwPlace"][data-p="can"]')).toHaveText(X.can);
+    await expect(p.locator('#main [data-act="mwPlace"][data-p="se"]')).toHaveText(X.se);
+    await place('south');
+    expect(await gcUp()).toBe('1');
+    await expect(p.locator('#main .mwm-see li').first()).toContainText(X.over);
+    expect(await p.locator('#main .mwm-sh').count()).toBeGreaterThan(0);   // at 28° S the far north of the sky (Dec above +62°) never rises
+    expect(await p.locator('#main .mwm-lm[data-k="cas"]').first().getAttribute('data-up')).toBe('1');   // Cassiopeia's first star (Dec +59°) just does, about 3° up
+    await place('eq');
+    expect(await p.locator('#main .mwm-sh').count()).toBe(0);
+    // darkness: Dovre has a light period (April to August); 28° N is dark all year
+    await place('dovre');
+    await openSec(p, 'dark');
+    const dk = p.locator('#main [data-mwdark]');
+    await expect(dk).toContainText(X.apr); await expect(dk).toContainText(X.aug);
+    const from = await dk.getAttribute('data-from'), to = await dk.getAttribute('data-to');
+    expect(Math.abs(Date.parse(from) - Date.parse('2026-04-16')) / 864e5).toBeLessThanOrEqual(3);
+    expect(Math.abs(Date.parse(to) - Date.parse('2026-08-28')) / 864e5).toBeLessThanOrEqual(3);
+    await place('can');
+    await expect(dk).toContainText(X.all);
+    await place('se');
+    await expect(dk).toContainText(X.all);   // at 40° N the sun gets 18° down every night
+    // 0.26.1: the panorama, its credit and link right under it, the extra names, the name switch, and the wrap
+    const cr = p.locator('#main .mwm-cr');
+    await expect(cr).toBeVisible();
+    await expect(cr.locator('a')).toHaveText(X.eso);
+    await expect(cr.locator('a')).toHaveAttribute('href', 'https://www.eso.org/public/images/eso0932a/');
+    await expect(cr).toContainText(X.chg);
+    const crBox = await cr.boundingBox(), mapBox = await box.boundingBox();
+    expect(crBox.y - (mapBox.y + mapBox.height)).toBeLessThan(16);
+    await expect(p.locator('#main .mwm-box image')).toHaveCount(3);
+    await expect.poll(() => p.evaluate(() => { const i = new Image(); i.src = document.querySelector('.mwm-box image').getAttribute('href'); return i.decode().then(() => i.naturalWidth); })).toBe(1280);
+    for (const k of ['lmc', 'smc', 'm31']) await expect(p.locator(`#main .mwm-lm[data-k="${k}"] text`).first()).toHaveText(X.m[k]);
+    const mtog = p.locator('#main [data-act="mwMapLabels"]');
+    await expect(mtog).toHaveText(X.show);
+    await mtog.click(); await expect(mtog).toHaveAttribute('aria-pressed', 'false');
+    await expect(p.locator('#main .mwm-lm[data-k="vega"] text').nth(1)).toBeHidden();
+    await mtog.click(); await expect(p.locator('#main .mwm-lm[data-k="vega"] text').nth(1)).toBeVisible();
+    // wraps: eight steps of 45° come back to the start, and the picture always covers the whole box (across l = 180° too)
+    const covered = () => p.evaluate(() => { const b = document.querySelector('.mwm-box').getBoundingClientRect(); const r = [...document.querySelectorAll('.mwm-box image')].map(i => i.getBoundingClientRect()).filter(q => q.right > b.left && q.left < b.right).sort((a, c) => a.left - c.left);
+      let x = b.left + 1; for (const q of r){ if (q.left > x + 0.5) return false; x = Math.max(x, q.right); } return x >= b.right - 1; });
+    const lcA = +(await box.getAttribute('data-lc'));
+    for (let i = 0; i < 8; i++){ await p.locator('#main [data-act="mwPan"][data-d="-45"]').click(); expect(await covered(), 'step ' + i).toBe(true); }
+    expect(Math.abs(+(await box.getAttribute('data-lc')) - lcA)).toBeLessThan(0.2);
+    await box.scrollIntoViewIfNeeded();
+    const b3 = await box.boundingBox();
+    await p.mouse.move(b3.x + 20, b3.y + b3.height / 2); await p.mouse.down();
+    for (let i = 1; i <= 12; i++) await p.mouse.move(b3.x + 20 + i * 25, b3.y + b3.height / 2);
+    await p.mouse.up();
+    expect(await covered()).toBe(true);
+    // no sideways scroll on the page
+    expect(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  for (const L of LANGS) test(`search finds its parts, and the links lead to it (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
+    await p.goto('./');
+    await goTab(p, 'guide');
+    await p.locator('#main .gs-btn').click();
+    const input = p.locator('#gsInput');
+    for (const q of X.search){
+      await input.fill(q);
+      await expect(p.locator('#main .gs-hit[data-guide="milkyway"]').first(), q).toBeVisible();
+    }
+    // the Great Rift opens the section that explains it
+    await input.fill(X.search[1]);
+    await p.locator('#main .gs-hit[data-guide="milkyway"]').first().click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    await expect(p.locator('#main details[open]').first()).toContainText(new RegExp(X.search[1], 'i'));
+    // links: Stjerner og planeter (with a position), Nattehimmelen and Retning om natta lead here
+    await goTab(p, 'compass');
+    await p.locator('#main [data-act="cStars"]').click();
+    await p.locator('#stList [data-guide="milkyway"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    for (const [g, s] of [['nightsky', 'milky'], ['nightdir', 'stories']]){
+      await goTab(p, 'guide');
+      if (await p.locator('#main .gs-x').count()) await p.locator('#main .gs-x').click();
+      await openRow(p, g);
+      await sec(p, s).locator('> summary').click();
+      await sec(p, s).locator('[data-guide="milkyway"]').click();
+      await expect(p.locator('#listName')).toHaveText(X.title);
+    }
+    // the panorama's credit is also under Bildene in Innstillinger
+    await p.locator('#hdrSet').click();
+    await expect(p.locator('#main .mw-eso-set a')).toHaveText(X.eso);
+    await expect(p.locator('#main .mw-eso-set a')).toHaveAttribute('href', 'https://www.eso.org/public/images/eso0932a/');
+    await p.locator('#main [data-act="back"]').first().click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    // and back again, to Nattehimmelen
+    await openSec(p, 'photo');
+    await sec(p, 'photo').locator('[data-guide="nightsky"]').click();
+    await expect(p.locator('#listName')).not.toHaveText(X.title);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});

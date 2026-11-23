@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-jfWJl1joE/BI9auODTOer9wcXJm7DHLig4wrkZcP4Bg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-l5S05jE5ITEKDOgGX4oEozXZSKr+gBb2ef2Gl0ZhiUo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -552,6 +552,62 @@ body.night .chip.field-on,body.night .btn.primary{color:#000}
 .st-sort{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
 .st-grp{margin:18px 0 0;font-size:1rem;font-weight:600;color:var(--muted)}
 .moon-anim{margin:14px 0 6px}
+/* 0.26.0: Melkeveien guide, the photo with names and the whole band */
+.mw-photo{margin:14px 0 6px}
+.mwp-box{position:relative;border-radius:12px;overflow:hidden;background:#000}
+.mwp-box img{display:block;width:100%;height:auto}
+.mwp-tint{position:absolute;inset:0;pointer-events:none;display:none}
+body.night .mwp-tint{display:block;background:#f00;mix-blend-mode:multiply}
+body.night.ngreen .mwp-tint{background:#0f0}
+.mwp-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;color:#fff}
+.mwp-lines line,.mwp-lines polygon{stroke:currentColor;stroke-width:3.5;fill:none;opacity:.8}
+.mwp-lines circle{stroke:currentColor;stroke-width:4;fill:none;opacity:.85}
+.mwp-lines .mwp-tri{stroke-dasharray:14 12;opacity:.55}
+.mwp-labels{position:absolute;inset:0;pointer-events:none}
+.mwp-l{position:absolute;max-width:48%;width:max-content;padding:2px 7px;border-radius:8px;background:rgba(0,0,0,.62);color:#fff;font-size:clamp(12px,.8rem,17px);line-height:1.25}
+.mwp-l.l{transform:translate(0,-50%)}
+.mwp-l.r{transform:translate(-100%,-50%)}
+.mwp-l.c{transform:translate(-50%,-50%)}
+.mwp-l.small{font-size:clamp(11px,.72rem,15px)}
+body.night .mwp-lines{color:var(--ink)}
+body.night .mwp-l{color:var(--ink);background:rgba(0,0,0,.78)}
+.mw-photo.nolab .mwp-lines,.mw-photo.nolab .mwp-labels{display:none}
+.mw-photo figcaption{margin:8px 0 0;color:var(--muted);font-size:.9rem}
+.mwp-tog{margin-top:8px}
+.mw-map{margin:12px 0 6px}
+.mwm-box{position:relative;height:220px;border:1px solid var(--line-strong);border-radius:12px;background:#000;overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.mwm-box.drag{cursor:grabbing}
+.mwm-box svg{display:block}
+.mwm-box text{font-size:clamp(12px,.78rem,16px);fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.85);stroke-width:4px;stroke-linejoin:round}
+.mwm-ln{stroke:#fff;stroke-opacity:.6;stroke-width:1.2;fill:none}
+.mwm-tri{stroke-dasharray:4 4}
+.mwm-st{fill:#fff}
+.mwm-ring{fill:none;stroke:#fff;stroke-opacity:.8;stroke-width:1.4}
+.mwm-tint{display:none}
+body.night .mwm-tint{display:inline;fill:#f00;mix-blend-mode:multiply}
+body.night.ngreen .mwm-tint{fill:#0f0}
+.mwm-sh{fill:#000;fill-opacity:.45}
+.mwm-hatch{fill:url(#mwmH)}
+.mwm-hl{stroke:#fff;stroke-width:1.5;opacity:.55}
+.mwm-hz{fill:none;stroke:#fff;stroke-width:1.6;stroke-dasharray:6 4;opacity:.9}
+.mwm-box.nolab .mwm-lm{display:none}
+body.night .mwm-box text{fill:var(--ink);stroke:#000}
+body.night .mwm-ln,body.night .mwm-ring,body.night .mwm-hz{stroke:var(--ink)}
+body.night .mwm-st{fill:var(--ink)}
+body.night .mwm-hl{stroke:var(--ink)}
+.mwm-cr{margin:6px 0 0;font-size:.8rem;color:var(--muted)}
+.mwm-cr a{color:inherit}
+.mwm-tog{margin-top:8px}
+.mwm-nav{display:flex;align-items:center;gap:8px;margin:8px 0 0}
+.mwm-nav .chip{min-width:52px;min-height:44px;font-size:1.2rem}
+.mwm-hint{flex:1;text-align:center;color:var(--muted);font-size:.9rem}
+.mwm-plbl{margin:16px 0 0;font-weight:600}
+.mwm-places{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0}
+.mwm-leg{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;color:var(--muted);font-size:.9rem}
+.mwm-leg.none .mwm-sw{display:none}
+.mwm-sw{flex:none;width:30px;height:18px;margin-top:2px;border:1px solid var(--line-strong);border-radius:4px;background:repeating-linear-gradient(45deg,var(--muted) 0 1.5px,transparent 1.5px 6px)}
+.mwm-see{margin:8px 0 0}
+.mw-dark{padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px}
 .ma-title{font-weight:600;margin:0 0 8px}
 .ma-row{display:grid;grid-auto-flow:column;grid-template-rows:repeat(4,auto);grid-auto-columns:minmax(0,1fr);column-gap:8px;text-align:center;align-items:end}
 .ma-cell{display:contents}
@@ -931,8 +987,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.25.3';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 94;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.26.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 96;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1043,6 +1099,18 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     mwName:'Milky Way', mwFrom:(a, b) => `from ${a} to ${b}`, gcName:'Centre of the Milky Way (Sagittarius)', gcBelow:'below the horizon now', gcHighest:(h, d) => `highest ${h}° up in the ${d}`, gcBarely:h => `only just clears the horizon here (highest ${h}°)`, gcNever:'never rises above the horizon here', mwTop:(d, h, f) => `highest in the ${d} · ${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`, mwTopHigh:'highest nearly overhead', mwLow:'The Milky Way lies low along the horizon now, and is hard to see.', mwMoon:'The moon is bright now, so the Milky Way is hard to see.',
     stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>The ring shows only the direction of the stars and planets; their height is in the list. The Milky Way is a band right across the sky, so it is drawn inside the compass, where its height shows too: the middle of the compass is straight overhead, and the edge is the horizon. The two triangles on the outer edge point to where the Milky Way meets the horizon, the same directions as «from … to …» in the list.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
     starN:{gc:'Centre', sirius:'Sirius', canopus:'Canopus', acen:'Alpha Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polaris', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'The moon'},
+    mwg:{show:'Show labels', cap:'The Milky Way from Hjerkinn, Dovre, 26 September 2025, facing south', credit:'Photo: Svein Atle Uldahl', photoAlt:'The Milky Way as a band straight up from the horizon in the south, split by a dark lane, with three bright stars around it.',
+      ph:{deneb:'Deneb (Cygnus)', cyg:'Cygnus Star Cloud', vega:'Vega (Lyra)', tri:'Summer Triangle', rift:'The Great Rift', altair:'Altair (Aquila)', tarazed:'Tarazed', sct:'Probably the Scutum Star Cloud, low and reddened near the horizon'},
+      m:{cas:'Cassiopeia (W)', cyg:'Northern Cross', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Summer Triangle', rift:'The Great Rift', sct:'Scutum Star Cloud', gc:'Centre (Sagittarius)', cru:'Southern Cross', coal:'Coalsack', lmc:'Large Magellanic Cloud', smc:'Small Magellanic Cloud', m31:'Andromeda Galaxy', aur:'Auriga (Capella)', per:'Perseus', gem:'Gemini', ori:'Orion'},
+      places:{nn:'Northern Norway', dovre:'Dovre', sn:'Southern Norway', se:'Southern Europe (about 40° N)', can:'Canary Islands (28° N)', eq:'Equator', south:'Namibia / Chile / Australia', pos:'My position'}, posIn:'your position', pn:{se:'Southern Europe', can:'Canary Islands'}, esoCr:'Image: ESO/S. Brunier (CC BY 4.0)', esoChg:'Cropped, with labels added', esoSet:'The panorama of the whole Milky Way in the Milky Way guide is not ours: ', esoSet2:'. It is cropped, and the labels are added in the app.',
+      mapAria:'A panorama of the whole Milky Way with the names of well-known stars, constellations and dark clouds. Drag sideways or use the arrows to move along the band.', drag:'Drag sideways to follow the band', panL:'Move left along the band', panR:'Move right along the band', placeL:'Seen from',
+      legend:(p, lat) => `Hatched: never rises above the horizon from ${p} (${lat}). Dashed line: its edge.`, legendNone:(p, lat) => `From ${p} (${lat}) the whole band rises above the horizon in the course of a day.`, dirS:'in the south', dirN:'in the north',
+      gcNever:'The centre in Sagittarius never rises above the horizon here.', gcLow:(h, d) => `The centre in Sagittarius only just clears the horizon, at most ${h}° up, low ${d}.`, gcAlt:(h, d) => `The centre in Sagittarius reaches at most ${h}° above the horizon, ${d}.`, gcTop:'The centre in Sagittarius passes nearly overhead.',
+      denebUp:h => `Cygnus with Deneb never sets here, and reaches ${h}° up at most.`, denebAlt:h => `Cygnus with Deneb reaches at most ${h}° above the horizon.`,
+      cruNever:'The Southern Cross never rises above the horizon here.', cruUp:'The Southern Cross never sets here.', cruAlt:h => `The Southern Cross reaches at most ${h}° above the horizon.`,
+      darkGap:(p, lat, a, b) => `From ${p} (${lat}) it never gets fully dark from ${a} to ${b}: the sun does not go 18° below the horizon. The rest of the year it gets fully dark in the middle of the night. Change the place under The whole band.`,
+      darkAll:(p, lat) => `From ${p} (${lat}) it gets fully dark in the middle of the night all year. Change the place under The whole band.`, darkNone:(p, lat) => `From ${p} (${lat}) it never gets fully dark.`,
+      stGuide:'About the Milky Way ›'},
     cNoSensor:'No compass sensor found. It may be blocked in this preview, or the phone has no magnetometer. It will work in the installed app on your phone.', cDenied:'Access to motion sensors was not allowed. You can allow it in the browser settings.',
     cDirs:['N','NE','E','SE','S','SW','W','NW'],
     cInfo:[['How to use it','<p>Hold the phone <b>flat</b> like a normal compass, or <b>upright</b> in front of you and point it at a peak on the horizon. Tap <b>Hold reading</b> to freeze the direction and read it calmly.</p>'],
@@ -1283,6 +1351,18 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
     mwName:'Melkeveien', mwFrom:(a, b) => `fra ${a} til ${b}`, gcName:'Melkeveiens sentrum (Skytten)', gcBelow:'under horisonten nå', gcHighest:(h, d) => `høyest ${h}° opp i ${d}`, gcBarely:h => `kommer bare så vidt over horisonten her (høyest ${h}°)`, gcNever:'kommer aldri over horisonten her', mwTop:(d, h, f) => `høyest i ${d} · ${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`, mwTopHigh:'høyest nesten rett over deg', mwLow:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mwMoon:'Månen er lys nå, så Melkeveien er vanskelig å se.',
     stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Ringen viser bare retningen til stjernene og planetene; høyden står i listen. Melkeveien er et bånd tvers over himmelen, så den er tegnet inne i kompasset, slik at høyden også vises: midten av kompasset er rett over deg, og kanten er horisonten. De to trekantene på ytterkanten peker dit Melkeveien møter horisonten, i de samme retningene som «fra … til …» i listen.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
     starN:{gc:'Sentrum', sirius:'Sirius', canopus:'Canopus', acen:'Alfa Centauri', arcturus:'Arcturus', vega:'Vega', capella:'Capella', rigel:'Rigel', procyon:'Procyon', achernar:'Achernar', betelgeuse:'Betelgeuse', altair:'Altair', acrux:'Acrux', aldebaran:'Aldebaran', antares:'Antares', spica:'Spica', pollux:'Pollux', fomalhaut:'Fomalhaut', deneb:'Deneb', regulus:'Regulus', castor:'Castor', polaris:'Polarstjernen', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn', moon:'Månen'},
+    mwg:{show:'Vis navn', cap:'Melkeveien fra Hjerkinn, Dovre, 26. september 2025, mot sør', credit:'Foto: Svein Atle Uldahl', photoAlt:'Melkeveien som et bånd rett opp fra horisonten mot sør, delt av en mørk stripe, med tre klare stjerner rundt.',
+      ph:{deneb:'Deneb (Svanen)', cyg:'Svanens stjernesky', vega:'Vega (Lyren)', tri:'Sommertrekanten', rift:'Den store riften', altair:'Altair (Ørnen)', tarazed:'Tarazed', sct:'Trolig Skjoldets stjernesky, lavt og rødlig nær horisonten'},
+      m:{cas:'Kassiopeia (W)', cyg:'Nordkorset', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Sommertrekanten', rift:'Den store riften', sct:'Skjoldets stjernesky', gc:'Sentrum (Skytten)', cru:'Sørkorset', coal:'Kullsekken', lmc:'Den store magellanske sky', smc:'Den lille magellanske sky', m31:'Andromedagalaksen', aur:'Kusken (Capella)', per:'Perseus', gem:'Tvillingene', ori:'Orion'},
+      places:{nn:'Nord-Norge', dovre:'Dovre', sn:'Sør-Norge', se:'Sør-Europa (ca. 40° N)', can:'Kanariøyene (28° N)', eq:'Ekvator', south:'Namibia / Chile / Australia', pos:'Min posisjon'}, posIn:'posisjonen din', pn:{se:'Sør-Europa', can:'Kanariøyene'}, esoCr:'Bilde: ESO/S. Brunier (CC BY 4.0)', esoChg:'Beskåret, med navn lagt til', esoSet:'Panoramaet av hele Melkeveien i guiden Melkeveien er ikke vårt: ', esoSet2:'. Det er beskåret, og navnene er lagt til i appen.',
+      mapAria:'Panoramabilde av hele Melkeveien med navn på kjente stjerner, stjernebilder og mørke skyer. Dra sidelengs eller bruk pilene for å flytte langs båndet.', drag:'Dra sidelengs for å følge båndet', panL:'Flytt mot venstre langs båndet', panR:'Flytt mot høyre langs båndet', placeL:'Sett fra',
+      legend:(p, lat) => `Skravert: kommer aldri over horisonten fra ${p} (${lat}). Stiplet linje: kanten.`, legendNone:(p, lat) => `Fra ${p} (${lat}) kommer hele båndet over horisonten i løpet av døgnet.`, dirS:'i sør', dirN:'i nord',
+      gcNever:'Sentrum i Skytten kommer aldri over horisonten herfra.', gcLow:(h, d) => `Sentrum i Skytten kommer bare så vidt over horisonten, høyst ${h}° opp, lavt ${d}.`, gcAlt:(h, d) => `Sentrum i Skytten står høyst ${h}° over horisonten, ${d}.`, gcTop:'Sentrum i Skytten går nesten rett over deg.',
+      denebUp:h => `Svanen med Deneb går aldri ned herfra, og står høyst ${h}° opp.`, denebAlt:h => `Svanen med Deneb står høyst ${h}° over horisonten.`,
+      cruNever:'Sørkorset kommer aldri over horisonten herfra.', cruUp:'Sørkorset går aldri ned herfra.', cruAlt:h => `Sørkorset står høyst ${h}° over horisonten.`,
+      darkGap:(p, lat, a, b) => `Fra ${p} (${lat}) blir det aldri helt mørkt fra ${a} til ${b}: sola kommer ikke 18° under horisonten. Resten av året blir det helt mørkt midt på natta. Bytt sted under Hele båndet.`,
+      darkAll:(p, lat) => `Fra ${p} (${lat}) blir det helt mørkt midt på natta hele året. Bytt sted under Hele båndet.`, darkNone:(p, lat) => `Fra ${p} (${lat}) blir det aldri helt mørkt.`,
+      stGuide:'Om Melkeveien ›'},
     cNoSensor:'Fant ingen kompassensor. Den kan være blokkert i denne forhåndsvisningen, eller mobilen mangler magnetometer. Den vil virke i den installerte appen på mobilen.', cDenied:'Tilgang til bevegelsessensorer ble ikke tillatt. Du kan tillate det i nettleserens innstillinger.',
     cDirs:['N','NØ','Ø','SØ','S','SV','V','NV'],
     cInfo:[['Slik bruker du det','<p>Hold mobilen <b>flatt</b> som et vanlig kompass, eller <b>oppreist</b> foran deg og pek mot en topp i horisonten. Trykk <b>Hold retningen</b> for å fryse retningen og lese den i ro.</p>'],
@@ -2281,7 +2361,7 @@ function renderSettings(){
   html += sec(T.privacy, `<p class="tool-tip">${T.privacyTxt} <a href="https://github.com/uldahl-init/varde" data-nav target="_blank" rel="noopener">${T.privacyLink}</a></p>`);
   html += sec(T.adviceTitle, `<p class="tool-tip">${T.adviceTxt}</p><p class="tool-tip em-call">${emMarks('[[call]]', state.lang, region(state.pos))}</p>
     <button class="link-btn g-health" data-nav data-act="openGuide" data-guide="meds" data-sec="help">${ICO_HEALTH}${(GUIDE_TXT[state.lang] || GUIDE_TXT.en).meds.secs.find(x => x[2] === 'help')[0]}${CHEV_R}</button>`);
-  html += sec(T.photosTitle, `<p class="tool-tip">${T.photosTxt} ${T.landTxt}</p>`);
+  html += sec(T.photosTitle, `<p class="tool-tip">${T.photosTxt} ${T.landTxt}</p><p class="tool-tip mw-eso-set">${T.mwg.esoSet}<a href="${MW_PANO.url}" target="_blank" rel="noopener" data-nav>${T.mwg.esoCr}</a>${T.mwg.esoSet2}</p>`);
   html += `<p class="app-ver">${T.versionLine(APP_VERSION, APP_BUILD)}</p>`;
   html += landSvg().replace('class="land"', 'class="land rise"');   // 0.24.1: the landscape closes the page, with no text over it; 0.24.2: it builds up as you scroll
   main.innerHTML = html;
@@ -2551,7 +2631,7 @@ const GUIDE_TXT = {
       ["Øst og vest etter Orions belte", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><p>Orions belte er tre stjerner på rad midt i Orion, og ses fra begge halvkuler. Den vestligste av dem (Mintaka) står nesten på himmelekvator. Derfor står den opp nær rett øst og går ned nær rett vest, hvor du enn er.</p><p>Fra sørlige halvkule står Orion opp ned.</p>", "eastwest"],
       ["Grovt etter månesigden", "<p>Trekk en linje gjennom de to spissene på en månesigd og forleng den ned til horisonten. På nordlige halvkule peker den omtrent mot sør, på sørlige mot nord.</p><p>Best når månen står høyt. Står den lavt i øst eller vest, blir feilen stor.</p><p>Sigden ligger ulikt gjennom året og fra sted til sted. <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"moon\">Nattehimmelen: Månen ›</button></p>", "moon"],
       ["Polarstjernen, breddegrad og kompass", "<ul><li>Polarstjernen står under én grad fra himmelens nordpol, så den viser sant nord, ikke magnetisk nord.</li><li><b>Breddegrad:</b> Polarstjernens høyde over horisonten er omtrent lik breddegraden din. Ved ekvator står den i horisonten, på Nordpolen rett over deg.</li><li><b>Mål med hånda:</b> en knyttneve på strak arm dekker omtrent 10 grader. Tell knyttnever fra horisonten opp til Polarstjernen.</li><li><b>Sjekk kompasset:</b> sammenlikn kompassnåla med Polarstjernen. Forskjellen er misvisningen der du står.</li><li>I sør gir Sørkorset retning, men ikke breddegrad med noen nøyaktighet.</li></ul><p>Stjernene er kunnskap og reserve. Skyer kan skjule dem når du trenger dem mest, så ha alltid med kart og kompass.</p><p><button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"mapcompass\">Kart og kompass ›</button></p>", "measure"],
-      ["Fortellinger", "<p>De gamle tradisjonene varierer mellom folk og ble ofte skrevet ned sent.</p><ul><li>I samisk tradisjon er himmelen en bolle som holdes oppe av en støtte ved Polarstjernen: Boahji eller Boahjenaste, «himmelstøtten». Brister støtten, går verden under.</li><li>Jegeren Fávdna (stjerna Arcturus) har Karlsvogna som bue og pil. Han må sikte godt: treffer han Boahjenaste, går verden under.</li><li>Karlsvogna har et gammelt norrønt navn, Karlavagn, «mannsvogna», og et liknende, mindre mønster i Lille bjørn het Kvennavagn, «kvinnevogna». På nordsamisk heter Karlsvogna Dávggát.</li><li>Polarstjernen har bare stått nær polen de siste rundt tusen årene, fordi jordaksen langsomt endrer retning. Fortellingene kan ha forandret seg med himmelen.</li><li>I svensk tradisjon heter Orions belte Friggerocken, «Friggs rokk», etter spinneredskapet til gudinnen Frigg. I middelalderske islandske tekster om tidsregning heter beltet Fiskikarlar, «fiskerne».</li><li>I Finland er beltet Väinämöinens belte, og stjernene som henger under det, er Kalevas sverd.</li></ul><p>Mer om stjernene: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">Nattehimmelen ›</button></p>", "stories"]]},
+      ["Fortellinger", "<p>De gamle tradisjonene varierer mellom folk og ble ofte skrevet ned sent.</p><ul><li>I samisk tradisjon er himmelen en bolle som holdes oppe av en støtte ved Polarstjernen: Boahji eller Boahjenaste, «himmelstøtten». Brister støtten, går verden under.</li><li>Jegeren Fávdna (stjerna Arcturus) har Karlsvogna som bue og pil. Han må sikte godt: treffer han Boahjenaste, går verden under.</li><li>Karlsvogna har et gammelt norrønt navn, Karlavagn, «mannsvogna», og et liknende, mindre mønster i Lille bjørn het Kvennavagn, «kvinnevogna». På nordsamisk heter Karlsvogna Dávggát.</li><li>Polarstjernen har bare stått nær polen de siste rundt tusen årene, fordi jordaksen langsomt endrer retning. Fortellingene kan ha forandret seg med himmelen.</li><li>I svensk tradisjon heter Orions belte Friggerocken, «Friggs rokk», etter spinneredskapet til gudinnen Frigg. I middelalderske islandske tekster om tidsregning heter beltet Fiskikarlar, «fiskerne».</li><li>I Finland er beltet Väinämöinens belte, og stjernene som henger under det, er Kalevas sverd.</li></ul><p>Mer om stjernene: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">Nattehimmelen ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">Melkeveien ›</button></p>", "stories"]]},
     nightsky:{title:"Nattehimmelen", short:"Stjerner, planeter og Melkeveien", sub:"Stjernebilder, klare stjerner, planeter og Melkeveien på nordlige og sørlige halvkule, med gamle fortellinger om dem.", secs:[
       ["Før du ser opp", "<ul><li><b>Gi øynene tid:</b> det tar 20–30 minutter i mørket før øynene ser svake ting som Melkeveien. Hvitt lys ødelegger det på sekunder. Bruk svakt rødt lys, som Rødt nattlys i appen eller rødt lys på hodelykta.</li><li><b>Se litt ved siden av:</b> svake ting ses bedre når du ser litt til siden for dem enn rett på.</li><li><b>Månen:</b> en lys måne vasker bort Melkeveien og svake stjerner. De beste nettene er rundt nymåne, eller før månen står opp og etter at den har gått ned.</li><li><b>Lyse netter:</b> fra omtrent mai til juli blir det ikke mørkt nok til å se stjerner i store deler av Norge, og lenger nord er det midnattssol.</li></ul><p>Retning etter stjernene: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightdir\">Retning om natta ›</button></p>", "before"],
       ["Nordlige himmel", "<ul><li><b>Hele året</b> (i Norden går de aldri ned): Karlsvogna, del av Store bjørn; Lille bjørn med Polarstjernen; Kassiopeia. Lenger sør står Karlsvogna lavt eller under horisonten deler av året.</li><li><b>Høstkvelder:</b> Sommertrekanten, tre klare stjerner: Vega (Lyren), Deneb (Svanen) og Altair (Ørnen).</li><li><b>Vinter:</b> Orion, Pleiadene, Tyren med Aldebaran, Tvillingene med Castor og Pollux, og Kusken med Capella.</li><li><b>Andromedagalaksen:</b> det fjerneste du kan se med det blotte øye, omtrent 2,5 millioner lysår unna, og den eneste spiralgalaksen som er tydelig synlig uten kikkert. Den ser ut som en svak, tåkete flekk på mørk himmel uten måne; i en vanlig kikkert ses en liten oval sky. Finn den omtrent halvannen knyttneve nedenfor W-en i Kassiopeia. I Norge står den over horisonten hele året, best på høstkvelder. Lyset du ser, dro derfra for 2,5 millioner år siden.</li></ul><figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-north.svg\"></div></figure>", "north"],
@@ -2559,11 +2639,18 @@ const GUIDE_TXT = {
       ["Sørlige himmel", "<ul><li>Sørkorset med pekerne Alfa og Beta Centauri.</li><li>Skorpionen står høyt på den sørlige vinterhimmelen.</li><li>De magellanske skyene: to tåkeflekker, synlige på mørk himmel. De er galakser, små følgegalakser til Melkeveien, og de tydeligste galaksene å se med det blotte øye. Fra Europa ses de aldri.</li><li>Orion ses også herfra, men opp ned. Årstidene er snudd: den nordlige vinterhimmelen er den sørlige sommerhimmelen.</li></ul>", "south"],
       ["Fortellinger: sørhimmelen", "<ul><li><b>Māori i New Zealand:</b> Tainui-stammene så et anker i Sørkorset, mens folk fra Wairarapa så en plugg som stormvindene blåste gjennom. Navnene varierer mellom stammene.</li><li>Matariki (Pleiadene) stiger opp ved midtvinter og markerer for mange māorier starten på et nytt år.</li><li><b>Aboriginsk Australia:</b> «Emuen på himmelen» er tegnet av mørke skyer i Melkeveien, ikke av stjerner. Hodet er Kullsekken, den mørke flekken ved Sørkorset. Hvordan emuen står gjennom året, har fortalt når det er tid for å jakte emu og samle egg.</li></ul>", "southst"],
       ["Klare stjerner", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><ul><li><b>Sirius</b>, den klareste stjerna: følg Orions belte nedover mot venstre (sett fra nord). Motsatt vei peker beltet mot Aldebaran og Pleiadene.</li><li><b>Arcturus og Spica:</b> følg buen i håndtaket på Karlsvogna til den oransje Arcturus, og fortsett like langt til den blåhvite Spica.</li><li>Andre å kjenne: Vega, Capella, Betelgeuse (rødlig) og Rigel i Orion.</li><li>I sør: Canopus, den nest klareste stjerna (ses ikke fra Norge, bare sør for omtrent 37° nord), og Alfa Centauri.</li></ul><p><b>Fra fortellingene:</b> mange stjernenavn kommer fra arabisk. Aldebaran betyr «den som følger»: den ser ut til å følge etter Pleiadene over himmelen. Mintaka betyr «beltet». Arcturus er jegeren Fávdna i samisk tradisjon.</p>", "stars"],
-      ["Melkeveien", "<ul><li><b>Hva den er:</b> vår egen galakse, rundt 300 milliarder stjerner, med sola som én av dem. Vi ser den fra innsiden, langs skiva, så den ser ut som et svakt, lysende bånd over himmelen. Den krever mørk himmel uten måne; i byen forsvinner den.</li><li><b>Hvorfor den går rundt hele himmelen:</b> galaksen er en flat skive, bare rundt 1000 lysår tykk, og sola ligger inne i den, rundt 26 000 lysår fra sentrum. Ser vi langs skiva, ser vi stjerner i alle retninger rundt oss, så båndet går som en ring rundt hele himmelen. Halve ringen er alltid under horisonten. Ser vi over eller under båndet, ser vi ut av skiva, og stjernene tynner raskt ut. Mot sentrum, i Skytten, ser vi inn mot det tette, lyse midtpartiet. Den motsatte veien, der Kusken møter Tyren, ser vi utover mot kanten av galaksen, så båndet er tynnere og svakere der.</li><li><b>Armene:</b> sola ligger i en liten arm, Orion-armen, mellom Skytten-armen innenfor og Perseus-armen utenfor. Ser vi bort fra sentrum, ser vi gjennom Perseus-armen, rundt 6000 lysår ut.</li><li><b>Den lyseste delen</b> ligger mot sentrum av galaksen, i Skytten ved siden av Skorpionen. Fra sørlige halvkule går sentrum høyt over hodet om vinteren (juni–august). Fra nordlige halvkule står det lavt i sør om sommeren, og det ses bare sør for omtrent 55° nord. Fra det meste av Norge ser du det derfor ikke, og de lyse sommernettene skjuler det uansett.</li><li><b>I Norge</b> ser vi den svakere, ytre delen. På høstkvelder går båndet høyt over himmelen gjennom Kassiopeia og Svanen, midt i Sommertrekanten. Om vinteren går det fra Kefevs i nord, gjennom Perseus og Kusken over hodet, ned mot Store Hund i sør.</li><li><b>Slik beveger den seg:</b> Melkeveien dreier med resten av himmelen rundt polen gjennom natta, og vinkelen endrer seg. Til tider står den som en bue rett over hodet fra nord til sør, til andre tider ligger den lavere og mer på skrå. Gjennom året skifter det hvilken del som er oppe om kvelden.</li><li><b>Den mørke stripen</b> midt i båndet, tydelig i Svanen, er skyer av støv og gass som skjuler stjernene bak.</li></ul>", "milky"],
+      ["Melkeveien", "<ul><li><b>Hva den er:</b> vår egen galakse, rundt 300 milliarder stjerner, med sola som én av dem. Vi ser den fra innsiden, langs skiva, så den ser ut som et svakt, lysende bånd over himmelen. Den krever mørk himmel uten måne; i byen forsvinner den.</li><li><b>Hvorfor den går rundt hele himmelen:</b> galaksen er en flat skive, bare rundt 1000 lysår tykk, og sola ligger inne i den, rundt 26 000 lysår fra sentrum. Ser vi langs skiva, ser vi stjerner i alle retninger rundt oss, så båndet går som en ring rundt hele himmelen. Halve ringen er alltid under horisonten. Ser vi over eller under båndet, ser vi ut av skiva, og stjernene tynner raskt ut. Mot sentrum, i Skytten, ser vi inn mot det tette, lyse midtpartiet. Den motsatte veien, der Kusken møter Tyren, ser vi utover mot kanten av galaksen, så båndet er tynnere og svakere der.</li><li><b>Armene:</b> sola ligger i en liten arm, Orion-armen, mellom Skytten-armen innenfor og Perseus-armen utenfor. Ser vi bort fra sentrum, ser vi gjennom Perseus-armen, rundt 6000 lysår ut.</li><li><b>Den lyseste delen</b> ligger mot sentrum av galaksen, i Skytten ved siden av Skorpionen. Fra sørlige halvkule går sentrum høyt over hodet om vinteren (juni–august). Fra nordlige halvkule står det lavt i sør om sommeren, og det ses bare sør for omtrent 55° nord. Fra det meste av Norge ser du det derfor ikke, og de lyse sommernettene skjuler det uansett.</li><li><b>I Norge</b> ser vi den svakere, ytre delen. På høstkvelder går båndet høyt over himmelen gjennom Kassiopeia og Svanen, midt i Sommertrekanten. Om vinteren går det fra Kefevs i nord, gjennom Perseus og Kusken over hodet, ned mot Store Hund i sør.</li><li><b>Slik beveger den seg:</b> Melkeveien dreier med resten av himmelen rundt polen gjennom natta, og vinkelen endrer seg. Til tider står den som en bue rett over hodet fra nord til sør, til andre tider ligger den lavere og mer på skrå. Gjennom året skifter det hvilken del som er oppe om kvelden.</li><li><b>Den mørke stripen</b> midt i båndet, tydelig i Svanen, er skyer av støv og gass som skjuler stjernene bak.</li></ul><p>Mønstrene i båndet, hele båndet rundt himmelen og råd for foto: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">Melkeveien ›</button></p>", "milky"],
       ["Fortellinger: Melkeveien", "<ul><li>Vinterbrauta, «vintervegen», er et gammelt nordisk navn, som islandsk vetrarbrautin og svensk Vintergatan. Langt nord ses Melkeveien best om vinteren, fordi sommernettene er for lyse. I gammelnorske tekster heter den også mjólkhringr og vetrhringr.</li><li>Grekerne kalte den galaxias kyklos, «melkesirkelen»: i myten er den melk fra gudinnen Hera, spredt over himmelen. Ordet galakse kommer herfra.</li><li>I Finland heter den Linnunrata, «fuglenes vei»: trekkfuglene ble trodd å følge den til Lintukoto, fuglenes varme hjem. Esterne kaller den Linnutee. I samisk tradisjon er den Fuglestigen.</li><li>For māori er Melkeveien kanoen (waka) til Tama-rereti: Orion og Skorpionen er baug og akter, Sørkorset og pekerne anker og tau.</li><li>Mange aboriginske folk i Australia ser Melkeveien som en elv på himmelen, og leser figurer i de mørke flekkene, som Emuen.</li></ul>", "milkyst"],
       ["Lys som beveger seg", "<ul><li><b>Satellitt:</b> et jevnt, hvitt punkt som glir rolig over himmelen uten å blinke, på noen få minutter. Det kan forsvinne brått når det går inn i jordas skygge. Den internasjonale romstasjonen er den klareste, nesten like klar som Venus. En rad med like punkter etter hverandre er satellitter skutt opp sammen.</li><li><b>Fly:</b> blinkende lys, ofte rødt og grønt på vingespissene, og det kan endre retning.</li><li><b>Stjerneskudd (meteor):</b> en rask strek som er borte på et sekund eller to.</li><li><b>Store meteorsvermer hvert år:</b> Kvadrantidene rundt 3.–4. januar, Perseidene rundt 12.–13. august (i Norge ofte i lyse netter) og Geminidene rundt 14. desember. Månen avgjør hvor mange du ser.</li></ul>", "moving"],
       ["Planetene", "<ul><li><b>Venus:</b> klarest etter månen. Står aldri langt fra sola, så den ses i vest etter solnedgang («aftenstjerna») eller i øst før soloppgang («morgenstjerna»), aldri midt på natta.</li><li><b>Jupiter:</b> svært klar og rolig, kan være oppe hele natta.</li><li><b>Mars:</b> tydelig rødlig. Lysstyrken varierer mye; den er klarest når den står nærmest jorda, omtrent hvert annet år.</li><li><b>Saturn:</b> gulaktig og svakere. Lysstyrken følger også hvor mye vi ser av ringene.</li><li><b>Tommelfingerregel:</b> stjerner blinker, planeter lyser roligere. Nær horisonten kan begge blinke. Planetene står alltid langs samme bånd over himmelen som sola og månen. De flytter seg, så de finnes ikke på faste stjernekart.</li></ul><p>Fra norrøn tid er det nesten ikke bevart egne navn på planetene: middelalderens islandske skrivere brukte de latinske navnene.</p>", "planets"],
       ["Månen", "<ul><li><b>Fasene:</b> halve månen er alltid opplyst av sola. Hvor mye av den lyse halvdelen vi ser, endrer seg gjennom omtrent 29,5 dager, fra nymåne til fullmåne og tilbake.</li><li><b>Den lyse siden peker mot sola:</b> derfor ligger månesigden ulikt gjennom året og fra sted til sted. I Norge står kveldssigden oftest på skrå eller på siden; nær ekvator kan den ligge som en båt. I Australia er sigden speilvendt: den lyser fra venstre.</li><li><b>Ansiktet snur seg:</b> månen viser oss alltid samme side, men den står ikke alltid likt. Gjennom natta dreier den sakte mens den går over himmelen, og gjennom året lener aksen seg skiftevis mot øst og vest. Sett fra Norge når fullmånen står høyest i sør, flytter krateret Tycho seg fra nede til venstre om høsten til rett ned, eller litt til høyre, om våren.</li><li><b>Vi ser litt mer enn halve månen:</b> månen vugger litt (librasjon), fordi banen er avlang og aksen står litt på skrå mot banen, rundt 6,7 grader. Over tid ser vi rundt 59 prosent av overflaten.</li><li><b>I sør står den på hodet:</b> fra Australia ser du de samme havene, men opp ned, fordi du ser nordover mot månen. Ved ekvator går fullmånen nesten rett over hodet, og hvordan den står da, avhenger av hvilken vei du snur deg. Når den står opp eller går ned, ligger den på siden.</li><li><b>Det du ser med det blotte øye:</b> de mørke flatene er «hav», størknet lava. Det klareste krateret ved fullmåne er Tycho, med lyse stråler ut over den sørlige delen.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
+    milkyway:{title:"Melkeveien", short:"Kjenn igjen båndet og mønstrene", sub:"Hva Melkeveien er, mønstrene du ser i den, hvor og når den står, og råd for deg som vil fotografere den.", secs:[
+      ["Hva båndet er", "<ul><li>Melkeveien er vår egen galakse, sett fra innsiden. Sola ligger inne i den flate skiva. Ser vi langs skiva, ser vi så mange fjerne stjerner at de flyter sammen til et svakt, lysende bånd rundt hele himmelen.</li><li><b>Hvorfor båndet ser dobbelt ut:</b> langs midten ligger skyer av støv som stenger for lyset fra stjernene bak. Fra Svanen og ned mot Skytten deler de båndet i to. Den mørke stripa kalles <b>Den store riften</b>.</li><li>Riften er ikke ett hull, men mange støvskyer på ulike avstander. Den nærmeste delen, i Ørnen, ligger bare noen hundre lysår unna, nær oss i galaksen.</li><li>Andre mørke flekker er laget på samme måte, som Kullsekken ved Sørkorset på sørlige halvkule.</li></ul><p>Mer om hvordan galaksen er bygd opp: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"milky\">Nattehimmelen: Melkeveien ›</button></p>", "what"],
+      ["Mønstre å se etter", "<figure class=\"mw-photo\" data-mwphoto></figure><ul><li><b>Sommertrekanten:</b> tre klare stjerner, Deneb i Svanen, Vega i Lyren og Altair i Ørnen. Deneb ligger midt i båndet, Vega like utenfor på den ene siden og Altair i kanten på den andre.</li><li><b>Nordkorset:</b> de klareste stjernene i Svanen danner et kors som ligger langs båndet, med Deneb på toppen.</li><li><b>Svanens stjernesky:</b> et lyst parti i båndet i Svanen, nær Deneb.</li><li><b>Den store riften:</b> den mørke stripa begynner i Svanen og deler båndet i to ned forbi Altair.</li><li><b>Altair og Tarazed:</b> Altair har en svakere nabo rett ved, Tarazed. Paret gjør Altair lett å kjenne igjen.</li><li><b>Lavt mot horisonten:</b> under Ørnen ligger lyse stjerneskyer i Skjoldet og Skytten. Fra Norge står de lavt, og ser svake og rødlige ut.</li><li><b>Kassiopeia:</b> den tydelige W-en ligger i båndet, videre mot nord fra Svanen.</li></ul>", "patterns"],
+      ["Hele båndet", "<p>Her er hele båndet, alle 360°, lagt rett ut i et panoramabilde. Du ser de mørke støvskyene og de lyse stjerneskyene slik de er, og navnene står på riktig plass. Dra sidelengs eller bruk pilene for å følge det rundt himmelen, og velg et sted for å se hvilken del som aldri kommer over horisonten derfra.</p><div class=\"mw-map\" data-mwmap></div>", "map"],
+      ["Når og hvor", "<ul><li>Melkeveien dreier med resten av himmelen gjennom døgnet. Hvordan båndet står, avhenger derfor av klokkeslett, dato og sted.</li><li><b>Høstkvelder i Norge:</b> delen med Svanen står høyt i sør, slik som på bildet.</li><li><b>Vinterkvelder:</b> den svakere delen gjennom Kusken og Perseus går nesten rett over hodet, videre mot Tvillingene og Orion lenger sør.</li><li><b>Sommer:</b> nettene er for lyse i store deler av Norge. Se Mørkt nok? under.</li><li><b>Sentrum i Skytten</b> kommer aldri over horisonten nord for omtrent 61° nord, og står bare så vidt over horisonten lenger sør i Norge. Fra Namibia, Chile eller Australia går det nesten rett over hodet om vinteren der.</li></ul><p>Kompasset viser hvor båndet står akkurat nå: <button class=\"btn small\" data-nav data-act=\"cStars\">Stjerner og planeter ›</button></p>", "when"],
+      ["Mørkt nok?", "<p>Melkeveien trenger helt mørk himmel: sola må stå minst 18° under horisonten. Langt nord blir det aldri så mørkt om sommeren.</p><p class=\"mw-dark\" data-mwdark></p><ul><li><b>Månen:</b> en lys måne visker ut båndet. Best er rundt nymåne, eller etter at månen har gått ned. Kompasset viser månefasen i dag, og når den står opp og går ned: <button class=\"btn small\" data-nav data-act=\"mwCompass\">Kompass ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"moon\">Nattehimmelen: Månen ›</button></li><li><b>Lys fra byer og veger</b> lyser opp himmelen, mest lavt mot horisonten. Jo lenger fra lysene, jo mer ser du.</li></ul>", "dark"],
+      ["For fotografer", "<ul><li><b>Lavt på himmelen blir den svakere og rødere:</b> der går lyset gjennom mye mer luft, og lufta sprer bort mer av det blå lyset. Derfor er den nederste delen av bildet rødlig.</li><li><b>Luftlys (airglow):</b> en svak grønn eller rødlig glød på mørke netter, tydeligst et stykke over horisonten. Den kommer fra lufta høyt oppe i atmosfæren, ikke fra lysforurensning. Kameraet ser den lettere enn øynene.</li><li><b>Lukkertid:</b> stjernene flytter seg sakte over himmelen. Er lukkertiden for lang, blir de streker i stedet for punkter. Jo lengre brennvidde, jo kortere tid. Prøv deg fram og forstørr bildet på skjermen for å sjekke.</li><li><b>Stativ og selvutløser,</b> så kameraet står helt stille.</li><li><b>Fokus:</b> autofokus finner sjelden stjerner i mørket. Still inn manuelt på en klar stjerne med forstørret visning.</li><li><b>Dugg på linsen:</b> en klar natt kjøles linsen ned, og dugg eller rim kan legge seg på den. Et varmebånd eller en varmepose rundt objektivet hjelper, og en solblender gir litt beskyttelse.</li><li><b>Behold nattsynet:</b> bruk Rødt nattlys i appen eller rødt lys på hodelykta, og skru ned lysstyrken på skjermen.</li></ul><p>Mer om stjernehimmelen: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">Nattehimmelen ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightdir\">Retning om natta ›</button></p>", "photo"]]},
     aurora:{title:"Nordlys", short:"Hva det er, og når du ser det", sub:"Hva nordlyset er, hvor og når du ser det, og gamle fortellinger om det.", secs:[
       ["Hva nordlys er", "<ul><li>Sola sender hele tiden ut ladde partikler, solvinden. Jordas magnetfelt leder dem mot områdene rundt polene, der de kolliderer med gassene i den øvre atmosfæren, fra rundt 80 til sjelden over 500 km opp, og får dem til å lyse.</li><li><b>Farger:</b> grønt kommer fra oksygen rundt 100–150 km opp, og er det vanligste. Rødt er også oksygen, men høyere, og ses mest når nordlyset er sterkt. Blått og fiolett kommer fra nitrogen lenger nede.</li><li>Nordmannen Kristian Birkeland forklarte rundt 1900 at nordlyset skyldes partikler fra sola som fanges av jordas magnetfelt.</li></ul>", "what"],
       ["Hvor og når", "<ul><li>Nordlyset ligger i et belte rundt den magnetiske polen, nordlysovalen. Nord-Norge ligger under den, så der kan du se nordlys selv når aktiviteten er lav. Lenger sør trengs høyere aktivitet, og nordlyset står da lavere på himmelen mot nord.</li><li>Aktiviteten måles ofte med Kp-indeksen, fra 0 (lav) til 9 (høy). Jo høyere tall, jo lenger sør kan det ses.</li><li>Du trenger mørk, klar himmel. I Nord-Norge er sesongen omtrent fra slutten av september til begynnelsen av april; om sommeren er det for lyst. Ofte er det best mellom klokka 20 og 02, men nordlys kan komme når som helst i mørket.</li><li>Sola har en syklus på rundt 11 år. Toppen var i 2024–25. Aktiviteten avtar nå, men noen av de kraftigste utbruddene kommer ofte ett til tre år etter toppen.</li><li>Sjekk et nordlysvarsel og værmeldingen før turen. Det krever nett, så det er ikke i appen.</li></ul>", "when"],
@@ -2670,7 +2757,7 @@ const GUIDE_TXT = {
       ["East and west by Orion's Belt", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><p>Orion's Belt is three stars in a row in the middle of Orion, and it is seen from both hemispheres. The westernmost of them (Mintaka) lies almost on the celestial equator. So it rises close to due east and sets close to due west, wherever you are.</p><p>From the southern hemisphere Orion is upside down.</p>", "eastwest"],
       ["Roughly by the crescent Moon", "<p>Draw a line through the two tips of a crescent Moon and extend it down to the horizon. In the northern hemisphere it points roughly south, in the southern hemisphere roughly north.</p><p>Best when the Moon is high. Low in the east or west, the error is large.</p><p>The crescent lies differently through the year and from place to place. <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"moon\">The night sky: The Moon ›</button></p>", "moon"],
       ["The North Star, latitude and compass", "<ul><li>Polaris lies less than one degree from the north celestial pole, so it shows true north, not magnetic north.</li><li><b>Latitude:</b> Polaris's height above the horizon roughly equals your latitude. At the equator it sits on the horizon, at the North Pole straight overhead.</li><li><b>Measure by hand:</b> a fist at arm's length covers about 10 degrees. Count fists from the horizon up to Polaris.</li><li><b>Check the compass:</b> compare the compass needle with Polaris. The difference is the declination where you are.</li><li>In the south, the Southern Cross gives direction, but not latitude with any accuracy.</li></ul><p>Stars are knowledge and a backup. Clouds can hide them when you need them most, so always carry map and compass.</p><p><button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"mapcompass\">Map and compass ›</button></p>", "measure"],
-      ["Stories", "<p>The old traditions vary between peoples and were often written down late.</p><ul><li>In Sámi tradition the sky is a bowl held up by a support at the North Star: Boahji or Boahjenaste, «the sky support». If the support breaks, the world ends.</li><li>The hunter Fávdna (the star Arcturus) has the Big Dipper as his bow and arrow. He must aim well: if he hits Boahjenaste, the world ends.</li><li>The Norwegian name Karlsvogna goes back to Old Norse Karlavagn, «the men's wagon», and a similar, smaller pattern in Ursa Minor was called Kvennavagn, «the women's wagon». In North Sámi the Big Dipper is Dávggát.</li><li>Polaris has only been close to the pole for the last thousand years or so, because Earth's axis slowly changes direction. The stories may have changed with the sky.</li><li>In Swedish tradition Orion's Belt is Friggerocken, «Frigg's distaff», after the spinning tool of the goddess Frigg. In medieval Icelandic time-reckoning texts the Belt is called Fiskikarlar, «the fishermen».</li><li>In Finland the Belt is Väinämöinen's Belt, and the stars hanging below it are Kaleva's Sword.</li></ul><p>More about the stars: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">The night sky ›</button></p>", "stories"]]},
+      ["Stories", "<p>The old traditions vary between peoples and were often written down late.</p><ul><li>In Sámi tradition the sky is a bowl held up by a support at the North Star: Boahji or Boahjenaste, «the sky support». If the support breaks, the world ends.</li><li>The hunter Fávdna (the star Arcturus) has the Big Dipper as his bow and arrow. He must aim well: if he hits Boahjenaste, the world ends.</li><li>The Norwegian name Karlsvogna goes back to Old Norse Karlavagn, «the men's wagon», and a similar, smaller pattern in Ursa Minor was called Kvennavagn, «the women's wagon». In North Sámi the Big Dipper is Dávggát.</li><li>Polaris has only been close to the pole for the last thousand years or so, because Earth's axis slowly changes direction. The stories may have changed with the sky.</li><li>In Swedish tradition Orion's Belt is Friggerocken, «Frigg's distaff», after the spinning tool of the goddess Frigg. In medieval Icelandic time-reckoning texts the Belt is called Fiskikarlar, «the fishermen».</li><li>In Finland the Belt is Väinämöinen's Belt, and the stars hanging below it are Kaleva's Sword.</li></ul><p>More about the stars: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">The night sky ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">The Milky Way ›</button></p>", "stories"]]},
     nightsky:{title:"The night sky", short:"Stars, planets and the Milky Way", sub:"Constellations, bright stars, planets and the Milky Way in the northern and southern hemispheres, with old stories about them.", secs:[
       ["Before you look up", "<ul><li><b>Give your eyes time:</b> it takes 20–30 minutes in the dark before your eyes see faint things like the Milky Way. White light ruins that in seconds. Use dim red light, like Red night light in the app or the red light on a headlamp.</li><li><b>Look slightly to the side:</b> faint things show better when you look a little beside them rather than straight at them.</li><li><b>The Moon:</b> a bright Moon washes out the Milky Way and faint stars. The best nights are around new moon, or before moonrise and after moonset.</li><li><b>Light nights:</b> from about May to July it never gets dark enough to see stars in much of Norway, and further north there is midnight sun.</li></ul><p>Directions by the stars: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightdir\">Directions at night ›</button></p>", "before"],
       ["Northern sky", "<ul><li><b>All year</b> (they never set in the Nordic countries): the Big Dipper, part of Ursa Major; Ursa Minor with Polaris; Cassiopeia. Further south, the Big Dipper sits low or below the horizon part of the year.</li><li><b>Autumn evenings:</b> the Summer Triangle, three bright stars: Vega (Lyra), Deneb (Cygnus) and Altair (Aquila).</li><li><b>Winter:</b> Orion, the Pleiades, Taurus with Aldebaran, Gemini with Castor and Pollux, and Auriga with Capella.</li><li><b>The Andromeda Galaxy:</b> the most distant thing you can see with the naked eye, about 2.5 million light-years away, and the only spiral galaxy clearly visible without binoculars. It looks like a faint, misty patch under a dark, moonless sky; ordinary binoculars show a small oval cloud. Find it about a fist and a half below the W of Cassiopeia. In Norway it is above the horizon all year, best on autumn evenings. The light you see left it 2.5 million years ago.</li></ul><figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-north.svg\"></div></figure>", "north"],
@@ -2678,11 +2765,18 @@ const GUIDE_TXT = {
       ["Southern sky", "<ul><li>The Southern Cross with the Pointers, Alpha and Beta Centauri.</li><li>Scorpius is high in the southern winter sky.</li><li>The Magellanic Clouds: two hazy patches, visible under a dark sky. They are galaxies, small companion galaxies of the Milky Way, and the most prominent galaxies to see with the naked eye. They are never seen from Europe.</li><li>Orion is visible here too, but upside down. Seasons are reversed: the northern winter sky is the southern summer sky.</li></ul>", "south"],
       ["Stories: the southern sky", "<ul><li><b>Māori of New Zealand:</b> the Tainui tribes saw an anchor in the Southern Cross, while people from the Wairarapa saw a plug that the storm winds blew through. The names vary between tribes.</li><li>Matariki (the Pleiades) rises in midwinter and for many Māori marks the start of a new year.</li><li><b>Aboriginal Australia:</b> the «Emu in the Sky» is drawn by dark clouds in the Milky Way, not by stars. Its head is the Coalsack, the dark patch next to the Southern Cross. How the Emu sits through the year told people when to hunt emus and collect their eggs.</li></ul>", "southst"],
       ["Bright stars", "<figure class=\"sb-fig\"><div data-svgsrc=\"guides/sky-orion.svg\"></div></figure><ul><li><b>Sirius</b>, the brightest star: follow Orion's Belt down and to the left (seen from the north). The other way, the Belt points to Aldebaran and the Pleiades.</li><li><b>Arcturus and Spica:</b> follow the curve of the Big Dipper's handle to orange Arcturus, then go on as far again to blue-white Spica.</li><li>Others worth knowing: Vega, Capella, Betelgeuse (reddish) and Rigel in Orion.</li><li>In the south: Canopus, the second-brightest star (not visible from Norway, only south of about 37° N), and Alpha Centauri.</li></ul><p><b>From the stories:</b> many star names come from Arabic. Aldebaran means «the follower»: it seems to follow the Pleiades across the sky. Mintaka means «the belt». Arcturus is the hunter Fávdna in Sámi tradition.</p>", "stars"],
-      ["The Milky Way", "<ul><li><b>What it is:</b> our own galaxy, around 300 billion stars, the Sun among them. We see it from the inside, along its disk, so it looks like a faint, glowing band across the sky. It needs a dark sky without the Moon; in towns it disappears.</li><li><b>Why it runs all round the sky:</b> the galaxy is a flat disk, only about 1,000 light-years thick, and the Sun lies inside it, about 26,000 light-years from the centre. Looking along the disk we see stars in every direction around us, so the band runs as a ring right round the sky. Half the ring is always below the horizon. Looking above or below the band, we look out of the disk, and the stars thin out fast. Towards the centre, in Sagittarius, we look into the dense, bright middle. The opposite way, where Auriga meets Taurus, we look outwards towards the edge of the galaxy, so the band is thinner and fainter there.</li><li><b>The arms:</b> the Sun lies in a small arm, the Orion Arm, between the Sagittarius Arm further in and the Perseus Arm further out. Looking away from the centre, we look through the Perseus Arm, about 6,000 light-years out.</li><li><b>The brightest part</b> lies towards the centre of the galaxy, in Sagittarius next to Scorpius. From the southern hemisphere the centre passes high overhead in winter (June–August). From the northern hemisphere it sits low in the south in summer, and it is only seen south of about 55° N. So from most of Norway you never see it, and the light summer nights hide it anyway.</li><li><b>In Norway</b> we see the fainter, outer part. On autumn evenings the band runs high across the sky through Cassiopeia and Cygnus, in the middle of the Summer Triangle. In winter it runs from Cepheus in the north, through Perseus and Auriga overhead, down to Canis Major in the south.</li><li><b>How it moves:</b> the Milky Way turns with the rest of the sky around the pole through the night, and its angle changes. At times it arches straight overhead from north to south, at other times it lies lower and more slanted. Through the year, which part is up in the evening shifts.</li><li><b>The dark lane</b> down the middle of the band, clear in Cygnus, is clouds of dust and gas hiding the stars behind.</li></ul>", "milky"],
+      ["The Milky Way", "<ul><li><b>What it is:</b> our own galaxy, around 300 billion stars, the Sun among them. We see it from the inside, along its disk, so it looks like a faint, glowing band across the sky. It needs a dark sky without the Moon; in towns it disappears.</li><li><b>Why it runs all round the sky:</b> the galaxy is a flat disk, only about 1,000 light-years thick, and the Sun lies inside it, about 26,000 light-years from the centre. Looking along the disk we see stars in every direction around us, so the band runs as a ring right round the sky. Half the ring is always below the horizon. Looking above or below the band, we look out of the disk, and the stars thin out fast. Towards the centre, in Sagittarius, we look into the dense, bright middle. The opposite way, where Auriga meets Taurus, we look outwards towards the edge of the galaxy, so the band is thinner and fainter there.</li><li><b>The arms:</b> the Sun lies in a small arm, the Orion Arm, between the Sagittarius Arm further in and the Perseus Arm further out. Looking away from the centre, we look through the Perseus Arm, about 6,000 light-years out.</li><li><b>The brightest part</b> lies towards the centre of the galaxy, in Sagittarius next to Scorpius. From the southern hemisphere the centre passes high overhead in winter (June–August). From the northern hemisphere it sits low in the south in summer, and it is only seen south of about 55° N. So from most of Norway you never see it, and the light summer nights hide it anyway.</li><li><b>In Norway</b> we see the fainter, outer part. On autumn evenings the band runs high across the sky through Cassiopeia and Cygnus, in the middle of the Summer Triangle. In winter it runs from Cepheus in the north, through Perseus and Auriga overhead, down to Canis Major in the south.</li><li><b>How it moves:</b> the Milky Way turns with the rest of the sky around the pole through the night, and its angle changes. At times it arches straight overhead from north to south, at other times it lies lower and more slanted. Through the year, which part is up in the evening shifts.</li><li><b>The dark lane</b> down the middle of the band, clear in Cygnus, is clouds of dust and gas hiding the stars behind.</li></ul><p>The patterns in the band, the whole band round the sky, and photo advice: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">The Milky Way ›</button></p>", "milky"],
       ["Stories: the Milky Way", "<ul><li>Vinterbrauta, «the winter way», is an old Nordic name, like Icelandic vetrarbrautin and Swedish Vintergatan. Far north the Milky Way is best seen in winter, because summer nights are too light. Old Norwegian texts also call it mjólkhringr and vetrhringr.</li><li>The Greeks called it galaxias kyklos, «the milky circle»: in myth it is milk from the goddess Hera, sprayed across the sky. The word galaxy comes from this.</li><li>In Finland it is Linnunrata, «the birds' path»: migrating birds were believed to follow it to Lintukoto, the birds' warm home. Estonians call it Linnutee. In Sámi tradition it is the Birds' Ladder.</li><li>For Māori the Milky Way is the canoe (waka) of Tama-rereti: Orion and Scorpius are bow and stern, the Southern Cross and the Pointers the anchor and rope.</li><li>Many Aboriginal peoples in Australia see the Milky Way as a river in the sky, and read figures in its dark patches, such as the Emu.</li></ul>", "milkyst"],
       ["Moving lights", "<ul><li><b>Satellite:</b> a steady white point gliding smoothly across the sky without blinking, over a few minutes. It can vanish suddenly as it enters Earth's shadow. The International Space Station is the brightest, almost as bright as Venus. A row of similar points following each other is satellites launched together.</li><li><b>Aircraft:</b> blinking lights, often red and green on the wingtips, and it can change direction.</li><li><b>Shooting star (meteor):</b> a quick streak gone in a second or two.</li><li><b>Major meteor showers each year:</b> the Quadrantids around 3–4 January, the Perseids around 12–13 August (in Norway often in light nights) and the Geminids around 14 December. The Moon decides how many you see.</li></ul>", "moving"],
       ["The planets", "<ul><li><b>Venus:</b> brightest after the Moon. Never far from the Sun, so seen in the west after sunset («evening star») or in the east before sunrise («morning star»), never in the middle of the night.</li><li><b>Jupiter:</b> very bright and steady, can be up all night.</li><li><b>Mars:</b> clearly reddish. Its brightness varies a lot; it is brightest when closest to Earth, about every two years.</li><li><b>Saturn:</b> yellowish and fainter. Its brightness also follows how much of the rings we see.</li><li><b>Rule of thumb:</b> stars twinkle, planets shine more steadily. Near the horizon both can twinkle. The planets always lie along the same band across the sky as the Sun and Moon. They move, so they are not on fixed star charts.</li></ul><p>Almost no native Norse names for the planets survive: medieval Icelandic writers used the Latin names.</p>", "planets"],
       ["The Moon", "<ul><li><b>The phases:</b> half of the Moon is always lit by the Sun. How much of the lit half we see changes over about 29.5 days, from new moon to full moon and back.</li><li><b>The lit side points to the Sun:</b> so the crescent lies differently through the year and from place to place. In Norway the evening crescent mostly stands slanted or on its side; near the equator it can lie like a boat. In Australia the crescent is mirrored: it is lit from the left.</li><li><b>The face turns:</b> the Moon always shows us the same side, but it does not always stand the same way. Through the night it turns slowly as it crosses the sky, and through the year its axis leans east and west in turn. Seen from Norway when the full moon stands highest in the south, the crater Tycho moves from lower left in autumn to straight down, or a little to the right, in spring.</li><li><b>We see a little more than half the Moon:</b> it rocks a little (libration), because its orbit is oval and its axis is tilted a little to its orbit, about 6.7 degrees. Over time we see about 59 per cent of its surface.</li><li><b>In the south it stands on its head:</b> from Australia you see the same seas, but upside down, because you look north to the Moon. At the equator the full moon passes almost straight overhead, and how it stands then depends on which way you face. As it rises or sets, it lies on its side.</li><li><b>What you see with the naked eye:</b> the dark patches are «seas», solidified lava. The clearest crater at full moon is Tycho, with bright rays across the southern part.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
+    milkyway:{title:"The Milky Way", short:"Recognise the band and its patterns", sub:"What the Milky Way is, the patterns you see in it, where and when it stands, and advice for photographing it.", secs:[
+      ["What the band is", "<ul><li>The Milky Way is our own galaxy, seen from inside. The sun lies within its flat disc. Looking along the disc, we see so many distant stars that they merge into a faint, glowing band all round the sky.</li><li><b>Why the band looks double:</b> along the middle lie clouds of dust that block the light from the stars behind. From Cygnus down towards Sagittarius they split the band in two. The dark lane is called <b>the Great Rift</b>.</li><li>The rift is not one hole but many dust clouds at different distances. The nearest part, in Aquila, is only some hundreds of light-years away, close to us in the galaxy.</li><li>Other dark patches are made the same way, like the Coalsack by the Southern Cross in the southern hemisphere.</li></ul><p>More on how the galaxy is built: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"milky\">The night sky: the Milky Way ›</button></p>", "what"],
+      ["Patterns to look for", "<figure class=\"mw-photo\" data-mwphoto></figure><ul><li><b>The Summer Triangle:</b> three bright stars, Deneb in Cygnus, Vega in Lyra and Altair in Aquila. Deneb lies in the middle of the band, Vega just outside it on one side and Altair at the edge on the other.</li><li><b>The Northern Cross:</b> the brightest stars of Cygnus form a cross lying along the band, with Deneb at the top.</li><li><b>The Cygnus Star Cloud:</b> a bright part of the band in Cygnus, near Deneb.</li><li><b>The Great Rift:</b> the dark lane begins in Cygnus and splits the band in two down past Altair.</li><li><b>Altair and Tarazed:</b> Altair has a fainter neighbour right beside it, Tarazed. The pair makes Altair easy to recognise.</li><li><b>Low towards the horizon:</b> below Aquila lie bright star clouds in Scutum and Sagittarius. From Norway they stand low, and look faint and reddish.</li><li><b>Cassiopeia:</b> the clear W lies in the band, further north from Cygnus.</li></ul>", "patterns"],
+      ["The whole band", "<p>Here is the whole band, all 360°, laid out straight in a panorama. You see the dark dust clouds and the bright star clouds as they are, and the names are in their right places. Drag sideways or use the arrows to follow it round the sky, and choose a place to see which part never rises above the horizon there.</p><div class=\"mw-map\" data-mwmap></div>", "map"],
+      ["When and where", "<ul><li>The Milky Way turns with the rest of the sky through the day and night. How the band stands therefore depends on the time, the date and the place.</li><li><b>Autumn evenings in Norway:</b> the part with Cygnus stands high in the south, as in the photo.</li><li><b>Winter evenings:</b> the fainter part through Auriga and Perseus passes nearly overhead, on towards Gemini and Orion further south.</li><li><b>Summer:</b> the nights are too bright in much of Norway. See Dark enough? below.</li><li><b>The centre in Sagittarius</b> never rises north of about 61° north, and only just clears the horizon further south in Norway. From Namibia, Chile or Australia it passes nearly overhead in their winter.</li></ul><p>The compass shows where the band stands right now: <button class=\"btn small\" data-nav data-act=\"cStars\">Stars and planets ›</button></p>", "when"],
+      ["Dark enough?", "<p>The Milky Way needs a fully dark sky: the sun must be at least 18° below the horizon. Far north it never gets that dark in summer.</p><p class=\"mw-dark\" data-mwdark></p><ul><li><b>The moon:</b> a bright moon washes out the band. Best is around new moon, or after the moon has set. The compass shows today's moon phase, and when it rises and sets: <button class=\"btn small\" data-nav data-act=\"mwCompass\">Compass ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\" data-sec=\"moon\">The night sky: the Moon ›</button></li><li><b>Light from towns and roads</b> brightens the sky, most of all low towards the horizon. The further from the lights, the more you see.</li></ul>", "dark"],
+      ["For photographers", "<ul><li><b>Low in the sky it gets fainter and redder:</b> there the light passes through much more air, and the air scatters away more of the blue light. That is why the lowest part of the photo is reddish.</li><li><b>Airglow:</b> a faint green or reddish glow on dark nights, clearest some way above the horizon. It comes from the air high up in the atmosphere, not from light pollution. The camera sees it more easily than the eye.</li><li><b>Exposure:</b> the stars move slowly across the sky. If the exposure is too long, they become streaks instead of points. The longer the focal length, the shorter the time. Try it out, and zoom in on the screen to check.</li><li><b>A tripod and a self-timer,</b> so the camera stays completely still.</li><li><b>Focus:</b> autofocus rarely finds stars in the dark. Focus by hand on a bright star with a magnified view.</li><li><b>Dew on the lens:</b> on a clear night the lens cools, and dew or frost can form on it. A lens heater strap or a hand warmer round the lens helps, and a lens hood gives some protection.</li><li><b>Keep your night vision:</b> use Red night light in the app or a red light on your head torch, and turn down the screen brightness.</li></ul><p>More about the night sky: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightsky\">The night sky ›</button> <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"nightdir\">Directions at night ›</button></p>", "photo"]]},
     aurora:{title:"Northern lights", short:"What they are, and when to see them", sub:"What the northern lights are, where and when you see them, and old stories about them.", secs:[
       ["What the northern lights are", "<ul><li>The Sun constantly sends out charged particles, the solar wind. Earth's magnetic field guides them towards the regions around the poles, where they collide with the gases of the upper atmosphere, from about 80 to rarely above 500 km up, and make them glow.</li><li><b>Colours:</b> green comes from oxygen about 100–150 km up, and is the most common. Red is also oxygen, but higher, and is seen mostly when the aurora is strong. Blue and violet come from nitrogen lower down.</li><li>The Norwegian Kristian Birkeland explained around 1900 that the aurora is caused by particles from the Sun captured by Earth's magnetic field.</li></ul>", "what"],
       ["Where and when", "<ul><li>The aurora lies in a belt around the magnetic pole, the auroral oval. Northern Norway lies beneath it, so there you can see aurora even when activity is low. Further south, higher activity is needed, and the aurora then sits lower in the northern sky.</li><li>Activity is often measured with the Kp index, from 0 (low) to 9 (high). The higher the number, the further south it can be seen.</li><li>You need a dark, clear sky. In northern Norway the season runs from about late September to early April; in summer it is too light. It is often best between 20:00 and 02:00, but the aurora can appear any time in the dark.</li><li>The Sun has a cycle of about 11 years. The peak was in 2024–25. Activity is now declining, but some of the strongest eruptions often come one to three years after the peak.</li><li>Check an aurora forecast and the weather before the trip. That needs internet, so it is not in the app.</li></ul>", "when"],
@@ -2694,7 +2788,7 @@ const GUIDE_GROUPS = [
   {key:'field', no:'Ferdigheter i felt', en:'Skills in the field', items:['knots', 'tarp', 'sleep', 'pack', 'mapcompass', 'fishing', 'fire', 'tracks']},
   {key:'safety', no:'Vær og sikkerhet', en:'Weather and safety', items:['sun', 'winter', 'kantgrop', 'aval', 'animals']},
   // 0.13.0: night sky guides, a new group with three guides for a clearly new use (stars and aurora at night)
-  {key:'sky', no:'Himmelen', en:'The sky', items:['nightdir', 'nightsky', 'aurora']},
+  {key:'sky', no:'Himmelen', en:'The sky', items:['nightdir', 'nightsky', 'milkyway', 'aurora']},
   {key:'gear', no:'Utstyr og vedlikehold', en:'Gear and care', items:['tent', 'repair', 'stoveboard', 'shell', 'boots', 'ski', 'phone']},
   // 0.7.0: started with one guide (agreed exception); 0.11.0: Nødsituasjon first
   {key:'health', no:'Helse og nød', en:'Health and emergency', items:['emergency', 'meds']} // 0.15.1: folds like the rest (Nødmodus sits above the groups)
@@ -2794,6 +2888,7 @@ function renderTextGuide(k){
     <section class="manual guide">${g.secs.map(x => `<details${x[2] ? ` data-sec="${x[2]}"` : ''}${x[2] && (x[2] === guideSec || x[2] === hemi) ? ' open' : ''}><summary>${x[0]}</summary>${webMarks(planLinks(emMarks(x[1], state.lang, region(state.pos))))}</details>`).join('')}</section>`;
   loadSvgs();
   if (main.querySelector('.moon-anim')) initMoonAnims();  // 0.20.0: the Moon animations in Nattehimmelen
+  if (main.querySelector('[data-mwphoto], [data-mwmap], [data-mwdark]')) mwInit();  // 0.26.0: Melkeveien
   if (guideSec){
     const d = main.querySelector(`details[data-sec="${guideSec}"]`);
     guideSec = null;
@@ -4023,6 +4118,231 @@ function maTick(){
 function initMoonAnims(){
   document.querySelectorAll('.moon-anim').forEach(el => { if (!el._ma) maBuild(el); });
 }
+/* ---------- Melkeveien guide (0.26.0): sky maths, no app dependencies ----------
+   Galactic coordinates (IAU 1958, J2000: north galactic pole RA 192.85948°, Dec +27.12825°, l of the celestial pole
+   122.93192°, as in Astropy), the landmarks drawn in «Hele båndet» (J2000 star positions converted to l, b), and the
+   period with no astronomical darkness (the sun never 18° below the horizon). The lowest the sun gets at night is
+   |lat + declination| − 90°, so a night has no full darkness when |lat + declination| > 72°. Each night is named by
+   the date after midnight; the sun's declination is the low-precision formula (Astronomical Almanac, about 0.01°).
+   Cut out and run in Node by the smoke test «melkeveien guide», so keep it free of the rest of the app. */
+const MW_GP = [192.85948, 27.12825, 122.93192];
+function mwEqToGal(raDeg, dec){
+  const r = Math.PI / 180, a = (raDeg - MW_GP[0]) * r, d = dec * r, dp = MW_GP[1] * r;
+  const b = Math.asin(Math.sin(d) * Math.sin(dp) + Math.cos(d) * Math.cos(dp) * Math.cos(a));
+  const l = MW_GP[2] - Math.atan2(Math.cos(d) * Math.sin(a), Math.sin(d) * Math.cos(dp) - Math.cos(d) * Math.sin(dp) * Math.cos(a)) / r;
+  return {l: ((l % 360) + 360) % 360, b: b / r};
+}
+function mwGalToEq(l, b){
+  const r = Math.PI / 180, x = (MW_GP[2] - l) * r, bb = b * r, dp = MW_GP[1] * r;
+  const dec = Math.asin(Math.sin(bb) * Math.sin(dp) + Math.cos(bb) * Math.cos(dp) * Math.cos(x));
+  const ra = MW_GP[0] + Math.atan2(Math.cos(bb) * Math.sin(x), Math.sin(bb) * Math.cos(dp) - Math.cos(bb) * Math.sin(dp) * Math.cos(x)) / r;
+  return {ra: ((ra % 360) + 360) % 360, dec: dec / r};
+}
+// the ESO panorama (eso0932a): equirectangular in galactic coordinates, centre in the middle, l growing to the left;
+// the file holds rows y0–y1 of the 1280 × 640 original (b from +34.9° to −48.4°, so both Magellanic Clouds fit)
+// dx: the picture itself sits 10 px right of this projection (bright stars near the plane measured 8–12 px, median 10;
+// no steady vertical shift), so the app draws it 10 px further left and the names land on their stars
+const MW_PANO = {w: 1280, h: 640, y0: 196, y1: 492, dx: 10, src: 'guides/milkyway-eso-panorama.webp', url: 'https://www.eso.org/public/images/eso0932a/'};
+const mwWrap180 = l => ((((l + 180) % 360) + 360) % 360) - 180;
+const mwPanoXY = (l, b) => ({x: MW_PANO.w * (0.5 - mwWrap180(l) / 360), y: MW_PANO.h * (0.5 - b / 180)});   // in the 1280 × 640 original
+// never rises: below the southern limit (north of the equator) or above the northern one (south of it)
+const mwNever = (dec, lat) => lat >= 0 ? dec < lat - 90 : dec > lat + 90;
+const mwMaxAlt = (dec, lat) => 90 - Math.abs(lat - dec);
+function mwSunDec(ms){
+  const r = Math.PI / 180, n = ms / 864e5 + 2440587.5 - 2451545, L = 280.460 + 0.9856474 * n, g = (357.528 + 0.9856003 * n) * r;
+  const lam = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * r, eps = (23.439 - 4e-7 * n) * r;
+  return Math.asin(Math.sin(eps) * Math.sin(lam)) / r;
+}
+function mwNoDark(lat, year){
+  const n = Math.round((Date.UTC(year + 1, 0, 1) - Date.UTC(year, 0, 1)) / 864e5), f = [];
+  for (let d = 0; d < n; d++) f.push(Math.abs(lat + mwSunDec(Date.UTC(year, 0, 1 + d))) > 72);
+  if (f.every(x => !x)) return {none: true};
+  if (f.every(x => x)) return {all: true};
+  const s = f.findIndex((x, i) => x && !f[(i - 1 + n) % n]);
+  let e = s;
+  while (f[(e + 1) % n]) e = (e + 1) % n;
+  return {from: new Date(Date.UTC(year, 0, 1 + s)), to: new Date(Date.UTC(year, 0, 1 + e))};
+}
+// landmarks: stars [RA hours, Dec degrees, magnitude], lines between them (indices), and where the label goes (l, b)
+const MW_LM = [
+  {k: 'cas', st: [[0.1530, 59.150, 2.3], [0.6751, 56.537, 2.2], [0.9451, 60.717, 2.4], [1.4303, 60.235, 2.7], [1.9066, 63.670, 3.4]], ln: [[0, 1, 2, 3, 4]], lab: [121, 7]},
+  {k: 'cyg', st: [[20.6905, 45.280, 1.25], [20.3705, 40.257, 2.2], [19.5120, 27.960, 3.1], [19.7496, 45.131, 2.9], [20.7702, 33.970, 2.5]], ln: [[0, 1, 2], [3, 1, 4]], lab: [72, -10.5]},
+  {k: 'deneb', st: [[20.6905, 45.280, 9]], ln: [], lab: [89.5, 6]},
+  {k: 'vega', st: [[18.6156, 38.784, 0.03]], ln: [], lab: [67.4, 23]},
+  {k: 'altair', st: [[19.8464, 8.868, 0.77], [19.7710, 10.613, 2.7]], ln: [], lab: [50, -13.5]},
+  {k: 'tri', st: [[20.6905, 45.280, 9], [18.6156, 38.784, 9], [19.8464, 8.868, 9]], ln: [[0, 1, 2, 0]], dash: true, lab: [57, 13.5]},
+  {k: 'rift', at: [13, 4.4], lab: [13, 12.5]},
+  {k: 'sct', at: [27, -2.5], lab: [25, -18.5]},
+  {k: 'gc', at: [0, 0], ring: 1.6, lab: [0, -9]},
+  {k: 'cru', st: [[12.4433, -63.099, 0.8], [12.7953, -59.689, 1.25], [12.5194, -57.113, 1.6], [12.2524, -58.749, 2.8]], ln: [[2, 0], [1, 3]], lab: [299, -9]},
+  {k: 'coal', at: [301, -1], lab: [304, 8.5]},
+  {k: 'lmc', at: [280.5, -32.9], ring: 3.6, lab: [280.5, -25.5]},
+  {k: 'smc', at: [302.8, -44.3], ring: 2.2, lab: [302.8, -38.5]},
+  {k: 'm31', at: [121.2, -21.6], ring: 2, lab: [121.2, -27]},
+  {k: 'aur', st: [[5.2782, 45.998, 0.08]], ln: [], lab: [162.6, 9.5]},
+  {k: 'per', st: [[3.4054, 49.861, 1.8]], ln: [], lab: [146.6, -11]},
+  {k: 'gem', st: [[7.5767, 31.888, 1.6], [7.7553, 28.026, 1.1]], ln: [[0, 1]], lab: [189.8, 28]},
+  {k: 'ori', st: [[5.9195, 7.407, 0.5], [5.4189, 6.350, 1.6], [5.5334, -0.299, 2.2], [5.6036, -1.202, 1.7], [5.6793, -1.943, 1.8], [5.7958, -9.670, 2.1], [5.2423, -8.202, 0.13]],
+    ln: [[0, 4], [1, 2], [2, 3, 4], [4, 5], [2, 6]], lab: [219, -18], end: true}];
+/* ---------- end of the Melkeveien maths */
+/* ---------- Melkeveien guide (0.26.0): the photo with names, the whole band, and the dark-night line ----------
+   Built after the guide renders (mwInit). Everything here only changes what you see, so its buttons carry data-nav.
+   The photo is the owner's own (Hjerkinn, Dovre, 26 Sep 2025, facing south); label places are fractions of its size. */
+const MW_PHOTO = 'guides/milkyway-hjerkinn.webp';
+const MW_PH_LAB = [  // label anchor x, y, side (l: left edge at x, r: right edge at x, c: centred), target x, y
+  {k: 'deneb', x: .56, y: .13, al: 'l', tx: .482, ty: .208},
+  {k: 'cyg', x: .40, y: .32, al: 'r', tx: .514, ty: .342},
+  {k: 'vega', x: .70, y: .47, al: 'l', tx: .728, ty: .409},
+  {k: 'tri', x: .47, y: .455, al: 'c'},
+  {k: 'rift', x: .60, y: .625, al: 'l', tx: .451, ty: .516},
+  {k: 'altair', x: .27, y: .685, al: 'r', tx: .314, ty: .638},
+  {k: 'tarazed', x: .37, y: .665, al: 'l', tx: .343, ty: .626, small: true},
+  {k: 'sct', x: .47, y: .86, al: 'l', tx: .369, ty: .905}];
+const MW_PLACES = [['nn', 70], ['dovre', 62.2], ['sn', 59.5], ['se', 40], ['can', 28], ['eq', 0], ['south', -28]];
+const MW_VIEW = 110;   // degrees of the band across the box
+let mwPlace = null;   // the chosen place in «Hele båndet» (not stored)
+let mwMap = null;     // {el, box, W, H, k, off}
+const mwLatTxt = lat => Math.round(lat) === 0 ? '0°' : Math.abs(Math.round(lat)) + '° ' + (lat > 0 ? 'N' : 'S');
+function mwPlaceNow(){
+  if (mwPlace === 'pos' && !(state.pos && isFinite(state.pos.lat))) mwPlace = null;
+  if (!mwPlace) mwPlace = state.pos && isFinite(state.pos.lat) ? 'pos' : 'sn';
+  const T = t().mwg;
+  if (mwPlace === 'pos') return {k: 'pos', name: T.posIn, lat: state.pos.lat};
+  const p = MW_PLACES.find(x => x[0] === mwPlace) || MW_PLACES[2];
+  return {k: p[0], name: (T.pn && T.pn[p[0]]) || T.places[p[0]], lat: p[1]};
+}
+function mwInit(){
+  main.querySelectorAll('[data-mwphoto]').forEach(mwPhotoBuild);
+  main.querySelectorAll('[data-mwmap]').forEach(mwMapBuild);
+  mwDarkShow();
+}
+function mwPhotoBuild(el){
+  const T = t().mwg, W = 1200, H = 1500;
+  const lines = MW_PH_LAB.filter(a => a.tx != null).map(a => `<line x1="${a.x * W}" y1="${a.y * H}" x2="${a.tx * W}" y2="${a.ty * H}"/><circle cx="${a.tx * W}" cy="${a.ty * H}" r="${a.small ? 16 : 24}"/>`).join('');
+  const tri = ['deneb', 'vega', 'altair'].map(k => MW_PH_LAB.find(a => a.k === k)).map(a => `${a.tx * W},${a.ty * H}`).join(' ');
+  el.innerHTML = `<div class="mwp-box"><img src="${MW_PHOTO}" width="${W}" height="${H}" alt="${esc(T.photoAlt)}" decoding="async"><div class="mwp-tint"></div>
+    <svg class="mwp-lines" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polygon class="mwp-tri" points="${tri}"/>${lines}</svg>
+    <div class="mwp-labels">${MW_PH_LAB.map(a => `<span class="mwp-l ${a.al}${a.small ? ' small' : ''}" data-k="${a.k}" style="left:${(a.x * 100).toFixed(1)}%;top:${(a.y * 100).toFixed(1)}%">${T.ph[a.k]}</span>`).join('')}</div></div>
+    <figcaption>${T.cap}<br><span class="mwp-cr">${T.credit}</span></figcaption>
+    <button class="chip mwp-tog" data-nav data-act="mwLabels" aria-pressed="true">${T.show}</button>`;
+}
+function mwMapBuild(el){
+  const T = t().mwg;
+  const chips = [...MW_PLACES.map(p => p[0]), ...(state.pos && isFinite(state.pos.lat) ? ['pos'] : [])]
+    .map(k => `<button class="chip" data-nav data-act="mwPlace" data-p="${k}" aria-pressed="false">${T.places[k]}</button>`).join('');
+  el.innerHTML = `<div class="mwm-box" data-nav role="img" aria-label="${esc(T.mapAria)}"><svg class="mwm-svg" aria-hidden="true"></svg></div>
+    <p class="mwm-cr"><a href="${MW_PANO.url}" target="_blank" rel="noopener" data-nav>${T.esoCr}</a> · ${T.esoChg}</p>
+    <div class="mwm-nav"><button class="chip" data-nav data-act="mwPan" data-d="45" aria-label="${esc(T.panL)}">‹</button><span class="mwm-hint">${T.drag}</span><button class="chip" data-nav data-act="mwPan" data-d="-45" aria-label="${esc(T.panR)}">›</button></div>
+    <button class="chip mwm-tog" data-nav data-act="mwMapLabels" aria-pressed="true">${T.show}</button>
+    <p class="mwm-plbl">${T.placeL}</p><div class="mwm-places" role="group" aria-label="${esc(T.placeL)}">${chips}</div>
+    <p class="mwm-leg"><span class="mwm-sw" aria-hidden="true"></span><span class="mwm-legt"></span></p><ul class="mwm-see"></ul>`;
+  const box = el.querySelector('.mwm-box');
+  mwMap = {el, box, W: 0, H: 0, k: 0, L: 0, lc: 52};
+  let drag = null;
+  box.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || !mwMap || !mwMap.k) return;
+    drag = {x: e.clientX, lc: mwMap.lc, id: e.pointerId};
+    try { box.setPointerCapture(e.pointerId); } catch(err){}
+    box.classList.add('drag');
+  });
+  box.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    mwMap.lc = drag.lc + (e.clientX - drag.x) / mwMap.k;   // dragging right brings the part to the left into view
+    mwMapPos();
+  });
+  const end = e => { if (drag && e.pointerId === drag.id){ drag = null; box.classList.remove('drag'); } };
+  box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
+  if ('ResizeObserver' in window) new ResizeObserver(() => { if (box.isConnected && box.clientWidth && box.clientWidth !== mwMap.W) mwMapDraw(); }).observe(box);
+  mwMapDraw();
+}
+/* The panorama is ESO's eso0932a (S. Brunier, CC BY 4.0): equirectangular in galactic coordinates, the centre in the
+   middle, north up, l growing to the left. The file is cropped to rows y0–y1 of the 1280 × 640 original. The strip is
+   one full turn (L = 360°), drawn three times side by side so it wraps; each layer is drawn in all three copies before
+   the next, so names and hatching always lie on top of the picture. */
+function mwMapDraw(){
+  const m = mwMap; if (!m || !m.box.isConnected) return;
+  const W = m.box.clientWidth; if (!W) return;
+  const T = t().mwg, pl = mwPlaceNow(), lat = pl.lat;
+  const k = W / MW_VIEW, L = 360 * k, sc = L / MW_PANO.w, H = Math.round((MW_PANO.y1 - MW_PANO.y0) * sc);
+  const bTop = 90 - 180 * MW_PANO.y0 / MW_PANO.h, bBot = 90 - 180 * MW_PANO.y1 / MW_PANO.h;
+  Object.assign(m, {W, H, k, L});
+  const f1 = v => v.toFixed(1), Xu = l => (180 - l) * k, X = l => Xu(mwWrap180(l)), Y = b => (bTop - b) * k;
+  const layers = [`<image href="${MW_PANO.src}" x="${f1(-MW_PANO.dx * sc)}" y="0" width="${f1(L)}" height="${H}" preserveAspectRatio="none"/>`, `<rect class="mwm-tint" x="0" y="0" width="${f1(L)}" height="${H}"/>`];
+  // the part that never rises here (2° × 1° cells), and its edge (the horizon at its lowest)
+  const never = (l, b) => mwNever(mwGalToEq(l, b).dec, lat);
+  let sh = '', hz = '';
+  for (let l = 0; l < 360; l += 2){
+    const x = X(l + 1) - k;
+    let run = null;
+    for (let b = Math.floor(bBot); b <= Math.ceil(bTop) + 1; b += 1){
+      const n = b <= Math.ceil(bTop) && never(l + 1, b + 0.5);
+      if (n && run === null) run = b;
+      if (!n && run !== null){ sh += `M${f1(x)} ${f1(Y(b))}h${f1(2 * k)}V${f1(Y(run))}h${f1(-2 * k)}z`; run = null; }
+    }
+  }
+  const lim = lat >= 0 ? lat - 90 : lat + 90;
+  const cross = l => { const out = []; let p = null; for (let b = bBot; b <= bTop; b += 0.5){ const v = mwGalToEq(l, b).dec - lim; if (p !== null && (p < 0) !== (v < 0)) out.push(b - 0.5 * v / (v - p)); p = v; } return out; };
+  let prev = cross(0);
+  for (let l = 1; l <= 360; l++){
+    const cur = cross(l), x0 = X(l - 1), x1 = X(l);
+    if (Math.abs(x1 - x0) < 3 * k) prev.forEach(b0 => { const b1 = cur.find(x => Math.abs(x - b0) < 3); if (b1 != null) hz += `M${f1(x0)} ${f1(Y(b0))}L${f1(x1)} ${f1(Y(b1))}`; });
+    prev = cur;
+  }
+  layers.push((sh ? `<path class="mwm-sh" d="${sh}"/><path class="mwm-hatch" d="${sh}"/>` : '') + (hz ? `<path class="mwm-hz" d="${hz}"/>` : ''));
+  // landmarks: positions from galactic coordinates; a figure keeps together across the seam at l = 180°
+  let lm = '';
+  MW_LM.forEach(a => {
+    const pts = (a.st || []).map(q => Object.assign(mwEqToGal(q[0] * 15, q[1]), {m: q[2]}));
+    const at = a.at ? {l: a.at[0], b: a.at[1]} : pts[0], dec = mwGalToEq(at.l, at.b).dec, base = mwWrap180(at.l);
+    const U = l => base + mwWrap180(l - at.l);
+    let o = '';
+    (a.ln || []).forEach(line => { o += `<polyline class="mwm-ln${a.dash ? ' mwm-tri' : ''}" points="${line.map(i => `${f1(Xu(U(pts[i].l)))},${f1(Y(pts[i].b))}`).join(' ')}"/>`; });
+    pts.forEach(q => { if (q.m < 6) o += `<circle class="mwm-st" cx="${f1(Xu(U(q.l)))}" cy="${f1(Y(q.b))}" r="${Math.max(1.4, Math.min(3.6, 3 - 0.7 * q.m)).toFixed(1)}"/>`; });
+    if (a.ring) o += `<circle class="mwm-ring" cx="${f1(Xu(base))}" cy="${f1(Y(at.b))}" r="${f1(a.ring * k)}"/>`;
+    if (a.k === 'rift' || a.k === 'sct' || a.k === 'coal') o += `<line class="mwm-ln" x1="${f1(Xu(U(a.at[0])))}" y1="${f1(Y(a.lab[1] + (a.lab[1] > a.at[1] ? -1.6 : 1.6)))}" x2="${f1(Xu(U(a.at[0])))}" y2="${f1(Y(a.at[1] + (a.lab[1] > a.at[1] ? 1.4 : -1.4)))}"/>`;
+    o += `<text x="${f1(Xu(U(a.lab[0])))}" y="${f1(Y(a.lab[1]))}" dy=".35em" text-anchor="${a.end ? 'end' : 'middle'}">${T.m[a.k]}</text>`;
+    lm += `<g class="mwm-lm" data-k="${a.k}" data-up="${mwNever(dec, lat) ? 0 : 1}">${o}</g>`;
+  });
+  layers.push(lm);
+  m.box.querySelector('svg').outerHTML = `<svg class="mwm-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs>
+    <pattern id="mwmH" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" class="mwm-hl"/></pattern></defs>
+    <g class="mwm-strip">${layers.map(part => [-L, 0, L].map(x => `<g transform="translate(${f1(x)} 0)">${part}</g>`).join('')).join('')}</g></svg>`;
+  m.box.style.height = H + 'px';
+  mwMapPos();
+  m.el.querySelectorAll('[data-act="mwPlace"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.p === pl.k)));
+  m.el.querySelector('.mwm-legt').textContent = sh ? T.legend(pl.name, mwLatTxt(lat)) : T.legendNone(pl.name, mwLatTxt(lat));
+  m.el.querySelector('.mwm-leg').classList.toggle('none', !sh);
+  m.el.querySelector('.mwm-see').innerHTML = mwSee(lat).map(x => `<li>${x}</li>`).join('');
+  m.box.dataset.lat = String(lat);
+}
+function mwMapPos(){
+  const m = mwMap; if (!m || !m.k) return;
+  m.lc = ((m.lc % 360) + 360) % 360;
+  const off = m.W / 2 - (180 - mwWrap180(m.lc)) * m.k, g = m.box.querySelector('.mwm-strip');
+  if (g) g.setAttribute('transform', `translate(${(((off % m.L) + m.L) % m.L - m.L).toFixed(1)} 0)`);   // in [−L, 0): the three copies cover the box
+  m.box.dataset.lc = m.lc.toFixed(1);
+}
+function mwSee(lat){
+  const T = t().mwg, gc = mwGalToEq(0, 0).dec, out = [];
+  const h = mwMaxAlt(gc, lat), dir = gc < lat ? T.dirS : T.dirN;
+  out.push(h < 0 ? T.gcNever : h < 10 ? T.gcLow(Math.max(1, Math.round(h)), dir) : h > 80 ? T.gcTop : T.gcAlt(Math.round(h), dir));
+  if (lat >= 20){
+    const d = 45.28, ha = mwMaxAlt(d, lat);
+    out.push(d > 90 - lat ? T.denebUp(Math.round(ha)) : T.denebAlt(Math.round(ha)));
+  } else {
+    const d = -63.1, ha = mwMaxAlt(d, lat);
+    out.push(ha < 0 ? T.cruNever : d < -90 - lat ? T.cruUp : T.cruAlt(Math.round(ha)));
+  }
+  return out;
+}
+function mwDarkShow(){
+  const el = main.querySelector('[data-mwdark]'); if (!el) return;
+  const T = t().mwg, pl = mwPlaceNow(), r = mwNoDark(pl.lat, new Date().getFullYear());
+  const loc = state.lang === 'no' ? 'nb-NO' : 'en-GB', d = x => x.toLocaleDateString(loc, {day: 'numeric', month: 'long', timeZone: 'UTC'});
+  el.textContent = r.none ? T.darkAll(pl.name, mwLatTxt(pl.lat)) : r.all ? T.darkNone(pl.name, mwLatTxt(pl.lat)) : T.darkGap(pl.name, mwLatTxt(pl.lat), d(r.from), d(r.to));
+  el.dataset.from = r.from ? r.from.toISOString().slice(0, 10) : '';
+  el.dataset.to = r.to ? r.to.toISOString().slice(0, 10) : '';
+}
 /* ---------- true north: declination from the World Magnetic Model 2025 (0.16.0) ----------
    WMM2025 main field and secular variation to degree 12 (NOAA NCEI and BGS, public domain), valid 2025.0–2030.0.
    Rows run n = 1..12, m = 0..n: g, h, dg/dt, dh/dt (nT, nT/year). Computed on the phone, nothing is sent. */
@@ -4228,7 +4548,7 @@ function starList(objs, mw, now){
   const sub = `<h4 class="st-sorted" data-g="sort">${stHigh() ? T.stSortedH : T.stSortedB}</h4>`;
   return (objs.length ? '' : `<p class="tool-sub">${T.stNone}</p>`)
     + grp('mp', T.stGrpMP, mp.map(o => starRow(o)).join('')) + grp('st', T.stGrpSt, st.map(o => starRow(o)).join(''), nav, sub)
-    + (mw ? grp('mw', T.stGrpMW, mwRow(mw, now) + gcRow(galCentre(now))) : '');
+    + (mw ? grp('mw', T.stGrpMW, mwRow(mw, now) + gcRow(galCentre(now))) + `<p class="st-mwg"><button class="btn small" data-nav data-act="openGuide" data-guide="milkyway">${T.mwg.stGuide}</button></p>` : '');
 }
 function stSortBtns(){
   const T = t(), hi = stHigh();
@@ -5420,6 +5740,11 @@ main.addEventListener('click', async e => {
   if (act === 'delLink'){ const n = +b.dataset.n; withUndo(T.linkDeleted, () => { state.links.splice(n, 1); }); return; }
   if (act === 'cHold'){ cHeld = !cHeld; renderCompass(); return; }
   if (act === 'cStars'){ go('compass', 'stars'); return; }
+  if (act === 'mwLabels'){ const f = b.closest('.mw-photo'); if (f){ const on = f.classList.toggle('nolab'); b.setAttribute('aria-pressed', String(!on)); } return; }
+  if (act === 'mwMapLabels'){ const bx = b.closest('.mw-map') && b.closest('.mw-map').querySelector('.mwm-box'); if (bx){ const off = bx.classList.toggle('nolab'); b.setAttribute('aria-pressed', String(!off)); } return; }
+  if (act === 'mwPan'){ if (mwMap){ mwMap.lc += +b.dataset.d; mwMapPos(); } return; }
+  if (act === 'mwPlace'){ mwPlace = b.dataset.p; mwMapDraw(); mwDarkShow(); return; }
+  if (act === 'mwCompass'){ go('compass', null); return; }
   if (act === 'moonAnim'){
     const a = b.closest('.moon-anim') && b.closest('.moon-anim')._ma; if (!a) return;
     a.run = !a.run; b.setAttribute('aria-pressed', String(!a.run)); b.textContent = a.run ? t().maPause : t().maPlay; return;
