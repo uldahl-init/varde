@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-avpDDByQPU9wirzlzYh0vfdsuexS2ICFdObFNY10NX4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-P0h/jSUQ0hro4gSWPNJzGt4mQgh/FPI8ee6XZlyNeOM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -1002,8 +1002,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.27.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 97;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.27.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 98;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1117,7 +1117,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
     mwg:{show:'Show labels', cap:'The Milky Way from Hjerkinn, Dovre, 26 September 2025, facing south', photoAlt:'The Milky Way as a band straight up from the horizon in the south, split by a dark lane, with three bright stars around it.',
       ph:{deneb:'Deneb (Cygnus)', cyg:'Cygnus Star Cloud', vega:'Vega (Lyra)', tri:'Summer Triangle', rift:'The Great Rift', altair:'Altair (Aquila)', tarazed:'Tarazed', sct:'Scutum Star Cloud, low and reddened near the horizon', m11:'M11'},
       m:{cas:'Cassiopeia (W)', cyg:'Northern Cross', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Summer Triangle', rift:'The Great Rift', sct:'Scutum Star Cloud', gc:'Centre (Sagittarius)', cru:'Southern Cross', coal:'Coalsack', lmc:'Large Magellanic Cloud', smc:'Small Magellanic Cloud', m31:'Andromeda Galaxy', aur:'Auriga (Capella)', per:'Perseus', gem:'Gemini', ori:'Orion'},
-      places:{sval:['Svalbard', '78° N'], nn:['Northern Norway', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Southern Norway', 'Stavanger, Oslo · 59–60° N'], se:['Southern Europe', 'about 40° N'], jp:['Japan', 'about 35° N'], can:['Canary Islands, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'about 14° N'], eq:['Equator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · about 23° S'], au:['Australia', 'about 31° S'], nz:['New Zealand', 'about 44° S'], pos:['My position']}, posGet:'My position: fetch', posBusy:'Finding your position …', posIn:'your position', esoCr:'Image: ESO/S. Brunier (CC BY 4.0)', esoChg:'Cropped, with labels added', skyChg:'Laid onto the sky over you', skyTitle:'The Milky Way now', skyBtn:'See the Milky Way as it stands now ›', skyGuide:'Open the Milky Way guide ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `The Milky Way as it stands ${w}, seen from ${p}.`, skyHow:'The middle is straight overhead, and the edge is the horizon. North is up; start the compass and the picture turns with the phone. The picture does not show light from the sun, the moon or towns: look for the Milky Way when it is fully dark.', skyNoPos:'Fetch your position to see the Milky Way as it stands over you right now.', esoSet:'The panorama of the whole Milky Way in the Milky Way guide is not ours: ', esoSet2:'. It is cropped, and the labels are added in the app.',
+      places:{sval:['Svalbard', '78° N'], nn:['Northern Norway', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Southern Norway', 'Stavanger, Oslo · 59–60° N'], se:['Southern Europe', 'about 40° N'], jp:['Japan', 'about 35° N'], can:['Canary Islands, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'about 14° N'], eq:['Equator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · about 23° S'], au:['Australia', 'about 31° S'], nz:['New Zealand', 'about 44° S'], pos:['My position']}, posGet:'My position: fetch', posBusy:'Finding your position …', posIn:'your position', esoCr:'Image: ESO/S. Brunier (CC BY 4.0)', esoChg:'Cropped, with labels added', skyChg:'Laid onto the sky over you', skyTitle:'The Milky Way now', skyBtn:'See the Milky Way as it stands now ›', skyGuide:'Open the Milky Way guide ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `The Milky Way as it stands ${w}, seen from ${p}.`, skyHow:'The middle is straight overhead, and the edge is the horizon. North is up; start the compass and the picture turns with the phone. The picture does not show light from the sun, the moon or towns: look for the Milky Way when it is fully dark.', skyNoPos:'Fetch your position to see the Milky Way as it stands over you right now.', esoSet:'The panorama of the whole Milky Way in the Milky Way guide is not ours: ', esoSet2:'. It is cropped, the labels are added in the app, and in «The Milky Way now» it is laid onto the sky over you.',
       mapAria:'A panorama of the whole Milky Way with the names of well-known stars, constellations and dark clouds. Drag sideways or use the arrows to move along the band.', drag:'Drag sideways · pinch or double-tap to zoom', panL:'Move left along the band', panR:'Move right along the band', placeL:'Seen from',
       legend:(p, lat) => `Hatched: never rises above the horizon from ${p} (${lat}). Dashed line: its edge.`, legendNone:(p, lat) => `From ${p} (${lat}) the whole band rises above the horizon in the course of a day.`, dirS:'in the south', dirN:'in the north',
       gcNever:'The centre in Sagittarius never rises above the horizon here.', gcLow:(h, d) => `The centre in Sagittarius only just clears the horizon, at most ${h}° up, low ${d}.`, gcAlt:(h, d) => `The centre in Sagittarius reaches at most ${h}° above the horizon, ${d}.`, gcTop:'The centre in Sagittarius passes nearly overhead.',
@@ -1369,7 +1369,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
     mwg:{show:'Vis navn', cap:'Melkeveien fra Hjerkinn, Dovre, 26. september 2025, mot sør', photoAlt:'Melkeveien som et bånd rett opp fra horisonten mot sør, delt av en mørk stripe, med tre klare stjerner rundt.',
       ph:{deneb:'Deneb (Svanen)', cyg:'Svanens stjernesky', vega:'Vega (Lyren)', tri:'Sommertrekanten', rift:'Den store riften', altair:'Altair (Ørnen)', tarazed:'Tarazed', sct:'Skjoldets stjernesky, lavt og rødlig nær horisonten', m11:'M11'},
       m:{cas:'Kassiopeia (W)', cyg:'Nordkorset', deneb:'Deneb', vega:'Vega', altair:'Altair', tri:'Sommertrekanten', rift:'Den store riften', sct:'Skjoldets stjernesky', gc:'Sentrum (Skytten)', cru:'Sørkorset', coal:'Kullsekken', lmc:'Den store magellanske sky', smc:'Den lille magellanske sky', m31:'Andromedagalaksen', aur:'Kusken (Capella)', per:'Perseus', gem:'Tvillingene', ori:'Orion'},
-      places:{sval:['Svalbard', '78° N'], nn:['Nord-Norge', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Sør-Norge', 'Stavanger, Oslo · 59–60° N'], se:['Sør-Europa', 'ca. 40° N'], jp:['Japan', 'ca. 35° N'], can:['Kanariøyene, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'ca. 14° N'], eq:['Ekvator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · ca. 23° S'], au:['Australia', 'ca. 31° S'], nz:['New Zealand', 'ca. 44° S'], pos:['Min posisjon']}, posGet:'Min posisjon: hent', posBusy:'Henter posisjon …', posIn:'posisjonen din', esoCr:'Bilde: ESO/S. Brunier (CC BY 4.0)', esoChg:'Beskåret, med navn lagt til', skyChg:'Lagt på himmelen over deg', skyTitle:'Melkeveien nå', skyBtn:'Se Melkeveien slik den står nå ›', skyGuide:'Åpne Melkeveien-guiden ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `Slik står Melkeveien ${w}, sett fra ${p}.`, skyHow:'Midten er rett over deg, og kanten er horisonten. Nord er opp; start kompasset, så dreier bildet med mobilen. Bildet viser ikke lys fra sola, månen eller byer: se etter Melkeveien når det er helt mørkt.', skyNoPos:'Hent posisjonen din for å se Melkeveien slik den står over deg akkurat nå.', esoSet:'Panoramaet av hele Melkeveien i guiden Melkeveien er ikke vårt: ', esoSet2:'. Det er beskåret, og navnene er lagt til i appen.',
+      places:{sval:['Svalbard', '78° N'], nn:['Nord-Norge', 'Alta, Tromsø · 70° N'], dovre:['Dovre', '62° N'], sn:['Sør-Norge', 'Stavanger, Oslo · 59–60° N'], se:['Sør-Europa', 'ca. 40° N'], jp:['Japan', 'ca. 35° N'], can:['Kanariøyene, Nepal', 'Himalaya · 28° N'], th:['Thailand', 'ca. 14° N'], eq:['Ekvator', 'Kenya, Ecuador, Indonesia · 0°'], nam:['Namibia, Chile', 'Atacama · ca. 23° S'], au:['Australia', 'ca. 31° S'], nz:['New Zealand', 'ca. 44° S'], pos:['Min posisjon']}, posGet:'Min posisjon: hent', posBusy:'Henter posisjon …', posIn:'posisjonen din', esoCr:'Bilde: ESO/S. Brunier (CC BY 4.0)', esoChg:'Beskåret, med navn lagt til', skyChg:'Lagt på himmelen over deg', skyTitle:'Melkeveien nå', skyBtn:'Se Melkeveien slik den står nå ›', skyGuide:'Åpne Melkeveien-guiden ›', skyWhere:(la, lo) => `${la}, ${lo}`, skyWhen:(w, p) => `Slik står Melkeveien ${w}, sett fra ${p}.`, skyHow:'Midten er rett over deg, og kanten er horisonten. Nord er opp; start kompasset, så dreier bildet med mobilen. Bildet viser ikke lys fra sola, månen eller byer: se etter Melkeveien når det er helt mørkt.', skyNoPos:'Hent posisjonen din for å se Melkeveien slik den står over deg akkurat nå.', esoSet:'Panoramaet av hele Melkeveien i guiden Melkeveien er ikke vårt: ', esoSet2:'. Det er beskåret, navnene er lagt til i appen, og i «Melkeveien nå» er det lagt på himmelen over deg.',
       mapAria:'Panoramabilde av hele Melkeveien med navn på kjente stjerner, stjernebilder og mørke skyer. Dra sidelengs eller bruk pilene for å flytte langs båndet.', drag:'Dra sidelengs · knip eller dobbelttrykk for å zoome', panL:'Flytt mot venstre langs båndet', panR:'Flytt mot høyre langs båndet', placeL:'Sett fra',
       legend:(p, lat) => `Skravert: kommer aldri over horisonten fra ${p} (${lat}). Stiplet linje: kanten.`, legendNone:(p, lat) => `Fra ${p} (${lat}) kommer hele båndet over horisonten i løpet av døgnet.`, dirS:'i sør', dirN:'i nord',
       gcNever:'Sentrum i Skytten kommer aldri over horisonten herfra.', gcLow:(h, d) => `Sentrum i Skytten kommer bare så vidt over horisonten, høyst ${h}° opp, lavt ${d}.`, gcAlt:(h, d) => `Sentrum i Skytten står høyst ${h}° over horisonten, ${d}.`, gcTop:'Sentrum i Skytten går nesten rett over deg.',
@@ -4158,8 +4158,13 @@ function mwGalToEq(l, b){
 // from 0.27.0 the file is the whole 1280 × 640 picture (the sky view needs all of it); rows y0–y1 (b +34.9° to −48.4°,
 // both Magellanic Clouds) are what «Hele båndet» shows at zoom 1
 // dx: the picture itself sits 10 px right of this projection (bright stars near the plane measured 8–12 px, median 10;
-// no steady vertical shift), so the app draws it 10 px further left and the names land on their stars
+// no steady vertical shift), so the app draws it 10 px further left and the names land on their stars.
+// From 0.27.1 this 1280 px file serves the sky view (Melkeveien nå) only: it draws on at most 480 px for the whole sky
 const MW_PANO = {w: 1280, h: 640, y0: 196, y1: 492, dx: 10, src: 'guides/milkyway-eso-panorama.webp', url: 'https://www.eso.org/public/images/eso0932a/'};
+// 0.27.1: «Hele båndet» uses a sharper file, 2560 × 1280 made from ESO's 4000 × 2000 TIFF and cut to rows y0–y1 (the
+// same band window, b +34.875° to −48.375°), WebP quality 85. The offset scales with the width: 24 bright stars near the
+// plane measured a median of 20.5 px (10.2 in the 1280 file), so dx = 20, the same 2.8° in both
+const MW_BAND = {w: 2560, h: 1280, y0: 392, y1: 984, dx: 20, src: 'guides/milkyway-eso-band.webp'};
 const mwWrap180 = l => ((((l + 180) % 360) + 360) % 360) - 180;
 const mwPanoXY = (l, b) => ({x: MW_PANO.w * (0.5 - mwWrap180(l) / 360), y: MW_PANO.h * (0.5 - b / 180)});   // in the 1280 × 640 original
 // never rises: below the southern limit (north of the equator) or above the northern one (south of it)
@@ -4219,7 +4224,7 @@ const MW_PH_LAB = [  // label anchor x, y, side (l: left edge at x, r: right edg
 // 0.27.0: places by latitude only (that is all that decides what can be seen), north to south
 const MW_PLACES = [['sval', 78], ['nn', 70], ['dovre', 62.2], ['sn', 59.5], ['se', 40], ['jp', 35], ['can', 28], ['th', 14], ['eq', 0], ['nam', -23], ['au', -31], ['nz', -44]];
 const MW_VIEW = 110;   // degrees of the band across the box at zoom 1
-const MW_ZMAX = 2;     // the 1280 px picture holds about 3.6 px per degree: sharper than that it cannot get
+const MW_ZMAX = 4;     // 0.27.1: the 2560 px band holds about 7.1 px per degree; at 4× on a phone it is enlarged as much as the 1280 px file was at 2×
 let mwPlace = null;   // the chosen place in «Hele båndet» (not stored)
 let mwMap = null;     // {el, box, W, H, k1, z, lc, bc}
 let mwPosMsg = '';
@@ -4264,7 +4269,7 @@ function mwMapBuild(el){
     <p class="mwm-leg"><span class="mwm-sw" aria-hidden="true"></span><span class="mwm-legt"></span></p><ul class="mwm-see"></ul>`;
   const box = el.querySelector('.mwm-box');
   mwMap = {el, box, W: 0, H: 0, k1: 0, z: 1, lc: 52, bc: null};
-  // one finger drags (and pans up and down when zoomed); two fingers pinch; a double tap zooms in, or back out
+  // one finger drags (and pans up and down when zoomed); two fingers pinch; a double tap doubles the zoom (1×, 2×, 4×), then back out
   const pts = new Map();
   let drag = null, pinch = null, lastTap = null;
   const local = e => { const r = box.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
@@ -4302,7 +4307,7 @@ function mwMapBuild(el){
     if (drag && pts.size === 0){
       const p = local(e), now = Date.now();
       if (drag.moved < 10 && now - drag.t < 350){
-        if (lastTap && now - lastTap.t < 350 && Math.hypot(p[0] - lastTap.p[0], p[1] - lastTap.p[1]) < 30){ mwZoomTo(mwMap.z > 1.01 ? 1 : MW_ZMAX, p); lastTap = null; }
+        if (lastTap && now - lastTap.t < 350 && Math.hypot(p[0] - lastTap.p[0], p[1] - lastTap.p[1]) < 30){ mwZoomTo(mwMap.z > MW_ZMAX - 0.01 ? 1 : Math.min(MW_ZMAX, mwMap.z * 2), p); lastTap = null; }
         else lastTap = {t: now, p};
       } else lastTap = null;
       drag = null;
@@ -4313,7 +4318,7 @@ function mwMapBuild(el){
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (box.isConnected && box.clientWidth && box.clientWidth !== mwMap.W) mwMapDraw(); }).observe(box);
   mwMapDraw();
 }
-/* The panorama is ESO's eso0932a (S. Brunier, CC BY 4.0), the whole 1280 × 640 picture: equirectangular in galactic
+/* The panorama is ESO's eso0932a (S. Brunier, CC BY 4.0), the band window of the 2560 px file (MW_BAND): equirectangular in galactic
    coordinates, the centre in the middle, north up, l growing to the left. The picture and the hatching are drawn in
    degrees inside one scaled group (x = 180 − l, y = 90 − b), so a zoom or a drag only changes its transform; the
    names sit in their own layer in pixels and are moved or redrawn, so they keep their size at any zoom. Each layer is
@@ -4322,11 +4327,11 @@ function mwMapDraw(){
   const m = mwMap; if (!m || !m.box.isConnected) return;
   const W = m.box.clientWidth; if (!W) return;
   const T = t().mwg, pl = mwPlaceNow(), lat = pl.lat;
-  const k1 = W / MW_VIEW, bTop = 90 - 180 * MW_PANO.y0 / MW_PANO.h, bBot = 90 - 180 * MW_PANO.y1 / MW_PANO.h, H = Math.round((bTop - bBot) * k1);
+  const k1 = W / MW_VIEW, bTop = 90 - 180 * MW_BAND.y0 / MW_BAND.h, bBot = 90 - 180 * MW_BAND.y1 / MW_BAND.h, H = Math.round((bTop - bBot) * k1);
   if (m.bc === null) m.bc = (bTop + bBot) / 2;
   Object.assign(m, {W, H, k1, bTop, bBot, lat});
-  const f2 = v => v.toFixed(2), Xd = l => 180 - mwWrap180(l), Yd = b => 90 - b, dxd = MW_PANO.dx * 360 / MW_PANO.w;
-  let deg = `<image href="${MW_PANO.src}" x="${f2(-dxd)}" y="0" width="360" height="180" preserveAspectRatio="none"/><rect class="mwm-tint" x="0" y="0" width="360" height="180"/>`;
+  const f2 = v => v.toFixed(2), Xd = l => 180 - mwWrap180(l), Yd = b => 90 - b, dxd = MW_BAND.dx * 360 / MW_BAND.w;
+  let deg = `<image href="${MW_BAND.src}" x="${f2(-dxd)}" y="${f2(Yd(bTop))}" width="360" height="${f2(bTop - bBot)}" preserveAspectRatio="none"/><rect class="mwm-tint" x="0" y="0" width="360" height="180"/>`;
   // the part that never rises here (2° × 1° cells), and its edge (the horizon at its lowest)
   const never = (l, b) => mwNever(mwGalToEq(l, b).dec, lat);
   let sh = '', hz = '';
