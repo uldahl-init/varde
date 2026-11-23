@@ -3370,3 +3370,166 @@ test.describe('landskap 0.24.2', () => {
     await settle(p, err); await ctx.close();
   });
 });
+
+/* ---------- From build 95 (0.26.0): the Melkeveien guide ----------
+   The maths in Node (galactic coordinates, the never-rising limit, the period with no astronomical darkness, checked
+   against the owner's own calculations for 2026 within ±3 days); in the page, in both languages: the guide opens from
+   Guider and from its links, the photo and its labels with the «Vis navn» switch, the whole band moves with a drag
+   and the arrows, the places shade the right part, the dark-night line, and search finds its parts. */
+const MWG = (() => {
+  const a = HTML.indexOf('/* ---------- Melkeveien guide (0.26.0): sky maths'), b = HTML.indexOf('/* ---------- end of the Melkeveien maths');
+  return new Function(HTML.slice(a, b) + '\nreturn {mwEqToGal, mwGalToEq, mwNever, mwMaxAlt, mwNoDark};')();
+})();
+test.describe('melkeveien guide 0.26', () => {
+  test('galactic coordinates, what never rises, and the nights with no full darkness', () => {
+    const gc = MWG.mwEqToGal(266.417, -29.008);   // Sagittarius A*
+    expect(Math.min(gc.l, 360 - gc.l)).toBeLessThan(0.2); expect(Math.abs(gc.b)).toBeLessThan(0.2);
+    const dn = MWG.mwEqToGal(20.6905 * 15, 45.280);   // Deneb: l 84.3, b 2.0
+    expect(Math.abs(dn.l - 84.28)).toBeLessThan(0.1); expect(Math.abs(dn.b - 2.0)).toBeLessThan(0.1);
+    const back = MWG.mwGalToEq(dn.l, dn.b); expect(Math.abs(back.ra - 20.6905 * 15)).toBeLessThan(1e-6); expect(Math.abs(back.dec - 45.28)).toBeLessThan(1e-6);
+    const cdec = MWG.mwGalToEq(0, 0).dec;
+    expect(Math.abs(cdec + 28.94)).toBeLessThan(0.05);
+    expect(MWG.mwNever(cdec, 62)).toBe(true); expect(MWG.mwNever(cdec, 70)).toBe(true);
+    expect(MWG.mwNever(cdec, 28)).toBe(false); expect(MWG.mwNever(cdec, 0)).toBe(false); expect(MWG.mwNever(cdec, -28)).toBe(false);
+    expect(MWG.mwMaxAlt(cdec, -28)).toBeGreaterThan(80);
+    // the owner's figures for 2026 (no astronomical darkness), within ±3 days
+    const ref = [['Stavanger', 58.97, '04-26', '08-19'], ['Oslo', 59.91, '04-23', '08-21'], ['Hjerkinn', 62.22, '04-16', '08-28'], ['Tromsø', 69.65, '03-28', '09-17'], ['Alta', 69.97, '03-27', '09-18']];
+    const days = (a, b) => Math.abs(Date.parse(a) - Date.parse(b)) / 864e5;
+    for (const [n, lat, from, to] of ref){
+      const r = MWG.mwNoDark(lat, 2026);
+      expect(r.from, n).toBeTruthy();
+      expect(days(r.from.toISOString().slice(0, 10), '2026-' + from), n + ' from').toBeLessThanOrEqual(3);
+      expect(days(r.to.toISOString().slice(0, 10), '2026-' + to), n + ' to').toBeLessThanOrEqual(3);
+    }
+    expect(MWG.mwNoDark(28.3, 2026).none).toBe(true);   // Tenerife: fully dark every night
+    const s = MWG.mwNoDark(-60, 2026); expect(s.from.getUTCMonth()).toBeGreaterThan(8); expect(s.to.getUTCMonth()).toBeLessThan(3);   // over New Year
+  });
+  const TX = {no:{title:'Melkeveien', guider:'Guider', show:'Vis navn', rift:'Den store riften', tri:'Sommertrekanten', sct:'Trolig Skjoldets stjernesky', never:'aldri over horisonten', over:'nesten rett over deg', apr:'april', aug:'august', all:'hele året', search:['Melkeveien', 'Den store riften', 'Sommertrekanten'], cap:'Hjerkinn, Dovre, 26. september 2025'},
+    en:{title:'The Milky Way', guider:'Guides', show:'Show labels', rift:'The Great Rift', tri:'Summer Triangle', sct:'Probably the Scutum Star Cloud', never:'never rises above the horizon', over:'passes nearly overhead', apr:'April', aug:'August', all:'all year', search:['Milky Way', 'Great Rift', 'Summer Triangle'], cap:'Hjerkinn, Dovre, 26 September 2025'}};
+  const sec = (p, k) => p.locator(`#main details[data-sec="${k}"]`);
+  const openSec = async (p, k) => { if (!(await sec(p, k).getAttribute('open') !== null)) await sec(p, k).locator('> summary').click(); };
+  for (const L of LANGS) test(`the guide: photo, labels, the whole band, places and darkness (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await openApp(p);
+    await goTab(p, 'guide');
+    await openRow(p, 'milkyway');
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    // the photo: loaded, eight labels, the caption with the place and date; the switch hides and shows the names
+    await openSec(p, 'patterns');
+    const img = p.locator('#main .mw-photo img');
+    await expect.poll(() => img.evaluate(i => i.complete && i.naturalWidth)).toBe(1200);
+    await expect(p.locator('#main .mwp-l')).toHaveCount(8);
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toHaveText(X.rift);
+    await expect(p.locator('#main .mwp-l[data-k="sct"]')).toContainText(X.sct);
+    await expect(p.locator('#main .mw-photo figcaption')).toContainText(X.cap);
+    await expect(p.locator('#main .mw-photo figcaption')).toContainText('Svein Atle Uldahl');
+    const tog = p.locator('#main [data-act="mwLabels"]');
+    await expect(tog).toHaveText(X.show); await expect(tog).toHaveAttribute('aria-pressed', 'true');
+    await tog.click();
+    await expect(tog).toHaveAttribute('aria-pressed', 'false');
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toBeHidden();
+    await expect(p.locator('#main .mwp-lines')).toBeHidden();
+    await tog.click();
+    await expect(p.locator('#main .mwp-l[data-k="rift"]')).toBeVisible();
+    // labels stay inside the photo
+    const out = await p.evaluate(() => { const b = document.querySelector('.mwp-box').getBoundingClientRect(); return [...document.querySelectorAll('.mwp-l')].filter(e => { const r = e.getBoundingClientRect(); return r.left < b.left - 1 || r.right > b.right + 1 || r.top < b.top - 1 || r.bottom > b.bottom + 1; }).map(e => e.dataset.k); });
+    expect(out).toEqual([]);
+    // the whole band: a drag moves it, and the landmarks follow
+    await openSec(p, 'map');
+    const box = p.locator('#main .mwm-box');
+    await expect(box).toHaveAttribute('data-lc', /\d/);
+    const lc0 = +(await box.getAttribute('data-lc'));
+    const vx = () => p.evaluate(() => document.querySelectorAll('.mwm-lm[data-k="vega"] text')[1].getBoundingClientRect().x);   // the middle copy
+    const x0 = await vx();
+    const bb = await box.boundingBox(), W = bb.width;
+    await box.scrollIntoViewIfNeeded();
+    const b2 = await box.boundingBox();
+    await p.mouse.move(b2.x + b2.width / 2, b2.y + b2.height / 2);
+    await p.mouse.down(); await p.mouse.move(b2.x + b2.width / 2 - 60, b2.y + b2.height / 2, {steps:4}); await p.mouse.move(b2.x + b2.width / 2 - 120, b2.y + b2.height / 2, {steps:4}); await p.mouse.up();
+    const lc1 = +(await box.getAttribute('data-lc'));
+    const moved = ((lc0 - lc1) + 360) % 360;
+    expect(Math.abs(moved - 120 / (W / 100))).toBeLessThan(2);   // 120 px left = 120 / (px per degree) along the band
+    const x1 = await vx();
+    expect(Math.abs((x0 - x1) - 120)).toBeLessThan(3);
+    // the arrows move it 45°
+    await p.locator('#main [data-act="mwPan"][data-d="45"]').click();
+    expect(Math.abs(((+(await box.getAttribute('data-lc')) - lc1) + 360) % 360 - 45)).toBeLessThan(0.2);
+    // the places: the centre (dec −29°) never rises from Dovre or Northern Norway, but does from 28° N and 28° S
+    const place = async k => { await p.locator(`#main [data-act="mwPlace"][data-p="${k}"]`).click(); await expect(p.locator(`#main [data-act="mwPlace"][data-p="${k}"]`)).toHaveAttribute('aria-pressed', 'true'); };
+    const gcUp = () => p.locator('#main .mwm-lm[data-k="gc"]').first().getAttribute('data-up');
+    await place('dovre');
+    expect(await gcUp()).toBe('0');
+    expect(await p.locator('#main .mwm-sh').count()).toBeGreaterThan(0);
+    expect(await p.locator('#main .mwm-hz').count()).toBeGreaterThan(0);
+    await expect(p.locator('#main .mwm-see li').first()).toContainText(X.never);
+    await place('nn');
+    expect(await gcUp()).toBe('0');
+    expect(await p.locator('#main .mwm-lm[data-k="cru"]').first().getAttribute('data-up')).toBe('0');
+    await place('se');
+    expect(await gcUp()).toBe('1');
+    await place('south');
+    expect(await gcUp()).toBe('1');
+    await expect(p.locator('#main .mwm-see li').first()).toContainText(X.over);
+    expect(await p.locator('#main .mwm-sh').count()).toBeGreaterThan(0);   // at 28° S the far north of the sky (Dec above +62°) never rises
+    expect(await p.locator('#main .mwm-lm[data-k="cas"]').first().getAttribute('data-up')).toBe('1');   // Cassiopeia's first star (Dec +59°) just does, about 3° up
+    await place('eq');
+    expect(await p.locator('#main .mwm-sh').count()).toBe(0);
+    // darkness: Dovre has a light period (April to August); 28° N is dark all year
+    await place('dovre');
+    await openSec(p, 'dark');
+    const dk = p.locator('#main [data-mwdark]');
+    await expect(dk).toContainText(X.apr); await expect(dk).toContainText(X.aug);
+    const from = await dk.getAttribute('data-from'), to = await dk.getAttribute('data-to');
+    expect(Math.abs(Date.parse(from) - Date.parse('2026-04-16')) / 864e5).toBeLessThanOrEqual(3);
+    expect(Math.abs(Date.parse(to) - Date.parse('2026-08-28')) / 864e5).toBeLessThanOrEqual(3);
+    await place('se');
+    await expect(dk).toContainText(X.all);
+    // no sideways scroll on the page
+    expect(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  for (const L of LANGS) test(`search finds its parts, and the links lead to it (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
+    await p.goto('./');
+    await goTab(p, 'guide');
+    await p.locator('#main .gs-btn').click();
+    const input = p.locator('#gsInput');
+    for (const q of X.search){
+      await input.fill(q);
+      await expect(p.locator('#main .gs-hit[data-guide="milkyway"]').first(), q).toBeVisible();
+    }
+    // the Great Rift opens the section that explains it
+    await input.fill(X.search[1]);
+    await p.locator('#main .gs-hit[data-guide="milkyway"]').first().click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    await expect(p.locator('#main details[open]').first()).toContainText(new RegExp(X.search[1], 'i'));
+    // links: Stjerner og planeter (with a position), Nattehimmelen and Retning om natta lead here
+    await goTab(p, 'compass');
+    await p.locator('#main [data-act="cStars"]').click();
+    await p.locator('#stList [data-guide="milkyway"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    for (const [g, s] of [['nightsky', 'milky'], ['nightdir', 'stories']]){
+      await goTab(p, 'guide');
+      if (await p.locator('#main .gs-x').count()) await p.locator('#main .gs-x').click();
+      await openRow(p, g);
+      await sec(p, s).locator('> summary').click();
+      await sec(p, s).locator('[data-guide="milkyway"]').click();
+      await expect(p.locator('#listName')).toHaveText(X.title);
+    }
+    // and back again, to Nattehimmelen
+    await openSec(p, 'photo');
+    await sec(p, 'photo').locator('[data-guide="nightsky"]').click();
+    await expect(p.locator('#listName')).not.toHaveText(X.title);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
