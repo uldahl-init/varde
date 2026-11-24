@@ -1848,6 +1848,93 @@ test.describe('månen 0.20', () => {
   });
 });
 
+/* ---------- From build 102 (0.29.0): supermoon, micromoon and full moon names ----------
+   The Moon's distance from the twelve largest terms of the standard series, against published values (Space.com, from
+   Fred Espenak's tables: 360,768 km on 24 Nov 2026 14:53 UTC, 356,740 km on 24 Dec 2026 01:28 UTC). Supermoon at 0.9 or
+   more of the way from the nearest apogee to the nearest perigee, micromoon at 0.1 or less (Espenak's way): checked
+   against the published run of Dec 2025 – Feb 2027 (EarthSky: 24 Nov 2026 is the first of four in a row), with 26 Oct
+   2026 (0.89) an ordinary full moon. Names by the Old Farmer's Almanac's rules: 2020 had the Harvest Moon on 1 Oct, so
+   September's was the Corn Moon and 31 Oct the Blue Moon; 31 Aug 2023 was a Blue Moon. On Kompass the phase line says
+   «supermåne» on the day, and Sol og måne links to Nattehimmelen at Månen, with or without a position. */
+const MOON29 = (() => {
+  const a = HTML.indexOf('/* ---------- moon (calculated on the phone'), b = HTML.indexOf('/* ---------- end of the Moon as it stands');
+  return new Function(HTML.slice(a, b) + '\nreturn {moonDist, moonPeri, fullMoonKind, fullMoonAt, moonName, moonEvents, toDays};')();
+})();
+test.describe('månen 0.29', () => {
+  test('distance, supermoons, micromoons and names', () => {
+    const M = MOON29, dist = s => M.moonDist(M.toDays(new Date(s)));
+    expect(Math.abs(dist('2026-11-24T14:53:00Z') - 360768)).toBeLessThan(1000);
+    expect(Math.abs(dist('2026-12-24T01:28:00Z') - 356740)).toBeLessThan(1000);
+    // every full moon from 1 Nov 2025 to the end of March 2027, with its kind (moonEvents is the app's own full moon)
+    const kinds = {};
+    for (const f of M.moonEvents(0.5, Date.parse('2025-11-01T00:00:00Z'), 17)) kinds[new Date(M.fullMoonAt(f)).toISOString().slice(0, 10)] = M.fullMoonKind(f);
+    const sup = Object.keys(kinds).filter(k => kinds[k] === 'super'), mic = Object.keys(kinds).filter(k => kinds[k] === 'micro');
+    expect(sup).toEqual(['2025-11-05', '2025-12-04', '2026-01-03', '2026-11-24', '2026-12-24', '2027-01-22', '2027-02-20']);
+    expect(mic).toEqual(['2026-05-01', '2026-05-31', '2026-06-29']);
+    expect(kinds['2026-10-26']).toBe('');
+    const near = s => M.moonEvents(0.5, Date.parse(s) - 3 * 86400000, 1)[0];
+    expect(M.moonName(near('2026-11-24T15:00:00Z'))).toBe('Beaver Moon');
+    expect(M.moonName(near('2020-10-01T21:00:00Z'))).toBe('Harvest Moon');
+    expect(M.moonName(near('2020-09-02T05:00:00Z'))).toBe('Corn Moon');
+    expect(M.moonName(near('2020-10-31T14:00:00Z'))).toBe('Blue Moon');
+    expect(M.moonName(near('2023-08-31T02:00:00Z'))).toBe('Blue Moon');
+    expect(M.moonName(near('2026-09-26T17:00:00Z'))).toBe('Harvest Moon');
+    expect(M.moonName(near('2026-10-26T04:00:00Z'))).toBe("Hunter's Moon");
+    expect(M.moonName(near('2026-05-31T09:00:00Z'))).toBe('Blue Moon');
+    expect(M.fullMoonKind(near('2026-05-31T09:00:00Z'))).toBe('micro');
+  });
+  const TX = {no:{tag:'supermåne', cap:'· supermåne · Beaver Moon', btn:'Nattehimmelen: Månen ›', q:'Supermåne og minimåne', names:'Navn på fullmånene'},
+    en:{tag:'supermoon', cap:'· supermoon · Beaver Moon', btn:'The night sky: The Moon ›', q:'Supermoon and micromoon', names:'Full moon names'}};
+  for (const L of LANGS) test(`the tag on Kompass, the guide button and the caption (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-24T20:00:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang:L.lang, pos:{lat:58.97, lon:5.73, t:Date.now()}}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    const row = p.locator('#main section.sky .moon-row b');
+    await expect(row).toContainText(X.tag);
+    // a week later the full moon is gone, and so is the tag
+    await p.locator('#main input[data-sundate]').fill('2026-12-01');
+    await p.locator('#main input[data-sundate]').dispatchEvent('change');
+    await expect(p.locator('#main section.sky .moon-row b')).not.toContainText(X.tag);
+    // the guide button opens Nattehimmelen at Månen, where the caption names the full moon
+    const btn = p.locator('#main section.sky [data-act="openGuide"][data-sec="moon"]');
+    await expect(btn).toHaveText(X.btn);
+    await btn.click();
+    const sec = p.locator('#main details[data-sec="moon"]');
+    await expect(sec).toHaveAttribute('open', '');
+    await expect(sec).toContainText(X.q);
+    await expect(sec).toContainText(X.names);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+  test('the caption shows kind and name, and the button is there without a position', async ({browser}) => {
+    const ctx = await browser.newContext({locale:'nb-NO', timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}, reducedMotion:'reduce'});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date('2026-11-19T20:00:00Z'));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang:'no'}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    const btn = p.locator('#main section.sky [data-act="openGuide"][data-sec="moon"]');
+    await expect(btn).toHaveText('Nattehimmelen: Månen ›');
+    await btn.click();
+    // with reduce motion the first of four still rows is the next full moon, 24 Nov 2026
+    const cap = p.locator('#main .moon-anim[data-anim="full"] .ma-cap').first();
+    await expect(cap).toContainText('24. nov. 2026');
+    await expect(cap).toContainText('· supermåne · Beaver Moon');
+    // later rows: an ordinary full moon has the name only
+    const caps = await p.locator('#main .moon-anim[data-anim="full"] .ma-cap').allTextContents();
+    expect(caps.length).toBe(4);
+    expect(caps.some(c => / · [A-Z][a-z']+ Moon$/.test(c) && !/supermåne|minimåne/.test(c))).toBe(true);
+    expect(err).toEqual([]);
+    await ctx.close();
+  });
+});
+
 /* (build 78, 0.20.2: Australia in the evening crescent too, mirrored; the pictures in a row line up) */
 /* (build 77, 0.20.1: the equator column shows the full moon as it rises, lying on its side; direction under every moon) */
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
