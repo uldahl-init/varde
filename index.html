@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-Fx3ShCAOcVw19/yUvcMPQvsvmD6SSgaLPpOV9LHwgQY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/UbClvd49QgUmr1rGk+VFnoh+lOrWkjvVe4kUZG8y94='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -1019,8 +1019,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.28.1';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 101;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.29.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 102;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1126,7 +1126,7 @@ const UI = {
 appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP_NAME}`, setLink:`Settings and about ${APP_NAME}`, aboutApp:`About ${APP_NAME}`, fgHint:'How often someone drops by the fire.', fg:{off:'Off', rare:'Rarely', some:'Now and then', often:'Often'}, landTxt:'The landscape at the bottom shows Rondeslottet seen from Tron.', photosTitle:'The pictures', photosTxt:'The pictures in the app are real photos, and several drawings are made from photos. All are by the app\'s maker unless stated otherwise.', tabCompass:'Compass', cStart:'Start compass', cHold:'Hold reading', cRelease:'Release', cSkyNow:'Sun and moon now', cRiseSet:'Sunrise and sunset', cSkyNoPos:'Needs your position: tap Get position further down.', cPosNone:ic => `No position. Tap ${ic} for sun, moon and true north.`, cPosAt:w => `Position from ${w}`, cPosToday:'today', cPosYday:'yesterday', cPosOld:(d, n) => `Position from ${d} · ${n} ${n === 1 ? 'day' : 'days'} old`, cFlat:'Held flat: shows the direction of the top of the phone', cUp:'Held upright: shows the direction you are looking',
     cTrue:d => `True north · declination ${d}`, cMagN:'Magnetic north · get your position for true north', cStars:'Stars and planets',
     stTitle:'Stars and planets', stNoPos:'The stars need your position. Get it on the Compass page, under The sky.', stDay:'The sun is up, so the stars cannot be seen. The ring still shows where they are.',
-    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNav:'Navigation star · always on top', stSortedB:'Sorted by brightness', stSortedH:'Sorted by height', stNone:'None of these are above the horizon right now.',
+    stTwi:'Twilight: the planets and the brightest stars show first. It is dark when the sun is 12° below the horizon.', stUp:'Above the horizon now', maFull:'The full moon through the year', maWhen:{hi:'when highest', rise:'as it rises'}, maCres:'The evening crescent, 45 minutes after sunset', maPl:{sn:'Southern Norway', eq:'Equator', au:'Australia'}, maUp:h => `${h}° up`, maBelow:'below the horizon', maPause:'Pause', maPlay:'Play', maFullOn:d => `Full moon ${d}`, fmKind:{super:'supermoon', micro:'micromoon'}, skyMoonGuide:'The night sky: The Moon ›', stGrpMP:'The moon and planets', stGrpSt:'Stars', stGrpMW:'Milky Way', stSortL:'Order', stSortB:'Brightest first', stSortH:'Highest first', stNav:'Navigation star · always on top', stSortedB:'Sorted by brightness', stSortedH:'Sorted by height', stNone:'None of these are above the horizon right now.',
     stLow:'low on the horizon', stHigh:'nearly overhead', stAlt:(h, f) => `${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`,
     mwName:'Milky Way', mwFrom:(a, b) => `from ${a} to ${b}`, gcName:'Centre of the Milky Way (Sagittarius)', gcBelow:'below the horizon now', gcHighest:(h, d) => `highest ${h}° up in the ${d}`, gcBarely:h => `only just clears the horizon here (highest ${h}°)`, gcNever:'never rises above the horizon here', mwTop:(d, h, f) => `highest in the ${d} · ${h}° up · about ${f} ${f === 1 ? 'fist' : 'fists'}`, mwTopHigh:'highest nearly overhead', mwLow:'The Milky Way lies low along the horizon now, and is hard to see.', mwMoon:'The moon is bright now, so the Milky Way is hard to see.',
     stNote:'<p>Directions are from true north. The sky turns about 15° an hour, and the page updates every minute. A fist at arm\'s length covers about 10°: count fists up from the horizon.</p><p>The ring shows only directions; heights are in the list. The Milky Way is drawn inside the compass: the middle is straight overhead, and the edge is the horizon. The two triangles on the outer edge point to where the Milky Way meets the horizon.</p><p>Planets move slowly against the stars, so they are not on fixed star charts.</p>',
@@ -1378,7 +1378,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
 appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om ${APP_NAME}`, setLink:`Innstillinger og om ${APP_NAME}`, aboutApp:`Om ${APP_NAME}`, fgHint:'Hvor ofte noen kommer innom bålet.', fg:{off:'Av', rare:'Sjelden', some:'Av og til', often:'Ofte'}, photosTitle:'Bildene', landTxt:'Bakgrunnen nederst viser Rondeslottet sett fra Tron.', photosTxt:'Bildene i appen er ekte foto, og flere av tegningene er laget etter foto. Alle er tatt av utvikleren av appen, om ikke annet er oppgitt.', tabCompass:'Kompass', cStart:'Start kompasset', cHold:'Hold retningen', cRelease:'Slipp', cSkyNow:'Sol og måne nå', cRiseSet:'Soloppgang og solnedgang', cSkyNoPos:'Trenger posisjonen din: trykk Hent posisjon lenger ned.', cPosNone:ic => `Ingen posisjon. Trykk ${ic} for sol, måne og sann nord.`, cPosAt:w => `Posisjon hentet ${w}`, cPosToday:'i dag', cPosYday:'i går', cPosOld:(d, n) => `Posisjon fra ${d} · ${n} døgn gammel`, cFlat:'Holdt flatt: viser retningen til toppen av mobilen', cUp:'Holdt oppreist: viser retningen du ser',
     cTrue:d => `Sann nord · misvisning ${d}`, cMagN:'Magnetisk nord · hent posisjonen for sann nord', cStars:'Stjerner og planeter',
     stTitle:'Stjerner og planeter', stNoPos:'Stjernene trenger posisjonen din. Hent den på Kompass-siden, under Himmelen.', stDay:'Sola er oppe, så stjernene synes ikke. Ringen viser likevel hvor de står.',
-    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNav:'Navigasjonsstjerne · står alltid øverst', stSortedB:'Sortert etter lysstyrke', stSortedH:'Sortert etter høyde', stNone:'Ingen av disse står over horisonten akkurat nå.',
+    stTwi:'Skumring: planetene og de klareste stjernene kommer fram først. Det er mørkt når sola står 12° under horisonten.', stUp:'Over horisonten nå', maFull:'Fullmånen gjennom året', maWhen:{hi:'når den står høyest', rise:'når den står opp'}, maCres:'Månesigden om kvelden, 45 minutter etter solnedgang', maPl:{sn:'Sør-Norge', eq:'Ekvator', au:'Australia'}, maUp:h => `${h}° opp`, maBelow:'under horisonten', maPause:'Pause', maPlay:'Spill av', maFullOn:d => `Fullmåne ${d}`, fmKind:{super:'supermåne', micro:'minimåne'}, skyMoonGuide:'Nattehimmelen: Månen ›', stGrpMP:'Månen og planetene', stGrpSt:'Stjerner', stGrpMW:'Melkeveien', stSortL:'Rekkefølge', stSortB:'Lysest først', stSortH:'Høyest først', stNav:'Navigasjonsstjerne · står alltid øverst', stSortedB:'Sortert etter lysstyrke', stSortedH:'Sortert etter høyde', stNone:'Ingen av disse står over horisonten akkurat nå.',
     stLow:'lavt over horisonten', stHigh:'nesten rett over deg', stAlt:(h, f) => `${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`,
     mwName:'Melkeveien', mwFrom:(a, b) => `fra ${a} til ${b}`, gcName:'Melkeveiens sentrum (Skytten)', gcBelow:'under horisonten nå', gcHighest:(h, d) => `høyest ${h}° opp i ${d}`, gcBarely:h => `kommer bare så vidt over horisonten her (høyest ${h}°)`, gcNever:'kommer aldri over horisonten her', mwTop:(d, h, f) => `høyest i ${d} · ${h}° opp · omtrent ${f} ${f === 1 ? 'knyttneve' : 'knyttnever'}`, mwTopHigh:'høyest nesten rett over deg', mwLow:'Melkeveien ligger lavt langs horisonten nå, og er vanskelig å se.', mwMoon:'Månen er lys nå, så Melkeveien er vanskelig å se.',
     stNote:'<p>Retningene er fra sant nord. Himmelen dreier omtrent 15° i timen, og siden oppdateres hvert minutt. En knyttneve på strak arm dekker omtrent 10°: tell knyttnever opp fra horisonten.</p><p>Ringen viser bare retninger; høyden står i listen. Melkeveien er tegnet inne i kompasset: midten er rett over deg, og kanten er horisonten. De to trekantene på ytterkanten peker dit Melkeveien møter horisonten.</p><p>Planetene flytter seg sakte mellom stjernene, så de finnes ikke på faste stjernekart.</p>',
@@ -2714,7 +2714,7 @@ const GUIDE_TXT = {
       ["Melkeveien", "<p>Melkeveien er vår egen galakse, sett fra innsiden: et svakt, lysende bånd rundt hele himmelen. Fra Norge ses den best på mørke høst- og vinterkvelder, langt fra lys og uten måne.</p><p>Hva den er, mønstrene i den, når og hvor den står, og fortellingene om den: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">Om Melkeveien ›</button></p>", "milky"],
       ["Lys som beveger seg", "<ul><li><b>Satellitt:</b> et jevnt, hvitt punkt som glir rolig over himmelen uten å blinke, på noen få minutter. Det kan forsvinne brått når det går inn i jordas skygge. Den internasjonale romstasjonen er den klareste, nesten like klar som Venus. En rad med like punkter etter hverandre er satellitter skutt opp sammen.</li><li><b>Fly:</b> blinkende lys, ofte rødt og grønt på vingespissene, og det kan endre retning.</li><li><b>Stjerneskudd (meteor):</b> en rask strek som er borte på et sekund eller to.</li><li><b>Store meteorsvermer hvert år:</b> Kvadrantidene rundt 3.–4. januar, Perseidene rundt 12.–13. august (i Norge ofte i lyse netter) og Geminidene rundt 14. desember. Månen avgjør hvor mange du ser.</li></ul>", "moving"],
       ["Planetene", "<ul><li><b>Venus:</b> klarest etter månen. Står aldri langt fra sola, så den ses i vest etter solnedgang («aftenstjerna») eller i øst før soloppgang («morgenstjerna»), aldri midt på natta.</li><li><b>Jupiter:</b> svært klar og rolig, kan være oppe hele natta.</li><li><b>Mars:</b> tydelig rødlig. Lysstyrken varierer mye; den er klarest når den står nærmest jorda, omtrent hvert annet år.</li><li><b>Saturn:</b> gulaktig og svakere. Lysstyrken følger også hvor mye vi ser av ringene.</li><li><b>Tommelfingerregel:</b> stjerner blinker, planeter lyser roligere. Nær horisonten kan begge blinke. Planetene står alltid langs samme bånd over himmelen som sola og månen. De flytter seg, så de finnes ikke på faste stjernekart.</li></ul><p>Fra norrøn tid er det nesten ikke bevart egne navn på planetene: middelalderens islandske skrivere brukte de latinske navnene.</p>", "planets"],
-      ["Månen", "<ul><li><b>Fasene:</b> halve månen er alltid opplyst av sola. Hvor mye av den lyse halvdelen vi ser, endrer seg gjennom omtrent 29,5 dager, fra nymåne til fullmåne og tilbake.</li><li><b>Den lyse siden peker mot sola:</b> derfor ligger månesigden ulikt gjennom året og fra sted til sted. I Norge står kveldssigden oftest på skrå eller på siden; nær ekvator kan den ligge som en båt. I Australia er sigden speilvendt: den lyser fra venstre.</li><li><b>Ansiktet snur seg:</b> månen viser oss alltid samme side, men den står ikke alltid likt. Gjennom natta dreier den sakte mens den går over himmelen, og gjennom året lener aksen seg skiftevis mot øst og vest. Sett fra Norge når fullmånen står høyest i sør, flytter krateret Tycho seg fra nede til venstre om høsten til rett ned, eller litt til høyre, om våren.</li><li><b>Vi ser litt mer enn halve månen:</b> månen vugger litt (librasjon), fordi banen er avlang og aksen står litt på skrå mot banen, rundt 6,7 grader. Over tid ser vi rundt 59 prosent av overflaten.</li><li><b>I sør står den på hodet:</b> fra Australia ser du de samme havene, men opp ned, fordi du ser nordover mot månen. Ved ekvator går fullmånen nesten rett over hodet, og hvordan den står da, avhenger av hvilken vei du snur deg. Når den står opp eller går ned, ligger den på siden.</li><li><b>Det du ser med det blotte øye:</b> de mørke flatene er «hav», størknet lava. Det klareste krateret ved fullmåne er Tycho, med lyse stråler ut over den sørlige delen.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
+      ["Månen", "<ul><li><b>Fasene:</b> halve månen er alltid opplyst av sola. Hvor mye av den lyse halvdelen vi ser, endrer seg gjennom omtrent 29,5 dager, fra nymåne til fullmåne og tilbake.</li><li><b>Den lyse siden peker mot sola:</b> derfor ligger månesigden ulikt gjennom året og fra sted til sted. I Norge står kveldssigden oftest på skrå eller på siden; nær ekvator kan den ligge som en båt. I Australia er sigden speilvendt: den lyser fra venstre.</li><li><b>Ansiktet snur seg:</b> månen viser oss alltid samme side, men den står ikke alltid likt. Gjennom natta dreier den sakte mens den går over himmelen, og gjennom året lener aksen seg skiftevis mot øst og vest. Sett fra Norge når fullmånen står høyest i sør, flytter krateret Tycho seg fra nede til venstre om høsten til rett ned, eller litt til høyre, om våren.</li><li><b>Vi ser litt mer enn halve månen:</b> månen vugger litt (librasjon), fordi banen er avlang og aksen står litt på skrå mot banen, rundt 6,7 grader. Over tid ser vi rundt 59 prosent av overflaten.</li><li><b>I sør står den på hodet:</b> fra Australia ser du de samme havene, men opp ned, fordi du ser nordover mot månen. Ved ekvator går fullmånen nesten rett over hodet, og hvordan den står da, avhenger av hvilken vei du snur deg. Når den står opp eller går ned, ligger den på siden.</li><li><b>Det du ser med det blotte øye:</b> de mørke flatene er «hav», størknet lava. Det klareste krateret ved fullmåne er Tycho, med lyse stråler ut over den sørlige delen.</li><li><b>Supermåne og minimåne:</b> månebanen er avlang, så avstanden til månen varierer mellom rundt 356 000 og 407 000 km. En fullmåne nær det nærmeste punktet kalles supermåne, nær det fjerneste minimåne. Det finnes ingen offisiell definisjon; appen bruker den vanligste, minst 90 prosent av veien mot det nærmeste punktet. En supermåne er rundt 14 prosent større og 30 prosent klarere enn en minimåne, men uten noe å sammenligne med er forskjellen vanskelig å se.</li><li><b>Navn på fullmånene:</b> navn som Wolf Moon (januar) og Beaver Moon (november) kommer fra nordamerikanske tradisjoner og ble spredt av amerikanske almanakker på 1900-tallet. De brukes over hele verden i nyheter og stjerneapper, men er ingen nordisk tradisjon.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
     milkyway:{toc:true, title:"Melkeveien", short:"Kjenn igjen båndet og mønstrene", sub:"Hva Melkeveien er, mønstrene du ser i den, hvor og når den står, og råd for deg som vil fotografere den.", secs:[
       ["Hva båndet er", "<ul><li>Melkeveien er vår egen galakse, rundt 300 milliarder stjerner, med sola som én av dem. Vi ser den fra innsiden, langs den flate skiva, så de fjerne stjernene flyter sammen til et svakt, lysende bånd.</li><li><b>Hvorfor den går rundt hele himmelen:</b> galaksen er en flat skive, bare rundt 1000 lysår tykk, og sola ligger inne i den, rundt 26 000 lysår fra sentrum. Ser vi langs skiva, ser vi stjerner i alle retninger rundt oss, så båndet går som en ring rundt hele himmelen. Halve ringen er alltid under horisonten. Ser vi over eller under båndet, ser vi ut av skiva, og stjernene tynner raskt ut. Mot sentrum, i Skytten, ser vi inn mot det tette, lyse midtpartiet. Den motsatte veien, der Kusken møter Tyren, ser vi utover mot kanten av galaksen, så båndet er tynnere og svakere der.</li><li><b>Armene:</b> sola ligger i en liten arm, Orion-armen, mellom Skytten-armen innenfor og Perseus-armen utenfor. Ser vi bort fra sentrum, ser vi gjennom Perseus-armen, rundt 6000 lysår ut.</li><li><b>Hvorfor båndet ser dobbelt ut:</b> langs midten ligger skyer av støv og gass som stenger for lyset fra stjernene bak. Fra Svanen og ned mot Skytten deler de båndet i to. Den mørke stripa kalles <b>Den store riften</b>.</li><li>Riften er ikke ett hull, men mange støvskyer på ulike avstander. Den nærmeste delen, i Ørnen, ligger bare noen hundre lysår unna, nær oss i galaksen.</li><li>Andre mørke flekker er laget på samme måte, som Kullsekken ved Sørkorset på sørlige halvkule.</li></ul>", "what"],
       ["Mønstre å se etter", "<figure class=\"mw-photo\" data-mwphoto></figure><ul><li><b>Sommertrekanten:</b> tre klare stjerner, Deneb i Svanen, Vega i Lyren og Altair i Ørnen. Deneb ligger midt i båndet, Vega like utenfor på den ene siden og Altair i kanten på den andre.</li><li><b>Nordkorset:</b> de klareste stjernene i Svanen danner et kors som ligger langs båndet, med Deneb på toppen.</li><li><b>Svanens stjernesky:</b> et lyst parti i båndet i Svanen, nær Deneb.</li><li><b>Den store riften:</b> den mørke stripa begynner i Svanen og deler båndet i to ned forbi Altair.</li><li><b>Altair og Tarazed:</b> Altair har en svakere nabo rett ved, Tarazed. Paret gjør Altair lett å kjenne igjen.</li><li><b>Lavt mot horisonten:</b> under Ørnen ligger lyse stjerneskyer i Skjoldet og Skytten. Fra Norge står de lavt, og lavt på himmelen går lyset gjennom mye mer luft, som sprer bort mer av det blå lyset. Derfor ser de svake og rødlige ut. Nederst på bildet ses Skjoldets stjernesky med stjernehopen M11; Skytten ligger like under fjellkanten.</li><li><b>Kassiopeia:</b> den tydelige W-en ligger i båndet, videre mot nord fra Svanen.</li></ul>", "patterns"],
@@ -2840,7 +2840,7 @@ const GUIDE_TXT = {
       ["The Milky Way", "<p>The Milky Way is our own galaxy, seen from the inside: a faint, glowing band all round the sky. From Norway it is best seen on dark autumn and winter evenings, far from lights and without the moon.</p><p>What it is, the patterns in it, when and where it stands, and the stories about it: <button class=\"btn small\" data-nav data-act=\"openGuide\" data-guide=\"milkyway\">About the Milky Way ›</button></p>", "milky"],
       ["Moving lights", "<ul><li><b>Satellite:</b> a steady white point gliding smoothly across the sky without blinking, over a few minutes. It can vanish suddenly as it enters Earth's shadow. The International Space Station is the brightest, almost as bright as Venus. A row of similar points following each other is satellites launched together.</li><li><b>Aircraft:</b> blinking lights, often red and green on the wingtips, and it can change direction.</li><li><b>Shooting star (meteor):</b> a quick streak gone in a second or two.</li><li><b>Major meteor showers each year:</b> the Quadrantids around 3–4 January, the Perseids around 12–13 August (in Norway often in light nights) and the Geminids around 14 December. The Moon decides how many you see.</li></ul>", "moving"],
       ["The planets", "<ul><li><b>Venus:</b> brightest after the Moon. Never far from the Sun, so seen in the west after sunset («evening star») or in the east before sunrise («morning star»), never in the middle of the night.</li><li><b>Jupiter:</b> very bright and steady, can be up all night.</li><li><b>Mars:</b> clearly reddish. Its brightness varies a lot; it is brightest when closest to Earth, about every two years.</li><li><b>Saturn:</b> yellowish and fainter. Its brightness also follows how much of the rings we see.</li><li><b>Rule of thumb:</b> stars twinkle, planets shine more steadily. Near the horizon both can twinkle. The planets always lie along the same band across the sky as the Sun and Moon. They move, so they are not on fixed star charts.</li></ul><p>Almost no native Norse names for the planets survive: medieval Icelandic writers used the Latin names.</p>", "planets"],
-      ["The Moon", "<ul><li><b>The phases:</b> half of the Moon is always lit by the Sun. How much of the lit half we see changes over about 29.5 days, from new moon to full moon and back.</li><li><b>The lit side points to the Sun:</b> so the crescent lies differently through the year and from place to place. In Norway the evening crescent mostly stands slanted or on its side; near the equator it can lie like a boat. In Australia the crescent is mirrored: it is lit from the left.</li><li><b>The face turns:</b> the Moon always shows us the same side, but it does not always stand the same way. Through the night it turns slowly as it crosses the sky, and through the year its axis leans east and west in turn. Seen from Norway when the full moon stands highest in the south, the crater Tycho moves from lower left in autumn to straight down, or a little to the right, in spring.</li><li><b>We see a little more than half the Moon:</b> it rocks a little (libration), because its orbit is oval and its axis is tilted a little to its orbit, about 6.7 degrees. Over time we see about 59 per cent of its surface.</li><li><b>In the south it stands on its head:</b> from Australia you see the same seas, but upside down, because you look north to the Moon. At the equator the full moon passes almost straight overhead, and how it stands then depends on which way you face. As it rises or sets, it lies on its side.</li><li><b>What you see with the naked eye:</b> the dark patches are «seas», solidified lava. The clearest crater at full moon is Tycho, with bright rays across the southern part.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
+      ["The Moon", "<ul><li><b>The phases:</b> half of the Moon is always lit by the Sun. How much of the lit half we see changes over about 29.5 days, from new moon to full moon and back.</li><li><b>The lit side points to the Sun:</b> so the crescent lies differently through the year and from place to place. In Norway the evening crescent mostly stands slanted or on its side; near the equator it can lie like a boat. In Australia the crescent is mirrored: it is lit from the left.</li><li><b>The face turns:</b> the Moon always shows us the same side, but it does not always stand the same way. Through the night it turns slowly as it crosses the sky, and through the year its axis leans east and west in turn. Seen from Norway when the full moon stands highest in the south, the crater Tycho moves from lower left in autumn to straight down, or a little to the right, in spring.</li><li><b>We see a little more than half the Moon:</b> it rocks a little (libration), because its orbit is oval and its axis is tilted a little to its orbit, about 6.7 degrees. Over time we see about 59 per cent of its surface.</li><li><b>In the south it stands on its head:</b> from Australia you see the same seas, but upside down, because you look north to the Moon. At the equator the full moon passes almost straight overhead, and how it stands then depends on which way you face. As it rises or sets, it lies on its side.</li><li><b>What you see with the naked eye:</b> the dark patches are «seas», solidified lava. The clearest crater at full moon is Tycho, with bright rays across the southern part.</li><li><b>Supermoon and micromoon:</b> the Moon's orbit is oval, so its distance varies between about 356,000 and 407,000 km. A full moon near the closest point is called a supermoon, near the farthest a micromoon. There is no official definition; the app uses the most common one, at least 90 per cent of the way to the closest point. A supermoon is about 14 per cent larger and 30 per cent brighter than a micromoon, but with nothing to compare it with, the difference is hard to see.</li><li><b>Full moon names:</b> names such as Wolf Moon (January) and Beaver Moon (November) come from North American traditions and were spread by American almanacs in the 1900s. They are used worldwide in the news and in sky apps, but they are not a Nordic tradition.</li></ul><div class='moon-anim' data-anim='full'></div><div class='moon-anim' data-anim='cres'></div>", "moon"]]},
     milkyway:{toc:true, title:"The Milky Way", short:"Recognise the band and its patterns", sub:"What the Milky Way is, the patterns you see in it, where and when it stands, and advice for photographing it.", secs:[
       ["What the band is", "<ul><li>The Milky Way is our own galaxy, around 300 billion stars, the Sun among them. We see it from the inside, along its flat disc, so the distant stars merge into a faint, glowing band.</li><li><b>Why it runs all round the sky:</b> the galaxy is a flat disc, only about 1,000 light-years thick, and the Sun lies inside it, about 26,000 light-years from the centre. Looking along the disc we see stars in every direction around us, so the band runs as a ring right round the sky. Half the ring is always below the horizon. Looking above or below the band, we look out of the disc, and the stars thin out fast. Towards the centre, in Sagittarius, we look into the dense, bright middle. The opposite way, where Auriga meets Taurus, we look outwards towards the edge of the galaxy, so the band is thinner and fainter there.</li><li><b>The arms:</b> the Sun lies in a small arm, the Orion Arm, between the Sagittarius Arm further in and the Perseus Arm further out. Looking away from the centre, we look through the Perseus Arm, about 6,000 light-years out.</li><li><b>Why the band looks double:</b> along the middle lie clouds of dust and gas that block the light from the stars behind. From Cygnus down towards Sagittarius they split the band in two. The dark lane is called <b>the Great Rift</b>.</li><li>The rift is not one hole but many dust clouds at different distances. The nearest part, in Aquila, is only some hundreds of light-years away, close to us in the galaxy.</li><li>Other dark patches are made the same way, like the Coalsack by the Southern Cross in the southern hemisphere.</li></ul>", "what"],
       ["Patterns to look for", "<figure class=\"mw-photo\" data-mwphoto></figure><ul><li><b>The Summer Triangle:</b> three bright stars, Deneb in Cygnus, Vega in Lyra and Altair in Aquila. Deneb lies in the middle of the band, Vega just outside it on one side and Altair at the edge on the other.</li><li><b>The Northern Cross:</b> the brightest stars of Cygnus form a cross lying along the band, with Deneb at the top.</li><li><b>The Cygnus Star Cloud:</b> a bright part of the band in Cygnus, near Deneb.</li><li><b>The Great Rift:</b> the dark lane begins in Cygnus and splits the band in two down past Altair.</li><li><b>Altair and Tarazed:</b> Altair has a fainter neighbour right beside it, Tarazed. The pair makes Altair easy to recognise.</li><li><b>Low towards the horizon:</b> below Aquila lie bright star clouds in Scutum and Sagittarius. From Norway they stand low, and low in the sky the light passes through much more air, which scatters away more of the blue light. That is why they look faint and reddish. At the bottom of the photo is the Scutum Star Cloud with the star cluster M11; Sagittarius lies just below the mountain ridge.</li><li><b>Cassiopeia:</b> the clear W lies in the band, further north from Cygnus.</li></ul>", "patterns"],
@@ -3975,6 +3975,76 @@ function moonIllum(date){
   const ang = Math.atan2(Math.cos(sn.dec) * Math.sin(sn.ra - m.ra), Math.sin(sn.dec) * Math.cos(m.dec) - Math.cos(sn.dec) * Math.sin(m.dec) * Math.cos(sn.ra - m.ra));
   return {fraction: (1 + Math.cos(inc)) / 2, phase: 0.5 + 0.5 * inc * (ang < 0 ? -1 : 1) / Math.PI};
 }
+// the next n times the phase passes target (0.5 full, 0 new), from t (ms)
+function moonEvents(target, t, n){
+  const out = [], f = ms => ((moonIllum(new Date(ms)).phase - target + 1.5) % 1) - 0.5;
+  let a = t, fa = f(a);
+  while (out.length < n){
+    const b = a + 6 * 3600000, fb = f(b);
+    if (fa < 0 && fb >= 0 && fb - fa < 0.5){
+      let lo = a, hi = b;
+      for (let k = 0; k < 30; k++){ const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
+      out.push(hi);
+    }
+    a = b; fa = fb;
+  }
+  return out;
+}
+// 0.29.0: the Moon's distance from Earth in km: the twelve largest terms of the standard series (Meeus ch. 47), about 100 km
+// from published values; used only for supermoons, so moonEq keeps its short formula and the phase and moonrise do not change
+function moonDist(d){
+  const M = RAD * (134.963 + 13.064993 * d), D = RAD * (297.850 + 12.190749 * d), Ms = RAD * (357.529 + 0.98560028 * d);
+  return 385001 - 20905 * Math.cos(M) - 3699 * Math.cos(2 * D - M) - 2956 * Math.cos(2 * D) - 570 * Math.cos(2 * M)
+    + 246 * Math.cos(2 * M - 2 * D) - 205 * Math.cos(Ms - 2 * D) - 171 * Math.cos(M + 2 * D) - 152 * Math.cos(M + Ms - 2 * D)
+    - 130 * Math.cos(Ms - M) + 109 * Math.cos(D) + 105 * Math.cos(Ms + M) + 49 * Math.cos(Ms);
+}
+// 0.29.0: how near perigee the Moon is at t (ms), Fred Espenak's way: 1 at the nearest perigee, 0 at the nearest apogee,
+// both looked for hour by hour within ±16 days; a full moon at 0.9 or more is a supermoon, at 0.1 or less a micromoon
+function moonPeri(t){
+  const H = 3600000, N = 16 * 24, r = ms => moonDist(toDays(new Date(ms)));
+  let per = null, apo = null, a = r(t - (N + 1) * H), b = r(t - N * H);
+  for (let k = -N + 1; k <= N + 1; k++){
+    const c = r(t + k * H), at = k - 1;
+    if (b < a && b <= c && (!per || Math.abs(at) < Math.abs(per.k))) per = {k: at, r: b};
+    if (b > a && b >= c && (!apo || Math.abs(at) < Math.abs(apo.k))) apo = {k: at, r: b};
+    a = b; b = c;
+  }
+  return per && apo ? (apo.r - r(t)) / (apo.r - per.r) : 0.5;
+}
+// a full moon time from moonEvents (the short Moon, a few hours off) made exact to within minutes: the fuller Moon
+// (moonEcl) stands opposite the Sun
+function fullMoonAt(t){
+  const f = ms => { const d = toDays(new Date(ms)), M = RAD * (357.529 + 0.98560028 * d);
+    const sun = RAD * (280.459 + 0.98564736 * d + 1.915 * Math.sin(M) + 0.020 * Math.sin(2 * M));
+    const e = moonEcl(d).lam - sun - Math.PI; return Math.atan2(Math.sin(e), Math.cos(e)); };
+  let lo = t - 12 * 3600000, hi = t + 12 * 3600000;
+  for (let k = 0; k < 30; k++){ const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
+  return hi;
+}
+function fullMoonKind(t){ const q = moonPeri(fullMoonAt(t)); return q >= 0.9 ? 'super' : q <= 0.1 ? 'micro' : ''; }
+// 0.29.0: full moon names, in English in both languages (decided 24 Nov), by the Old Farmer's Almanac's rules
+const FM_NAMES = ['Wolf Moon', 'Snow Moon', 'Worm Moon', 'Pink Moon', 'Flower Moon', 'Strawberry Moon', 'Buck Moon', 'Sturgeon Moon', 'Harvest Moon', "Hunter's Moon", 'Beaver Moon', 'Cold Moon'];
+// the September equinox of year y (ms): the Sun's ecliptic longitude passes 180° (low precision, within an hour or so)
+function septEquinox(y){
+  const lon = ms => { const d = toDays(new Date(ms)), M = RAD * (357.529 + 0.98560028 * d); return 280.459 + 0.98564736 * d + 1.915 * Math.sin(M) + 0.020 * Math.sin(2 * M); };
+  const base = lon(Date.UTC(y, 8, 15)), f = ms => lon(ms) - base - ((180 - base % 360) % 360 + 360) % 360;
+  let lo = Date.UTC(y, 8, 15), hi = Date.UTC(y, 9, 1);
+  for (let k = 0; k < 40; k++){ const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
+  return hi;
+}
+// the name of the full moon at t (ms, from moonEvents), in the phone's calendar months: the first full moon in a month has
+// the month's name and a second one is a Blue Moon; the one nearest the September equinox is the Harvest Moon, and when
+// that falls in October, September's is the Corn Moon
+function moonName(t){
+  const D = 86400000, dt = new Date(fullMoonAt(t)), y = dt.getFullYear(), mo = dt.getMonth();
+  const eq = septEquinox(y), harvest = moonEvents(0.5, eq - 16 * D, 2).reduce((p, x) => Math.abs(x - eq) < Math.abs(p - eq) ? x : p);
+  if (Math.abs(t - harvest) < D) return 'Harvest Moon';
+  if (mo === 8) return 'Corn Moon';
+  const prev = moonEvents(0.5, t - 32 * D, 2).find(x => x < t - D);
+  const pd = prev && new Date(fullMoonAt(prev));
+  if (pd && pd.getMonth() === mo && pd.getFullYear() === y) return 'Blue Moon';
+  return FM_NAMES[mo];
+}
 const MOON_H0 = 0.125;
 function moonDay(dateStr, lat, lon){
   const p = dateStr.split('-').map(Number), base = new Date(p[0], p[1] - 1, p[2]).getTime(), step = 600000;
@@ -4115,21 +4185,6 @@ const MA_PLACES = {sn:[58.97, 5.73], eq:[-1.29, 36.82], au:[-33.87, 151.21]};
 const MA_SETS = {full:['sn', 'eq', 'au'], cres:['sn', 'eq', 'au']}, MA_RISE = {eq: true};  // 0.20.2: Australia in the crescent too (mirrored)
 const maAnims = [];
 let maTimer = null;
-// the next n times the phase passes target (0.5 full, 0 new), from t (ms)
-function moonEvents(target, t, n){
-  const out = [], f = ms => ((moonIllum(new Date(ms)).phase - target + 1.5) % 1) - 0.5;
-  let a = t, fa = f(a);
-  while (out.length < n){
-    const b = a + 6 * 3600000, fb = f(b);
-    if (fa < 0 && fb >= 0 && fb - fa < 0.5){
-      let lo = a, hi = b;
-      for (let k = 0; k < 30; k++){ const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
-      out.push(hi);
-    }
-    a = b; fa = fb;
-  }
-  return out;
-}
 // the Moon's highest point (upper transit) at a place, near t
 function moonTransit(t, lat, lon){
   for (let k = 0; k < 4; k++){ let H = moonOrient(new Date(t), lat, lon).H % (2 * Math.PI); if (H > Math.PI) H -= 2 * Math.PI; if (H < -Math.PI) H += 2 * Math.PI; t -= H / (2 * Math.PI) * 86400000 * 1.0351; }
@@ -4149,7 +4204,7 @@ function maFrames(kind){
   const now = Date.now(), fr = [];
   // 0.20.1: at the equator the full moon passes nearly overhead, where its look depends on which way you face; so the
   // equator shows it just after it rises in the east (10° up), where it lies on its side; the others when highest
-  if (kind === 'full') moonEvents(0.5, now, 12).forEach(fm => fr.push({t: fm, at: MA_SETS.full.map(k => MA_RISE[k] ? moonRiseAt(fm, ...MA_PLACES[k]) : moonTransit(fm, ...MA_PLACES[k]))}));
+  if (kind === 'full') moonEvents(0.5, now, 12).forEach(fm => fr.push({t: fm, fk: fullMoonKind(fm), fn: moonName(fm), at: MA_SETS.full.map(k => MA_RISE[k] ? moonRiseAt(fm, ...MA_PLACES[k]) : moonTransit(fm, ...MA_PLACES[k]))}));
   else moonEvents(0, now, 12).forEach(nm => fr.push({t: nm, at: MA_SETS.cres.map(k => {
     const [la, lo] = MA_PLACES[k], c = nm + 3.5 * 86400000;
     let prev = null, set = null;
@@ -4180,7 +4235,7 @@ function maDraw(a, f, r){
     c.querySelector('.ma-s').textContent = o.alt > 0 ? T.maUp(Math.round(o.alt)) + ' · ' + T.cDirs[Math.round(o.az / 45) % 8] : T.maBelow;
   });
   const d = new Date(fr.t);
-  caps[r].textContent = a.kind === 'full' ? T.maFullOn(d.toLocaleDateString(loc, {day:'numeric', month:'short', year:'numeric'})) : d.toLocaleDateString(loc, {month:'long', year:'numeric'});
+  caps[r].textContent = a.kind === 'full' ? T.maFullOn(d.toLocaleDateString(loc, {day:'numeric', month:'short', year:'numeric'})) + (fr.fk ? ' · ' + T.fmKind[fr.fk] : '') + ' · ' + fr.fn : d.toLocaleDateString(loc, {month:'long', year:'numeric'});
 }
 function maTick(){
   for (let i = maAnims.length - 1; i >= 0; i--){
@@ -4976,13 +5031,18 @@ function sunHtml(){
   const T = t(), isToday = !sunDate || sunDate === today(), now = Date.now(), date = sunDate || today();
   const ph = moonIllum(isToday ? new Date() : new Date(date + 'T12:00:00')), pi = phaseIndex(ph.phase);
   const south = state.pos && state.pos.lat < 0;
-  const phaseTxt = `${T.phases[pi]}, ${T.lit(Math.round(ph.fraction * 100))}`;
+  // 0.29.0: on the day of a supermoon or micromoon the phase line says so (the names stay in the guide)
+  let fk = '';
+  if (pi === 4){ const ref = isToday ? now : new Date(date + 'T12:00:00').getTime(), fm = moonEvents(0.5, ref - 3 * 86400000, 1)[0]; if (Math.abs(fm - ref) < 3 * 86400000) fk = fullMoonKind(fm); }
+  const phaseTxt = `${T.phases[pi]}, ${T.lit(Math.round(ph.fraction * 100))}${fk ? ' · ' + T.fmKind[fk] : ''}`;
+  // 0.29.0: the one sky card without a guide link gets one, to Nattehimmelen at Månen
+  const moonGuide = `<div class="row-btns"><button class="btn" data-nav data-act="openGuide" data-guide="nightsky" data-sec="moon">${T.skyMoonGuide}</button></div>`;
   let h = `<section class="pg-sec manual sky"><h2 class="sec-lbl">${T.skyTitle}</h2>`;
   if (!state.pos){
     h += `<div class="moon-row">${moonIcon(ph.phase, 44, false)}<div><b>${phaseTxt}</b></div></div>
       <p class="tool-sub">${T.posNote}</p><div class="row-btns"><button class="btn primary" data-act="getPos">${posBusy ? T.posWait : T.getPos}</button></div>`;
     if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
-    return h + '</section>';
+    return h + moonGuide + '</section>';
   }
   const p = state.pos, sd = sunData(), ev = sd.ev, md = moonDay(date, p.lat, p.lon);
   let big = '';
@@ -5022,7 +5082,7 @@ function sunHtml(){
     <p class="calc-basis">${T.posFrom(coord, when)}</p><p class="calc-basis">${T.posNote}</p>`;
   if (posMsg) h += `<p class="calc-warn">${posMsg}</p>`;
   h += '</div></details>';
-  h += '</section>';
+  h += moonGuide + '</section>';
   return h;
 }
 /* fold-outs on Kompass (v25): open by default, state remembered; folding is navigation (summary) */
