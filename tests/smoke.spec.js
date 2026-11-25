@@ -4623,11 +4623,11 @@ test.describe('utseende 0.34', () => {
   };
   const bg = p => p.evaluate(() => getComputedStyle(document.body).backgroundColor);
   const top = p => p.evaluate(() => document.querySelector('meta[name="theme-color"]').getAttribute('content'));
-  test('Snø is listed last and can be chosen', async ({browser}) => {
+  test('Snø comes after Lett bris and can be chosen', async ({browser}) => {   // 0.35.0: Sand came after it
     expect(SKINS).toContain('sno');
     const {ctx, p, err} = await open(browser, 'light');
     await p.locator('#hdrSet').click();
-    await expect(p.locator('#main .skin-btn').last()).toHaveText('Snø');
+    await expect(p.locator('#main .skin-btn').nth(6)).toHaveText('Snø');
     await p.locator('#main .skin-btn[data-skin="sno"]').click();
     await expect(p.locator('body')).toHaveAttribute('data-skin', 'sno');
     expect(await bg(p)).toBe('rgb(242, 242, 244)');
@@ -4675,5 +4675,48 @@ test.describe('utseende 0.34', () => {
       await ctx.close();
     }
     expect(found).toEqual({});
+  });
+});
+
+/* ---------- From build 108 (0.35.0): Sand ----------
+   The eighth skin fills the last row of the skin grid next to Snø. A fine warm grain on the page and header, gone in
+   Nattlys and with true black. The night-light and contrast tests take Sand by themselves. */
+test.describe('sand 0.35', () => {
+  const open = async (browser, scheme, extra) => {
+    const ctx = await browser.newContext({colorScheme:scheme, locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, Object.assign({lists:[], introDone:true, lang:'no', skin:'sand'}, extra || {})]);
+    await p.goto('./');
+    return {ctx, p, err};
+  };
+  const img = p => p.evaluate(() => [getComputedStyle(document.body).backgroundImage, getComputedStyle(document.querySelector('header.top')).backgroundImage]);
+  test('Sand is last, the grid is full, and it can be chosen', async ({browser}) => {
+    expect(SKINS).toContain('sand');
+    const {ctx, p, err} = await open(browser, 'light', {skin:'fjell'});
+    await p.locator('#hdrSet').click();
+    const btns = p.locator('#main .skin-btn');
+    await expect(btns).toHaveCount(8);
+    await expect(btns.last()).toHaveText('Sand');
+    const [a, b] = await Promise.all([btns.nth(6).boundingBox(), btns.nth(7).boundingBox()]);
+    expect(Math.abs(a.y - b.y)).toBeLessThan(1);   // Snø and Sand share the last row
+    await btns.last().click();
+    await expect(p.locator('body')).toHaveAttribute('data-skin', 'sand');
+    expect(await p.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(243, 236, 223)');
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('the grain: on in light and dark, off in Nattlys and with true black', async ({browser}) => {
+    let {ctx, p, err} = await open(browser, 'light');
+    for (const v of await img(p)) expect(v).toContain('url(');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, 'dark'));
+    for (const v of await img(p)) expect(v).toContain('url(');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, 'dark', {black:true}));
+    expect(await img(p)).toEqual(['none', 'none']);
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, 'light', {field:true, night:true}));
+    expect(await img(p)).toEqual(['none', 'none']);
+    expect(err).toEqual([]); await ctx.close();
   });
 });
