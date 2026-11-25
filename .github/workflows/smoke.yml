@@ -57,7 +57,7 @@ jobs:
       id-token: write  # prove to Pages that the deployment comes from this workflow
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment2.outputs.page_url }}
     # One deployment at a time; a newer push waits instead of cancelling one that is half done.
     concurrency:
       group: pages
@@ -91,7 +91,19 @@ jobs:
             sleep 2
           done
           echo "::warning::$NAME was not listed after 60 s; deploying anyway"
+      # 25 Nov 2026: even after the wait, deploy-pages failed once more with «No artifacts named github-pages-1» (run
+      # after #48). It fails while looking up the copy, before any deployment is made, so trying again is safe:
+      # the first try may fail, the job waits 30 s and tries once more, and only a second failure turns the job red.
       - id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
+      - name: Wait 30 s before the second try
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
         with:
           artifact_name: github-pages-${{ github.run_attempt }}
