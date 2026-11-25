@@ -2104,6 +2104,124 @@ test.describe('formørkelser 0.31', () => {
   });
 });
 
+/* ---------- From build 105 (0.32.0): sky events ahead, in a line and in the calendar ----------
+   The line at the top of the first page, the day before and on the day: the supermoon of 24 Dec 2026 in Oslo (moonrise
+   14:50 in the north-northeast by the app's Moon; Astronomy Engine has 14:56 and 28°), the partial solar eclipse of
+   2 Aug 2027, the total lunar eclipse of 26 Jun 2029 in the small hours (anchored to the evening before: «Natt til
+   tirsdag» / «Monday night», then «I natt»). ✕ hides it until the next day; it shows in Utemodus too; nothing the day
+   after. The calendar file: valid lines (CRLF, at most 75 octets), events to 2040 with fixed ids, times in UTC and two
+   reminders each; without a position no file. The welcome page names the other tabs. */
+test.describe('himmelvarsel 0.32', () => {
+  const open = async (browser, L, at, extra) => {
+    const ctx = await browser.newContext({locale:L.locale, timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}, acceptDownloads:true});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date(at));
+    const st = Object.assign({lists:[], introDone:true, lang:L.lang, pos:{lat:59.91, lon:10.75, t:Date.parse(at)}}, extra || {});
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+    return {ctx, p, err};
+  };
+  const TX = {no:{pre:/^I morgen kveld: supermåne \(Cold Moon\), opp kl\. 14:5\d i nord–nordøst\./, day:/^I kveld: supermåne \(Cold Moon\)/,
+      sun:'I morgen: delvis solformørkelse 10:31–11:55, 14 % av sola dekket. Husk solformørkelsesbriller.',
+      night:'Natt til tirsdag: total måneformørkelse 03:31–07:12.', tonight:'I natt: total måneformørkelse 03:31–07:12.', ics:'Legg i kalenderen', nopos:'Hent posisjon på Kompass først'},
+    en:{pre:/^Tomorrow evening: supermoon \(Cold Moon\), rises at 14:5\d in the north-northeast\./, day:/^Tonight: supermoon \(Cold Moon\)/,
+      sun:'Tomorrow: partial solar eclipse 10:31–11:55, 14 % of the sun covered. Remember eclipse glasses.',
+      night:'Monday night: total lunar eclipse 03:31–07:12.', tonight:'Tonight: total lunar eclipse 03:31–07:12.', ics:'Add to calendar', nopos:'Get a position on Kompass first'}};
+  for (const L of LANGS) test(`the line the day before and on the day (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang], line = p => p.locator('#main .sky-note-txt');
+    let {ctx, p, err} = await open(browser, L, '2026-12-23T10:00:00Z');
+    await expect(line(p)).toHaveCount(1);
+    await expect(line(p)).toHaveText(new RegExp(X.pre.source));
+    // the link goes to Nattehimmelen at Månen
+    await line(p).click();
+    await expect(p.locator('#main details[data-sec="moon"]')).toHaveAttribute('open', '');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, L, '2026-12-24T10:00:00Z'));
+    await expect(line(p)).toHaveText(new RegExp(X.day.source));
+    // ✕ hides it for the day, also after a reload
+    await p.locator('#main .sky-note-x').click();
+    await expect(line(p)).toHaveCount(0);
+    await p.reload();
+    await expect(line(p)).toHaveCount(0);
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, L, '2026-12-25T18:00:00Z'));
+    await expect(line(p)).toHaveCount(0);
+    expect(err).toEqual([]); await ctx.close();
+    // the solar eclipse, and a lunar eclipse in the small hours
+    ({ctx, p, err} = await open(browser, L, '2027-08-01T10:00:00Z'));
+    await expect(line(p)).toHaveText(X.sun + ' ›');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, L, '2029-06-24T10:00:00Z'));
+    await expect(line(p)).toHaveText(X.night + ' ›');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, L, '2029-06-25T10:00:00Z'));
+    await expect(line(p)).toHaveText(X.tonight + ' ›');
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('the line in Utemodus, and a hidden line comes back the next day', async ({browser}) => {
+    const L = LANGS[0];
+    let {ctx, p, err} = await open(browser, L, '2026-12-23T10:00:00Z', {field:true});
+    await expect(p.locator('#main .sky-note.sm .sky-note-txt')).toHaveCount(1);
+    await p.locator('#main .sky-note-x').click();
+    await expect(p.locator('#main .sky-note')).toHaveCount(0);
+    // the next day: the line for the day itself is new and shows
+    await p.clock.setFixedTime(new Date('2026-12-24T10:00:00Z'));
+    await p.reload();
+    await expect(p.locator('#main .sky-note-txt')).toHaveText(/^I kveld: supermåne/);
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('the calendar file', async ({browser}) => {
+    const L = LANGS[0];
+    let {ctx, p, err} = await open(browser, L, '2026-12-23T10:00:00Z');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    const [dl] = await Promise.all([p.waitForEvent('download'), p.locator('#main section.sky [data-act="skyIcs"]').click()]);
+    expect(dl.suggestedFilename()).toBe('varde-himmel.ics');
+    const txt = fs.readFileSync(await dl.path(), 'utf8');
+    expect(txt.startsWith('BEGIN:VCALENDAR\r\nVERSION:2.0\r\n')).toBe(true);
+    expect(txt.endsWith('END:VCALENDAR\r\n')).toBe(true);
+    const lines = txt.split('\r\n').slice(0, -1);
+    for (const ln of lines) expect(Buffer.byteLength(ln, 'utf8')).toBeLessThanOrEqual(75);
+    expect(/[^\r]\n/.test(txt)).toBe(false);   // every line ends in CRLF, no bare line breaks
+    const unf = txt.replace(/\r\n /g, '');
+    const events = unf.split('BEGIN:VEVENT').slice(1);
+    expect(events.length).toBeGreaterThan(60);
+    for (const e of events){
+      expect((e.match(/BEGIN:VALARM/g) || []).length).toBe(2);
+      expect(e).toMatch(/UID:(super|sol|mane)-\d{4}-\d\d-\d\d@varde/);
+      expect(e).toMatch(/DTSTART:\d{8}T\d{6}Z/);
+    }
+    expect(unf).toContain('UID:super-2026-12-24@varde\r\nDTSTAMP:20261223T100000Z\r\nDTSTART:20261224T135');
+    expect(unf).toContain('SUMMARY:Supermåne (Cold Moon)');
+    expect(unf).toContain('UID:sol-2027-08-02@varde\r\nDTSTAMP:20261223T100000Z\r\nDTSTART:20270802T083132Z');
+    expect(unf).toContain('SUMMARY:Delvis solformørkelse\\, 14 %');
+    expect(unf).toContain('TRIGGER;VALUE=DATE-TIME:20261223T170000Z');
+    expect(unf).toContain('UID:mane-2028-12-31@varde');
+    expect(unf.match(/UID:sol-/g).length).toBeGreaterThanOrEqual(7);
+    expect(unf.lastIndexOf('DTSTART:2040')).toBeGreaterThan(0);
+    expect(unf.indexOf('DTSTART:2041')).toBe(-1);
+    expect(err).toEqual([]); await ctx.close();
+    // the eclipse guide has the button under its list
+    ({ctx, p, err} = await open(browser, L, '2026-12-23T10:00:00Z'));
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main section.sky [data-act="openGuide"][data-guide="eclipses"]').click();
+    await expect(p.locator('#main [data-ecl] [data-act="skyIcs"]')).toHaveText(TX.no.ics);
+    expect(err).toEqual([]); await ctx.close();
+    // without a position (the Månen guide's button): no file, only the message
+    ({ctx, p, err} = await open(browser, L, '2026-12-23T10:00:00Z', {pos:null}));
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    await p.locator('#main section.sky [data-act="openGuide"][data-sec="moon"]').click();
+    let downloaded = false; p.on('download', () => { downloaded = true; });
+    await p.locator('#main details[data-sec="moon"] [data-act="skyIcs"]').click();
+    await expect(p.locator('#toast')).toContainText(TX.no.nopos);
+    expect(downloaded).toBe(false);
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('the welcome page names the other tabs', () => {
+    expect(HTML).toContain('Nederst finner du også Notater, Planlegg med kalkulatorer, Guider og Kompass med sol, måne og stjerner.');
+    expect(HTML).toContain('At the bottom you also find Notes, Plan with calculators, Guides and Compass with the sun, moon and stars.');
+  });
+});
+
 /* (build 78, 0.20.2: Australia in the evening crescent too, mirrored; the pictures in a row line up) */
 /* (build 77, 0.20.1: the equator column shows the full moon as it rises, lying on its side; direction under every moon) */
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
