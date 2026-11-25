@@ -1935,6 +1935,76 @@ test.describe('månen 0.29', () => {
   });
 });
 
+/* ---------- From build 103 (0.30.0): Retning om dagen, and when the sun stands highest ----------
+   Sola høyest / Sola lavest on Kompass: the sun's upper and lower transit, against PyEphem (no refraction), within a
+   minute and 0.3°. Stavanger 24 Nov 2026 11:23:45 UTC, 10.4°; Oslo 11 Feb 2026 11:31:11 UTC, 16.2°; Tromsø 21 Dec 2026
+   10:42:12 UTC, −3.1° (below the horizon); Alta 21 Jun 2026 10:28:43 UTC, 43.5°, lowest 22:28 UTC on 20 Jun, 3.4° (the
+   midnight sun); Sydney 24 Nov 2026 01:41:43 UTC, 76.6°, to the north. The guide opens from Kompass and links both ways
+   with Retning om natta. */
+const SUN30 = (() => {
+  const a = HTML.indexOf('function sunPos('), b = HTML.indexOf('const hm = d =>');
+  return new Function(HTML.slice(a, b) + '\nreturn {sunDay};')();
+})();
+test.describe('retning om dagen 0.30', () => {
+  test('the sun highest matches the reference values', () => {
+    const ref = [['2026-11-24', 58.97, 5.73, '2026-11-24T11:23:45Z', 10.4, 180], ['2026-02-11', 59.91, 10.75, '2026-02-11T11:31:11Z', 16.2, 180],
+      ['2026-12-21', 69.65, 18.96, '2026-12-21T10:42:12Z', -3.1, 180], ['2026-06-21', 69.97, 23.27, '2026-06-21T10:28:43Z', 43.5, 180],
+      ['2026-11-24', -33.87, 151.21, '2026-11-24T01:41:43Z', 76.6, 0]];
+    for (const [d, lat, lon, t, el, az] of ref){
+      const r = SUN30.sunDay(d, lat, lon);
+      expect(Math.abs(r.hi.t.getTime() - Date.parse(t))).toBeLessThan(60000);
+      expect(Math.abs(r.hi.el - el)).toBeLessThan(0.3);
+      expect(Math.abs(((r.hi.az - az + 540) % 360) - 180)).toBeLessThan(1);
+    }
+  });
+  const open = async (browser, lang, locale, at, pos) => {
+    const ctx = await browser.newContext({locale, timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date(at));
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang, pos:Object.assign({t:Date.now()}, pos)}]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    return {ctx, p, err};
+  };
+  const row = (p, label) => p.locator('#main section.sky details[data-fold="sky"] li', {hasText: label});
+  const TX = {no:{hi:'Sola høyest', lo:'Sola lavest', below:'under horisonten', btn:'Retning om dagen ›', title:'Retning om dagen', back:'Retning om natta ›', first:'Sola i sør'},
+    en:{hi:'Sun highest', lo:'Sun lowest', below:'below the horizon', btn:'Directions by day ›', title:'Directions by day', back:'Directions at night ›', first:'The sun in the south'}};
+  for (const L of LANGS) test(`Kompass rows and the guide (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    // Stavanger today: the sun highest at 12:23 in the south, 10° up; no lowest row
+    let {ctx, p, err} = await open(browser, L.lang, L.locale, '2026-11-24T20:00:00Z', {lat:58.97, lon:5.73});
+    await expect(row(p, X.hi)).toContainText('12:23');
+    await expect(row(p, X.hi)).toContainText('· S · 10°');
+    await expect(row(p, X.lo)).toHaveCount(0);
+    // the guide button, the sections and the way to Retning om natta
+    await p.locator('#main section.sky [data-act="openGuide"][data-guide="daydir"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    await expect(p.locator('#main details')).toHaveCount(6);
+    await expect(p.locator('#main details summary').first()).toContainText(X.first);
+    await expect(p.locator('#main [data-act="openGuide"][data-guide="nightdir"]')).toHaveText(X.back);
+    expect(err).toEqual([]); await ctx.close();
+    // Alta at midsummer: the midnight sun, lowest in the north at 00:28 the night before, 3° up
+    ({ctx, p, err} = await open(browser, L.lang, L.locale, '2026-06-21T10:00:00Z', {lat:69.97, lon:23.27}));
+    await expect(row(p, X.lo)).toContainText('00:28 · N · 3°');
+    await expect(row(p, X.hi)).toContainText('12:28 · S · 43°');
+    expect(err).toEqual([]); await ctx.close();
+    // Tromsø at midwinter: highest still in the south, but below the horizon
+    ({ctx, p, err} = await open(browser, L.lang, L.locale, '2026-12-21T11:00:00Z', {lat:69.65, lon:18.96}));
+    await expect(row(p, X.hi)).toContainText(`11:42 · S · ${X.below}`);
+    expect(err).toEqual([]); await ctx.close();
+    // Sydney: the sun highest is in the north
+    ({ctx, p, err} = await open(browser, L.lang, L.locale, '2026-11-24T00:30:00Z', {lat:-33.87, lon:151.21}));
+    await expect(row(p, X.hi)).toContainText('· N · 77°');
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('Retning om natta links to Retning om dagen, first in Himmelen', async () => {
+    expect(HTML).toContain('data-guide=\\"daydir\\">Retning om dagen ›');
+    expect(HTML).toContain('data-guide=\\"daydir\\">Directions by day ›');
+    expect(HTML).toContain("items:['daydir', 'nightdir', 'nightsky', 'milkyway', 'aurora']");
+  });
+});
+
 /* (build 78, 0.20.2: Australia in the evening crescent too, mirrored; the pictures in a row line up) */
 /* (build 77, 0.20.1: the equator column shows the full moon as it rises, lying on its side; direction under every moon) */
 /* ---------- From build 68 (0.16.1): Regnlås extras and accessibility ----------
