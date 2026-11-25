@@ -344,6 +344,11 @@ Wherever people type (a sheet with text fields, or a field on the page), leaving
 - **Intro:** the welcome page names the other tabs (Notater, Planlegg, Guider, Kompass); still five pages.
 - Smoke test `himmelvarsel 0.32`.
 
+## Tegn i naturen, and the semicolon escape (build 106, 0.33.0)
+- **Guide `signs`** «Tegn i naturen» / «Signs in nature», in Ferdigheter i felt right after Kart og kompass. Each section opens with a verdict in bold (`<b>` first in the first `<p>`): `snow` (fairly reliable; wind drifts), `dish` (reliable where there are houses; satellite internet dishes differ), `church` (often, not always), `ants` (partly: the mound's gentler south side, not where it lies), `moss` (not very reliable; ends with buttons to Kart og kompass and Retning om dagen), `halo` (a weather sign, with the don't-look-at-the-sun line), `stories` (the farmers' almanac). Retning om dagen → Skyggestokken has a button back. Sources (project notes, Spec 0.33.0): UBC and the Tarfala study (snow), Kjell & Company and Clas Ohlson as a check only (dishes), SNL kirkebygning, Kadochová & Frouz 2014 and Psyche 1932 (ant mounds), Woodland Trust (moss), SNL halo, RMetS, SMHI (halo and the almanac). Keep the verdicts honest: science first, then folklore.
+- **`icsEsc`** writes `;` as `\;` (it wrote a bare `;` before, since `'\;'` is just `';'` in JS; from Claude Code's review of build 105). The smoke test runs the function from the source in Node.
+- Smoke test `tegn i naturen 0.33`.
+
 ## Smoke test on GitHub: one retry (build 104)
 - Several pull requests went red and turned green on «Re-run failed jobs» with no change. `playwright.config.js` now has `retries: process.env.CI ? 1 : 0`: on GitHub a failing test runs once more, and one that passes then is listed as flaky in the log (look for it, and fix the test if the same one keeps showing up). Locally there is no retry. The `smoke` job's 15-minute limit in `smoke.yml` is unchanged; raise it there if a run ever stops on time. If the red job is `deploy` instead, the re-run rule under «Publishing: re-runs» applies.
 
