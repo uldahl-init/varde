@@ -2001,7 +2001,106 @@ test.describe('retning om dagen 0.30', () => {
   test('Retning om natta links to Retning om dagen, first in Himmelen', async () => {
     expect(HTML).toContain('data-guide=\\"daydir\\">Retning om dagen ›');
     expect(HTML).toContain('data-guide=\\"daydir\\">Directions by day ›');
-    expect(HTML).toContain("items:['daydir', 'nightdir', 'nightsky', 'milkyway', 'aurora']");
+    expect(HTML).toContain("items:['daydir', 'nightdir', 'nightsky',");   // 0.31.0 put Formørkelser after Nattehimmelen
+  });
+});
+
+/* ---------- From build 104 (0.31.0): eclipses ----------
+   The tables (tools/eclipses.js, from Astronomy Engine) run 2027–2040: 32 solar eclipses and 20 partial or total lunar
+   ones. The app's local circumstances against Astronomy Engine's own (a devDependency, never in the app) for eight
+   places and every solar eclipse there with the Sun at least 2° up at the maximum: the times of the start, maximum and
+   end within 2 minutes, the share of the Sun covered within 2 percentage points, the same type. Oslo 2 Aug 2027: 13.9 %
+   (published 14 %), 10:31–11:55 with the maximum at 11:13 (published 10:31 and 11:13); Bodø 21 Jun 2039 annular. The
+   total lunar eclipse of 31 Dec 2028 is seen from Oslo, not from New York (the Moon is down there). On Kompass the rows
+   and the line on the day; the guide's list with and without a position. */
+const ECL31 = (() => {
+  const a = HTML.indexOf('/* ---------- eclipses (0.31.0)'), b = HTML.indexOf('/* ---------- end of eclipses */');
+  return new Function(HTML.slice(a, b) + '\nreturn {ECL_SOLAR, ECL_LUNAR, ECL_UNTIL, eclSolarLocal, eclList};')();
+})();
+test.describe('formørkelser 0.31', () => {
+  const AE = require('astronomy-engine');
+  const moonAltAE = (d, la, lo) => { const o = new AE.Observer(la, lo, 0), eq = AE.Equator(AE.Body.Moon, d, o, true, true); return AE.Horizon(d, o, eq.ra, eq.dec, 'normal').altitude; };
+  test('the tables, and the local circumstances against Astronomy Engine', () => {
+    expect(ECL31.ECL_UNTIL).toBe(2040);
+    expect(ECL31.ECL_SOLAR.length).toBe(32);
+    expect(ECL31.ECL_LUNAR.length).toBe(20);
+    const places = [[59.91, 10.75], [60.39, 5.32], [67.28, 14.4], [69.65, 18.96], [78.22, 15.65], [40.42, -3.70], [-33.87, 151.21], [40.71, -74.01]];
+    let n = 0;
+    for (const [la, lo] of places){
+      const obs = new AE.Observer(la, lo, 0);
+      let e = AE.SearchLocalSolarEclipse(new Date('2027-01-01'), obs);
+      while (e.peak.time.date.getUTCFullYear() <= 2040){
+        if (e.peak.altitude > 2){
+          const pk = e.peak.time.date.getTime(), row = ECL31.ECL_SOLAR.find(r => Math.abs(r[0] - pk) < 5 * 3600000), mine = row && ECL31.eclSolarLocal(row, la, lo);
+          const tag = `${la},${lo} ${e.peak.time.date.toISOString()}`;
+          expect(mine, tag).toBeTruthy();
+          expect(Math.abs(mine.max - pk) / 60000, tag).toBeLessThan(2);
+          expect(Math.abs(mine.start - e.partial_begin.time.date.getTime()) / 60000, tag).toBeLessThan(2);
+          expect(Math.abs(mine.end - e.partial_end.time.date.getTime()) / 60000, tag).toBeLessThan(2);
+          expect(Math.abs(mine.cover - e.obscuration) * 100, tag).toBeLessThan(2);
+          expect(mine.type, tag).toBe(e.kind);
+          n++;
+        }
+        e = AE.NextLocalSolarEclipse(e.peak.time, obs);
+      }
+    }
+    expect(n).toBeGreaterThan(40);
+    const oslo = ECL31.eclSolarLocal(ECL31.ECL_SOLAR.find(r => new Date(r[0]).toISOString().startsWith('2027-08-02')), 59.91, 10.75);
+    expect(Math.round(oslo.cover * 100)).toBe(14);
+    expect(new Date(oslo.from).toISOString().slice(11, 16)).toBe('08:31');
+    expect(new Date(oslo.max).toISOString().slice(11, 16)).toBe('09:13');
+    expect(ECL31.eclSolarLocal(ECL31.ECL_SOLAR.find(r => new Date(r[0]).toISOString().startsWith('2039-06-21')), 67.28, 14.4).type).toBe('annular');
+    const lunar = (la, lo) => ECL31.eclList(la, lo, Date.parse('2028-12-30'), moonAltAE).filter(e => !e.sun)[0];
+    expect(new Date(lunar(59.91, 10.75).max).toISOString().slice(0, 10)).toBe('2028-12-31');
+    expect(lunar(59.91, 10.75).type).toBe('total');
+    expect(new Date(lunar(40.71, -74.01).max).toISOString().slice(0, 10)).toBe('2029-06-26');
+  });
+  const open = async (browser, L, at, pos) => {
+    const ctx = await browser.newContext({locale:L.locale, timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.clock.setFixedTime(new Date(at));
+    const st = {lists:[], introDone:true, lang:L.lang};
+    if (pos) st.pos = Object.assign({t:Date.now()}, pos);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} }, [KEY, st]);
+    await p.goto('./');
+    await p.locator('#tabbar [data-tab="compass"]').click();
+    return {ctx, p, err};
+  };
+  const TX = {no:{sun:'Solformørkelse', moon:'Måneformørkelse', sunRow:'2. aug. 2027 · 14 %', moonRow:'12. jan. 2028 · delvis · 05:13',
+      today:'Solformørkelse i dag, 10:31–11:55, størst kl. 11:13 med 14 % av sola dekket.', safe:'Se aldri rett på sola', tonight:'Måneformørkelse i natt, 16:07–19:36, størst kl. 17:52 (total).',
+      btn:'Formørkelser ›', title:'Formørkelser', first:'2. aug. 2027 · Delvis solformørkelse · 14 % · 10:31–11:55', nopos:'Hent posisjon på Kompass'},
+    en:{sun:'Solar eclipse', moon:'Lunar eclipse', sunRow:'2 Aug 2027 · 14 %', moonRow:'12 Jan 2028 · partial · 05:13',
+      today:'Solar eclipse today, 10:31–11:55, greatest at 11:13 with 14 % of the sun covered.', safe:'Never look straight at the sun', tonight:'Lunar eclipse tonight, 16:07–19:36, greatest at 17:52 (total).',
+      btn:'Eclipses ›', title:'Eclipses', first:'2 Aug 2027 · Partial solar eclipse · 14 % · 10:31–11:55', nopos:'Get a position on Kompass'}};
+  for (const L of LANGS) test(`Kompass rows, the day lines and the guide (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang], OSLO = {lat:59.91, lon:10.75};
+    const row = (p, lbl) => p.locator('#main section.sky details[data-fold="sky"] li', {hasText: lbl});
+    let {ctx, p, err} = await open(browser, L, '2027-07-01T10:00:00Z', OSLO);
+    await expect(row(p, X.sun)).toContainText(X.sunRow);
+    await expect(row(p, X.moon)).toContainText(X.moonRow);
+    await expect(p.locator('#main .ecl-day')).toHaveCount(0);
+    // the guide: the list for Oslo, the next eclipse first
+    await p.locator('#main section.sky [data-act="openGuide"][data-guide="eclipses"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    await expect(p.locator('#main .ecl-list li').first()).toHaveText(X.first);
+    expect(await p.locator('#main .ecl-list li').count()).toBe(10);
+    expect(err).toEqual([]); await ctx.close();
+    // the day of the solar eclipse, and the evening of the total lunar eclipse
+    ({ctx, p, err} = await open(browser, L, '2027-08-02T06:00:00Z', OSLO));
+    await expect(p.locator('#main .ecl-day')).toHaveText(X.today);
+    await expect(p.locator('#main section.sky .calc-warn').first()).toContainText(X.safe);
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, L, '2028-12-31T12:00:00Z', OSLO));
+    await expect(p.locator('#main .ecl-day')).toHaveText(X.tonight);
+    expect(err).toEqual([]); await ctx.close();
+    // no position: the guide asks for one, and the button is on the card
+    ({ctx, p, err} = await open(browser, L, '2027-07-01T10:00:00Z', null));
+    await p.locator('#main section.sky [data-act="openGuide"][data-guide="eclipses"]').click();
+    await expect(p.locator('#main [data-ecl]')).toContainText(X.nopos);
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('Formørkelser sits after Nattehimmelen in Himmelen', () => {
+    expect(HTML).toContain("items:['daydir', 'nightdir', 'nightsky', 'eclipses', 'milkyway', 'aurora']");
   });
 });
 
