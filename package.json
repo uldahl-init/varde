@@ -7,6 +7,7 @@
     "csp": "node tools/csp-hash.js --write"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "astronomy-engine": "^2.1.19"
   }
 }
