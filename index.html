@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-B/n0UX8RHa8x+gA/VIo+eUkmnxxHIiIKi1OqtqAxSM8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-44nqxPV4ozK08tirEbXyla2B4Mu8a8UBGxqccRYcFa4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -525,6 +525,13 @@ body[data-skin="sno"]{--rain:#1F5A8F;--bg:#F2F2F4;--surface:#FFFFFF;--ink:#1C1C1
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-skin="sno"]{--rain:#74B4EA;--bg:#121214;--surface:#1C1C1E;--ink:#EDEDF0;--muted:#9A9AA1;--line:#2C2C2F;--line-strong:#48484C;--red:#5B9EF0;--lichen:#9CC283;--hd:#1C1C1E;--hdt:#EDEDF0;--chip:#2C2C2F;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}}
 :root[data-theme="dark"] body[data-skin="sno"]{--rain:#74B4EA;--bg:#121214;--surface:#1C1C1E;--ink:#EDEDF0;--muted:#9A9AA1;--line:#2C2C2F;--line-strong:#48484C;--red:#5B9EF0;--lichen:#9CC283;--hd:#1C1C1E;--hdt:#EDEDF0;--chip:#2C2C2F;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
 body[data-skin="sno"] header.top{border-bottom:1px solid var(--line)}
+/* 0.35.0: Sand, the eighth skin: a beach look, a header like dry dunes with dark text (as Lett bris and Snø), a warm beige page, sea green accent.
+   A very fine warm grain on the page and header (finer than Berg's), drawn in the app; off in Nattlys and with true black (--grain:none there). */
+body[data-skin="sand"]{--rain:#1F5A8F;--bg:#F3ECDF;--surface:#FDFAF4;--ink:#2E2A22;--muted:#6E6556;--line:#E4DACA;--line-strong:#BBAE96;--red:#2A6F6D;--lichen:#5E7A44;--hd:#E3D3B4;--hdt:#2E2A22;--chip:#E4DACA;--hd-btn:rgba(46,42,34,.08);--hd-track:rgba(46,42,34,.14);--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .18 0 0 0 .5 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-skin="sand"]{--rain:#74B4EA;--bg:#1C1914;--surface:#26221B;--ink:#F0E8D8;--muted:#A89E8B;--line:#3A3328;--line-strong:#5A5040;--red:#5FB3AE;--lichen:#A5C58F;--hd:#2E2820;--hdt:#F0E8D8;--chip:#3A3328;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .92 0 0 0 0 .78 0 0 0 .38 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}}
+:root[data-theme="dark"] body[data-skin="sand"]{--rain:#74B4EA;--bg:#1C1914;--surface:#26221B;--ink:#F0E8D8;--muted:#A89E8B;--line:#3A3328;--line-strong:#5A5040;--red:#5FB3AE;--lichen:#A5C58F;--hd:#2E2820;--hdt:#F0E8D8;--chip:#3A3328;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .92 0 0 0 0 .78 0 0 0 .38 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body[data-skin="sand"],body[data-skin="sand"] header.top{background-image:var(--grain)}
+body.night[data-skin="sand"],body.night[data-skin="sand"] header.top{background-image:none}
 /* 0.34.0: true black in dark mode (body.black), every skin: page and header black, darker cards and lines, the skin's own text and accent;
    no stone grain. As strong as the skins' dark rules and after them; Nattlys (:root body.night.night, below) still wins. */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body.black{--bg:#000000;--hd:#000000;--surface:#121212;--line:#262626;--line-strong:#404040;--grain:none}}
@@ -1035,8 +1042,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.34.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 107;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.35.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 108;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -2041,7 +2048,7 @@ function renderTabs(){
   $('tabbar').innerHTML = [['list', T.tabList], ['notes', T.tabNotes], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
     `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
-const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#A9D6F2','#FBF3D9','#2E6FA3']}, sno:{no:'Snø', en:'Snow', c:['#1C1C1E','#F2F2F4','#1F63C6']} }; // 0.34.0: Snø, neutral
+const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#A9D6F2','#FBF3D9','#2E6FA3']}, sno:{no:'Snø', en:'Snow', c:['#1C1C1E','#F2F2F4','#1F63C6']}, sand:{no:'Sand', en:'Sand', c:['#E3D3B4','#F3ECDF','#2A6F6D']} }; // 0.34.0: Snø, neutral; 0.35.0: Sand
 function bodyClasses(){
   document.body.setAttribute('data-skin', SKINS[state.skin] ? state.skin : 'fjell');
   document.body.classList.toggle('notlist', tab !== 'list');
