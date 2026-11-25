@@ -4546,3 +4546,62 @@ test.describe('fra testing 0.28.1', () => {
     }
   });
 });
+
+/* ---------- From build 106 (0.33.0): signs in nature ----------
+   The guide «Tegn i naturen» in Ferdigheter i felt right after Kart og kompass, seven sections that each open with a
+   verdict in bold, the buttons to Kart og kompass and Retning om dagen and back from Retning om dagen (under
+   Skyggestokken). And the calendar file's text escape: a semicolon becomes \; as RFC 5545 asks (review of build 105). */
+test.describe('tegn i naturen 0.33', () => {
+  const TX = {no:{title:'Tegn i naturen', day:'Retning om dagen', map:'Kart og kompass ›', back:'Tegn i naturen ›',
+      secs:['Snøen som smelter', 'Parabolantenner', 'Gamle kirker', 'Maurtua', 'Mose på trærne', 'Ring rundt sola eller månen', 'Fra fortellingene'],
+      verdicts:['Ganske sikkert.', 'Sikkert der det er hus.', 'Ofte, men ikke alltid.', 'Delvis.', 'Lite sikkert.', 'Et værtegn, ikke et retningstegn.'], q:'maurtua'},
+    en:{title:'Signs in nature', day:'Directions by day', map:'Map and compass ›', back:'Signs in nature ›',
+      secs:['Melting snow', 'Satellite dishes', 'Old churches', 'The ant mound', 'Moss on trees', 'A ring around the sun or moon', 'From the stories'],
+      verdicts:['Fairly reliable.', 'Reliable where there are houses.', 'Often, but not always.', 'Partly.', 'Not very reliable.', 'A weather sign, not a direction sign.'], q:'ant mound'}};
+  test('the guide sits after Kart og kompass', () => {
+    const keys = guideKeysFromSource();
+    expect(keys.indexOf('signs')).toBe(keys.indexOf('mapcompass') + 1);
+    expect(HTML).toContain("items:['knots', 'tarp', 'sleep', 'pack', 'mapcompass', 'signs', 'fishing', 'fire', 'tracks']");
+  });
+  for (const L of LANGS) test(`sections, verdicts and the buttons both ways (${L.lang})`, async ({browser}) => {
+    const X = TX[L.lang];
+    const ctx = await browser.newContext({locale:L.locale, timezoneId:'Europe/Oslo', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, {lists:[], introDone:true, lang:L.lang}]);
+    await p.goto('./');
+    await goTab(p, 'guide');
+    await openRow(p, 'signs');
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    const sums = p.locator('#main details > summary');
+    await expect(sums).toHaveCount(7);
+    for (let i = 0; i < 7; i++) await expect(sums.nth(i)).toContainText(X.secs[i]);
+    const bolds = await p.locator('#main details > summary + p > b:first-child').allTextContents();
+    expect(bolds).toEqual(X.verdicts);
+    // to Retning om dagen, and back from Skyggestokken
+    await p.evaluate(() => document.querySelectorAll('#main details').forEach(d => { d.open = true; }));
+    await expect(p.locator('#main [data-act="openGuide"][data-guide="mapcompass"]')).toHaveText(X.map);
+    await p.locator('#main [data-act="openGuide"][data-guide="daydir"]').click();
+    await expect(p.locator('#listName')).toHaveText(X.day);
+    await p.evaluate(() => document.querySelectorAll('#main details').forEach(d => { d.open = true; }));
+    const back = p.locator('#main [data-act="openGuide"][data-guide="signs"]');
+    await expect(back).toHaveText(X.back);
+    await back.click();
+    await expect(p.locator('#listName')).toHaveText(X.title);
+    expect(err).toEqual([]);
+    // search finds it (a fresh page, so Back history does not matter)
+    const q = await ctx.newPage(), err2 = watchErrors(q);
+    await q.goto('./');
+    await goTab(q, 'guide');
+    await q.locator('#main .gs-btn').click();
+    await q.locator('#gsInput').fill(X.q);
+    await expect(q.locator('#main .gs-hit[data-guide="signs"]').first()).toBeVisible();
+    expect(err2).toEqual([]); await ctx.close();
+  });
+  test('the calendar file escapes semicolons, commas, backslashes and line breaks', () => {
+    const src = (HTML.match(/^const icsEsc = .*;$/m) || [])[0];
+    expect(src).toBeTruthy();
+    const icsEsc = new Function(src + '\nreturn icsEsc;')();
+    expect(icsEsc('a;b,c\\d\ne\r\nf')).toBe(String.raw`a\;b\,c\\d\ne\nf`);
+  });
+});
