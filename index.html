@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-p/gLUDtmaWQUS4y4GBHMcAMUazwcofUYf/caKY0h84U='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-B/n0UX8RHa8x+gA/VIo+eUkmnxxHIiIKi1OqtqAxSM8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#E7EBE8">
 <meta name="description" content="Pakkliste, planlegging og guider for friluftsliv. Virker uten nett.">
@@ -519,6 +519,16 @@ body[data-skin="mose"],body[data-skin="fjord"]{--on-red:#111}
 body[data-skin="berg"],body[data-skin="berg"] header.top{background-image:var(--grain)}
 body.night[data-skin="berg"],body.night[data-skin="berg"] header.top{background-image:none}
 body.night .hdr-rain{--rain:var(--ink)}
+/* 0.34.0: Snø / Snow, neutral greys and white with a calm blue accent and a light header (like Lett bris), a hairline under the header.
+   Vær og sikkerhet turns orange as in Lett bris, since the accent is blue. */
+body[data-skin="sno"]{--rain:#1F5A8F;--bg:#F2F2F4;--surface:#FFFFFF;--ink:#1C1C1E;--muted:#636366;--line:#E3E3E6;--line-strong:#B4B4BA;--red:#1F63C6;--lichen:#4E7A3E;--hd:#FAFAFB;--hdt:#1C1C1E;--chip:#E8E8EC;--hd-btn:rgba(28,28,30,.07);--hd-track:rgba(28,28,30,.12);--gsafe:#B8652A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-skin="sno"]{--rain:#74B4EA;--bg:#121214;--surface:#1C1C1E;--ink:#EDEDF0;--muted:#9A9AA1;--line:#2C2C2F;--line-strong:#48484C;--red:#5B9EF0;--lichen:#9CC283;--hd:#1C1C1E;--hdt:#EDEDF0;--chip:#2C2C2F;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}}
+:root[data-theme="dark"] body[data-skin="sno"]{--rain:#74B4EA;--bg:#121214;--surface:#1C1C1E;--ink:#EDEDF0;--muted:#9A9AA1;--line:#2C2C2F;--line-strong:#48484C;--red:#5B9EF0;--lichen:#9CC283;--hd:#1C1C1E;--hdt:#EDEDF0;--chip:#2C2C2F;--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--gsafe:#E39A5E}
+body[data-skin="sno"] header.top{border-bottom:1px solid var(--line)}
+/* 0.34.0: true black in dark mode (body.black), every skin: page and header black, darker cards and lines, the skin's own text and accent;
+   no stone grain. As strong as the skins' dark rules and after them; Nattlys (:root body.night.night, below) still wins. */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body.black{--bg:#000000;--hd:#000000;--surface:#121212;--line:#262626;--line-strong:#404040;--grain:none}}
+:root[data-theme="dark"] body.black{--bg:#000000;--hd:#000000;--surface:#121212;--line:#262626;--line-strong:#404040;--grain:none}
 :root body.night.night{--hd-btn:rgba(255,255,255,.13);--hd-track:rgba(255,255,255,.18);--hd:#000;--hdt:#e0362c;--chip:#1a0505;--bg:#000;--surface:#120404;--ink:#e0362c;--muted:#9c2a22;--line:#3a0d0a;--line-strong:#5c1712;--red:#ff4a3d;--lichen:#c0392b}
 body.night .chip.field-on,body.night .btn.primary{color:#000}
 .compass{display:flex;flex-direction:column;align-items:center;margin-top:12px}
@@ -1025,8 +1035,8 @@ const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.
 // Notes under a subheading of the standard list: item id of the subheading -> UI key (build 34)
 const SUB_NOTES = {'std:firstaid:tabletter':'medNote'};
 const APP_NAME = 'Varde';   // working name: change it here, in <head> and in manifest.webmanifest
-const APP_VERSION = '0.33.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
-const APP_BUILD = 106;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
+const APP_VERSION = '0.34.0';  // visible version: 0.x.y while testing, 1.0.0 with the final name
+const APP_BUILD = 107;         // raised on every commit, together with CACHE ('varde-b52') in sw.js
 const KNOT_FILES = ['knots/bowline.svg', 'knots/taut-line.webp', 'knots/clove-hitch.svg', 'knots/sheet-bend.webp', 'knots/prusik.webp', 'knots/timber-hitch.webp', ['knots/figure-eight.svg', 'knots/figure-eight-loop.webp']];
 const KNOT_CREDITS = [
   {k:5, author:'Pearson Scott Foresman', file:'Timber Hitch (PSF).png', url:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', lic:'Public domain', licUrl:'https://commons.wikimedia.org/wiki/File:Timber_Hitch_(PSF).png', chg:'adaptedScaled'},
@@ -1179,7 +1189,7 @@ appearance:'Appearance', settings:'Settings', setTitle:`Settings and about ${APP
       sig:'Signals', sigTxt:'Six signals a minute with a whistle, light or shouts, then a minute’s pause. The answer is three a minute. To a helicopter: both arms up means «yes, we need help», one up and one down means «no». Use the whistle in your pack; it carries much further than the phone.',
       warm:'Keep warm and wait', warmTxt:'Find shelter, insulate yourself from the ground and change into dry clothes if you can. If you have brought a reflective vest or a headlamp, use them.',
       bat:'Save battery', batLvl:p => `Battery: ${p} %`, batTxt:'Use the phone only for what is needed, and keep it warm. Follow the advice from the emergency centre.'},
-    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', lockBlocked:'Locked. Hold Navigate to change page, or Unlock to switch the lock off.', relockOn:'Lock again by itself', relockHint:'After Unlock, Rain lock comes back on after 30 seconds without a touch. Only in Outdoor mode.', relockToast:'Rain lock comes back after 30 seconds without a touch', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
+    field:'Outdoor mode', lockScreen:'Rain lock', fieldSign:'Outdoor mode is on', nightRed:'Red night light', nightGreen:'Green night light', campfire:'Campfire', lampHint:'Hold to use the screen as a light', lampSlide:'Slide to unlock', lampNote:'Set the brightness on the phone.', fireWood:'Hold the screen to add wood.', lampHoldMsg:'Hold Campfire to light it.', lockNote:'Rain lock is on: nothing can be changed. Hold Navigate to change page.', lockBlocked:'Locked. Hold Navigate to change page, or Unlock to switch the lock off.', blackOn:'True black in dark mode', blackHint:'A black background when the phone is in dark mode. On OLED screens it can save a little power, most when the brightness is high.', relockOn:'Lock again by itself', relockHint:'After Unlock, Rain lock comes back on after 30 seconds without a touch. Only in Outdoor mode.', relockToast:'Rain lock comes back after 30 seconds without a touch', navOpenNote:'Navigation is open for a few seconds. Ticks and changes are still locked.', navHold:'↔ Navigate', unlockTxt:'Unlock', holdShort:'hold 1 second', holdLong:'hold 1 second',
     startOver:'Start over', startOverHint:'Clears all ticks and trip types and makes the standard list the main list, as when the app was new. Lists, notes and settings stay.', startOverQ:'Start the app over?', startOverMsg:'All ticks in all lists are cleared, trip types and Light day hike are switched off, the standard list becomes the main list and all categories are folded. Outdoor mode, Rain lock, Night light and Hide packed are turned off. Nothing is deleted: lists, notes, links, pack weight, planner figures, your position and settings stay.', startOverOk:'Start over', startOverDone:'The app has started over',
     resetDone:'Ticks cleared', catDeleted:'Category deleted', itemDeleted:'Item deleted', moveX:n=>`Move ${n}`, moveHint:'Drag to move. Arrow up or down moves one step.', movedX:n=>`Moved: ${n}`, listDeleted:'List deleted', undo:'Undo',
     phoneTool:'Your phone outdoors', phoneShort:'Rain, cold and gloves',
@@ -1431,7 +1441,7 @@ appearance:'Utseende', settings:'Innstillinger', setTitle:`Innstillinger og om $
       sig:'Signaler', sigTxt:'Seks signaler i minuttet med fløyte, lys eller rop, så ett minutt pause. Svaret er tre i minuttet. Mot helikopter: begge armene opp betyr «ja, vi trenger hjelp», én opp og én ned betyr «nei». Bruk fløyta i sekken; den høres mye lenger enn mobilen.',
       warm:'Hold varmen og vent', warmTxt:'Søk ly, isoler deg mot bakken og skift til tørre klær hvis du kan. Har du med refleksvest eller hodelykt, bruk dem.',
       bat:'Spar batteri', batLvl:p => `Batteri: ${p} %`, batTxt:'Bruk mobilen bare til det som trengs, og hold den varm. Følg rådene fra nødsentralen.'},
-    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', lockBlocked:'Låst. Hold Naviger for å bytte side, eller Lås opp for å slå låsen av.', relockOn:'Lås igjen av seg selv', relockHint:'Etter Lås opp slås Regnlås på igjen etter 30 sekunder uten berøring. Bare i Utemodus.', relockToast:'Regnlås kommer tilbake etter 30 sekunder uten berøring', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
+    field:'Utemodus', lockScreen:'Regnlås', fieldSign:'Utemodus er på', nightRed:'Rødt nattlys', nightGreen:'Grønt nattlys', campfire:'Bål', lampHint:'Hold for å bruke skjermen som lys', lampSlide:'Dra for å låse opp', lampNote:'Lysstyrken stiller du på mobilen.', fireWood:'Hold på skjermen for å legge på ved.', lampHoldMsg:'Hold Bål inne for å tenne lyset.', lockNote:'Regnlås er på: ingenting kan endres. Hold Naviger for å bytte side.', lockBlocked:'Låst. Hold Naviger for å bytte side, eller Lås opp for å slå låsen av.', blackOn:'Helsvart i mørk modus', blackHint:'Svart bakgrunn når telefonen står i mørk modus. På OLED-skjermer kan det spare litt strøm, mest når lysstyrken står høyt.', relockOn:'Lås igjen av seg selv', relockHint:'Etter Lås opp slås Regnlås på igjen etter 30 sekunder uten berøring. Bare i Utemodus.', relockToast:'Regnlås kommer tilbake etter 30 sekunder uten berøring', navOpenNote:'Navigering er åpen i noen sekunder. Avkrysning og endringer er fortsatt låst.', navHold:'↔ Naviger', unlockTxt:'Lås opp', holdShort:'hold 1 sekund', holdLong:'hold 1 sekund',
     startOver:'Start på nytt', startOverHint:'Fjerner alle avkrysninger og turtyper og gjør standardlisten til hovedliste, som da appen var ny. Lister, notater og innstillinger blir værende.', startOverQ:'Starte appen på nytt?', startOverMsg:'Alle avkrysninger i alle lister fjernes, turtypene og Lett dagstur slås av, standardlisten blir hovedliste og alle kategorier lukkes. Utemodus, Regnlås, nattlys og Skjul pakket slås av. Ingenting slettes: lister, notater, lenker, sekkvekt, tall i planleggerne, posisjonen din og innstillinger blir værende.', startOverOk:'Start på nytt', startOverDone:'Appen er startet på nytt',
     resetDone:'Avkrysninger fjernet', catDeleted:'Kategori slettet', itemDeleted:'Ting slettet', moveX:n=>`Flytt ${n}`, moveHint:'Dra for å flytte. Pil opp eller ned flytter ett steg.', movedX:n=>`Flyttet: ${n}`, listDeleted:'Liste slettet', undo:'Angre',
     phoneTool:'Mobilen på tur', phoneShort:'Regn, kulde og hansker',
@@ -2031,11 +2041,12 @@ function renderTabs(){
   $('tabbar').innerHTML = [['list', T.tabList], ['notes', T.tabNotes], ['plan', T.tabPlan], ['guide', T.tabGuide], ['compass', T.tabCompass]].map(([k, label]) =>
     `<button data-tab="${k}" data-nav ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span>${label}</span></button>`).join('');
 }
-const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#A9D6F2','#FBF3D9','#2E6FA3']} };
+const SKINS = { fjell:{no:'Fjell', en:'Mountain', c:['#1F3532','#E9ECEA','#C8372D']}, mose:{no:'Mose', en:'Moss', c:['#3D4F2E','#EFEBE2','#B9730C']}, fjord:{no:'Fjord', en:'Fjord', c:['#1D3A4F','#E8EEF2','#E0651B']}, eng:{no:'Sommereng', en:'Summer meadow', c:['#6B4A73','#F4EFF2','#C93D78']}, berg:{no:'Berg', en:'Rock', c:['#26272A','#D3D0CA','#A84A24']}, bris:{no:'Lett bris', en:'Soft breeze', c:['#A9D6F2','#FBF3D9','#2E6FA3']}, sno:{no:'Snø', en:'Snow', c:['#1C1C1E','#F2F2F4','#1F63C6']} }; // 0.34.0: Snø, neutral
 function bodyClasses(){
   document.body.setAttribute('data-skin', SKINS[state.skin] ? state.skin : 'fjell');
   document.body.classList.toggle('notlist', tab !== 'list');
   document.body.classList.toggle('field', !!state.field);
+  document.body.classList.toggle('black', !!state.black);   // 0.34.0: true black in dark mode
   document.body.classList.toggle('listlock', !!state.listLock);
   document.body.classList.toggle('night', !!(state.field && state.night));
   document.body.classList.toggle('ngreen', !!(state.field && state.night && state.nightHue === 'green'));
@@ -2420,7 +2431,9 @@ function renderSettings(){
   let html = `${backBtn(backTo)}`;
   // even sections with a thin line between (as on Dine lister from v29); the first without the line
   const sec = (label, body) => `<section class="pg-sec"><h2 class="sec-lbl">${label}</h2>${body}</section>`;
-  html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>`);
+  html += sec(T.appearance, `<div class="skins">${Object.entries(SKINS).map(([k, v]) => `<button class="skin-btn" data-skin="${k}" aria-pressed="${(state.skin || 'fjell') === k}"><span class="sw">${v.c.map(c => `<i style="background:${c}"></i>`).join('')}</span>${v[state.lang] || v.en}</button>`).join('')}</div>
+    <div class="role"><button class="switch" data-act="blackDark" aria-pressed="${!!state.black}" aria-label="${T.blackOn}"><i></i></button>
+    <div><b>${T.blackOn}</b><span>${T.blackHint}</span></div></div>`);   // 0.34.0
   html += sec(T.language, `<div class="row-btns"><button class="btn" data-lang="no" aria-pressed="${state.lang === 'no'}">Norsk</button><button class="btn" data-lang="en" aria-pressed="${state.lang === 'en'}">English</button></div>
     <p class="tool-tip">${T.langNote}</p>`);
   // build 101: the backup also here (not only on Dine lister), right after Utseende and Språk: the data lives only on this phone
@@ -6384,6 +6397,7 @@ main.addEventListener('click', async e => {
     const n = new Date(); if ($('stList') && state.pos) $('stList').innerHTML = starList(skyVisible(n), milkyWay(n), n);
     return;
   }
+  if (act === 'blackDark'){ state.black = !state.black; save(); render(); return; }   // 0.34.0
   if (act === 'autoRelock'){ state.autoRelock = !state.autoRelock; save(); if (!state.autoRelock) clearTimeout(relockTimer); render(); return; }
   if (act === 'cSkyNow'){ state.skyNow = !skyOn('now'); save(); renderCompass(); return; }
   if (act === 'cRiseSet'){ state.skyRiseSet = !skyOn('rs'); save(); renderCompass(); return; }

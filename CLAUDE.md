@@ -349,6 +349,12 @@ Wherever people type (a sheet with text fields, or a field on the page), leaving
 - **`icsEsc`** writes `;` as `\;` (it wrote a bare `;` before, since `'\;'` is just `';'` in JS; from Claude Code's review of build 105). The smoke test runs the function from the source in Node.
 - Smoke test `tegn i naturen 0.33`.
 
+## Snø and true black (build 107, 0.34.0)
+- The app cannot take the phone's own accent colour: Chrome gives `AccentColor` to installed web apps on desktop only (not Android), and Safari on iPhone returns a fixed blue. So skins stay hand-made, and light/dark follows the phone. A custom skin («Egen»: three colours and a texture) is on the ideas list in the project notes.
+- **Skin `sno`** «Snø» / «Snow», last in `SKINS`: neutral greys and white, accent #1F63C6 (dark #5B9EF0), a light header #FAFAFB with dark text like Lett bris (`--hd-btn` and `--hd-track` dark-tinted, `--rain` dark blue), a hairline under the header, `--gsafe` orange as in Lett bris because the accent is blue. The night-light and contrast tests pick it up by themselves.
+- **True black:** `state.black` (switch `blackDark` under the skins in Utseende, off by default, «Helsvart i mørk modus»), body class `black` set in `bodyClasses()` before the theme-color meta is read. The rules `:root:not([data-theme="light"]) body.black` (in the dark media query) and `:root[data-theme="dark"] body.black` set `--bg` and `--hd` #000, `--surface` #121212, lines #262626 / #404040 and `--grain: none`; they are as strong as the skins' dark rules and placed after them, and before `:root body.night.night`, so Nattlys still wins. Light mode is untouched.
+- The contrast audit is shared as `CONTRAST_AUDIT` in the smoke test. Smoke test `utseende 0.34` (Snø last and chosen, the switch, Berg without grain on black, Nattlys over black, contrast in every skin with true black).
+
 ## Smoke test on GitHub: one retry (build 104)
 - Several pull requests went red and turned green on «Re-run failed jobs» with no change. `playwright.config.js` now has `retries: process.env.CI ? 1 : 0`: on GitHub a failing test runs once more, and one that passes then is listed as flaky in the log (look for it, and fix the test if the same one keeps showing up). Locally there is no retry. The `smoke` job's 15-minute limit in `smoke.yml` is unchanged; raise it there if a run ever stops on time. If the red job is `deploy` instead, the re-run rule under «Publishing: re-runs» applies.
 
