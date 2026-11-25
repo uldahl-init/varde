@@ -4652,8 +4652,8 @@ test.describe('utseende 0.34', () => {
     ({ctx, p, err} = await open(browser, 'light', {skin:'fjell', black:true}));
     expect(await bg(p)).toBe('rgb(233, 236, 234)');
     expect(err).toEqual([]); await ctx.close();
-    // Berg: no stone grain on black; Nattlys still wins
-    ({ctx, p, err} = await open(browser, 'dark', {skin:'berg', black:true}));
+    // Berg: no stone grain on black (0.36.0: with the pattern switch on); Nattlys still wins
+    ({ctx, p, err} = await open(browser, 'dark', {skin:'berg', black:true, pattern:true}));
     expect(await p.evaluate(() => getComputedStyle(document.body).backgroundImage)).toBe('none');
     expect(err).toEqual([]); await ctx.close();
     ({ctx, p, err} = await open(browser, 'dark', {skin:'sno', black:true, field:true, night:true}));
@@ -4705,18 +4705,77 @@ test.describe('sand 0.35', () => {
     expect(await p.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(243, 236, 223)');
     expect(err).toEqual([]); await ctx.close();
   });
+  // 0.36.0: the grain is one of the background patterns, shown only with the switch on
   test('the grain: on in light and dark, off in Nattlys and with true black', async ({browser}) => {
-    let {ctx, p, err} = await open(browser, 'light');
+    let {ctx, p, err} = await open(browser, 'light', {pattern:true});
     for (const v of await img(p)) expect(v).toContain('url(');
     expect(err).toEqual([]); await ctx.close();
-    ({ctx, p, err} = await open(browser, 'dark'));
+    ({ctx, p, err} = await open(browser, 'dark', {pattern:true}));
     for (const v of await img(p)) expect(v).toContain('url(');
     expect(err).toEqual([]); await ctx.close();
-    ({ctx, p, err} = await open(browser, 'dark', {black:true}));
+    ({ctx, p, err} = await open(browser, 'dark', {black:true, pattern:true}));
     expect(await img(p)).toEqual(['none', 'none']);
     expect(err).toEqual([]); await ctx.close();
-    ({ctx, p, err} = await open(browser, 'light', {field:true, night:true}));
+    ({ctx, p, err} = await open(browser, 'light', {field:true, night:true, pattern:true}));
     expect(await img(p)).toEqual(['none', 'none']);
     expect(err).toEqual([]); await ctx.close();
+  });
+});
+
+/* ---------- From build 109 (0.36.0): background patterns ----------
+   One faint pattern per skin on the page and in the header (Fjell: the Rondeslottet ridge lines; Sommereng: dandelions
+   and grass; Snø: snow crystals; Mose, Fjord, Lett bris, Berg and Sand: soft noise). The switch «Mønster i bakgrunnen»
+   is off by default; no pattern in Nattlys or with true black. The block is written by tools/textures.js. */
+test.describe('mønster 0.36', () => {
+  const open = async (browser, scheme, extra) => {
+    const ctx = await browser.newContext({colorScheme:scheme, locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, Object.assign({lists:[], introDone:true, lang:'no'}, extra || {})]);
+    await p.goto('./');
+    return {ctx, p, err};
+  };
+  const img = p => p.evaluate(() => [getComputedStyle(document.body).backgroundImage, getComputedStyle(document.querySelector('header.top')).backgroundImage]);
+  test('the block is what tools/textures.js writes', () => {
+    execFileSync(process.execPath, [path.join(ROOT, 'tools', 'textures.js'), '--check'], {stdio:'pipe'});
+    for (const k of SKINS) expect(HTML, `a pattern for ${k}`).toContain(`body.pattern:not(.night)[data-skin="${k}"]{background-image:url(`);
+  });
+  test('the switch: off by default, turns the pattern on, stays after a reload', async ({browser}) => {
+    const {ctx, p, err} = await open(browser, 'light', {skin:'berg'});
+    expect(await img(p)).toEqual(['none', 'none']);   // Berg is plain until the switch is on
+    await p.locator('#hdrSet').click();
+    const sw = p.locator('#main [data-act="bgPattern"]');
+    await expect(sw).toHaveAttribute('aria-pressed', 'false');
+    await expect(p.locator('#main .role').filter({has: p.locator('[data-act="bgPattern"]')})).toContainText('Mønster i bakgrunnen');
+    await sw.click();
+    await expect(sw).toHaveAttribute('aria-pressed', 'true');
+    for (const v of await img(p)) expect(v).toContain('url(');
+    await p.reload();
+    for (const v of await img(p)) expect(v).toContain('url(');
+    expect(await p.evaluate(k => JSON.parse(localStorage.getItem(k)).pattern, KEY)).toBe(true);
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('every skin: a pattern on page and header in light and dark; none in Nattlys or with true black', async ({browser}) => {
+    test.setTimeout(240000);
+    const bad = [];
+    for (const skin of SKINS){
+      for (const [scheme, extra, want] of [['light', {}, true], ['dark', {}, true], ['dark', {black:true}, false], ['light', {field:true, night:true}, false], ['dark', {field:true, night:true}, false]]){
+        const {ctx, p, err} = await open(browser, scheme, Object.assign({skin, pattern:true}, extra));
+        const v = await img(p);
+        if (v.some(x => x.includes('url(') !== want)) bad.push(`${skin} ${scheme} ${JSON.stringify(extra)}: ${v.map(x => x.slice(0, 12)).join(' / ')}`);
+        if (err.length) bad.push(`${skin} ${scheme}: ${err.join('; ')}`);
+        await ctx.close();
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+  test('the patterns: many different pictures, Fjell stretched to the page, nothing that can load or run', () => {
+    const block = HTML.slice(HTML.indexOf('/* TEXTURES:'), HTML.indexOf('/* end of TEXTURES */'));
+    const fj = block.split('\n').filter(l => l.includes('[data-skin="fjell"]'));
+    expect(fj.length).toBe(4);   // page and header in light, then dark (two ways)
+    expect(fj[0]).toContain('background-size:100% auto');
+    const pics = block.match(/url\("data:image\/svg\+xml,[^"]*"\)/g);
+    expect(new Set(pics).size).toBeGreaterThan(24);
+    expect(block).not.toMatch(/href|<image|script|foreignObject/i);
   });
 });
