@@ -2228,6 +2228,24 @@ test.describe('himmelvarsel 0.32', () => {
    A blocked tap flashes the lock bar with a hint and changes nothing; auto-relock (off by default) locks again after
    30 s without a touch, and a touch starts the wait again; the list button is named by what it shows; Nødmodus is a
    dialog; the planners' headings sit right under the page title; and all text meets the contrast minimum in every skin. */
+// the contrast audit run in the page (build 68), shared from build 107 with the true-black test
+const CONTRAST_AUDIT = () => {
+    const parse = s => { const m = s && s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const q = m[1].split(',').map(parseFloat); return {r:q[0], g:q[1], b:q[2], a:q.length > 3 ? q[3] : 1}; };
+    const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
+    const blend = (t, u) => ({r:t.r * t.a + u.r * (1 - t.a), g:t.g * t.a + u.g * (1 - t.a), b:t.b * t.a + u.b * (1 - t.a), a:1});
+    const bgOf = el => { const ls = []; for (let e = el; e; e = e.parentElement){ const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0){ ls.push(c); if (c.a >= 1) break; } } let b = {r:255, g:255, b:255, a:1}; for (let i = ls.length - 1; i >= 0; i--) b = blend(ls[i], b); return b; };
+    const bad = [];
+    document.querySelectorAll('header *, #main *, #tabbar *').forEach(el => {
+      if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
+      const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || !el.offsetParent || el.closest('svg, [disabled], s, del')) return;
+      let op = 1; for (let e = el; e; e = e.parentElement) op *= parseFloat(getComputedStyle(e).opacity);
+      let fg = parse(cs.color); if (!fg) return; const bg = bgOf(el); fg = blend(Object.assign({}, fg, {a:fg.a * op}), bg);
+      const L1 = lum(fg), L2 = lum(bg), cr = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      const px = parseFloat(cs.fontSize), large = px >= 24 || (parseInt(cs.fontWeight) >= 600 && px >= 18.66);
+      if (cr < (large ? 3 : 4.5) - 0.02) bad.push(`${cr.toFixed(2)} «${el.textContent.trim().slice(0, 24)}» ${String(el.className || el.tagName).slice(0, 24)}`);
+    });
+    return [...new Set(bad)].slice(0, 6);
+};
 test.describe('regnlås og tilgjengelighet', () => {
   const ctxFor = (browser, extra) => browser.newContext(Object.assign({locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}}, extra || {}));
   const start = async (p, st) => {
@@ -2315,23 +2333,7 @@ test.describe('regnlås og tilgjengelighet', () => {
   // contrast: every visible text on the main pages, every skin, light and dark (4.5 : 1, large text 3 : 1)
   test('text contrast in every skin', async ({browser}) => {
     test.setTimeout(300000);
-    const audit = () => {
-      const parse = s => { const m = s && s.match(/rgba?\(([^)]+)\)/); if (!m) return null; const q = m[1].split(',').map(parseFloat); return {r:q[0], g:q[1], b:q[2], a:q.length > 3 ? q[3] : 1}; };
-      const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
-      const blend = (t, u) => ({r:t.r * t.a + u.r * (1 - t.a), g:t.g * t.a + u.g * (1 - t.a), b:t.b * t.a + u.b * (1 - t.a), a:1});
-      const bgOf = el => { const ls = []; for (let e = el; e; e = e.parentElement){ const c = parse(getComputedStyle(e).backgroundColor); if (c && c.a > 0){ ls.push(c); if (c.a >= 1) break; } } let b = {r:255, g:255, b:255, a:1}; for (let i = ls.length - 1; i >= 0; i--) b = blend(ls[i], b); return b; };
-      const bad = [];
-      document.querySelectorAll('header *, #main *, #tabbar *').forEach(el => {
-        if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
-        const cs = getComputedStyle(el); if (cs.visibility === 'hidden' || !el.offsetParent || el.closest('svg, [disabled], s, del')) return;
-        let op = 1; for (let e = el; e; e = e.parentElement) op *= parseFloat(getComputedStyle(e).opacity);
-        let fg = parse(cs.color); if (!fg) return; const bg = bgOf(el); fg = blend(Object.assign({}, fg, {a:fg.a * op}), bg);
-        const L1 = lum(fg), L2 = lum(bg), cr = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
-        const px = parseFloat(cs.fontSize), large = px >= 24 || (parseInt(cs.fontWeight) >= 600 && px >= 18.66);
-        if (cr < (large ? 3 : 4.5) - 0.02) bad.push(`${cr.toFixed(2)} «${el.textContent.trim().slice(0, 24)}» ${String(el.className || el.tagName).slice(0, 24)}`);
-      });
-      return [...new Set(bad)].slice(0, 6);
-    };
+    const audit = CONTRAST_AUDIT;
     const found = {};
     for (const skin of SKINS) for (const scheme of ['light', 'dark']){
       const ctx = await browser.newContext({colorScheme:scheme, serviceWorkers:'block', viewport:{width:390, height:780}, locale:'nb-NO'});
@@ -4603,5 +4605,75 @@ test.describe('tegn i naturen 0.33', () => {
     expect(src).toBeTruthy();
     const icsEsc = new Function(src + '\nreturn icsEsc;')();
     expect(icsEsc('a;b,c\\d\ne\r\nf')).toBe(String.raw`a\;b\,c\\d\ne\nf`);
+  });
+});
+
+/* ---------- From build 107 (0.34.0): Snø and true black ----------
+   Snø is a skin like the others, so the night-light and contrast tests above take it by themselves. The switch
+   «Helsvart i mørk modus» under the skins: off by default, kept after a reload, black page and header only when the
+   phone is in dark mode, the top bar black too, and every skin still meets the contrast minimum with it on. */
+test.describe('utseende 0.34', () => {
+  const open = async (browser, scheme, extra) => {
+    const ctx = await browser.newContext({colorScheme:scheme, locale:'nb-NO', serviceWorkers:'block', viewport:{width:390, height:780}});
+    const p = await ctx.newPage(), err = watchErrors(p);
+    await p.addInitScript(([key, s]) => { try { if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(s)); } catch(e){} },
+      [KEY, Object.assign({lists:[], introDone:true, lang:'no'}, extra || {})]);
+    await p.goto('./');
+    return {ctx, p, err};
+  };
+  const bg = p => p.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  const top = p => p.evaluate(() => document.querySelector('meta[name="theme-color"]').getAttribute('content'));
+  test('Snø is listed last and can be chosen', async ({browser}) => {
+    expect(SKINS).toContain('sno');
+    const {ctx, p, err} = await open(browser, 'light');
+    await p.locator('#hdrSet').click();
+    await expect(p.locator('#main .skin-btn').last()).toHaveText('Snø');
+    await p.locator('#main .skin-btn[data-skin="sno"]').click();
+    await expect(p.locator('body')).toHaveAttribute('data-skin', 'sno');
+    expect(await bg(p)).toBe('rgb(242, 242, 244)');
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('the switch: off by default, kept, black only in dark mode', async ({browser}) => {
+    let {ctx, p, err} = await open(browser, 'dark', {skin:'fjell'});
+    expect(await bg(p)).toBe('rgb(20, 33, 32)');
+    await p.locator('#hdrSet').click();
+    const sw = p.locator('#main [data-act="blackDark"]');
+    await expect(sw).toHaveAttribute('aria-pressed', 'false');
+    await expect(p.locator('#main .role').filter({has: p.locator('[data-act="blackDark"]')})).toContainText('Helsvart i mørk modus');
+    await sw.click();
+    await expect(sw).toHaveAttribute('aria-pressed', 'true');
+    expect(await bg(p)).toBe('rgb(0, 0, 0)');
+    await p.reload();
+    expect(await bg(p)).toBe('rgb(0, 0, 0)');
+    expect(await top(p)).toBe('#000000');
+    expect(await p.evaluate(k => JSON.parse(localStorage.getItem(k)).black, KEY)).toBe(true);
+    expect(err).toEqual([]); await ctx.close();
+    // light mode: no change
+    ({ctx, p, err} = await open(browser, 'light', {skin:'fjell', black:true}));
+    expect(await bg(p)).toBe('rgb(233, 236, 234)');
+    expect(err).toEqual([]); await ctx.close();
+    // Berg: no stone grain on black; Nattlys still wins
+    ({ctx, p, err} = await open(browser, 'dark', {skin:'berg', black:true}));
+    expect(await p.evaluate(() => getComputedStyle(document.body).backgroundImage)).toBe('none');
+    expect(err).toEqual([]); await ctx.close();
+    ({ctx, p, err} = await open(browser, 'dark', {skin:'sno', black:true, field:true, night:true}));
+    expect(await p.evaluate(() => getComputedStyle(document.body).getPropertyValue('--surface').trim())).toBe('#120404');
+    expect(err).toEqual([]); await ctx.close();
+  });
+  test('text contrast in every skin with true black in dark mode', async ({browser}) => {
+    test.setTimeout(300000);
+    const found = {};
+    for (const skin of SKINS){
+      const {ctx, p} = await open(browser, 'dark', {skin, black:true, pos:{lat:58.97, lon:5.73, t:1760000000000}});
+      const check = async name => { const r = await p.evaluate(CONTRAST_AUDIT); if (r.length) found[`${skin} black ${name}`] = r; };
+      await p.locator('#main [data-act="foldAll"]').click(); await check('list');
+      await p.locator('#tabbar [data-tab="guide"]').click();
+      for (const h of await p.locator('#main [data-gfold]').all()) await h.click();
+      await check('guider');
+      await p.locator('#tabbar [data-tab="compass"]').click(); await check('compass');
+      await p.locator('#tabbar [data-tab="list"]').click(); await p.locator('#hdrSet').click(); await check('innstillinger');
+      await ctx.close();
+    }
+    expect(found).toEqual({});
   });
 });
